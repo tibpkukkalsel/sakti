@@ -91,7 +91,7 @@
                                                     <th>Email</th>
                                                     <th>Seksi</th>
                                                     <th>Role</th>
-                                                    <th>Cabang</th>
+                                                    <th>Lokasi</th>
                                                     <th style="width: 100px;" class="text-center">Aksi</th>
                                                 </tr>
                                             </thead>
@@ -241,7 +241,7 @@
                             <div class="col-12">
                                 <div class="form-group">
                                     <select name="kode_cabang" id="kode_cabang" class="form-select">
-                                        <option value="">Cabang</option>
+                                        <option value="">Lokasi</option>
                                         @foreach ($cabang as $d)
                                             <option value="{{ $d->kode_cabang }}">{{ strtoupper($d->nama_cabang) }}
                                             </option>
@@ -403,7 +403,7 @@
                 } else if (kode_cabang == "") {
                     Swal.fire({
                         title: 'Warning!',
-                        text: 'Cabang  Harus Diisi !',
+                        text: 'Lokasi Harus Diisi !',
                         icon: 'warning',
                         confirmButtonText: 'Ok'
                     }).then((result) => {

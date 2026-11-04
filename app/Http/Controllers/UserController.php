@@ -17,7 +17,7 @@ class UserController extends Controller
         $role = DB::table('roles')->orderBy('id')->get();
         $query = User::query();
         $query->select('users.id', 'users.name', 'email', 'nama_dept', 'roles.name as role', 'kode_cabang');
-        $query->join('seksi', 'users.kode_dept', '=', 'seksi.kode_dept');
+        $query->leftJoin('seksi', 'users.kode_dept', '=', 'seksi.kode_dept');
         $query->join('model_has_roles', 'users.id', '=', 'model_has_roles.model_id');
         $query->join('roles', 'model_has_roles.role_id', '=', 'roles.id');
         if (!empty($request->name)) {

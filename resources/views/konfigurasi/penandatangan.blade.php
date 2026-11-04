@@ -57,8 +57,8 @@
                             <div class="form-group mb-3">
                                 <label class="form-label fw-bold" for="pejabat1_jabatan">Jabatan</label>
                                 <input type="text" class="form-control" name="pejabat1_jabatan" id="pejabat1_jabatan"
-                                    value="{{ old('pejabat1_jabatan', $konfigurasi->pejabat1_jabatan ?? 'KEPALA BPKUK PROV. KALSEL') }}"
-                                    placeholder="Contoh: KEPALA BPKUK PROV. KALSEL" required>
+                                    value="{{ old('pejabat1_jabatan', $konfigurasi->pejabat1_jabatan ?? 'KEPALA UPPD SAMSAT BATU LICIN') }}"
+                                    placeholder="Contoh: KEPALA UPPD SAMSAT BATU LICIN" required>
                             </div>
                             <div class="form-group mb-3">
                                 <label class="form-label fw-bold" for="pejabat1_nama">Nama Lengkap &amp; Gelar</label>
@@ -157,7 +157,7 @@
                                     </tr>
                                     <tr>
                                         <td class="fw-bold" id="preview_pejabat1_jabatan">
-                                            {{ $konfigurasi->pejabat1_jabatan ?? 'KEPALA BPKUK PROV. KALSEL' }}
+                                            {{ $konfigurasi->pejabat1_jabatan ?? 'KEPALA UPPD SAMSAT BATU LICIN' }}
                                         </td>
                                         <td class="fw-bold" id="preview_pejabat2_jabatan">
                                             {{ $konfigurasi->pejabat2_jabatan ?? 'KASUBBAG TATA USAHA' }}

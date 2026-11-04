@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Karyawan;
+use App\Models\Layanan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -14,11 +14,11 @@ class AuthController extends Controller
     {
         // Otomatis aktifkan "Remember Me" agar pada device & browser yang sama otomatis login
         $remember = true;
-        $loginInput = trim($request->nik ?? '');
+        $loginInput = trim($request->username ?? $request->nik ?? '');
         $password = $request->password;
 
         if (empty($loginInput) || empty($password)) {
-            return redirect('/')->with(['warning' => 'ID / No. HP dan Password wajib diisi']);
+            return redirect('/')->with(['warning' => 'Username dan Password wajib diisi']);
         }
 
         // Variasi format no HP (misal: 0853..., +62853..., 62853..., 0853-4823-6515)
@@ -31,7 +31,8 @@ class AuthController extends Controller
         ])));
 
         // Cari pegawai berdasarkan NIK (ID), Username, atau No HP
-        $karyawan = Karyawan::where('nik', $loginInput)
+        $karyawan = Layanan::where('username', $loginInput)
+            ->orWhere('id', $loginInput)
             ->orWhere('username', $loginInput)
             ->orWhereIn('no_hp', $phoneCandidates)
             ->first();
@@ -43,7 +44,7 @@ class AuthController extends Controller
             }
             return redirect('/dashboard');
         } else {
-            return redirect('/')->with(['warning' => 'ID / No. HP atau Password Salah']);
+            return redirect('/')->with(['warning' => 'Username atau Password Salah']);
         }
     }
 

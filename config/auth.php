@@ -77,7 +77,7 @@ return [
 
         'karyawans' => [
             'driver' => 'eloquent',
-            'model' => App\Models\Karyawan::class,
+            'model' => App\Models\Layanan::class,
         ],
 
         // 'users' => [

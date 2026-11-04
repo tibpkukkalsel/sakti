@@ -140,7 +140,13 @@ class DashboardController extends Controller
         $cabang = DB::table('cabang')->where('kode_cabang', $kode_cabang)->first();
         $departemen = DB::table('seksi')->where('kode_dept', $kode_dept)->first();
 
-        return view('dashboard.dashboard', compact('presensihariini', 'dataliburhariini', 'historimingguini', 'historibulanini', 'namabulan', 'bulanini', 'tahunini', 'rekappresensi', 'totalLiburBulanIni', 'leaderboard', 'cabang', 'departemen', 'startOfWeek', 'endOfWeek'));
+        // Penerimaan PKB hari ini untuk akun layanan ini
+        $penerimaanHariIniLayanan = DB::table('rekap_penerimaan_pkb')
+            ->where('layanan_id', Auth::guard('karyawan')->user()->id)
+            ->where('tgl_penerimaan', $hariini)
+            ->first();
+
+        return view('dashboard.dashboard', compact('presensihariini', 'dataliburhariini', 'historimingguini', 'historibulanini', 'namabulan', 'bulanini', 'tahunini', 'rekappresensi', 'totalLiburBulanIni', 'leaderboard', 'cabang', 'departemen', 'startOfWeek', 'endOfWeek', 'penerimaanHariIniLayanan'));
     }
 
     public function dashboardadmin()
@@ -202,6 +208,12 @@ class DashboardController extends Controller
         $jmlterlambat = (int) ($rekappresensi->jmlterlambat ?? 0);
         $jmlbelumabsen = max(0, $totalpegawai - $jmlhadir - $jmlizin);
 
+        // Rekap Penerimaan PKB Hari Ini
+        $penerimaanHariIni = DB::table('rekap_penerimaan_pkb')
+            ->where('tgl_penerimaan', $hariini)
+            ->selectRaw('SUM(total_rp) as total_rp, SUM(total_unit) as total_unit, SUM(jumlah_notice) as total_notice')
+            ->first();
+
         return view('dashboard.dashboardadmin', compact(
             'totalpegawai',
             'rekappresensi',
@@ -210,6 +222,7 @@ class DashboardController extends Controller
             'jmlizin',
             'jmlterlambat',
             'jmlbelumabsen',
+            'penerimaanHariIni',
             'hariini'
         ));
     }

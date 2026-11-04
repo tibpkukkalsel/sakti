@@ -672,15 +672,27 @@ class PresensiController extends Controller
             ];
         }
 
-        $update = DB::table('karyawan')->where('nik', $nik)->update($data);
-        if ($update) {
+        $data['nama_pic'] = $request->nama_pic ?? ($karyawan->nama_pic ?? null);
+        $data['nip_pic'] = $request->nip_pic ?? ($karyawan->nip_pic ?? null);
+        $data['jabatan_pic'] = $request->jabatan_pic ?? ($karyawan->jabatan_pic ?? null);
+
+        try {
+            DB::table('layanan')->where('id', $nik)->update([
+                'nama_layanan' => $nama_lengkap,
+                'nama_pic' => $data['nama_pic'],
+                'nip_pic' => $data['nip_pic'],
+                'jabatan_pic' => $data['jabatan_pic'],
+                'no_hp' => $no_hp,
+                'foto' => $foto,
+                'password' => !empty($request->password) ? $password : $karyawan->password
+            ]);
             if ($request->hasFile('foto')) {
                 $folderPath = "public/uploads/karyawan/";
                 $request->file('foto')->storeAs($folderPath, $foto);
             }
-            return Redirect::back()->with(['success' => 'Data Berhasil Di Update']);
-        } else {
-            return Redirect::back()->with(['error' => 'Data gagal Di Update']);
+            return Redirect::back()->with(['success' => 'Data Profil Layanan Berhasil Diperbarui']);
+        } catch (\Exception $e) {
+            return Redirect::back()->with(['error' => 'Data gagal Di Update: ' . $e->getMessage()]);
         }
     }
 

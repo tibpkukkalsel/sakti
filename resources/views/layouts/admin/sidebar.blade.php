@@ -10,7 +10,7 @@
                 onerror="this.src='{{ asset('assets/img/Logo Provinsi Kalimantan Selatan.png') }}'">
             <!--end::Brand Image-->
             <!--begin::Brand Text-->
-            <span class="brand-text fw-semibold text-white fs-6">SAKTI BPKUK</span>
+            <span class="brand-text fw-semibold text-white fs-6">SAKTI BATULICIN</span>
             <!--end::Brand Text-->
         </a>
         <!--end::Brand Link-->
@@ -38,25 +38,25 @@
                 <li class="nav-header">Master</li>
                 @role('administrator', 'user')
                     <li class="nav-item">
-                        <a href="/panel-adm14/seksi"
-                            class="nav-link {{ request()->is(['panel-adm14/seksi', 'panel-adm14/departemen', 'panel-adm14/seksi/*', 'panel-adm14/departemen/*']) ? 'active' : '' }}">
-                            <i class="nav-icon bi bi-diagram-3-fill"></i>
-                            <p>Seksi</p>
+                        <a href="/panel-adm14/layanan"
+                            class="nav-link {{ request()->is(['panel-adm14/layanan', 'panel-adm14/layanan/*']) ? 'active' : '' }}">
+                            <i class="nav-icon bi bi-layers-fill"></i>
+                            <p>Layanan</p>
                         </a>
                     </li>
                 @endrole
                 @role('administrator|admin departemen', 'user')
                     <li class="nav-item">
-                        <a href="/panel-adm14/pegawai"
-                            class="nav-link {{ request()->is(['panel-adm14/pegawai', 'panel-adm14/karyawan', 'panel-adm14/pegawai/*', 'panel-adm14/karyawan/*']) ? 'active' : '' }}">
-                            <i class="nav-icon bi bi-people-fill"></i>
-                            <p>Pegawai</p>
+                        <a href="/panel-adm14/penerimaan"
+                            class="nav-link {{ request()->is(['panel-adm14/penerimaan', 'panel-adm14/penerimaan/*']) ? 'active' : '' }}">
+                            <i class="nav-icon bi bi-cash-stack"></i>
+                            <p>Penerimaan PKB</p>
                         </a>
                     </li>
                 @endrole
                 @role('administrator', 'user')
                     <li class="nav-item">
-                        <a href="/panel-adm14/cabang" class="nav-link {{ request()->is(['panel-adm14/cabang', 'panel-adm14/cabang/*']) ? 'active' : '' }}">
+                        <a href="/panel-adm14/lokasi" class="nav-link {{ request()->is(['panel-adm14/lokasi*', 'panel-adm14/cabang*']) ? 'active' : '' }}">
                             <i class="nav-icon bi bi-geo-alt-fill"></i>
                             <p>Lokasi</p>
                         </a>

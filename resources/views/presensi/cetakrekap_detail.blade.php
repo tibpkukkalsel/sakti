@@ -102,8 +102,8 @@
                 @endif
             </td>
             <td class="header-title">
-                <h2>REKAP PRESENSI BPKUK PROV. KALSEL</h2>
-                <h3>PENYEDIA JASA LAINNYA PERORANGAN</h3>
+                <h2>REKAP PRESENSI UPPD SAMSAT BATU LICIN</h2>
+                <h3>REKAPITULASI PRESENSI LAYANAN</h3>
                 <p>BULAN {{ strtoupper($namabulan[(int)$bulan] ?? '') }} TAHUN {{ $tahun }}</p>
             </td>
             <td style="width: 65px;"></td>
@@ -322,7 +322,7 @@
 
     @php
         $kota_cetak = $konfigurasi_laporan->kota_cetak ?? 'Pelaihari';
-        $pejabat1_jabatan = $konfigurasi_laporan->pejabat1_jabatan ?? 'KEPALA BPKUK PROV. KALSEL';
+        $pejabat1_jabatan = $konfigurasi_laporan->pejabat1_jabatan ?? 'KEPALA UPPD SAMSAT BATU LICIN';
         $pejabat1_nama = $konfigurasi_laporan->pejabat1_nama ?? 'FEBRY RAHARJO, S.IP, MM';
         $pejabat1_nip = $konfigurasi_laporan->pejabat1_nip ?? '19870222 200701 1 002';
         $pejabat2_jabatan = $konfigurasi_laporan->pejabat2_jabatan ?? 'KASUBBAG TATA USAHA';

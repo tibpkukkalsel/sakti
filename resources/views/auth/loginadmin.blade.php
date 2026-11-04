@@ -9,7 +9,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#334155">
     <title>SAKTI - Admin Panel</title>
-    <meta name="description" content="Panel Administrator E-Presensi dan Laporan BPKUK Prov. Kalsel">
+    <meta name="description" content="Panel Administrator SAKTI UPPD SAMSAT Batu Licin">
     <link rel="icon" type="image/png" href="{{ asset('Logo Sakti.png') }}" sizes="32x32">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('Logo Sakti.png') }}">
     <link rel="manifest" href="{{ asset('manifest.json') }}">
@@ -39,14 +39,14 @@
             <div class="side-content">
                 <h2 class="side-title">SAKTI ADMIN</h2>
                 <p class="side-desc">
-                    Selamat datang di Panel Administrasi Sistem Presensi &amp; Pelaporan Pegawai BPKUK Prov. Kalsel.
+                    Selamat datang di Panel Administrasi Sistem Absensi &amp; Rekap Penerimaan PKB UPPD SAMSAT Batu Licin.
                     Silakan masuk untuk mengelola data dan sistem.
                 </p>
             </div>
 
             <!-- Pegawai Presensi & PJLP PDH Illustration -->
             <div class="side-illustration">
-                <img src="{{ asset('assets/img/login_vector_admin.png') }}" alt="Ilustrasi Pegawai SAKTI BPKUK"
+                <img src="{{ asset('assets/img/login_vector_admin.png') }}" alt="Ilustrasi SAKTI UPPD SAMSAT Batu Licin"
                     class="img-illustration">
             </div>
         </div>
@@ -122,7 +122,7 @@
                             <span>Ingat saya</span>
                         </label>
                         <a href="javascript:void(0)" class="forgot-link"
-                            onclick="alert('Silahkan hubungi Superadmin BPKUK Prov. Kalsel untuk reset akun administrator.')">Forgot
+                            onclick="alert('Silahkan hubungi Superadmin UPPD SAMSAT Batu Licin untuk reset akun administrator.')">Forgot
                             Password?</a>
                     </div>
 
@@ -134,7 +134,7 @@
                 </form>
 
                 <div class="form-footer">
-                    Balai Pelatihan Koperasi dan Usaha Kecil <br> Provinsi Kalimantan Selatan
+                    UPPD SAMSAT Batu Licin
                 </div>
 
             </div>
@@ -152,12 +152,12 @@
             <div class="mobile-info-wrap">
                 <h3 class="mobile-info-title">SAKTI ADMIN</h3>
                 <p class="mobile-info-desc">
-                    Panel Kontrol &amp; Pengelolaan Presensi Online BPKUK Prov. Kalsel
+                    Panel Kontrol &amp; Pengelolaan Presensi Serta Penerimaan PKB UPPD SAMSAT Batu Licin
                 </p>
 
                 <!-- Mini Illustration for Mobile -->
                 <div class="mobile-illustration">
-                    <img src="{{ asset('assets/img/login_vector_admin.png') }}" alt="Ilustrasi Pegawai SAKTI BPKUK"
+                    <img src="{{ asset('assets/img/login_vector_admin.png') }}" alt="Ilustrasi SAKTI UPPD SAMSAT Batu Licin"
                         class="img-illustration">
                 </div>
             </div>

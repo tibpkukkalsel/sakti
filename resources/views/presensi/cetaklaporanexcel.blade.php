@@ -79,7 +79,7 @@
         }
 
         $kota_cetak = $konfigurasi_laporan->kota_cetak ?? 'Pelaihari';
-        $pejabat1_jabatan = $konfigurasi_laporan->pejabat1_jabatan ?? 'KEPALA BPKUK PROV. KALSEL';
+        $pejabat1_jabatan = $konfigurasi_laporan->pejabat1_jabatan ?? 'KEPALA UPPD SAMSAT BATU LICIN';
         $pejabat1_nama = $konfigurasi_laporan->pejabat1_nama ?? 'FEBRY RAHARJO, S.IP, MM';
         $pejabat1_nip = $konfigurasi_laporan->pejabat1_nip ?? '19870222 200701 1 002';
         $pejabat2_jabatan = $konfigurasi_laporan->pejabat2_jabatan ?? 'KASUBBAG TATA USAHA';
@@ -89,10 +89,10 @@
 
     <table style="width: 100%;">
         <tr>
-            <th colspan="9" style="font-size: 14pt; font-weight: bold; text-align: center;">LAPORAN PRESENSI BPKUK PROV. KALSEL</th>
+            <th colspan="9" style="font-size: 14pt; font-weight: bold; text-align: center;">LAPORAN PRESENSI UPPD SAMSAT BATU LICIN</th>
         </tr>
         <tr>
-            <th colspan="9" style="font-size: 12pt; font-weight: bold; text-align: center;">PENYEDIA JASA LAINNYA PERORANGAN</th>
+            <th colspan="9" style="font-size: 12pt; font-weight: bold; text-align: center;">REKAPITULASI PRESENSI LAYANAN</th>
         </tr>
         <tr>
             <th colspan="9" style="font-size: 11pt; font-weight: bold; text-align: center;">BULAN {{ strtoupper($namabulan[(int) $bulan] ?? '') }} TAHUN {{ $tahun }}</th>

@@ -381,13 +381,13 @@ class KonfigurasiController extends Controller
         if (!$konfigurasi) {
             DB::table('konfigurasi_laporan')->insert([
                 'id' => 1,
-                'pejabat1_jabatan' => 'KEPALA BPKUK PROV. KALSEL',
+                'pejabat1_jabatan' => 'KEPALA UPPD SAMSAT BATU LICIN',
                 'pejabat1_nama' => 'FEBRY RAHARJO, S.IP, MM',
                 'pejabat1_nip' => '19870222 200701 1 002',
                 'pejabat2_jabatan' => 'KASUBBAG TATA USAHA',
                 'pejabat2_nama' => 'ADIMAS FITRIANDI, ST',
                 'pejabat2_nip' => '19800813 200712 1 001',
-                'kota_cetak' => 'Pelaihari',
+                'kota_cetak' => 'Batu Licin',
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

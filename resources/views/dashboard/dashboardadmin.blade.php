@@ -11,7 +11,7 @@
     <div class="row mb-3 align-items-center">
         <div class="col-sm-6">
             <h3 class="m-0 fw-bold text-dark">Dashboard</h3>
-            <small class="text-muted">Rekapitulasi Presensi Pegawai &bull; {{ $tanggal_indo }}</small>
+            <small class="text-muted">Rekapitulasi Presensi Layanan &bull; {{ $tanggal_indo }}</small>
         </div>
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-end mb-0">
@@ -21,60 +21,60 @@
         </div>
     </div>
 
-    <!-- Small boxes (Stat box) - Standard AdminLTE -->
+    <!-- Small boxes (Stat box) -->
     <div class="row">
-        <!-- Box 1: Jumlah Pegawai -->
+        <!-- Box 1: Jumlah Akun Layanan -->
         <div class="col-lg-3 col-6">
             <div class="small-box text-bg-primary">
                 <div class="inner">
                     <h3>{{ $totalpegawai }}</h3>
-                    <p>Jumlah Pegawai</p>
+                    <p>Akun Layanan</p>
                 </div>
-                <i class="small-box-icon bi bi-people-fill"></i>
-                <a href="/panel-adm14/pegawai" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
-                    Lihat Data Pegawai <i class="bi bi-arrow-right-circle"></i>
+                <i class="small-box-icon bi bi-layers-fill"></i>
+                <a href="/panel-adm14/layanan" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
+                    Kelola Akun Layanan <i class="bi bi-arrow-right-circle"></i>
                 </a>
             </div>
         </div>
 
-        <!-- Box 2: Pegawai Hadir -->
+        <!-- Box 2: Layanan Hadir -->
         <div class="col-lg-3 col-6">
             <div class="small-box text-bg-success">
                 <div class="inner">
                     <h3>{{ $jmlhadir }}</h3>
-                    <p>Pegawai Hadir</p>
+                    <p>Layanan Hadir Hari Ini</p>
                 </div>
                 <i class="small-box-icon bi bi-fingerprint"></i>
                 <a href="/panel-adm14/presensi/monitoring" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
-                    Monitoring Presensi <i class="bi bi-arrow-right-circle"></i>
+                    Monitoring Absensi <i class="bi bi-arrow-right-circle"></i>
                 </a>
             </div>
         </div>
 
-        <!-- Box 3: Pegawai Izin -->
+        <!-- Box 3: Total Penerimaan PKB Hari Ini -->
         <div class="col-lg-3 col-6">
-            <div class="small-box text-bg-warning">
+            <div class="small-box text-bg-info text-white">
                 <div class="inner">
-                    <h3>{{ $jmlizin }}</h3>
-                    <p>Pegawai Izin / Sakit</p>
+                    <h3 style="font-size: 1.6rem;">Rp {{ number_format($penerimaanHariIni->total_rp ?? 0, 0, ',', '.') }}</h3>
+                    <p>Penerimaan PKB Hari Ini</p>
                 </div>
-                <i class="small-box-icon bi bi-file-earmark-medical-fill"></i>
-                <a href="/panel-adm14/presensi/izinsakit" class="small-box-footer link-dark link-underline-opacity-0 link-underline-opacity-50-hover">
-                    Data Izin & Sakit <i class="bi bi-arrow-right-circle"></i>
+                <i class="small-box-icon bi bi-cash-stack"></i>
+                <a href="/panel-adm14/penerimaan" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
+                    Rekap Penerimaan PKB <i class="bi bi-arrow-right-circle"></i>
                 </a>
             </div>
         </div>
 
-        <!-- Box 4: Belum Absen -->
+        <!-- Box 4: Total Unit & Notice Hari Ini -->
         <div class="col-lg-3 col-6">
-            <div class="small-box text-bg-danger">
+            <div class="small-box text-bg-warning text-dark">
                 <div class="inner">
-                    <h3>{{ $jmlbelumabsen }}</h3>
-                    <p>Belum Absen</p>
+                    <h3>{{ number_format($penerimaanHariIni->total_unit ?? 0, 0, ',', '.') }} <span style="font-size: 1rem;">Unit</span></h3>
+                    <p>{{ number_format($penerimaanHariIni->total_notice ?? 0, 0, ',', '.') }} Notice Dicetak</p>
                 </div>
-                <i class="small-box-icon bi bi-clock-history"></i>
-                <a href="/panel-adm14/presensi/monitoring" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
-                    Monitoring Presensi <i class="bi bi-arrow-right-circle"></i>
+                <i class="small-box-icon bi bi-card-checklist"></i>
+                <a href="/panel-adm14/penerimaan" class="small-box-footer link-dark link-underline-opacity-0 link-underline-opacity-50-hover">
+                    Detail Penerimaan <i class="bi bi-arrow-right-circle"></i>
                 </a>
             </div>
         </div>
@@ -82,4 +82,3 @@
     <!-- /.row -->
 
 @endsection
-

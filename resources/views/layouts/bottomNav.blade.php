@@ -22,10 +22,10 @@
         </div>
     </a>
 
-    <a href="/presensi/izin" class="item {{ request()->is('presensi/izin') ? 'active' : '' }}">
+    <a href="/penerimaan" class="item {{ request()->is('penerimaan*') ? 'active' : '' }}">
         <div class="col">
-            <ion-icon name="calendar-outline"></ion-icon>
-            <strong>Izin</strong>
+            <ion-icon name="cash-outline"></ion-icon>
+            <strong>Penerimaan</strong>
         </div>
     </a>
     <a href="/editprofile" class="item {{ request()->is('editprofile') ? 'active' : '' }}">

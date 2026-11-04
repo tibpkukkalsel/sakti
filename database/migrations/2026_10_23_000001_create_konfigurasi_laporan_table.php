@@ -15,7 +15,7 @@ return new class extends Migration
         if (!Schema::hasTable('konfigurasi_laporan')) {
             Schema::create('konfigurasi_laporan', function (Blueprint $table) {
                 $table->id();
-                $table->string('pejabat1_jabatan', 150)->default('KEPALA BPKUK PROV. KALSEL');
+                $table->string('pejabat1_jabatan', 150)->default('KEPALA UPPD SAMSAT BATU LICIN');
                 $table->string('pejabat1_nama', 150)->default('FEBRY RAHARJO, S.IP, MM');
                 $table->string('pejabat1_nip', 50)->default('19870222 200701 1 002');
                 $table->string('pejabat2_jabatan', 150)->default('KASUBBAG TATA USAHA');
@@ -27,7 +27,7 @@ return new class extends Migration
 
             DB::table('konfigurasi_laporan')->insert([
                 'id' => 1,
-                'pejabat1_jabatan' => 'KEPALA BPKUK PROV. KALSEL',
+                'pejabat1_jabatan' => 'KEPALA UPPD SAMSAT BATU LICIN',
                 'pejabat1_nama' => 'FEBRY RAHARJO, S.IP, MM',
                 'pejabat1_nip' => '19870222 200701 1 002',
                 'pejabat2_jabatan' => 'KASUBBAG TATA USAHA',

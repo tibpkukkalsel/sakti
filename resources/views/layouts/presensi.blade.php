@@ -12,9 +12,9 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#2A8BF2">
-    <title>SAKTI BPKUK Prov. Kalsel</title>
-    <meta name="description" content="SAKTI BPKUK Prov. Kalsel">
-    <meta name="keywords" content="ABSEN PRESENSI BPKUK PROV. KALSEL" />
+    <title>SAKTI UPPD SAMSAT Batu Licin</title>
+    <meta name="description" content="SAKTI UPPD SAMSAT Batu Licin">
+    <meta name="keywords" content="ABSENSI DAN PENERIMAAN PKB SAMSAT BATU LICIN" />
     <link rel="icon" type="image/png" href="{{ asset('Logo Sakti.png') }}" sizes="32x32"
         onerror="this.src='{{ asset('assets/img/favicon.png') }}'">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('Logo Sakti.png') }}">

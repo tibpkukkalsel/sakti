@@ -40,11 +40,31 @@
         @enderror
         <div class="form-group boxed">
             <div class="input-wrapper">
-                <input type="text" class="form-control" value="{{ $karyawan->nama_lengkap }}" name="nama_lengkap" placeholder="Nama Lengkap" autocomplete="off">
+                <label style="font-size: 11px; font-weight: 600; color: #64748b; margin-bottom: 2px;">Nama Layanan</label>
+                <input type="text" class="form-control" value="{{ $karyawan->nama_lengkap }}" name="nama_lengkap" placeholder="Nama Layanan" autocomplete="off">
             </div>
         </div>
         <div class="form-group boxed">
             <div class="input-wrapper">
+                <label style="font-size: 11px; font-weight: 600; color: #64748b; margin-bottom: 2px;">Nama PIC</label>
+                <input type="text" class="form-control" value="{{ $karyawan->nama_pic }}" name="nama_pic" placeholder="Nama PIC Petugas Layanan" autocomplete="off">
+            </div>
+        </div>
+        <div class="form-group boxed">
+            <div class="input-wrapper">
+                <label style="font-size: 11px; font-weight: 600; color: #64748b; margin-bottom: 2px;">NIP PIC</label>
+                <input type="text" class="form-control" value="{{ $karyawan->nip_pic }}" name="nip_pic" placeholder="NIP PIC" autocomplete="off">
+            </div>
+        </div>
+        <div class="form-group boxed">
+            <div class="input-wrapper">
+                <label style="font-size: 11px; font-weight: 600; color: #64748b; margin-bottom: 2px;">Jabatan PIC</label>
+                <input type="text" class="form-control" value="{{ $karyawan->jabatan_pic }}" name="jabatan_pic" placeholder="Jabatan PIC" autocomplete="off">
+            </div>
+        </div>
+        <div class="form-group boxed">
+            <div class="input-wrapper">
+                <label style="font-size: 11px; font-weight: 600; color: #64748b; margin-bottom: 2px;">No. WhatsApp / HP</label>
                 <input type="text" class="form-control" value="{{ $karyawan->no_hp }}" name="no_hp" placeholder="No. HP" autocomplete="off">
             </div>
         </div>

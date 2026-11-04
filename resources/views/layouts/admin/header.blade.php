@@ -11,7 +11,7 @@
             </li>
             <li class="nav-item d-none d-md-block">
                 <span class="nav-link fw-semibold text-secondary">
-                    Sistem Presensi &amp; Pelaporan Pegawai BPKUK Prov. Kalsel
+                    Sistem Absensi &amp; Rekap Penerimaan PKB UPPD SAMSAT Batu Licin
                 </span>
             </li>
         </ul>
