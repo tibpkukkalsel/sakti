@@ -8,10 +8,10 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#2A8BF2">
-    <title>PRESIS - Sign In</title>
+    <title>SAKTI - Sign In</title>
     <meta name="description" content="Aplikasi E-Presensi PJLP BPKUK Prov. Kalsel">
-    <link rel="icon" type="image/png" href="{{ asset('Logo Presis.png') }}" sizes="32x32">
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('Logo Presis.png') }}">
+    <link rel="icon" type="image/png" href="{{ asset('Logo Sakti.png') }}" sizes="32x32">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('Logo Sakti.png') }}">
     <link rel="manifest" href="{{ asset('manifest.json') }}">
 
     <!-- Google Fonts Poppins -->
@@ -37,7 +37,7 @@
 
             <!-- Text Content -->
             <div class="side-content">
-                <h2 class="side-title">PRESIS</h2>
+                <h2 class="side-title">SAKTI</h2>
                 <p class="side-desc">
                     Selamat datang di Sistem Presensi &amp; Pelaporan Pegawai BPKUK Prov. Kalsel. Silahkan masuk
                     menggunakan ID atau Nomor HP Anda.
@@ -46,7 +46,7 @@
 
             <!-- Pegawai Presensi & PJLP PDH Illustration -->
             <div class="side-illustration">
-                <img src="{{ asset('assets/img/login_vector_employee.png') }}" alt="Ilustrasi Pegawai PRESIS BPKUK"
+                <img src="{{ asset('assets/img/login_vector_employee.png') }}" alt="Ilustrasi Pegawai SAKTI BPKUK"
                     class="img-illustration">
             </div>
         </div>
@@ -150,7 +150,7 @@
             </div>
 
             <div class="mobile-info-wrap">
-                <h3 class="mobile-info-title">PRESIS</h3>
+                <h3 class="mobile-info-title">SAKTI</h3>
                 <p class="mobile-info-desc">
                     Aplikasi Presensi Online BPKUK<br> Prov. Kalimantan Selatan
                 </p>
@@ -158,7 +158,7 @@
                 <!-- Workspace / Computer Illustration for Mobile -->
                 <div class="mobile-illustration">
                     <img src="{{ asset('assets/img/login_vector_employee.png') }}"
-                        alt="Ilustrasi Pegawai PRESIS BPKUK" class="img-illustration">
+                        alt="Ilustrasi Pegawai SAKTI BPKUK" class="img-illustration">
                 </div>
             </div>
         </div>

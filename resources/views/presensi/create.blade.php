@@ -7,7 +7,7 @@
                 <ion-icon name="chevron-back-outline"></ion-icon>
             </a>
         </div>
-        <div class="pageTitle">Presis</div>
+        <div class="pageTitle">Sakti</div>
         <div class="right"></div>
     </div>
     <!-- * App Header -->
@@ -599,10 +599,11 @@
             }
 
             // Cek bridge APK Android
-            if (window.PresisAndroid && typeof window.PresisAndroid.isFakeGps === 'function') {
-                if (window.PresisAndroid.isFakeGps()) {
+            var androidBridge = window.SaktiAndroid || window.PresisAndroid;
+            if (androidBridge && typeof androidBridge.isFakeGps === 'function') {
+                if (androidBridge.isFakeGps()) {
                     window.currentGpsIsMock = true;
-                    window.currentGpsMockReason = window.PresisAndroid.getFakeGpsReason();
+                    window.currentGpsMockReason = androidBridge.getFakeGpsReason();
                 }
             }
             lokasi.value = position.coords.latitude + "," + position.coords.longitude;
@@ -935,10 +936,11 @@
             var isFakeGpsDetected = false;
             var fakeGpsMsg = "";
 
-            if (window.PresisAndroid && typeof window.PresisAndroid.isFakeGps === 'function') {
-                if (window.PresisAndroid.isFakeGps()) {
+            var androidBridge = window.SaktiAndroid || window.PresisAndroid;
+            if (androidBridge && typeof androidBridge.isFakeGps === 'function') {
+                if (androidBridge.isFakeGps()) {
                     isFakeGpsDetected = true;
-                    fakeGpsMsg = window.PresisAndroid.getFakeGpsReason() || "Aplikasi Fake GPS (Lokasi Tiruan) aktif pada perangkat Anda.";
+                    fakeGpsMsg = androidBridge.getFakeGpsReason() || "Aplikasi Fake GPS (Lokasi Tiruan) aktif pada perangkat Anda.";
                 }
             }
 

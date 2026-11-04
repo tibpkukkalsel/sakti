@@ -72,7 +72,7 @@
                     <div class="text-center mb-3">
                         <img class="profile-user-img rounded-circle shadow-sm"
                             src="{{ asset('assets/img/Logo Provinsi Kalimantan Selatan.png') }}"
-                            alt="Logo Provinsi Kalimantan Selatan" onerror="this.src='{{ asset('Logo Presis.png') }}'">
+                            alt="Logo Provinsi Kalimantan Selatan" onerror="this.src='{{ asset('Logo Sakti.png') }}'">
                     </div>
 
                     <h4 class="profile-username text-center fw-bold text-dark mb-1">{{ $user->name }}</h4>

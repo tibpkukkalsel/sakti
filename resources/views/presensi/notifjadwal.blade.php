@@ -7,7 +7,7 @@
                 <ion-icon name="chevron-back-outline"></ion-icon>
             </a>
         </div>
-        <div class="pageTitle">Presis</div>
+        <div class="pageTitle">Sakti</div>
         <div class="right"></div>
     </div>
     <!-- * App Header -->
@@ -24,7 +24,7 @@
                         </div>
                         <h3 style="font-weight: 700; color: #1e293b; margin-bottom: 8px;">Tidak Ada Jadwal!</h3>
                         <p style="color: #64748b; font-size: 0.92rem; line-height: 1.5; margin-bottom: 20px;">
-                            Maaf, Anda Tidak Memiliki Jadwal Pada Hari ini, Silahkan Hubungi Admin Presis
+                            Maaf, Anda Tidak Memiliki Jadwal Pada Hari ini, Silahkan Hubungi Admin Sakti
                         </p>
                         <div class="mt-2">
                             <a href="/dashboard" class="btn btn-primary w-100" style="border-radius: 12px; font-weight: 600; height: 44px; display: flex; align-items: center; justify-content: center;">

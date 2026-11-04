@@ -35,7 +35,7 @@
                     <img src="{{ asset('assets/img/Logo Provinsi Kalimantan Selatan.png') }}"
                         class="user-image rounded-circle shadow-sm p-1 bg-white border"
                         alt="Logo Provinsi" style="width: 34px; height: 34px; object-fit: contain;"
-                        onerror="this.src='{{ asset('Logo Presis.png') }}'">
+                        onerror="this.src='{{ asset('Logo Sakti.png') }}'">
                     <span class="d-none d-md-inline fw-medium text-dark">
                         {{ Auth::guard('user')->user()->name }}
                     </span>
@@ -46,7 +46,7 @@
                         <img src="{{ asset('assets/img/Logo Provinsi Kalimantan Selatan.png') }}"
                             class="rounded-circle shadow mb-2 p-1 bg-white border"
                             alt="Logo Provinsi" style="width: 65px; height: 65px; object-fit: contain;"
-                            onerror="this.src='{{ asset('Logo Presis.png') }}'">
+                            onerror="this.src='{{ asset('Logo Sakti.png') }}'">
                         <p class="mb-0 fw-bold fs-6">
                             {{ Auth::guard('user')->user()->name }}
                         </p>

@@ -8,10 +8,10 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#334155">
-    <title>PRESIS - Admin Panel</title>
+    <title>SAKTI - Admin Panel</title>
     <meta name="description" content="Panel Administrator E-Presensi dan Laporan BPKUK Prov. Kalsel">
-    <link rel="icon" type="image/png" href="{{ asset('Logo Presis.png') }}" sizes="32x32">
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('Logo Presis.png') }}">
+    <link rel="icon" type="image/png" href="{{ asset('Logo Sakti.png') }}" sizes="32x32">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('Logo Sakti.png') }}">
     <link rel="manifest" href="{{ asset('manifest.json') }}">
 
     <!-- Google Fonts Poppins -->
@@ -37,7 +37,7 @@
 
             <!-- Text Content -->
             <div class="side-content">
-                <h2 class="side-title">PRESIS ADMIN</h2>
+                <h2 class="side-title">SAKTI ADMIN</h2>
                 <p class="side-desc">
                     Selamat datang di Panel Administrasi Sistem Presensi &amp; Pelaporan Pegawai BPKUK Prov. Kalsel.
                     Silakan masuk untuk mengelola data dan sistem.
@@ -46,7 +46,7 @@
 
             <!-- Pegawai Presensi & PJLP PDH Illustration -->
             <div class="side-illustration">
-                <img src="{{ asset('assets/img/login_vector_admin.png') }}" alt="Ilustrasi Pegawai PRESIS BPKUK"
+                <img src="{{ asset('assets/img/login_vector_admin.png') }}" alt="Ilustrasi Pegawai SAKTI BPKUK"
                     class="img-illustration">
             </div>
         </div>
@@ -150,14 +150,14 @@
             </div>
 
             <div class="mobile-info-wrap">
-                <h3 class="mobile-info-title">PRESIS ADMIN</h3>
+                <h3 class="mobile-info-title">SAKTI ADMIN</h3>
                 <p class="mobile-info-desc">
                     Panel Kontrol &amp; Pengelolaan Presensi Online BPKUK Prov. Kalsel
                 </p>
 
                 <!-- Mini Illustration for Mobile -->
                 <div class="mobile-illustration">
-                    <img src="{{ asset('assets/img/login_vector_admin.png') }}" alt="Ilustrasi Pegawai PRESIS BPKUK"
+                    <img src="{{ asset('assets/img/login_vector_admin.png') }}" alt="Ilustrasi Pegawai SAKTI BPKUK"
                         class="img-illustration">
                 </div>
             </div>

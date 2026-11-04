@@ -7,7 +7,7 @@
                 <ion-icon name="chevron-back-outline"></ion-icon>
             </a>
         </div>
-        <div class="pageTitle">Presis</div>
+        <div class="pageTitle">Sakti</div>
         <div class="right"></div>
     </div>
     <!-- * App Header -->
@@ -24,7 +24,7 @@
                         </div>
                         <h3 style="font-weight: 700; color: #1e293b; margin-bottom: 8px;">Sudah Ada Izin!</h3>
                         <p style="color: #64748b; font-size: 0.92rem; line-height: 1.5; margin-bottom: 20px;">
-                            Maaf, Anda hari ini tidak bisa melakukan presensi karena sudah melakukan pengajuan Izin/Sakit sebelumnya. Silahkan hubungi Admin Presis jika ada kendala.
+                            Maaf, Anda hari ini tidak bisa melakukan presensi karena sudah melakukan pengajuan Izin/Sakit sebelumnya. Silahkan hubungi Admin Sakti jika ada kendala.
                         </p>
                         <div class="mt-2">
                             <a href="/dashboard" class="btn btn-primary w-100" style="border-radius: 12px; font-weight: 600; height: 44px; display: flex; align-items: center; justify-content: center;">

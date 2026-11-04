@@ -5,12 +5,12 @@
         <!--begin::Brand Link-->
         <a href="/panel-adm14/dashboardadmin" class="brand-link text-decoration-none d-flex align-items-center gap-2 px-3">
             <!--begin::Brand Image-->
-            <img src="{{ asset('Logo Presis.png') }}" alt="PRESIS Logo" class="brand-image opacity-75 shadow-sm rounded"
+            <img src="{{ asset('Logo Sakti.png') }}" alt="SAKTI Logo" class="brand-image opacity-75 shadow-sm rounded"
                 style="max-height: 32px; width: auto;"
                 onerror="this.src='{{ asset('assets/img/Logo Provinsi Kalimantan Selatan.png') }}'">
             <!--end::Brand Image-->
             <!--begin::Brand Text-->
-            <span class="brand-text fw-semibold text-white fs-6">PRESIS BPKUK</span>
+            <span class="brand-text fw-semibold text-white fs-6">SAKTI BPKUK</span>
             <!--end::Brand Text-->
         </a>
         <!--end::Brand Link-->

@@ -142,8 +142,12 @@ public class MainActivity extends AppCompatActivity {
         webSettings.setBuiltInZoomControls(false);
 
         // Append custom user agent
-        String customUa = webSettings.getUserAgentString() + " MobileApp/PresisAndroid";
+        String customUa = webSettings.getUserAgentString() + " MobileApp/SaktiAndroid MobileApp/PresisAndroid";
         webSettings.setUserAgentString(customUa);
+
+        // Anti-Fake GPS Javascript Interface Bridge
+        webView.addJavascriptInterface(new AntiFakeGpsBridge(), "SaktiAndroid");
+        webView.addJavascriptInterface(new AntiFakeGpsBridge(), "PresisAndroid");
 
         // Cookies
         CookieManager cookieManager = CookieManager.getInstance();

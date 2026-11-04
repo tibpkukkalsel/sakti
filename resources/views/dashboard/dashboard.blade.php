@@ -262,7 +262,7 @@
         <!-- Header Instansi: Logo & Nama Instansi -->
         <div class="instansi-header">
             <img src="{{ asset('assets/img/Logo Provinsi Kalimantan Selatan.png') }}" alt="Logo Provinsi Kalimantan Selatan"
-                class="instansi-logo" onerror="this.src='{{ asset('Logo Presis.png') }}'">
+                class="instansi-logo" onerror="this.src='{{ asset('Logo Sakti.png') }}'">
             <div class="instansi-text">
                 Balai Pelatihan Koperasi dan Usaha Kecil <br> Provinsi Kalimantan Selatan
             </div>
