@@ -46,7 +46,7 @@
 
             <!-- Ilustrasi Layanan Mobil Samsat Keliling -->
             <div class="side-illustration">
-                <img src="{{ asset('assets/img/login_samsat_keliling.png') }}" alt="Ilustrasi SAKTI UPPD SAMSAT Batu Licin"
+                <img src="{{ asset('assets/img/login_samsat_keliling.png') . '?v=' . time() }}" alt="Ilustrasi SAKTI UPPD SAMSAT Batu Licin"
                     class="img-illustration">
             </div>
         </div>
@@ -157,7 +157,7 @@
 
                 <!-- Mini Illustration for Mobile -->
                 <div class="mobile-illustration">
-                    <img src="{{ asset('assets/img/login_samsat_keliling.png') }}" alt="Ilustrasi SAKTI UPPD SAMSAT Batu Licin"
+                    <img src="{{ asset('assets/img/login_samsat_keliling.png') . '?v=' . time() }}" alt="Ilustrasi SAKTI UPPD SAMSAT Batu Licin"
                         class="img-illustration">
                 </div>
             </div>
