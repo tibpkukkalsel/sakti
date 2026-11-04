@@ -74,3 +74,4 @@ class LokasiController extends Controller
         }
     }
 }
+

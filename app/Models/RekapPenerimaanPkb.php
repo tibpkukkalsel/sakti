@@ -41,3 +41,4 @@ class RekapPenerimaanPkb extends Model
         return $this->belongsTo(Layanan::class, 'layanan_id', 'id');
     }
 }
+

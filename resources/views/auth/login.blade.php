@@ -44,9 +44,9 @@
                 </p>
             </div>
 
-            <!-- Pegawai Presensi & PJLP PDH Illustration -->
+            <!-- Ilustrasi Layanan Mobil Samsat Keliling -->
             <div class="side-illustration">
-                <img src="{{ asset('assets/img/login_vector_employee.png') }}" alt="Ilustrasi SAKTI UPPD SAMSAT Batu Licin"
+                <img src="{{ asset('assets/img/login_samsat_keliling.png') }}" alt="Ilustrasi SAKTI UPPD SAMSAT Batu Licin"
                     class="img-illustration">
             </div>
         </div>
@@ -155,9 +155,9 @@
                     Aplikasi Presensi &amp; Rekap Penerimaan PKB<br> UPPD SAMSAT Batu Licin
                 </p>
 
-                <!-- Workspace / Computer Illustration for Mobile -->
+                <!-- Ilustrasi Layanan Mobil Samsat Keliling Mobile -->
                 <div class="mobile-illustration">
-                    <img src="{{ asset('assets/img/login_vector_employee.png') }}"
+                    <img src="{{ asset('assets/img/login_samsat_keliling.png') }}"
                         alt="Ilustrasi SAKTI UPPD SAMSAT Batu Licin" class="img-illustration">
                 </div>
             </div>

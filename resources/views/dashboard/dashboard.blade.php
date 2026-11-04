@@ -1,4 +1,4 @@
-﻿@extends('layouts.presensi')
+@extends('layouts.presensi')
 @section('content')
     <style>
         .logout {

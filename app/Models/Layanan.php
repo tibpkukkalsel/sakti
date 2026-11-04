@@ -62,3 +62,4 @@ class Layanan extends Authenticatable
         return $this->hasMany(RekapPenerimaanPkb::class, 'layanan_id', 'id');
     }
 }
+

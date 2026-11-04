@@ -331,3 +331,4 @@ class PenerimaanController extends Controller
         return view('penerimaan.cetak', compact('penerimaan', 'summary', 'tgl_dari', 'tgl_sampai', 'filterLayanan'));
     }
 }
+
