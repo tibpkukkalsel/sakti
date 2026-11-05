@@ -113,7 +113,7 @@
         <h4>REKAPITULASI PENERIMAAN HARIAN PAJAK KENDARAAN BERMOTOR (PKB)</h4>
         <span>Periode: {{ \Carbon\Carbon::parse($tgl_dari)->translatedFormat('d F Y') }} s/d {{ \Carbon\Carbon::parse($tgl_sampai)->translatedFormat('d F Y') }}</span>
         @if ($filterLayanan)
-            <br><span>Layanan: <strong>{{ $filterLayanan->nama_layanan }}</strong> (PIC: {{ $filterLayanan->nama_pic }})</span>
+            <br><span>Layanan: <strong>{{ $filterLayanan->nama_layanan }}</strong> </span>
         @endif
     </div>
 
@@ -123,7 +123,7 @@
                 <th rowspan="2" style="width: 30px;">No</th>
                 <th rowspan="2">Tanggal</th>
                 <th rowspan="2">Akun Layanan</th>
-                <th rowspan="2">PIC</th>
+                
                 <th colspan="2">Roda 2 (R2)</th>
                 <th colspan="2">Roda 4 (R4)</th>
                 <th rowspan="2">Total Penerimaan (Rp)</th>
@@ -144,7 +144,7 @@
                     <td class="text-center">{{ $loop->iteration }}</td>
                     <td class="text-center">{{ \Carbon\Carbon::parse($d->tgl_penerimaan)->format('d/m/Y') }}</td>
                     <td class="fw-bold">{{ $d->layanan->nama_layanan ?? '-' }}</td>
-                    <td>{{ $d->layanan->nama_pic ?? '-' }}</td>
+                    
                     <td class="text-center">{{ number_format($d->jumlah_unit_r2, 0, ',', '.') }}</td>
                     <td class="text-end">{{ number_format($d->jumlah_rp_r2, 0, ',', '.') }}</td>
                     <td class="text-center">{{ number_format($d->jumlah_unit_r4, 0, ',', '.') }}</td>
@@ -156,13 +156,13 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="12" class="text-center py-3">Tidak ada data penerimaan untuk periode ini.</td>
+                    <td colspan="11" class="text-center py-3">Tidak ada data penerimaan untuk periode ini.</td>
                 </tr>
             @endforelse
         </tbody>
         <tfoot>
             <tr class="fw-bold" style="background-color: #f2f2f2;">
-                <td colspan="4" class="text-center">TOTAL KESELURUHAN</td>
+                <td colspan="3" class="text-center">TOTAL KESELURUHAN</td>
                 <td class="text-center">{{ number_format($summary->sum_unit_r2 ?? 0, 0, ',', '.') }}</td>
                 <td class="text-end">{{ number_format($summary->sum_rp_r2 ?? 0, 0, ',', '.') }}</td>
                 <td class="text-center">{{ number_format($summary->sum_unit_r4 ?? 0, 0, ',', '.') }}</td>

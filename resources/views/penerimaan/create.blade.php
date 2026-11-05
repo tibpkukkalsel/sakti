@@ -95,7 +95,7 @@
                     </div>
                     <div>
                         <div class="fw-bold text-dark fs-6">{{ $user->nama_layanan }}</div>
-                        <small class="text-muted">PIC: {{ $user->nama_pic }} ({{ $user->jabatan_pic ?: 'Petugas' }})</small>
+                        
                     </div>
                 </div>
 

@@ -38,7 +38,7 @@
                                 <option value="all">-- Semua Layanan --</option>
                                 @foreach ($daftarLayanan as $l)
                                     <option value="{{ $l->id }}" {{ $layanan_id == $l->id ? 'selected' : '' }}>
-                                        {{ $l->nama_layanan }} (PIC: {{ $l->nama_pic ?: '-' }})
+                                        {{ $l->nama_layanan }} 
                                     </option>
                                 @endforeach
                             </select>
@@ -215,7 +215,7 @@
                     <thead class="table-light">
                         <tr class="text-center align-middle">
                             <th style="width: 50px;">No</th>
-                            <th style="min-width: 180px;" class="text-start">Akun Layanan &amp; PIC</th>
+                            <th style="min-width: 180px;" class="text-start">Akun Layanan</th>
                             <th style="min-width: 140px;">Penerimaan R2 (Rp)</th>
                             <th style="width: 90px;">Unit R2</th>
                             <th style="min-width: 140px;">Penerimaan R4 (Rp)</th>
@@ -235,7 +235,7 @@
                             <td class="text-center text-muted fw-bold">{{ $loop->iteration }}</td>
                             <td>
                                 <strong class="text-dark d-block">{{ $row->nama_layanan }}</strong>
-                                <span class="text-muted small">PIC: {{ $row->nama_pic ?: '-' }}</span>
+                                
                             </td>
                             <td class="text-end">Rp {{ number_format($row->rp_r2, 0, ',', '.') }}</td>
                             <td class="text-center">{{ number_format($row->unit_r2) }}</td>

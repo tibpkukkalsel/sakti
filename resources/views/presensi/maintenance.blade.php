@@ -98,7 +98,7 @@
                                             <option value="">Semua Layanan</option>
                                             @foreach ($daftarLayanan as $l)
                                                 <option value="{{ $l->id }}" {{ Request('layanan_id') == $l->id ? 'selected' : '' }}>
-                                                    {{ $l->nama_layanan }} (PIC: {{ $l->nama_pic ?: '-' }})
+                                                    {{ $l->nama_layanan }} 
                                                 </option>
                                             @endforeach
                                         </select>
@@ -132,7 +132,7 @@
                                         <th style="width: 140px;">Kode Status</th>
                                         <th style="width: 220px;">Periode Maintenance</th>
                                         <th>Akun Layanan</th>
-                                        <th>PIC Layanan</th>
+                                        
                                         <th>Keterangan Pemeliharaan / Kendala</th>
                                         <th class="text-center" style="width: 130px;">Status Unit</th>
                                         <th style="width: 90px;" class="text-center">Aksi</th>
@@ -157,12 +157,7 @@
                                             <td>
                                                 <div class="fw-bold text-dark">{{ $d->nama_layanan }}</div>
                                             </td>
-                                            <td>
-                                                <div class="fw-semibold text-dark">{{ $d->nama_pic ?: '-' }}</div>
-                                                @if (!empty($d->jabatan_pic))
-                                                    <small class="text-muted">{{ $d->jabatan_pic }}</small>
-                                                @endif
-                                            </td>
+                                            
                                             <td>
                                                 <div class="text-dark">{{ $d->keterangan }}</div>
                                             </td>
@@ -200,7 +195,7 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="8" class="text-center py-4 text-muted">
+                                            <td colspan="7" class="text-center py-4 text-muted">
                                                 Belum ada data status maintenance layanan pada periode yang dipilih.
                                             </td>
                                         </tr>
@@ -235,7 +230,7 @@
                             <select name="layanan_id" id="modal_layanan_id" class="form-select" required>
                                 <option value="">-- Pilih Akun Layanan --</option>
                                 @foreach ($daftarLayanan as $l)
-                                    <option value="{{ $l->id }}">{{ $l->nama_layanan }} (PIC: {{ $l->nama_pic ?: '-' }})</option>
+                                    <option value="{{ $l->id }}">{{ $l->nama_layanan }} </option>
                                 @endforeach
                             </select>
                         </div>

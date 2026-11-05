@@ -6,7 +6,7 @@
                 <option value="">Pilih Layanan</option>
                 @foreach ($daftarLayanan as $l)
                 <option value="{{ $l->id }}" {{ $data->layanan_id == $l->id ? 'selected' : '' }}>
-                    {{ $l->nama_layanan }} (PIC: {{ $l->nama_pic ?: '-' }})
+                    {{ $l->nama_layanan }} 
                 </option>
                 @endforeach
             </select>

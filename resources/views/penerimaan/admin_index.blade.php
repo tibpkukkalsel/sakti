@@ -166,7 +166,7 @@
                                                     <option value="">Semua Layanan</option>
                                                     @foreach ($daftarLayanan as $l)
                                                     <option value="{{ $l->id }}" {{ $layanan_id == $l->id ? 'selected' : '' }}>
-                                                        {{ $l->nama_layanan }} (PIC: {{ $l->nama_pic ?: '-' }})
+                                                        {{ $l->nama_layanan }} 
                                                     </option>
                                                     @endforeach
                                                 </select>
@@ -214,9 +214,7 @@
                                                 </td>
                                                 <td>
                                                     <strong>{{ $d->layanan->nama_layanan ?? '-' }}</strong>
-                                                    @if(!empty($d->layanan->nama_pic))
-                                                        <div class="text-muted small">PIC: {{ $d->layanan->nama_pic }}</div>
-                                                    @endif
+                                                    
                                                 </td>
                                                 <td class="text-end">
                                                     <div class="text-success font-weight-bold">Rp {{ number_format($d->jumlah_rp_r2, 0, ',', '.') }}</div>
@@ -299,7 +297,7 @@
                             <select name="layanan_id" id="layanan_id" class="form-select mb-3">
                                 <option value="">Pilih Layanan</option>
                                 @foreach ($daftarLayanan as $l)
-                                <option value="{{ $l->id }}">{{ $l->nama_layanan }} (PIC: {{ $l->nama_pic ?: '-' }})</option>
+                                <option value="{{ $l->id }}">{{ $l->nama_layanan }} </option>
                                 @endforeach
                             </select>
                         </div>

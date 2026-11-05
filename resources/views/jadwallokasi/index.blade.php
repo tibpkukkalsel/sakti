@@ -135,7 +135,7 @@
                                                 <td class="text-center">{{ $loop->iteration + $jadwal->firstItem() - 1 }}</td>
                                                 <td>
                                                     <strong>{{ $d->nama_layanan }}</strong>
-                                                    <div class="small text-muted">PIC: {{ $d->nama_pic ?: '-' }}</div>
+                                                    
                                                 </td>
                                                 <td class="text-center">
                                                     <span class="badge bg-primary text-white">Hari {{ $d->hari }}</span>
@@ -286,7 +286,7 @@
                             <select name="layanan_id" class="form-select" required>
                                 <option value="">Pilih Layanan</option>
                                 @foreach ($listLayanan as $l)
-                                <option value="{{ $l->id }}">{{ $l->nama_layanan }} (PIC: {{ $l->nama_pic ?: '-' }})</option>
+                                <option value="{{ $l->id }}">{{ $l->nama_layanan }} </option>
                                 @endforeach
                             </select>
                         </div>

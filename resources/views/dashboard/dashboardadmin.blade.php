@@ -142,9 +142,7 @@
                                             @endif
                                             <div>
                                                 <strong class="text-dark fs-6">{{ $row->nama_layanan }}</strong>
-                                                @if (!empty($row->nama_pic))
-                                                    <div class="text-muted small">PIC: {{ $row->nama_pic }}</div>
-                                                @endif
+                                                
                                             </div>
                                         </div>
                                     </td>
