@@ -14,6 +14,7 @@ use App\Http\Controllers\KonfigurasiController;
 use App\Http\Controllers\LayananController;
 use App\Http\Controllers\JadwalLokasiController;
 use App\Http\Controllers\LokasiController;
+use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\PenerimaanController;
 use App\Http\Controllers\PresensiController;
 use App\Http\Controllers\UserController;
@@ -66,6 +67,12 @@ Route::middleware(['guest:user'])->group(function () {
 Route::middleware(['auth:karyawan'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index']);
     Route::get('/proseslogout', [AuthController::class, 'proseslogout']);
+
+    // Status Maintenance Layanan (Unit OFF) Mobile Akun Layanan
+    Route::get('/maintenance', [MaintenanceController::class, 'index']);
+    Route::get('/maintenance/create', [MaintenanceController::class, 'create']);
+    Route::post('/maintenance/store', [MaintenanceController::class, 'store']);
+    Route::post('/maintenance/{kode_izin}/delete', [MaintenanceController::class, 'delete']);
 
     // Rekap Penerimaan PKB Harian Akun Layanan
     Route::get('/penerimaan', [PenerimaanController::class, 'index']);

@@ -295,16 +295,18 @@
         <div class="card">
             <div class="card-body text-center">
                 <div class="list-menu">
+                    <!-- 1. Lokasi -->
                     <div class="item-menu text-center">
                         <div class="menu-icon">
-                            <a href="/editprofile" class="green" style="font-size: 40px;">
-                                <ion-icon name="person-sharp"></ion-icon>
+                            <a href="/editlokasi" class="orange" style="font-size: 40px;">
+                                <ion-icon name="location"></ion-icon>
                             </a>
                         </div>
                         <div class="menu-name">
-                            <span class="text-center">Profil</span>
+                            <span class="text-center">Lokasi</span>
                         </div>
                     </div>
+                    <!-- 2. Histori -->
                     <div class="item-menu text-center">
                         <div class="menu-icon">
                             <a href="/presensi/histori" class="warning" style="font-size: 40px;">
@@ -315,6 +317,7 @@
                             <span class="text-center">Histori</span>
                         </div>
                     </div>
+                    <!-- 3. Penerimaan -->
                     <div class="item-menu text-center">
                         <div class="menu-icon">
                             <a href="/penerimaan" class="success" style="font-size: 40px; color: #10b981;">
@@ -325,14 +328,15 @@
                             <span class="text-center">Penerimaan</span>
                         </div>
                     </div>
+                    <!-- 4. Maintenance -->
                     <div class="item-menu text-center">
                         <div class="menu-icon">
-                            <a href="/editlokasi" class="orange" style="font-size: 40px;">
-                                <ion-icon name="location"></ion-icon>
+                            <a href="/maintenance" class="danger" style="font-size: 40px; color: #ef4444;">
+                                <ion-icon name="construct"></ion-icon>
                             </a>
                         </div>
                         <div class="menu-name">
-                            Lokasi
+                            <span class="text-center">Maintenance</span>
                         </div>
                     </div>
                 </div>
@@ -341,19 +345,24 @@
     </div>
             @if (isset($maintenanceHariIniLayanan) && $maintenanceHariIniLayanan)
     <div class="section mt-2">
-        <div class="card" style="border-radius: 14px; border: 1.5px solid #fde047; background: #fefce8; box-shadow: 0 2px 8px rgba(0,0,0,0.04); overflow: hidden;">
-            <div class="card-body p-3">
-                <div class="d-flex align-items-center">
-                    <div style="width: 40px; height: 40px; border-radius: 12px; background: rgba(234, 179, 8, 0.2); display: flex; align-items: center; justify-content: center; margin-right: 12px; flex-shrink: 0;">
-                        <ion-icon name="construct" style="font-size: 24px; color: #ca8a04;"></ion-icon>
-                    </div>
-                    <div>
-                        <div style="font-size: 11px; font-weight: 800; color: #a16207; text-transform: uppercase; letter-spacing: 0.5px;">Status Operasional: Sedang Maintenance</div>
-                        <div style="font-size: 12px; color: #713f12; font-weight: 500;">{{ $maintenanceHariIniLayanan->keterangan ?: 'Unit layanan dalam masa perawatan/servis berkala.' }}</div>
+        <a href="/maintenance" style="text-decoration: none; color: inherit; display: block;">
+            <div class="card" style="border-radius: 14px; border: 1.5px solid #fde047; background: #fefce8; box-shadow: 0 2px 8px rgba(0,0,0,0.04); overflow: hidden;">
+                <div class="card-body p-3">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center">
+                            <div style="width: 40px; height: 40px; border-radius: 12px; background: rgba(234, 179, 8, 0.2); display: flex; align-items: center; justify-content: center; margin-right: 12px; flex-shrink: 0;">
+                                <ion-icon name="construct" style="font-size: 24px; color: #ca8a04;"></ion-icon>
+                            </div>
+                            <div>
+                                <div style="font-size: 11px; font-weight: 800; color: #a16207; text-transform: uppercase; letter-spacing: 0.5px;">Status Operasional: Sedang Maintenance</div>
+                                <div style="font-size: 12px; color: #713f12; font-weight: 500;">{{ $maintenanceHariIniLayanan->keterangan ?: 'Unit layanan dalam masa perawatan/servis berkala.' }}</div>
+                            </div>
+                        </div>
+                        <ion-icon name="chevron-forward-outline" style="font-size: 20px; color: #ca8a04; flex-shrink: 0; margin-left: 8px;"></ion-icon>
                     </div>
                 </div>
             </div>
-        </div>
+        </a>
     </div>
     @endif
 
