@@ -79,15 +79,15 @@
             @endif
         </div>
 
-        <!-- 2. Akumulasi Bulan Ini (Pembatas Biasa) -->
+        <!-- 2. Akumulasi Tahun Berjalan (Pembatas Biasa) -->
         <div class="bg-white border-top border-bottom px-3 py-2 mb-2">
             <div class="d-flex justify-content-between align-items-center mb-1">
-                <span class="text-muted small fw-bold text-uppercase">Akumulasi Bulan {{ date('F Y') }}</span>
-                <strong style="color: #2A8BF2; font-size: 15px;">Rp {{ number_format($totalBulanIni->total_rp ?? 0, 0, ',', '.') }}</strong>
+                <span class="text-muted small fw-bold text-uppercase">Akumulasi Tahun {{ date('Y') }}</span>
+                <strong style="color: #2A8BF2; font-size: 15px;">Rp {{ number_format($totalTahunIni->total_rp ?? 0, 0, ',', '.') }}</strong>
             </div>
             <div class="d-flex justify-content-between text-muted small">
-                <span>Total Unit: <strong>{{ number_format($totalBulanIni->total_unit ?? 0, 0, ',', '.') }}</strong></span>
-                <span>Notice Dicetak: <strong>{{ number_format($totalBulanIni->total_notice ?? 0, 0, ',', '.') }} Lembar</strong></span>
+                <span>Total Unit: <strong>{{ number_format($totalTahunIni->total_unit ?? 0, 0, ',', '.') }}</strong></span>
+                <span>Notice Dicetak: <strong>{{ number_format($totalTahunIni->total_notice ?? 0, 0, ',', '.') }} Lembar</strong></span>
             </div>
         </div>
 

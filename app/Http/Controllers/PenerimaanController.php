@@ -50,16 +50,14 @@ class PenerimaanController extends Controller
 
         $histori = $query->paginate(6)->withQueryString();
 
-        // Hitung total penerimaan bulan ini untuk akun layanan ini
-        $bulanSekarang = date('m');
+        // Hitung total penerimaan tahun berjalan untuk akun layanan ini
         $tahunSekarang = date('Y');
-        $totalBulanIni = RekapPenerimaanPkb::where('layanan_id', $layananId)
-            ->whereMonth('tgl_penerimaan', $bulanSekarang)
+        $totalTahunIni = RekapPenerimaanPkb::where('layanan_id', $layananId)
             ->whereYear('tgl_penerimaan', $tahunSekarang)
             ->selectRaw('SUM(total_rp) as total_rp, SUM(total_unit) as total_unit, SUM(jumlah_notice) as total_notice')
             ->first();
 
-        return view('penerimaan.index', compact('penerimaanHariIni', 'histori', 'totalBulanIni', 'user', 'filter'));
+        return view('penerimaan.index', compact('penerimaanHariIni', 'histori', 'totalTahunIni', 'user', 'filter'));
     }
 
     public function create()
