@@ -189,7 +189,7 @@
                 <span class="fw-bold text-dark fs-6">
                     <ion-icon name="stats-chart-outline" class="text-primary me-1"></ion-icon> Akumulasi Bulan Ini
                 </span>
-                <span class="badge bg-primary-lt">{{ date('F Y') }}</span>
+                <span class="badge bg-primary text-white">{{ date('F Y') }}</span>
             </div>
             <div class="row g-2 text-center">
                 <div class="col-4">

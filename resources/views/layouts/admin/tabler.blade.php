@@ -237,11 +237,25 @@
         .table {
             margin-bottom: 0 !important;
             vertical-align: middle;
+            color: #1e293b !important;
+            --bs-table-color: #1e293b !important;
+            --bs-table-color-state: #1e293b !important;
+        }
+
+        .table,
+        .table th,
+        .table td,
+        .table tbody td,
+        .table thead th,
+        .table > :not(caption) > * > * {
+            color: #1e293b !important;
+            --bs-table-color: #1e293b !important;
+            --bs-table-color-state: #1e293b !important;
         }
 
         .table thead th {
             background-color: #f8fafc !important;
-            color: #334155 !important;
+            color: #1e293b !important;
             font-size: 0.8rem !important;
             font-weight: 700 !important;
             text-transform: uppercase;
@@ -255,13 +269,46 @@
         .table tbody td {
             padding: 0.7rem 0.85rem !important;
             vertical-align: middle !important;
-            font-size: 0.875rem;
-            color: #1e293b;
+            font-size: 0.875rem !important;
+            color: #1e293b !important;
+            background-color: #ffffff;
             border-bottom: 1px solid #f1f5f9;
         }
 
         .table tbody tr:hover td {
-            background-color: #f8fafc;
+            background-color: #f8fafc !important;
+        }
+
+        /* Badge styling compatibility */
+        .bg-blue-lt, .bg-primary-lt {
+            background-color: #e0f2fe !important;
+            color: #0369a1 !important;
+            border: 1px solid #bae6fd !important;
+        }
+        .bg-secondary-lt {
+            background-color: #f1f5f9 !important;
+            color: #334155 !important;
+            border: 1px solid #cbd5e1 !important;
+        }
+        .bg-success-lt {
+            background-color: #dcfce7 !important;
+            color: #15803d !important;
+            border: 1px solid #bbf7d0 !important;
+        }
+        .bg-info-lt {
+            background-color: #e0f2fe !important;
+            color: #0284c7 !important;
+            border: 1px solid #bae6fd !important;
+        }
+        .bg-warning-lt {
+            background-color: #fef3c7 !important;
+            color: #b45309 !important;
+            border: 1px solid #fde68a !important;
+        }
+        .bg-danger-lt {
+            background-color: #fee2e2 !important;
+            color: #b91c1c !important;
+            border: 1px solid #fecaca !important;
         }
 
         .table td form {

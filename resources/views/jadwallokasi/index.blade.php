@@ -117,7 +117,7 @@
                         <div class="row mt-2">
                             <div class="col-12">
                                 <div class="table-responsive">
-                                    <table class="table table-bordered">
+                                    <table class="table table-bordered table-striped table-hover align-middle">
                                         <thead>
                                             <tr>
                                                 <th style="width: 50px;" class="text-center">No</th>
@@ -138,7 +138,7 @@
                                                     <div class="small text-muted">PIC: {{ $d->nama_pic ?: '-' }}</div>
                                                 </td>
                                                 <td class="text-center">
-                                                    <span class="badge bg-blue-lt">{{ $d->hari }}</span>
+                                                    <span class="badge bg-primary text-white">Hari {{ $d->hari }}</span>
                                                 </td>
                                                 <td>
                                                     <strong>{{ $d->nama_cabang }}</strong>
@@ -146,7 +146,7 @@
                                                 </td>
                                                 <td>
                                                     <div class="small font-monospace">{{ $d->lokasi_cabang }}</div>
-                                                    <span class="badge bg-secondary-lt">{{ $d->radius_cabang }} Meter</span>
+                                                    <span class="badge bg-info text-white">{{ $d->radius_cabang }} Meter</span>
                                                 </td>
                                                 <td>{{ $d->keterangan ?: '-' }}</td>
                                                 <td>
@@ -293,7 +293,7 @@
                     </div>
 
                     <div class="table-responsive">
-                        <table class="table table-bordered">
+                        <table class="table table-bordered table-striped table-hover align-middle">
                             <thead>
                                 <tr>
                                     <th style="width: 120px;" class="text-center">Hari</th>

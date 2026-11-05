@@ -86,7 +86,7 @@
                         <div class="row mt-2">
                             <div class="col-12">
                                 <div class="table-responsive">
-                                    <table class="table table-bordered">
+                                    <table class="table table-bordered table-striped table-hover align-middle">
                                         <thead>
                                             <tr>
                                                 <th style="width: 50px;" class="text-center">No</th>
@@ -107,7 +107,7 @@
                                                         @if (!empty($d->foto))
                                                         <img src="{{ Storage::url('uploads/karyawan/' . $d->foto) }}" class="rounded-circle me-2" style="width: 38px; height: 38px; object-fit: cover;" alt="">
                                                         @else
-                                                        <span class="avatar rounded-circle me-2 bg-blue-lt fw-bold">{{ strtoupper(substr($d->nama_layanan, 0, 2)) }}</span>
+                                                        <span class="avatar rounded-circle me-2 bg-primary text-white fw-bold">{{ strtoupper(substr($d->nama_layanan, 0, 2)) }}</span>
                                                         @endif
                                                         <div>
                                                             <div class="fw-bold">{{ $d->nama_layanan }}</div>
@@ -116,7 +116,7 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <span class="badge bg-blue-lt">{{ $d->username }}</span>
+                                                    <span class="badge bg-light text-dark border">{{ $d->username }}</span>
                                                 </td>
                                                 <td>
                                                     <div class="fw-bold">{{ $d->nama_pic }}</div>

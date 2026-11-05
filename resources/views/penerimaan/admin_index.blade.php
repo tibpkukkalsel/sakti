@@ -191,7 +191,7 @@
                         <div class="row mt-2">
                             <div class="col-12">
                                 <div class="table-responsive">
-                                    <table class="table table-bordered">
+                                    <table class="table table-bordered table-striped table-hover align-middle">
                                         <thead>
                                             <tr>
                                                 <th class="text-center" style="width: 40px;">No</th>
@@ -230,10 +230,10 @@
                                                     Rp {{ number_format($d->total_rp, 0, ',', '.') }}
                                                 </td>
                                                 <td class="text-center">
-                                                    <span class="badge bg-secondary-lt">{{ $d->total_unit }} Unit</span>
+                                                    <span class="badge bg-light text-dark border">{{ $d->total_unit }} Unit</span>
                                                 </td>
                                                 <td class="text-center">
-                                                    <span class="badge bg-warning-lt">{{ $d->jumlah_notice }} Lembar</span>
+                                                    <span class="badge bg-warning text-dark border">{{ $d->jumlah_notice }} Lembar</span>
                                                 </td>
                                                 <td>
                                                     <div class="d-flex justify-content-center">

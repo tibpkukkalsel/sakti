@@ -72,7 +72,7 @@
                         <div class="row mt-2">
                             <div class="col-12">
                                 <div class="table-responsive">
-                                    <table class="table table-bordered">
+                                    <table class="table table-bordered table-striped table-hover align-middle">
                                         <thead>
                                             <tr>
                                                 <th style="width: 60px;" class="text-center">No</th>
@@ -87,10 +87,10 @@
                                             @foreach ($cabang as $d)
                                             <tr>
                                                 <td class="text-center">{{ $loop->iteration }}</td>
-                                                <td>{{ $d->kode_cabang }}</td>
-                                                <td>{{ $d->nama_cabang }}</td>
-                                                <td>{{ $d->lokasi_cabang }}</td>
-                                                <td>{{ $d->radius_cabang }} Meter</td>
+                                                <td><span class="badge bg-light text-dark border">{{ $d->kode_cabang }}</span></td>
+                                                <td class="fw-bold">{{ $d->nama_cabang }}</td>
+                                                <td><code>{{ $d->lokasi_cabang }}</code></td>
+                                                <td><span class="badge bg-info text-white">{{ $d->radius_cabang }} Meter</span></td>
                                                 <td>
                                                     <div class="d-flex justify-content-center">
                                                         <a href="#" class="edit btn btn-info btn-sm" kode_cabang="{{ $d->kode_cabang }}">

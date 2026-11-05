@@ -90,7 +90,7 @@
             @csrf
             <div class="form-card">
                 <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom">
-                    <div class="rounded-circle bg-emerald-lt p-2 text-success">
+                    <div class="rounded-circle bg-light p-2 text-success border">
                         <ion-icon name="business-outline" style="font-size: 22px;"></ion-icon>
                     </div>
                     <div>
