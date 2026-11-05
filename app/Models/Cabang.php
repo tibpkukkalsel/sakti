@@ -32,3 +32,4 @@ class Cabang extends Model
         return $this->hasMany(Layanan::class, 'kode_cabang', 'kode_cabang');
     }
 }
+

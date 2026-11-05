@@ -6,3 +6,4 @@ class Lokasi extends Cabang
 {
     // Alias model untuk Cabang
 }
+

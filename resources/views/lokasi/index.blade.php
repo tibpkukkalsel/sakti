@@ -4,13 +4,10 @@
     <div class="container-xl">
         <div class="row g-2 align-items-center">
             <div class="col">
-                <!-- Page pre-title -->
-
                 <h2 class="page-title">
                     Data Lokasi
                 </h2>
             </div>
-
         </div>
     </div>
 </div>
@@ -30,7 +27,7 @@
 
                                 @if (Session::get('warning'))
                                 <div class="alert alert-warning">
-                                    {{ Session::get('warning')}}
+                                    {{ Session::get('warning') }}
                                 </div>
                                 @endif
                             </div>
@@ -52,9 +49,9 @@
                                 <form action="/panel-adm14/lokasi" method="GET">
                                     <div class="row">
                                         <div class="col-10">
-                                            <select name="kode_cabang" class="form-select" id="">
-                                                <option value="">Semua Lokasi</option>
-                                            </select>
+                                            <div class="form-group">
+                                                <input type="text" name="nama_cabang" id="nama_cabang" class="form-control" placeholder="Nama Lokasi" value="{{ Request('nama_cabang') }}">
+                                            </div>
                                         </div>
                                         <div class="col-2">
                                             <div class="form-group">
@@ -75,7 +72,7 @@
                         <div class="row mt-2">
                             <div class="col-12">
                                 <div class="table-responsive">
-                                    <table class="table table-bordered table-striped table-hover align-middle">
+                                    <table class="table table-bordered">
                                         <thead>
                                             <tr>
                                                 <th style="width: 60px;" class="text-center">No</th>
@@ -90,27 +87,30 @@
                                             @foreach ($cabang as $d)
                                             <tr>
                                                 <td class="text-center">{{ $loop->iteration }}</td>
-                                                <td><span class="badge bg-light text-dark border">{{ $d->kode_cabang }}</span></td>
-                                                <td class="fw-bold">{{ $d->nama_cabang }}</td>
-                                                <td><code>{{ $d->lokasi_cabang }}</code></td>
-                                                <td><span class="badge bg-info text-white">{{ $d->radius_cabang }} Meter</span></td>
-                                                <td class="text-center">
-                                                    <div class="d-flex align-items-center justify-content-center gap-1">
-                                                        <a href="#" class="edit btn btn-info btn-sm btn-action" kode_cabang="{{ $d->kode_cabang }}" title="Edit Lokasi">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-edit" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                <td>{{ $d->kode_cabang }}</td>
+                                                <td>{{ $d->nama_cabang }}</td>
+                                                <td>{{ $d->lokasi_cabang }}</td>
+                                                <td>{{ $d->radius_cabang }} Meter</td>
+                                                <td>
+                                                    <div class="d-flex justify-content-center">
+                                                        <a href="#" class="edit btn btn-info btn-sm" kode_cabang="{{ $d->kode_cabang }}">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-edit" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                                                 <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                                                <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1"></path>
-                                                                <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z"></path>
+                                                                <path d="M9 7h-3a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-3"></path>
+                                                                <path d="M9 15h3l8.5 -8.5a1.5 1.5 0 0 0 -3 -3l-8.5 8.5v3"></path>
                                                                 <path d="M16 5l3 3"></path>
                                                             </svg>
                                                         </a>
-                                                        <form action="/panel-adm14/lokasi/{{ $d->kode_cabang }}/delete" method="POST" class="m-0 d-inline-block">
+                                                        <form action="/panel-adm14/lokasi/{{ $d->kode_cabang }}/delete" method="POST" style="margin-left:5px">
                                                             @csrf
-                                                            <a class="btn btn-danger btn-sm btn-action delete-confirm" title="Hapus Lokasi">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash-filled" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                            <a class="btn btn-danger btn-sm delete-confirm">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                                                     <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                                                    <path d="M20 6a1 1 0 0 1 .117 1.993l-.117 .007h-.081l-.919 11a3 3 0 0 1 -2.824 2.995l-.176 .005h-8c-1.598 0 -2.904 -1.249 -2.992 -2.75l-.005 -.167l-.923 -11.083h-.08a1 1 0 0 1 -.117 -1.993l.117 -.007h16z" stroke-width="0" fill="currentColor"></path>
-                                                                    <path d="M14 2a2 2 0 0 1 2 2a1 1 0 0 1 -1.993 .117l-.007 -.117h-4l-.007 .117a1 1 0 0 1 -1.993 -.117a2 2 0 0 1 1.85 -1.995l.15 -.005h4z" stroke-width="0" fill="currentColor"></path>
+                                                                    <path d="M4 7l16 0"></path>
+                                                                    <path d="M10 11l0 6"></path>
+                                                                    <path d="M14 11l0 6"></path>
+                                                                    <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"></path>
+                                                                    <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"></path>
                                                                 </svg>
                                                             </a>
                                                         </form>
@@ -124,15 +124,14 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
-
             </div>
         </div>
     </div>
-
 </div>
-<div class="modal modal-blur fade" id="modal-inputcabang" tabindex="-1" role="dialog" aria-hidden="true">
+
+{{-- Modal Input Lokasi --}}
+<div class="modal modal-blur fade" id="modal-inputlokasi" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -146,7 +145,6 @@
                         <div class="col-12">
                             <div class="input-icon mb-3">
                                 <span class="input-icon-addon">
-                                    <!-- Download SVG icon from http://tabler-icons.io/i/user -->
                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-barcode" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                         <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                                         <path d="M4 7v-1a2 2 0 0 1 2 -2h2"></path>
@@ -159,7 +157,7 @@
                                         <path d="M19 11l0 2"></path>
                                     </svg>
                                 </span>
-                                <input type="text" value="" id="kode_cabang" class="form-control" placeholder="Kode Lokasi" name="kode_cabang">
+                                <input type="text" id="kode_cabang" class="form-control" placeholder="Kode Lokasi" name="kode_cabang">
                             </div>
                         </div>
                     </div>
@@ -167,14 +165,13 @@
                         <div class="col-12">
                             <div class="input-icon mb-3">
                                 <span class="input-icon-addon">
-                                    <!-- Download SVG icon from http://tabler-icons.io/i/user -->
                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                         <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                                         <path d="M12 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path>
                                         <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"></path>
                                     </svg>
                                 </span>
-                                <input type="text" id="nama_cabang" value="" class="form-control" name="nama_cabang" placeholder="Nama Lokasi">
+                                <input type="text" id="nama_cabang" class="form-control" name="nama_cabang" placeholder="Nama Lokasi">
                             </div>
                         </div>
                     </div>
@@ -182,7 +179,6 @@
                         <div class="col-12">
                             <div class="input-icon mb-3">
                                 <span class="input-icon-addon">
-                                    <!-- Download SVG icon from http://tabler-icons.io/i/user -->
                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-map-pin-check" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                         <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                                         <path d="M9 11a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"></path>
@@ -190,7 +186,7 @@
                                         <path d="M15 19l2 2l4 -4"></path>
                                     </svg>
                                 </span>
-                                <input type="text" id="lokasi_cabang" value="" class="form-control" name="lokasi_cabang" placeholder="Lokasi Cabang">
+                                <input type="text" id="lokasi_cabang" class="form-control" name="lokasi_cabang" placeholder="Titik Koordinat (Latitude, Longitude)">
                             </div>
                         </div>
                     </div>
@@ -198,7 +194,6 @@
                         <div class="col-12">
                             <div class="input-icon mb-3">
                                 <span class="input-icon-addon">
-                                    <!-- Download SVG icon from http://tabler-icons.io/i/user -->
                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-radar-2" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                         <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                                         <path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
@@ -207,7 +202,7 @@
                                         <path d="M12 12v9"></path>
                                     </svg>
                                 </span>
-                                <input type="text" id="radius_cabang" value="" class="form-control" name="radius_cabang" placeholder="Radius Cabang">
+                                <input type="text" id="radius_cabang" class="form-control" name="radius_cabang" placeholder="Radius Presensi (Meter)">
                             </div>
                         </div>
                     </div>
@@ -227,12 +222,12 @@
                     </div>
                 </form>
             </div>
-
         </div>
     </div>
 </div>
+
 {{-- Modal Edit --}}
-<div class="modal modal-blur fade" id="modal-editcabang" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal modal-blur fade" id="modal-editlokasi" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -240,9 +235,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" id="loadeditform">
-
             </div>
-
         </div>
     </div>
 </div>
@@ -252,47 +245,42 @@
 <script>
     $(function() {
         $("#btnTambahLokasi").click(function() {
-            $("#modal-inputcabang").modal("show");
+            $("#modal-inputlokasi").modal("show");
         });
 
         $(".edit").click(function() {
             var kode_cabang = $(this).attr('kode_cabang');
             $.ajax({
-                type: 'POST'
-                , url: '/panel-adm14/lokasi/edit'
-                , cache: false
-                , data: {
-                    _token: "{{ csrf_token(); }}"
-                    , kode_cabang: kode_cabang
-                }
-                , success: function(respond) {
+                type: 'POST',
+                url: '/panel-adm14/lokasi/edit',
+                cache: false,
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    kode_cabang: kode_cabang
+                },
+                success: function(respond) {
                     $("#loadeditform").html(respond);
+                    $("#modal-editlokasi").modal("show");
                 }
             });
-            $("#modal-editcabang").modal("show");
         });
 
         $(".delete-confirm").click(function(e) {
             var form = $(this).closest('form');
             e.preventDefault();
             Swal.fire({
-                title: 'Apakah Anda Yakin Data Ini Mau Di Hapus ?'
-                , text: "Jika Ya Maka Data Akan Terhapus Permanent"
-                , icon: 'warning'
-                , showCancelButton: true
-                , confirmButtonColor: '#3085d6'
-                , cancelButtonColor: '#d33'
-                , confirmButtonText: 'Ya, Hapus Saja!'
+                title: 'Apakah Anda Yakin Data Ini Mau Di Hapus ?',
+                text: "Jika Ya Maka Data Akan Terhapus Permanent",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, Hapus Saja!'
             }).then((result) => {
                 if (result.isConfirmed) {
                     form.submit();
-                    Swal.fire(
-                        'Deleted!'
-                        , 'Data Berhasil Di Hapus'
-                        , 'success'
-                    )
                 }
-            })
+            });
         });
 
         $("#frmLokasi").submit(function() {
@@ -302,56 +290,47 @@
             var radius_cabang = $("#radius_cabang").val();
 
             if (kode_cabang == "") {
-                // alert('Nik Harus Diisi');
                 Swal.fire({
-                    title: 'Warning!'
-                    , text: 'Kode Cabang Harus Diisi !'
-                    , icon: 'warning'
-                    , confirmButtonText: 'Ok'
+                    title: 'Warning!',
+                    text: 'Kode Lokasi Harus Diisi !',
+                    icon: 'warning',
+                    confirmButtonText: 'Ok'
                 }).then((result) => {
                     $("#kode_cabang").focus();
                 });
-
                 return false;
             } else if (nama_cabang == "") {
-                // alert('Nik Harus Diisi');
                 Swal.fire({
-                    title: 'Warning!'
-                    , text: 'Nama Lokasi Harus Diisi !'
-                    , icon: 'warning'
-                    , confirmButtonText: 'Ok'
+                    title: 'Warning!',
+                    text: 'Nama Lokasi Harus Diisi !',
+                    icon: 'warning',
+                    confirmButtonText: 'Ok'
                 }).then((result) => {
                     $("#nama_cabang").focus();
                 });
-
                 return false;
             } else if (lokasi_cabang == "") {
-                // alert('Nik Harus Diisi');
                 Swal.fire({
-                    title: 'Warning!'
-                    , text: 'Lokasi Cabang Harus Diisi !'
-                    , icon: 'warning'
-                    , confirmButtonText: 'Ok'
+                    title: 'Warning!',
+                    text: 'Titik Lokasi Harus Diisi !',
+                    icon: 'warning',
+                    confirmButtonText: 'Ok'
                 }).then((result) => {
                     $("#lokasi_cabang").focus();
                 });
-
                 return false;
             } else if (radius_cabang == "") {
-                // alert('Nik Harus Diisi');
                 Swal.fire({
-                    title: 'Warning!'
-                    , text: 'Radius Cabang Harus Diisi !'
-                    , icon: 'warning'
-                    , confirmButtonText: 'Ok'
+                    title: 'Warning!',
+                    text: 'Radius Lokasi Harus Diisi !',
+                    icon: 'warning',
+                    confirmButtonText: 'Ok'
                 }).then((result) => {
                     $("#radius_cabang").focus();
                 });
-
                 return false;
             }
         });
     });
-
 </script>
 @endpush

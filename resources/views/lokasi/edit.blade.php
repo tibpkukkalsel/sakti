@@ -4,7 +4,6 @@
         <div class="col-12">
             <div class="input-icon mb-3">
                 <span class="input-icon-addon">
-                    <!-- Download SVG icon from http://tabler-icons.io/i/user -->
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-barcode" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                         <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                         <path d="M4 7v-1a2 2 0 0 1 2 -2h2"></path>
@@ -17,7 +16,7 @@
                         <path d="M19 11l0 2"></path>
                     </svg>
                 </span>
-                <input type="text" value="{{ $cabang->kode_cabang }}" readonly id="kode_cabang" class="form-control" placeholder="Kode Cabang" name="kode_cabang">
+                <input type="text" value="{{ $cabang->kode_cabang }}" readonly id="kode_cabang" class="form-control" placeholder="Kode Lokasi" name="kode_cabang">
             </div>
         </div>
     </div>
@@ -25,7 +24,6 @@
         <div class="col-12">
             <div class="input-icon mb-3">
                 <span class="input-icon-addon">
-                    <!-- Download SVG icon from http://tabler-icons.io/i/user -->
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                         <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                         <path d="M12 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path>
@@ -40,7 +38,6 @@
         <div class="col-12">
             <div class="input-icon mb-3">
                 <span class="input-icon-addon">
-                    <!-- Download SVG icon from http://tabler-icons.io/i/user -->
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-map-pin-check" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                         <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                         <path d="M9 11a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"></path>
@@ -48,7 +45,7 @@
                         <path d="M15 19l2 2l4 -4"></path>
                     </svg>
                 </span>
-                <input type="text" id="lokasi_cabang" value="{{ $cabang->lokasi_cabang }}" class="form-control" name="lokasi_cabang" placeholder="Lokasi Cabang">
+                <input type="text" id="lokasi_cabang" value="{{ $cabang->lokasi_cabang }}" class="form-control" name="lokasi_cabang" placeholder="Titik Lokasi">
             </div>
         </div>
     </div>
@@ -56,7 +53,6 @@
         <div class="col-12">
             <div class="input-icon mb-3">
                 <span class="input-icon-addon">
-                    <!-- Download SVG icon from http://tabler-icons.io/i/user -->
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-radar-2" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                         <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                         <path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
@@ -65,7 +61,7 @@
                         <path d="M12 12v9"></path>
                     </svg>
                 </span>
-                <input type="text" id="radius_cabang" value="{{ $cabang->radius_cabang }}" class="form-control" name="radius_cabang" placeholder="Radius Cabang">
+                <input type="text" id="radius_cabang" value="{{ $cabang->radius_cabang }}" class="form-control" name="radius_cabang" placeholder="Radius Lokasi (Meter)">
             </div>
         </div>
     </div>
@@ -93,55 +89,46 @@
             var radius_cabang = $("#frmLokasiEdit").find("#radius_cabang").val();
 
             if (kode_cabang == "") {
-                // alert('Nik Harus Diisi');
                 Swal.fire({
-                    title: 'Warning!'
-                    , text: 'Kode Cabang Harus Diisi !'
-                    , icon: 'warning'
-                    , confirmButtonText: 'Ok'
+                    title: 'Warning!',
+                    text: 'Kode Lokasi Harus Diisi !',
+                    icon: 'warning',
+                    confirmButtonText: 'Ok'
                 }).then((result) => {
                     $("#kode_cabang").focus();
                 });
-
                 return false;
             } else if (nama_cabang == "") {
-                // alert('Nik Harus Diisi');
                 Swal.fire({
-                    title: 'Warning!'
-                    , text: 'Nama Lokasi Harus Diisi !'
-                    , icon: 'warning'
-                    , confirmButtonText: 'Ok'
+                    title: 'Warning!',
+                    text: 'Nama Lokasi Harus Diisi !',
+                    icon: 'warning',
+                    confirmButtonText: 'Ok'
                 }).then((result) => {
                     $("#nama_cabang").focus();
                 });
-
                 return false;
             } else if (lokasi_cabang == "") {
-                // alert('Nik Harus Diisi');
                 Swal.fire({
-                    title: 'Warning!'
-                    , text: 'Lokasi Cabang Harus Diisi !'
-                    , icon: 'warning'
-                    , confirmButtonText: 'Ok'
+                    title: 'Warning!',
+                    text: 'Titik Lokasi Harus Diisi !',
+                    icon: 'warning',
+                    confirmButtonText: 'Ok'
                 }).then((result) => {
                     $("#lokasi_cabang").focus();
                 });
-
                 return false;
             } else if (radius_cabang == "") {
-                // alert('Nik Harus Diisi');
                 Swal.fire({
-                    title: 'Warning!'
-                    , text: 'Radius Cabang Harus Diisi !'
-                    , icon: 'warning'
-                    , confirmButtonText: 'Ok'
+                    title: 'Warning!',
+                    text: 'Radius Lokasi Harus Diisi !',
+                    icon: 'warning',
+                    confirmButtonText: 'Ok'
                 }).then((result) => {
                     $("#radius_cabang").focus();
                 });
-
                 return false;
             }
         });
     });
-
 </script>

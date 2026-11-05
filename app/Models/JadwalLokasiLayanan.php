@@ -34,3 +34,4 @@ class JadwalLokasiLayanan extends Model
         return $this->belongsTo(Cabang::class, 'kode_cabang', 'kode_cabang');
     }
 }
+

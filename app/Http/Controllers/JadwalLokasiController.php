@@ -239,3 +239,4 @@ class JadwalLokasiController extends Controller
         return view('jadwallokasi.user_jadwal', compact('user', 'jadwalMingguan', 'jadwalHariIni', 'namahariIni'));
     }
 }
+
