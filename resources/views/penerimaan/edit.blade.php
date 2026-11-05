@@ -15,178 +15,143 @@
 @endsection
 
 @section('content')
-    <style>
-        body {
-            background-color: #f8fafc !important;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
-        }
+    <div class="row" style="margin-top: 70px; margin-bottom: 70px;">
+        <div class="col">
+            @if (Session::get('success'))
+                <div class="alert alert-success mb-2">
+                    {{ Session::get('success') }}
+                </div>
+            @endif
 
-        #appCapsule {
-            padding-top: 60px !important;
-            padding-bottom: 95px !important;
-        }
+            @if (Session::get('error'))
+                <div class="alert alert-danger mb-2">
+                    {{ Session::get('error') }}
+                </div>
+            @endif
 
-        .form-card {
-            background: #ffffff;
-            border-radius: 20px;
-            padding: 20px 16px;
-            margin: 14px;
-            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
-            border: 1px solid #f1f5f9;
-        }
+            @if ($errors->any())
+                <div class="alert alert-danger mb-2">
+                    <ul class="mb-0 ps-3">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
-        .input-group-custom {
-            margin-bottom: 16px;
-        }
+            <form action="/penerimaan/{{ $data->id }}/update" method="POST" id="formPenerimaan">
+                @csrf
 
-        .input-group-custom label {
-            font-size: 13px;
-            font-weight: 600;
-            color: #334155;
-            margin-bottom: 6px;
-            display: block;
-        }
-
-        .form-control-custom {
-            height: 48px;
-            border-radius: 12px;
-            border: 1.5px solid #e2e8f0;
-            padding: 10px 14px;
-            font-size: 15px;
-            width: 100%;
-            transition: all 0.2s;
-        }
-
-        .form-control-custom:focus {
-            border-color: #10b981;
-            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
-            outline: none;
-        }
-
-        .total-box {
-            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
-            color: #ffffff;
-            border-radius: 16px;
-            padding: 16px;
-            margin: 16px 0;
-            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.2);
-        }
-
-        .total-label {
-            font-size: 12px;
-            opacity: 0.9;
-            text-transform: uppercase;
-        }
-
-        .total-amount {
-            font-size: 24px;
-            font-weight: 800;
-            margin-top: 4px;
-        }
-    </style>
-
-    <div class="section pt-2">
-        <form action="/penerimaan/{{ $data->id }}/update" method="POST" id="formPenerimaan">
-            @csrf
-            <div class="form-card">
-                <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom">
-                    <div class="rounded-circle bg-light p-2 text-success border">
-                        <ion-icon name="business-outline" style="font-size: 22px;"></ion-icon>
-                    </div>
-                    <div>
-                        <div class="fw-bold text-dark fs-6">{{ $user->nama_layanan }}</div>
-                        <small class="text-muted">Edit Penerimaan: {{ \Carbon\Carbon::parse($data->tgl_penerimaan)->translatedFormat('d F Y') }}</small>
+                <div class="form-group boxed">
+                    <div class="input-wrapper">
+                        <label class="label">Tanggal Penerimaan</label>
+                        <input type="date" class="form-control" name="tgl_penerimaan" id="tgl_penerimaan"
+                            value="{{ old('tgl_penerimaan', $data->tgl_penerimaan->format('Y-m-d')) }}" required>
+                        <i class="clear-input">
+                            <ion-icon name="close-circle"></ion-icon>
+                        </i>
                     </div>
                 </div>
 
-                @if ($errors->any())
-                    <div class="alert alert-danger" style="border-radius: 12px;">
-                        <ul class="mb-0 ps-3 small">
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
-
-                <div class="input-group-custom">
-                    <label>Tanggal Penerimaan</label>
-                    <input type="date" name="tgl_penerimaan" id="tgl_penerimaan" class="form-control-custom"
-                        value="{{ old('tgl_penerimaan', $data->tgl_penerimaan->format('Y-m-d')) }}" required>
-                </div>
-
-                <!-- Baris Penerimaan R2 dan Unit R2 Berdampingan -->
-                <div class="row g-2 mb-2">
+                <div class="row">
                     <div class="col-7">
-                        <div class="input-group-custom mb-0">
-                            <label>Penerimaan R2 (Rp)</label>
-                            <input type="text" name="jumlah_rp_r2" id="jumlah_rp_r2" class="form-control-custom rupiah-input"
-                                placeholder="Rp 0" value="{{ old('jumlah_rp_r2', $data->jumlah_rp_r2 > 0 ? number_format($data->jumlah_rp_r2, 0, ',', '.') : '') }}" autocomplete="off">
+                        <div class="form-group boxed">
+                            <div class="input-wrapper">
+                                <label class="label">Penerimaan R2 (Rp)</label>
+                                <input type="text" class="form-control rupiah-input" name="jumlah_rp_r2" id="jumlah_rp_r2"
+                                    placeholder="Rp 0" value="{{ old('jumlah_rp_r2', $data->jumlah_rp_r2 > 0 ? number_format($data->jumlah_rp_r2, 0, ',', '.') : '') }}" autocomplete="off">
+                                <i class="clear-input">
+                                    <ion-icon name="close-circle"></ion-icon>
+                                </i>
+                            </div>
                         </div>
                     </div>
                     <div class="col-5">
-                        <div class="input-group-custom mb-0">
-                            <label>Unit R2</label>
-                            <input type="number" name="jumlah_unit_r2" id="jumlah_unit_r2" class="form-control-custom unit-calc"
-                                placeholder="Unit R2" min="0" value="{{ old('jumlah_unit_r2', $data->jumlah_unit_r2 > 0 ? $data->jumlah_unit_r2 : '') }}">
+                        <div class="form-group boxed">
+                            <div class="input-wrapper">
+                                <label class="label">Unit R2</label>
+                                <input type="number" class="form-control unit-calc" name="jumlah_unit_r2" id="jumlah_unit_r2"
+                                    placeholder="0" min="0" value="{{ old('jumlah_unit_r2', $data->jumlah_unit_r2 > 0 ? $data->jumlah_unit_r2 : '') }}">
+                                <i class="clear-input">
+                                    <ion-icon name="close-circle"></ion-icon>
+                                </i>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Baris Penerimaan R4 dan Unit R4 Berdampingan -->
-                <div class="row g-2 mb-2">
+                <div class="row">
                     <div class="col-7">
-                        <div class="input-group-custom mb-0">
-                            <label>Penerimaan R4 (Rp)</label>
-                            <input type="text" name="jumlah_rp_r4" id="jumlah_rp_r4" class="form-control-custom rupiah-input"
-                                placeholder="Rp 0" value="{{ old('jumlah_rp_r4', $data->jumlah_rp_r4 > 0 ? number_format($data->jumlah_rp_r4, 0, ',', '.') : '') }}" autocomplete="off">
+                        <div class="form-group boxed">
+                            <div class="input-wrapper">
+                                <label class="label">Penerimaan R4 (Rp)</label>
+                                <input type="text" class="form-control rupiah-input" name="jumlah_rp_r4" id="jumlah_rp_r4"
+                                    placeholder="Rp 0" value="{{ old('jumlah_rp_r4', $data->jumlah_rp_r4 > 0 ? number_format($data->jumlah_rp_r4, 0, ',', '.') : '') }}" autocomplete="off">
+                                <i class="clear-input">
+                                    <ion-icon name="close-circle"></ion-icon>
+                                </i>
+                            </div>
                         </div>
                     </div>
                     <div class="col-5">
-                        <div class="input-group-custom mb-0">
-                            <label>Unit R4</label>
-                            <input type="number" name="jumlah_unit_r4" id="jumlah_unit_r4" class="form-control-custom unit-calc"
-                                placeholder="Unit R4" min="0" value="{{ old('jumlah_unit_r4', $data->jumlah_unit_r4 > 0 ? $data->jumlah_unit_r4 : '') }}">
+                        <div class="form-group boxed">
+                            <div class="input-wrapper">
+                                <label class="label">Unit R4</label>
+                                <input type="number" class="form-control unit-calc" name="jumlah_unit_r4" id="jumlah_unit_r4"
+                                    placeholder="0" min="0" value="{{ old('jumlah_unit_r4', $data->jumlah_unit_r4 > 0 ? $data->jumlah_unit_r4 : '') }}">
+                                <i class="clear-input">
+                                    <ion-icon name="close-circle"></ion-icon>
+                                </i>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Box Total Otomatis -->
-                <div class="total-box">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="total-label">Total Penerimaan (R2 + R4)</div>
-                            <div class="total-amount" id="previewTotalRp">Rp {{ number_format($data->total_rp, 0, ',', '.') }}</div>
-                        </div>
-                        <div class="text-end">
-                            <div class="total-label">Total Unit</div>
-                            <div style="font-size: 20px; font-weight: 700;" id="previewTotalUnit">{{ $data->total_unit }} Unit</div>
+                <!-- Ringkasan Total Realisasi -->
+                <div class="card my-2" style="background: #ffffff; border-radius: 10px;">
+                    <div class="card-body p-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="text-muted" style="font-size: 11px; font-weight: 600; text-transform: uppercase;">Total Penerimaan</div>
+                                <div style="font-size: 18px; font-weight: 800; color: #1e293b;" id="previewTotalRp">Rp {{ number_format($data->total_rp, 0, ',', '.') }}</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-muted" style="font-size: 11px; font-weight: 600; text-transform: uppercase;">Total Unit</div>
+                                <div style="font-size: 15px; font-weight: 700; color: #1e293b;" id="previewTotalUnit">{{ $data->total_unit }} Unit</div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="input-group-custom">
-                    <label>Jumlah Notice Pajak yang Dicetak (Lembar)</label>
-                    <input type="number" name="jumlah_notice" id="jumlah_notice" class="form-control-custom"
-                        placeholder="Jumlah Lembar Notice" min="0" value="{{ old('jumlah_notice', $data->jumlah_notice > 0 ? $data->jumlah_notice : '') }}">
+                <div class="form-group boxed">
+                    <div class="input-wrapper">
+                        <label class="label">Notice Pajak Dicetak (Lembar)</label>
+                        <input type="number" class="form-control" name="jumlah_notice" id="jumlah_notice"
+                            placeholder="Jumlah Lembar Notice" min="0" value="{{ old('jumlah_notice', $data->jumlah_notice > 0 ? $data->jumlah_notice : '') }}">
+                        <i class="clear-input">
+                            <ion-icon name="close-circle"></ion-icon>
+                        </i>
+                    </div>
                 </div>
 
-                <div class="input-group-custom">
-                    <label>Keterangan / Catatan (Opsional)</label>
-                    <textarea name="keterangan" id="keterangan" class="form-control-custom" style="height: 75px;"
-                        placeholder="Catatan kendala / informasi tambahan jika ada...">{{ old('keterangan', $data->keterangan) }}</textarea>
+                <div class="form-group boxed">
+                    <div class="input-wrapper">
+                        <label class="label">Keterangan / Catatan</label>
+                        <textarea name="keterangan" id="keterangan" rows="3" class="form-control"
+                            placeholder="Catatan kendala / informasi tambahan...">{{ old('keterangan', $data->keterangan) }}</textarea>
+                    </div>
                 </div>
 
-                <div class="mt-4">
-                    <button type="submit" class="btn btn-primary w-100 fw-bold" style="height: 50px; border-radius: 14px; background: #059669; border-color: #059669; font-size: 16px;">
-                        <ion-icon name="save-outline" class="me-1"></ion-icon> Simpan Perubahan
-                    </button>
-                    <a href="/penerimaan" class="btn btn-light w-100 mt-2 text-muted" style="border-radius: 14px; height: 44px; display: flex; align-items: center; justify-content: center;">
-                        Batal
-                    </a>
+                <div class="form-group boxed mt-3">
+                    <div class="input-wrapper">
+                        <button type="submit" class="btn btn-primary btn-block">
+                            <ion-icon name="save-outline"></ion-icon>
+                            Perbarui Penerimaan
+                        </button>
+                    </div>
                 </div>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
 @endsection
 
@@ -232,8 +197,8 @@
             hitungTotal();
         });
 
+        // Hitung saat load
         hitungTotal();
     });
 </script>
 @endpush
-
