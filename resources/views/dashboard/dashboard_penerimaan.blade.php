@@ -5,12 +5,15 @@
     <div class="row mb-3 align-items-center">
         <div class="col-md-7">
             <h3 class="m-0 fw-bold text-dark">Penerimaan PKB</h3>
-            <small class="text-muted">Statistik &amp; Analitik Penerimaan Pajak Kendaraan Bermotor UPPD SAMSAT Batu Licin &bull; Periode: <strong>{{ $periodeLabel }}</strong></small>
+            <small class="text-muted">Statistik &amp; Analitik Penerimaan Pajak Kendaraan Bermotor UPPD SAMSAT Batu Licin
+                &bull; Periode: <strong>{{ $periodeLabel }}</strong></small>
         </div>
         <div class="col-md-5 text-md-end mt-2 mt-md-0">
             <div class="btn-group" role="group">
                 <a href="/panel-adm14/dashboardadmin" class="btn btn-outline-primary">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user-check" width="20" height="20" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user-check" width="20"
+                        height="20" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                        stroke-linecap="round" stroke-linejoin="round">
                         <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                         <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"></path>
                         <path d="M6 21v-2a4 4 0 0 1 4 -4h4"></path>
@@ -19,7 +22,9 @@
                     Presensi Layanan
                 </a>
                 <a href="/panel-adm14/dashboard-penerimaan" class="btn btn-primary active">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chart-bar" width="20" height="20" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chart-bar" width="20"
+                        height="20" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                        stroke-linecap="round" stroke-linejoin="round">
                         <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                         <path d="M3 12m0 1a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z"></path>
                         <path d="M9 8m0 1a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z"></path>
@@ -37,22 +42,30 @@
         <div class="card-body py-3">
             <form action="/panel-adm14/dashboard-penerimaan" method="GET" id="formFilterPenerimaan">
                 <input type="hidden" name="periode" id="inputPeriode" value="{{ $periode }}">
-                
+
                 <div class="row g-2 align-items-center">
                     <!-- Tombol Cepat Pilihan Periode -->
                     <div class="col-12 col-xl-5">
                         <label class="form-label small text-muted mb-1 d-block">Pilihan Periode Waktu:</label>
                         <div class="btn-group w-100" role="group">
-                            <button type="button" class="btn btn-sm btn-filter-periode {{ $periode == 'hari_ini' ? 'btn-primary' : 'btn-outline-secondary' }}" data-periode="hari_ini">
+                            <button type="button"
+                                class="btn btn-sm btn-filter-periode {{ $periode == 'hari_ini' ? 'btn-primary' : 'btn-outline-secondary' }}"
+                                data-periode="hari_ini">
                                 Hari Ini
                             </button>
-                            <button type="button" class="btn btn-sm btn-filter-periode {{ $periode == 'bulan_ini' ? 'btn-primary' : 'btn-outline-secondary' }}" data-periode="bulan_ini">
+                            <button type="button"
+                                class="btn btn-sm btn-filter-periode {{ $periode == 'bulan_ini' ? 'btn-primary' : 'btn-outline-secondary' }}"
+                                data-periode="bulan_ini">
                                 Bulan Ini
                             </button>
-                            <button type="button" class="btn btn-sm btn-filter-periode {{ $periode == 'tahun_ini' ? 'btn-primary' : 'btn-outline-secondary' }}" data-periode="tahun_ini">
+                            <button type="button"
+                                class="btn btn-sm btn-filter-periode {{ $periode == 'tahun_ini' ? 'btn-primary' : 'btn-outline-secondary' }}"
+                                data-periode="tahun_ini">
                                 Tahun Ini
                             </button>
-                            <button type="button" class="btn btn-sm btn-filter-periode {{ $periode == 'custom' ? 'btn-primary' : 'btn-outline-secondary' }}" data-periode="custom">
+                            <button type="button"
+                                class="btn btn-sm btn-filter-periode {{ $periode == 'custom' ? 'btn-primary' : 'btn-outline-secondary' }}"
+                                data-periode="custom">
                                 Custom
                             </button>
                         </div>
@@ -61,8 +74,10 @@
                     <!-- Dropdown Filter Akun Layanan -->
                     <div class="col-12 col-md-6 col-xl-3">
                         <label class="form-label small text-muted mb-1">Filter Akun Layanan:</label>
-                        <select name="layanan_id" class="form-select form-select-sm" onchange="$('#formFilterPenerimaan').submit()">
-                            <option value="all" {{ empty($layanan_id) || $layanan_id == 'all' ? 'selected' : '' }}>-- Semua Layanan --</option>
+                        <select name="layanan_id" class="form-select form-select-sm"
+                            onchange="$('#formFilterPenerimaan').submit()">
+                            <option value="all" {{ empty($layanan_id) || $layanan_id == 'all' ? 'selected' : '' }}>--
+                                Semua Layanan --</option>
                             @foreach ($daftarLayanan as $l)
                                 <option value="{{ $l->id }}" {{ $layanan_id == $l->id ? 'selected' : '' }}>
                                     {{ $l->nama_layanan }}
@@ -72,14 +87,19 @@
                     </div>
 
                     <!-- Input Rentang Tanggal (Muncul saat custom) -->
-                    <div class="col-12 col-md-6 col-xl-4" id="customDateContainer" style="{{ $periode == 'custom' ? '' : 'display: none;' }}">
+                    <div class="col-12 col-md-6 col-xl-4" id="customDateContainer"
+                        style="{{ $periode == 'custom' ? '' : 'display: none;' }}">
                         <label class="form-label small text-muted mb-1">Rentang Tanggal Custom:</label>
                         <div class="input-group input-group-sm">
-                            <input type="date" name="tgl_dari" class="form-control form-control-sm" value="{{ $startDate }}">
+                            <input type="date" name="tgl_dari" class="form-control form-control-sm"
+                                value="{{ $startDate }}">
                             <span class="input-group-text">s/d</span>
-                            <input type="date" name="tgl_sampai" class="form-control form-control-sm" value="{{ $endDate }}">
+                            <input type="date" name="tgl_sampai" class="form-control form-control-sm"
+                                value="{{ $endDate }}">
                             <button type="submit" class="btn btn-sm btn-primary">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="16" height="16" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search"
+                                    width="16" height="16" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                                    fill="none" stroke-linecap="round" stroke-linejoin="round">
                                     <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                                     <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"></path>
                                     <path d="M21 21l-6 -6"></path>
@@ -98,12 +118,15 @@
         <!-- Card 1: Total Penerimaan PKB -->
         <div class="col-md-6 col-12">
             <div class="info-box shadow-sm border rounded-3 p-3 bg-white h-100 d-flex align-items-center">
-                <span class="info-box-icon text-bg-primary rounded-3 shadow-sm flex-shrink-0" style="width: 72px; height: 72px; display: flex; align-items: center; justify-content: center;">
+                <span class="info-box-icon text-bg-primary rounded-3 shadow-sm flex-shrink-0"
+                    style="width: 72px; height: 72px; display: flex; align-items: center; justify-content: center;">
                     <i class="bi bi-cash-stack" style="font-size: 34px; color: #fff;"></i>
                 </span>
                 <div class="info-box-content ps-3 flex-grow-1">
-                    <span class="info-box-text text-muted text-uppercase fw-semibold" style="font-size: 12px; letter-spacing: 0.5px;">Total Penerimaan (PKB)</span>
-                    <span class="info-box-number text-dark fw-bold d-block" style="font-size: 1.75rem; line-height: 1.25; margin-top: 2px;">
+                    <span class="info-box-text text-muted text-uppercase fw-semibold"
+                        style="font-size: 12px; letter-spacing: 0.5px;">Total Penerimaan (PKB)</span>
+                    <span class="info-box-number text-dark fw-bold d-block"
+                        style="font-size: 1.75rem; line-height: 1.25; margin-top: 2px;">
                         Rp {{ number_format($summary->total_rp, 0, ',', '.') }}
                     </span>
                     <small class="text-muted d-block mt-1">Total pendapatan PKB periode terpilih</small>
@@ -114,15 +137,19 @@
         <!-- Card 2: Penerimaan Roda 2 (R2) -->
         <div class="col-md-6 col-12">
             <div class="info-box shadow-sm border rounded-3 p-3 bg-white h-100 d-flex align-items-center">
-                <span class="info-box-icon text-bg-success rounded-3 shadow-sm flex-shrink-0" style="width: 72px; height: 72px; display: flex; align-items: center; justify-content: center;">
+                <span class="info-box-icon text-bg-success rounded-3 shadow-sm flex-shrink-0"
+                    style="width: 72px; height: 72px; display: flex; align-items: center; justify-content: center;">
                     <i class="bi bi-bicycle" style="font-size: 34px; color: #fff;"></i>
                 </span>
                 <div class="info-box-content ps-3 flex-grow-1">
-                    <span class="info-box-text text-muted text-uppercase fw-semibold" style="font-size: 12px; letter-spacing: 0.5px;">Penerimaan Roda 2 (R2)</span>
-                    <span class="info-box-number text-success fw-bold d-block" style="font-size: 1.75rem; line-height: 1.25; margin-top: 2px;">
+                    <span class="info-box-text text-muted text-uppercase fw-semibold"
+                        style="font-size: 12px; letter-spacing: 0.5px;">Penerimaan Roda 2 (R2)</span>
+                    <span class="info-box-number text-success fw-bold d-block"
+                        style="font-size: 1.75rem; line-height: 1.25; margin-top: 2px;">
                         Rp {{ number_format($summary->sum_rp_r2, 0, ',', '.') }}
                     </span>
-                    <small class="text-muted d-block mt-1">{{ number_format($summary->sum_unit_r2, 0, ',', '.') }} Unit Kendaraan R2</small>
+                    <small class="text-muted d-block mt-1">{{ number_format($summary->sum_unit_r2, 0, ',', '.') }} Unit
+                        Kendaraan R2</small>
                 </div>
             </div>
         </div>
@@ -130,15 +157,19 @@
         <!-- Card 3: Penerimaan Roda 4 (R4) -->
         <div class="col-md-6 col-12">
             <div class="info-box shadow-sm border rounded-3 p-3 bg-white h-100 d-flex align-items-center">
-                <span class="info-box-icon text-bg-info text-white rounded-3 shadow-sm flex-shrink-0" style="width: 72px; height: 72px; display: flex; align-items: center; justify-content: center;">
+                <span class="info-box-icon text-bg-info text-white rounded-3 shadow-sm flex-shrink-0"
+                    style="width: 72px; height: 72px; display: flex; align-items: center; justify-content: center;">
                     <i class="bi bi-car-front-fill" style="font-size: 34px; color: #fff;"></i>
                 </span>
                 <div class="info-box-content ps-3 flex-grow-1">
-                    <span class="info-box-text text-muted text-uppercase fw-semibold" style="font-size: 12px; letter-spacing: 0.5px;">Penerimaan Roda 4 (R4)</span>
-                    <span class="info-box-number text-info fw-bold d-block" style="font-size: 1.75rem; line-height: 1.25; margin-top: 2px;">
+                    <span class="info-box-text text-muted text-uppercase fw-semibold"
+                        style="font-size: 12px; letter-spacing: 0.5px;">Penerimaan Roda 4 (R4)</span>
+                    <span class="info-box-number text-info fw-bold d-block"
+                        style="font-size: 1.75rem; line-height: 1.25; margin-top: 2px;">
                         Rp {{ number_format($summary->sum_rp_r4, 0, ',', '.') }}
                     </span>
-                    <small class="text-muted d-block mt-1">{{ number_format($summary->sum_unit_r4, 0, ',', '.') }} Unit Kendaraan R4</small>
+                    <small class="text-muted d-block mt-1">{{ number_format($summary->sum_unit_r4, 0, ',', '.') }} Unit
+                        Kendaraan R4</small>
                 </div>
             </div>
         </div>
@@ -146,15 +177,19 @@
         <!-- Card 4: Notice Pajak Dicetak -->
         <div class="col-md-6 col-12">
             <div class="info-box shadow-sm border rounded-3 p-3 bg-white h-100 d-flex align-items-center">
-                <span class="info-box-icon text-bg-warning text-white rounded-3 shadow-sm flex-shrink-0" style="width: 72px; height: 72px; display: flex; align-items: center; justify-content: center;">
+                <span class="info-box-icon text-bg-warning text-white rounded-3 shadow-sm flex-shrink-0"
+                    style="width: 72px; height: 72px; display: flex; align-items: center; justify-content: center;">
                     <i class="bi bi-file-earmark-check-fill" style="font-size: 34px; color: #fff;"></i>
                 </span>
                 <div class="info-box-content ps-3 flex-grow-1">
-                    <span class="info-box-text text-muted text-uppercase fw-semibold" style="font-size: 12px; letter-spacing: 0.5px;">Notice Pajak Dicetak</span>
-                    <span class="info-box-number text-warning fw-bold d-block" style="font-size: 1.75rem; line-height: 1.25; margin-top: 2px;">
+                    <span class="info-box-text text-muted text-uppercase fw-semibold"
+                        style="font-size: 12px; letter-spacing: 0.5px;">Notice Pajak Dicetak</span>
+                    <span class="info-box-number text-warning fw-bold d-block"
+                        style="font-size: 1.75rem; line-height: 1.25; margin-top: 2px;">
                         {{ number_format($summary->sum_notice, 0, ',', '.') }} Lembar
                     </span>
-                    <small class="text-muted d-block mt-1">Total {{ number_format($summary->sum_total_unit, 0, ',', '.') }} Unit Kendaraan (R2 + R4)</small>
+                    <small class="text-muted d-block mt-1">Total
+                        {{ number_format($summary->sum_total_unit, 0, ',', '.') }} Unit Kendaraan (R2 + R4)</small>
                 </div>
             </div>
         </div>
@@ -168,9 +203,8 @@
                 <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
                     <div>
                         <h4 class="card-title fw-bold text-dark mb-0">Tren Penerimaan PKB Per Bulan</h4>
-                        <small class="text-muted">Grafik tren realisasi penerimaan bulanan tahun {{ $tahunini }} (Total Realisasi, Roda 2, dan Roda 4)</small>
+                        <span class="badge bg-light text-dark border">Tahun {{ $tahunini }}</span>
                     </div>
-                    <span class="badge bg-light text-dark border">Tahun {{ $tahunini }}</span>
                 </div>
                 <div class="card-body">
                     <div id="chart-tren-bulanan" style="min-height: 360px;"></div>
@@ -186,19 +220,24 @@
                 <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
                     <div>
                         <h4 class="card-title fw-bold text-dark mb-0">5 Lokasi Terbanyak Penerimaan</h4>
-                        <small class="text-muted">Grafik bar ke samping 5 lokasi pelayanan dengan penerimaan PKB tertinggi (Periode: {{ $periodeLabel }})</small>
+                        <small class="text-muted">
+                            (Periode: {{ $periodeLabel }})</small>
                     </div>
-                    <span class="badge bg-primary text-white">Top 5 Lokasi</span>
                 </div>
                 <div class="card-body">
                     @if (count($chartLokasiLabels) > 0)
                         <div id="chart-top-lokasi" style="min-height: 320px;"></div>
                     @else
                         <div class="text-center py-5 text-muted">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-map-pin-off mb-2 text-secondary" width="48" height="48" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                class="icon icon-tabler icon-tabler-map-pin-off mb-2 text-secondary" width="48"
+                                height="48" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                fill="none" stroke-linecap="round" stroke-linejoin="round">
                                 <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                                 <path d="M9.442 9.432a3 3 0 0 0 4.113 4.134m1.445 -2.566a3 3 0 0 0 -3 -3"></path>
-                                <path d="M17.152 17.162l-3.728 5.408a2 2 0 0 1 -3.324 0l-4.827 -7.002a10 10 0 0 1 .8 -12.2m3.919 -.62a10 10 0 0 1 11.208 8.42"></path>
+                                <path
+                                    d="M17.152 17.162l-3.728 5.408a2 2 0 0 1 -3.324 0l-4.827 -7.002a10 10 0 0 1 .8 -12.2m3.919 -.62a10 10 0 0 1 11.208 8.42">
+                                </path>
                                 <path d="M3 3l18 18"></path>
                             </svg>
                             <p class="mb-0">Belum ada data penerimaan lokasi pada periode yang dipilih.</p>
@@ -216,7 +255,7 @@
                 <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
                     <div>
                         <h4 class="card-title fw-bold text-dark mb-0">Peringkat Penerimaan Berdasarkan Layanan</h4>
-                        <small class="text-muted">Grafik bar ke samping total perolehan penerimaan per akun layanan (Periode: {{ $periodeLabel }})</small>
+                        <small class="text-muted">(Periode: {{ $periodeLabel }})</small>
                     </div>
                     <span class="badge bg-success text-white">Top Layanan</span>
                 </div>
@@ -225,9 +264,13 @@
                         <div id="chart-top-layanan" style="min-height: 320px;"></div>
                     @else
                         <div class="text-center py-5 text-muted">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chart-bar-off mb-2 text-secondary" width="48" height="48" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                class="icon icon-tabler icon-tabler-chart-bar-off mb-2 text-secondary" width="48"
+                                height="48" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                fill="none" stroke-linecap="round" stroke-linejoin="round">
                                 <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                <path d="M3 12m0 1a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z"></path>
+                                <path d="M3 12m0 1a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z">
+                                </path>
                                 <path d="M14 10v10"></path>
                                 <path d="M4 20l16 0"></path>
                                 <path d="M3 3l18 18"></path>
@@ -247,17 +290,7 @@
                 <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
                     <div>
                         <h4 class="card-title fw-bold text-dark mb-0">Rincian Data Penerimaan Harian PKB</h4>
-                        <small class="text-muted">Daftar rekapan transaksi penerimaan harian per akun layanan (tanpa PIC).</small>
                     </div>
-                    <a href="/panel-adm14/penerimaan" class="btn btn-sm btn-outline-secondary">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-table" width="16" height="16" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                            <path d="M3 5a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-14z"></path>
-                            <path d="M3 10h18"></path>
-                            <path d="M10 3v18"></path>
-                        </svg>
-                        Buka Kelola Rekap
-                    </a>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
@@ -277,52 +310,63 @@
                             </thead>
                             <tbody>
                                 @forelse ($dataPenerimaan as $row)
-                                <tr>
-                                    <td class="text-center text-muted fw-bold">{{ $loop->iteration + $dataPenerimaan->firstItem() - 1 }}</td>
-                                    <td>
-                                        <strong class="text-dark">{{ date('d-m-Y', strtotime($row->tgl_penerimaan)) }}</strong>
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-light text-dark border fs-6 px-2 py-1">
-                                            {{ $row->nama_layanan }}
-                                        </span>
-                                    </td>
-                                    <td class="text-end">
-                                        <div class="text-success font-weight-bold">Rp {{ number_format($row->jumlah_rp_r2, 0, ',', '.') }}</div>
-                                        <small class="text-muted">{{ number_format($row->jumlah_unit_r2, 0, ',', '.') }} unit</small>
-                                    </td>
-                                    <td class="text-end">
-                                        <div class="text-info font-weight-bold">Rp {{ number_format($row->jumlah_rp_r4, 0, ',', '.') }}</div>
-                                        <small class="text-muted">{{ number_format($row->jumlah_unit_r4, 0, ',', '.') }} unit</small>
-                                    </td>
-                                    <td class="text-end">
-                                        <strong class="text-dark fs-6">Rp {{ number_format($row->total_rp, 0, ',', '.') }}</strong>
-                                    </td>
-                                    <td class="text-center">
-                                        <span class="badge bg-light text-dark border">{{ $row->total_unit }} Unit</span>
-                                    </td>
-                                    <td class="text-center">
-                                        <span class="badge bg-warning text-dark border">{{ $row->jumlah_notice }} Lembar</span>
-                                    </td>
-                                    <td>
-                                        <span class="text-muted small">{{ $row->keterangan ?: '-' }}</span>
-                                    </td>
-                                </tr>
+                                    <tr>
+                                        <td class="text-center text-muted fw-bold">
+                                            {{ $loop->iteration + $dataPenerimaan->firstItem() - 1 }}</td>
+                                        <td>
+                                            <strong
+                                                class="text-dark">{{ date('d-m-Y', strtotime($row->tgl_penerimaan)) }}</strong>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-light text-dark border fs-6 px-2 py-1">
+                                                {{ $row->nama_layanan }}
+                                            </span>
+                                        </td>
+                                        <td class="text-end">
+                                            <div class="text-success font-weight-bold">Rp
+                                                {{ number_format($row->jumlah_rp_r2, 0, ',', '.') }}</div>
+                                            <small
+                                                class="text-muted">{{ number_format($row->jumlah_unit_r2, 0, ',', '.') }}
+                                                unit</small>
+                                        </td>
+                                        <td class="text-end">
+                                            <div class="text-info font-weight-bold">Rp
+                                                {{ number_format($row->jumlah_rp_r4, 0, ',', '.') }}</div>
+                                            <small
+                                                class="text-muted">{{ number_format($row->jumlah_unit_r4, 0, ',', '.') }}
+                                                unit</small>
+                                        </td>
+                                        <td class="text-end">
+                                            <strong class="text-dark fs-6">Rp
+                                                {{ number_format($row->total_rp, 0, ',', '.') }}</strong>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="badge bg-light text-dark border">{{ $row->total_unit }}
+                                                Unit</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="badge bg-warning text-dark border">{{ $row->jumlah_notice }}
+                                                Lembar</span>
+                                        </td>
+                                        <td>
+                                            <span class="text-muted small">{{ $row->keterangan ?: '-' }}</span>
+                                        </td>
+                                    </tr>
                                 @empty
-                                <tr>
-                                    <td colspan="9" class="text-center py-4 text-muted">
-                                        Tidak ada data penerimaan pada periode atau filter layanan yang dipilih.
-                                    </td>
-                                </tr>
+                                    <tr>
+                                        <td colspan="9" class="text-center py-4 text-muted">
+                                            Tidak ada data penerimaan pada periode atau filter layanan yang dipilih.
+                                        </td>
+                                    </tr>
                                 @endforelse
                             </tbody>
                         </table>
                     </div>
                 </div>
                 @if ($dataPenerimaan->hasPages())
-                <div class="card-footer bg-white py-2 border-top">
-                    {{ $dataPenerimaan->links() }}
-                </div>
+                    <div class="card-footer bg-white py-2 border-top">
+                        {{ $dataPenerimaan->links() }}
+                    </div>
                 @endif
             </div>
         </div>
@@ -330,239 +374,244 @@
 @endsection
 
 @push('myscript')
-<!-- ApexCharts Script -->
-<script src="{{ asset('tabler/dist/libs/apexcharts/dist/apexcharts.min.js') }}"></script>
-<script>
-    // Format Rupiah Helper
-    function formatRupiahChart(val) {
-        return 'Rp ' + Number(val).toLocaleString('id-ID');
-    }
+    <!-- ApexCharts Script -->
+    <script src="{{ asset('tabler/dist/libs/apexcharts/dist/apexcharts.min.js') }}"></script>
+    <script>
+        // Format Rupiah Helper
+        function formatRupiahChart(val) {
+            return 'Rp ' + Number(val).toLocaleString('id-ID');
+        }
 
-    $(function() {
-        // Handle Tombol Pilihan Periode
-        $('.btn-filter-periode').click(function() {
-            var periode = $(this).data('periode');
-            $('#inputPeriode').val(periode);
-            if (periode === 'custom') {
-                $('#customDateContainer').slideDown(150);
-            } else {
-                $('#customDateContainer').slideUp(150);
-                $('#formFilterPenerimaan').submit();
-            }
+        $(function() {
+            // Handle Tombol Pilihan Periode
+            $('.btn-filter-periode').click(function() {
+                var periode = $(this).data('periode');
+                $('#inputPeriode').val(periode);
+                if (periode === 'custom') {
+                    $('#customDateContainer').slideDown(150);
+                } else {
+                    $('#customDateContainer').slideUp(150);
+                    $('#formFilterPenerimaan').submit();
+                }
+            });
+
+            // 1. Inisialisasi Grafik Tren Penerimaan Bulanan
+            var optionsBulanan = {
+                series: [{
+                    name: 'Total Penerimaan',
+                    type: 'column',
+                    data: @json($chartBulanValuesTotal)
+                }, {
+                    name: 'Penerimaan R2',
+                    type: 'line',
+                    data: @json($chartBulanValuesR2)
+                }, {
+                    name: 'Penerimaan R4',
+                    type: 'line',
+                    data: @json($chartBulanValuesR4)
+                }],
+                chart: {
+                    height: 320,
+                    type: 'line',
+                    stacked: false,
+                    toolbar: {
+                        show: false
+                    },
+                    fontFamily: 'inherit'
+                },
+                stroke: {
+                    width: [0, 3, 3],
+                    curve: 'smooth'
+                },
+                plotOptions: {
+                    bar: {
+                        columnWidth: '40%',
+                        borderRadius: 4
+                    }
+                },
+                fill: {
+                    opacity: [0.85, 1, 1],
+                },
+                colors: ['#0d6efd', '#198754', '#0dcaf0'],
+                labels: @json($chartBulanLabels),
+                markers: {
+                    size: [0, 4, 4]
+                },
+                yaxis: {
+                    labels: {
+                        formatter: function(val) {
+                            if (val >= 1000000000) {
+                                return 'Rp ' + (val / 1000000000).toFixed(2) + ' M';
+                            } else if (val >= 1000000) {
+                                return 'Rp ' + (val / 1000000).toFixed(1) + ' jt';
+                            }
+                            return 'Rp ' + Number(val).toLocaleString('id-ID');
+                        }
+                    }
+                },
+                tooltip: {
+                    shared: true,
+                    intersect: false,
+                    y: {
+                        formatter: function(val) {
+                            return formatRupiahChart(val);
+                        }
+                    }
+                },
+                legend: {
+                    position: 'top',
+                    horizontalAlign: 'right'
+                }
+            };
+
+            var chartBulanan = new ApexCharts(document.querySelector("#chart-tren-bulanan"), optionsBulanan);
+            chartBulanan.render();
+
+            // 2. Inisialisasi Grafik Bar ke Samping (5 Lokasi Terbanyak Penerimaan)
+            @if (count($chartLokasiLabels) > 0)
+                var optionsLokasi = {
+                    series: [{
+                        name: 'Penerimaan PKB',
+                        data: @json($chartLokasiValues)
+                    }],
+                    chart: {
+                        type: 'bar',
+                        height: 320,
+                        toolbar: {
+                            show: false
+                        },
+                        fontFamily: 'inherit'
+                    },
+                    plotOptions: {
+                        bar: {
+                            borderRadius: 5,
+                            horizontal: true,
+                            barHeight: '50%',
+                            dataLabels: {
+                                position: 'bottom'
+                            }
+                        }
+                    },
+                    colors: ['#0284c7'],
+                    dataLabels: {
+                        enabled: true,
+                        textAnchor: 'start',
+                        formatter: function(val, opt) {
+                            return formatRupiahChart(val);
+                        },
+                        offsetX: 0,
+                        style: {
+                            fontSize: '12px',
+                            fontWeight: 600,
+                            colors: ['#0f172a']
+                        }
+                    },
+                    xaxis: {
+                        categories: @json($chartLokasiLabels),
+                        labels: {
+                            formatter: function(val) {
+                                if (val >= 1000000000) {
+                                    return (val / 1000000000).toFixed(2) + ' Milyar';
+                                } else if (val >= 1000000) {
+                                    return (val / 1000000).toFixed(1) + ' Juta';
+                                }
+                                return Number(val).toLocaleString('id-ID');
+                            }
+                        }
+                    },
+                    yaxis: {
+                        labels: {
+                            style: {
+                                fontWeight: 600,
+                                fontSize: '13px'
+                            }
+                        }
+                    },
+                    tooltip: {
+                        y: {
+                            formatter: function(val) {
+                                return formatRupiahChart(val);
+                            }
+                        }
+                    }
+                };
+
+                var chartLokasi = new ApexCharts(document.querySelector("#chart-top-lokasi"), optionsLokasi);
+                chartLokasi.render();
+            @endif
+
+            // 3. Inisialisasi Grafik Bar ke Samping (Peringkat Layanan)
+            @if (count($chartTopLabels) > 0)
+                var optionsTop = {
+                    series: [{
+                        name: 'Penerimaan PKB',
+                        data: @json($chartTopValues)
+                    }],
+                    chart: {
+                        type: 'bar',
+                        height: 320,
+                        toolbar: {
+                            show: false
+                        },
+                        fontFamily: 'inherit'
+                    },
+                    plotOptions: {
+                        bar: {
+                            borderRadius: 5,
+                            horizontal: true,
+                            barHeight: '50%',
+                            dataLabels: {
+                                position: 'bottom'
+                            }
+                        }
+                    },
+                    colors: ['#10b981'],
+                    dataLabels: {
+                        enabled: true,
+                        textAnchor: 'start',
+                        formatter: function(val, opt) {
+                            return formatRupiahChart(val);
+                        },
+                        offsetX: 0,
+                        style: {
+                            fontSize: '12px',
+                            fontWeight: 600,
+                            colors: ['#0f172a']
+                        }
+                    },
+                    xaxis: {
+                        categories: @json($chartTopLabels),
+                        labels: {
+                            formatter: function(val) {
+                                if (val >= 1000000000) {
+                                    return (val / 1000000000).toFixed(2) + ' Milyar';
+                                } else if (val >= 1000000) {
+                                    return (val / 1000000).toFixed(1) + ' Juta';
+                                }
+                                return Number(val).toLocaleString('id-ID');
+                            }
+                        }
+                    },
+                    yaxis: {
+                        labels: {
+                            style: {
+                                fontWeight: 600,
+                                fontSize: '13px'
+                            }
+                        }
+                    },
+                    tooltip: {
+                        y: {
+                            formatter: function(val) {
+                                return formatRupiahChart(val);
+                            }
+                        }
+                    }
+                };
+
+                var chartTop = new ApexCharts(document.querySelector("#chart-top-layanan"), optionsTop);
+                chartTop.render();
+            @endif
         });
-
-        // 1. Inisialisasi Grafik Tren Penerimaan Bulanan
-        var optionsBulanan = {
-            series: [{
-                name: 'Total Penerimaan',
-                type: 'column',
-                data: @json($chartBulanValuesTotal)
-            }, {
-                name: 'Penerimaan R2',
-                type: 'line',
-                data: @json($chartBulanValuesR2)
-            }, {
-                name: 'Penerimaan R4',
-                type: 'line',
-                data: @json($chartBulanValuesR4)
-            }],
-            chart: {
-                height: 320,
-                type: 'line',
-                stacked: false,
-                toolbar: { show: false },
-                fontFamily: 'inherit'
-            },
-            stroke: {
-                width: [0, 3, 3],
-                curve: 'smooth'
-            },
-            plotOptions: {
-                bar: {
-                    columnWidth: '40%',
-                    borderRadius: 4
-                }
-            },
-            fill: {
-                opacity: [0.85, 1, 1],
-            },
-            colors: ['#0d6efd', '#198754', '#0dcaf0'],
-            labels: @json($chartBulanLabels),
-            markers: {
-                size: [0, 4, 4]
-            },
-            yaxis: {
-                labels: {
-                    formatter: function(val) {
-                        if (val >= 1000000000) {
-                            return 'Rp ' + (val / 1000000000).toFixed(2) + ' M';
-                        } else if (val >= 1000000) {
-                            return 'Rp ' + (val / 1000000).toFixed(1) + ' jt';
-                        }
-                        return 'Rp ' + Number(val).toLocaleString('id-ID');
-                    }
-                }
-            },
-            tooltip: {
-                shared: true,
-                intersect: false,
-                y: {
-                    formatter: function(val) {
-                        return formatRupiahChart(val);
-                    }
-                }
-            },
-            legend: {
-                position: 'top',
-                horizontalAlign: 'right'
-            }
-        };
-
-        var chartBulanan = new ApexCharts(document.querySelector("#chart-tren-bulanan"), optionsBulanan);
-        chartBulanan.render();
-
-        // 2. Inisialisasi Grafik Bar ke Samping (5 Lokasi Terbanyak Penerimaan)
-        @if (count($chartLokasiLabels) > 0)
-        var optionsLokasi = {
-            series: [{
-                name: 'Penerimaan PKB',
-                data: @json($chartLokasiValues)
-            }],
-            chart: {
-                type: 'bar',
-                height: 320,
-                toolbar: { show: false },
-                fontFamily: 'inherit'
-            },
-            plotOptions: {
-                bar: {
-                    borderRadius: 5,
-                    horizontal: true,
-                    barHeight: '50%',
-                    dataLabels: {
-                        position: 'bottom'
-                    }
-                }
-            },
-            colors: ['#0284c7'],
-            dataLabels: {
-                enabled: true,
-                textAnchor: 'start',
-                formatter: function(val, opt) {
-                    return formatRupiahChart(val);
-                },
-                offsetX: 0,
-                style: {
-                    fontSize: '12px',
-                    fontWeight: 600,
-                    colors: ['#0f172a']
-                }
-            },
-            xaxis: {
-                categories: @json($chartLokasiLabels),
-                labels: {
-                    formatter: function(val) {
-                        if (val >= 1000000000) {
-                            return (val / 1000000000).toFixed(2) + ' Milyar';
-                        } else if (val >= 1000000) {
-                            return (val / 1000000).toFixed(1) + ' Juta';
-                        }
-                        return Number(val).toLocaleString('id-ID');
-                    }
-                }
-            },
-            yaxis: {
-                labels: {
-                    style: {
-                        fontWeight: 600,
-                        fontSize: '13px'
-                    }
-                }
-            },
-            tooltip: {
-                y: {
-                    formatter: function(val) {
-                        return formatRupiahChart(val);
-                    }
-                }
-            }
-        };
-
-        var chartLokasi = new ApexCharts(document.querySelector("#chart-top-lokasi"), optionsLokasi);
-        chartLokasi.render();
-        @endif
-
-        // 3. Inisialisasi Grafik Bar ke Samping (Peringkat Layanan)
-        @if (count($chartTopLabels) > 0)
-        var optionsTop = {
-            series: [{
-                name: 'Penerimaan PKB',
-                data: @json($chartTopValues)
-            }],
-            chart: {
-                type: 'bar',
-                height: 320,
-                toolbar: { show: false },
-                fontFamily: 'inherit'
-            },
-            plotOptions: {
-                bar: {
-                    borderRadius: 5,
-                    horizontal: true,
-                    barHeight: '50%',
-                    dataLabels: {
-                        position: 'bottom'
-                    }
-                }
-            },
-            colors: ['#10b981'],
-            dataLabels: {
-                enabled: true,
-                textAnchor: 'start',
-                formatter: function(val, opt) {
-                    return formatRupiahChart(val);
-                },
-                offsetX: 0,
-                style: {
-                    fontSize: '12px',
-                    fontWeight: 600,
-                    colors: ['#0f172a']
-                }
-            },
-            xaxis: {
-                categories: @json($chartTopLabels),
-                labels: {
-                    formatter: function(val) {
-                        if (val >= 1000000000) {
-                            return (val / 1000000000).toFixed(2) + ' Milyar';
-                        } else if (val >= 1000000) {
-                            return (val / 1000000).toFixed(1) + ' Juta';
-                        }
-                        return Number(val).toLocaleString('id-ID');
-                    }
-                }
-            },
-            yaxis: {
-                labels: {
-                    style: {
-                        fontWeight: 600,
-                        fontSize: '13px'
-                    }
-                }
-            },
-            tooltip: {
-                y: {
-                    formatter: function(val) {
-                        return formatRupiahChart(val);
-                    }
-                }
-            }
-        };
-
-        var chartTop = new ApexCharts(document.querySelector("#chart-top-layanan"), optionsTop);
-        chartTop.render();
-        @endif
-    });
-</script>
+    </script>
 @endpush
-

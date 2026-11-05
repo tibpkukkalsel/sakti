@@ -350,7 +350,7 @@
                         </div>
                         <div>
                             <div style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Penerimaan PKB Hari Ini</div>
-                            <div style="font-size: 11px; color: #94a3b8;">{{ \Carbon\Carbon::parse($hariini)->translatedFormat('l, d F Y') }}</div>
+                            <div style="font-size: 11px; color: #94a3b8;">{{ \Carbon\Carbon::parse($hariini ?? date('Y-m-d'))->translatedFormat('l, d F Y') }}</div>
                         </div>
                     </div>
                     @if (isset($penerimaanHariIniLayanan) && $penerimaanHariIniLayanan)
