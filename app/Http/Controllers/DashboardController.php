@@ -488,4 +488,67 @@ class DashboardController extends Controller
             'tahunini'
         ));
     }
+
+    /**
+     * Halaman Utama / Hub Navigasi Admin (Home)
+     * Mengelompokkan tombol menu:
+     * 1. Presensi Layanan (Dashboard, Jadwal Layanan, Monitoring Presensi)
+     * 2. Penerimaan Pajak Kendaraan Bermotor (Dashboard, Rekap Layanan, Rekap Lokasi)
+     */
+    public function home()
+    {
+        $hariini = date("Y-m-d");
+        $bulanini = date("m");
+        $tahunini = date("Y");
+
+        // 1. Ringkasan Presensi Layanan Hari Ini
+        $totalLayanan = DB::table("layanan")->count();
+        $jmlHadirHariIni = DB::table("presensi")
+            ->where("tgl_presensi", $hariini)
+            ->where("status", "h")
+            ->whereNotNull("jam_in")
+            ->count();
+
+        $jmlMaintenanceHariIni = DB::table("pengajuan_izin")
+            ->where("status", "m")
+            ->where("status_approved", 1)
+            ->where("tgl_izin_dari", "<=", $hariini)
+            ->where("tgl_izin_sampai", ">=", $hariini)
+            ->count();
+
+        $jmlBelumAbsen = max(0, $totalLayanan - $jmlHadirHariIni - $jmlMaintenanceHariIni);
+
+        // 2. Ringkasan Penerimaan PKB
+        $penerimaanHariIni = DB::table("rekap_penerimaan_pkb")
+            ->where("tgl_penerimaan", $hariini)
+            ->selectRaw("COALESCE(SUM(total_rp), 0) as total_rp, COALESCE(SUM(total_unit), 0) as total_unit, COALESCE(SUM(jumlah_notice), 0) as total_notice")
+            ->first();
+
+        $penerimaanBulanIni = DB::table("rekap_penerimaan_pkb")
+            ->whereMonth("tgl_penerimaan", $bulanini)
+            ->whereYear("tgl_penerimaan", $tahunini)
+            ->selectRaw("COALESCE(SUM(total_rp), 0) as total_rp, COALESCE(SUM(total_unit), 0) as total_unit, COALESCE(SUM(jumlah_notice), 0) as total_notice")
+            ->first();
+
+        $namahari = (new PresensiController)->gethari(date("D", strtotime($hariini)));
+
+        // Total Jadwal Lokasi Aktif Hari Ini
+        $totalJadwalHariIni = DB::table("jadwal_lokasi_layanan")
+            ->where("hari", $namahari)
+            ->where("status", 1)
+            ->count();
+
+        return view("dashboard.home", compact(
+            "totalLayanan",
+            "jmlHadirHariIni",
+            "jmlMaintenanceHariIni",
+            "jmlBelumAbsen",
+            "penerimaanHariIni",
+            "penerimaanBulanIni",
+            "totalJadwalHariIni",
+            "namahari",
+            "hariini"
+        ));
+    }
 }
+

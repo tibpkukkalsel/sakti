@@ -3,7 +3,7 @@
     <!--begin::Sidebar Brand-->
     <div class="sidebar-brand">
         <!--begin::Brand Link-->
-        <a href="/panel-adm14/dashboardadmin" class="brand-link text-decoration-none d-flex align-items-center gap-2 px-3">
+        <a href="/panel-adm14/home" class="brand-link text-decoration-none d-flex align-items-center gap-2 px-3">
             <!--begin::Brand Image-->
             <img src="{{ asset('Logo Sakti.png') }}" alt="SAKTI Logo" class="brand-image opacity-75 shadow-sm rounded"
                 style="max-height: 32px; width: auto;"
@@ -23,6 +23,14 @@
             <!--begin::Sidebar Menu-->
             <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false"
                 id="navigation">
+                <!-- 0. Home -->
+                <li class="nav-item mb-1">
+                    <a href="/panel-adm14/home"
+                        class="nav-link {{ request()->is('panel-adm14/home') ? 'active' : '' }}">
+                        <i class="nav-icon bi bi-house-door-fill"></i>
+                        <p>Home</p>
+                    </a>
+                </li>
 
                 <!-- 1. Home / Dashboard -->
                 <li class="nav-header">Dashboard</li>
@@ -148,9 +156,9 @@
                 <li class="nav-header">Output</li>
                 <!-- 6. Laporan (Dropdown) -->
                 <li
-                    class="nav-item {{ request()->is(['panel-adm14/presensi/laporan', 'panel-adm14/presensi/rekap']) ? 'menu-open' : '' }}">
+                    class="nav-item {{ request()->is(['panel-adm14/presensi/laporan', 'panel-adm14/presensi/rekap', 'panel-adm14/penerimaan/rekap*', 'panel-adm14/rekap*']) ? 'menu-open' : '' }}">
                     <a href="#"
-                        class="nav-link {{ request()->is(['panel-adm14/presensi/laporan', 'panel-adm14/presensi/rekap']) ? 'active' : '' }}">
+                        class="nav-link {{ request()->is(['panel-adm14/presensi/laporan', 'panel-adm14/presensi/rekap', 'panel-adm14/penerimaan/rekap*', 'panel-adm14/rekap*']) ? 'active' : '' }}">
                         <i class="nav-icon bi bi-file-earmark-text"></i>
                         <p>
                             Laporan
@@ -170,6 +178,20 @@
                                 class="nav-link {{ request()->is('panel-adm14/presensi/rekap') ? 'active' : '' }}">
                                 <i class="nav-icon bi bi-circle"></i>
                                 <p>Rekap Presensi</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/panel-adm14/penerimaan/rekap-layanan"
+                                class="nav-link {{ request()->is(['panel-adm14/penerimaan/rekap-layanan*', 'panel-adm14/rekap-layanan*']) ? 'active' : '' }}">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Rekap Layanan</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/panel-adm14/penerimaan/rekap-lokasi"
+                                class="nav-link {{ request()->is(['panel-adm14/penerimaan/rekap-lokasi*', 'panel-adm14/rekap-lokasi*']) ? 'active' : '' }}">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Rekap Lokasi</p>
                             </a>
                         </li>
                     </ul>

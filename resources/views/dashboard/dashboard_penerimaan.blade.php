@@ -219,9 +219,9 @@
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
                     <div>
-                        <h4 class="card-title fw-bold text-dark mb-0">5 Lokasi Terbanyak Penerimaan</h4>
+                        <h4 class="card-title fw-bold text-dark mb-0">Peringkat Penerimaan Berdasarkan Lokasi</h4><br>
                         <small class="text-muted">
-                            (Periode: {{ $periodeLabel }})</small>
+                            {{ $periodeLabel }}</small>
                     </div>
                 </div>
                 <div class="card-body">
@@ -254,10 +254,9 @@
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
                     <div>
-                        <h4 class="card-title fw-bold text-dark mb-0">Peringkat Penerimaan Berdasarkan Layanan</h4>
-                        <small class="text-muted">(Periode: {{ $periodeLabel }})</small>
+                        <h4 class="card-title fw-bold text-dark mb-0">Peringkat Penerimaan Berdasarkan Layanan</h4><br>
+                        <small class="text-muted">{{ $periodeLabel }}</small>
                     </div>
-                    <span class="badge bg-success text-white">Top Layanan</span>
                 </div>
                 <div class="card-body">
                     @if (count($chartTopLabels) > 0)

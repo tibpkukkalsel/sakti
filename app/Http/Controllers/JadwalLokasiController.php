@@ -238,5 +238,71 @@ class JadwalLokasiController extends Controller
 
         return view('jadwallokasi.user_jadwal', compact('user', 'jadwalMingguan', 'jadwalHariIni', 'namahariIni'));
     }
+
+    /**
+     * Tampilan Khusus Admin: Jadwal Layanan
+     * Menampilkan data tabel jadwal layanan yang dikelompokkan per layanan per hari untuk lokasinya,
+     * dilengkapi filter semua dan layanan yang dipilih.
+     */
+    public function jadwalLayananView(Request $request)
+    {
+        $layanan_id = $request->layanan_id;
+        $hari = $request->hari;
+
+        $allLayanan = DB::table("layanan")->orderBy("nama_layanan", "asc")->get();
+        $listHari = $this->listHari;
+
+        // Query Layanan yang ditampilkan (semua atau spesifik yang dipilih)
+        $layananQuery = DB::table("layanan")
+            ->leftJoin("cabang", "layanan.kode_cabang", "=", "cabang.kode_cabang")
+            ->select("layanan.*", "cabang.nama_cabang as nama_cabang_default")
+            ->orderBy("layanan.nama_layanan", "asc");
+
+        if (!empty($layanan_id) && $layanan_id != "all") {
+            $layananQuery->where("layanan.id", $layanan_id);
+        }
+
+        $layananList = $layananQuery->get();
+
+        // Ambil data jadwal lokasi aktif
+        $jadwalQuery = DB::table("jadwal_lokasi_layanan")
+            ->join("cabang", "jadwal_lokasi_layanan.kode_cabang", "=", "cabang.kode_cabang")
+            ->select(
+                "jadwal_lokasi_layanan.*",
+                "cabang.nama_cabang",
+                "cabang.lokasi_cabang",
+                "cabang.radius_cabang"
+            )
+            ->where("jadwal_lokasi_layanan.status", 1);
+
+        if (!empty($layanan_id) && $layanan_id != "all") {
+            $jadwalQuery->where("jadwal_lokasi_layanan.layanan_id", $layanan_id);
+        }
+
+        if (!empty($hari) && $hari != "all") {
+            $jadwalQuery->where("jadwal_lokasi_layanan.hari", $hari);
+        }
+
+        $rawJadwal = $jadwalQuery->get();
+
+        // Susun matriks [layanan_id][hari]
+        $matrix = [];
+        foreach ($rawJadwal as $j) {
+            $matrix[$j->layanan_id][$j->hari] = $j;
+        }
+
+        $totalJadwalAktif = count($rawJadwal);
+
+        return view("jadwallokasi.jadwal_layanan", compact(
+            "allLayanan",
+            "layananList",
+            "listHari",
+            "matrix",
+            "layanan_id",
+            "hari",
+            "totalJadwalAktif"
+        ));
+    }
 }
+
 

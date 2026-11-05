@@ -137,6 +137,7 @@ Route::middleware(['auth:karyawan'])->group(function () {
 //Route Yang Bisa di AKses Oleh Administrator dan Admin Departemen
 Route::group(['prefix' => 'panel-adm14', 'middleware' => ['auth:user', 'role:administrator|admin departemen,user']], function () {
     Route::get('/proseslogoutadmin', [AuthController::class, 'proseslogoutadmin']);
+    Route::get('/home', [DashboardController::class, 'home']);
     Route::get('/dashboardadmin', [DashboardController::class, 'dashboardadmin']);
     Route::get('/dashboard-penerimaan', [DashboardController::class, 'dashboardPenerimaan']);
 
@@ -160,6 +161,10 @@ Route::group(['prefix' => 'panel-adm14', 'middleware' => ['auth:user', 'role:adm
     Route::post('/penerimaan/{id}/update', [PenerimaanController::class, 'adminUpdate']);
     Route::post('/penerimaan/{id}/delete', [PenerimaanController::class, 'adminDelete']);
     Route::get('/penerimaan/cetak', [PenerimaanController::class, 'adminCetak']);
+    Route::get('/penerimaan/rekap-layanan', [PenerimaanController::class, 'rekapLayanan']);
+    Route::get('/penerimaan/rekap-lokasi', [PenerimaanController::class, 'rekapLokasi']);
+    Route::get('/rekap-layanan', fn() => redirect('/panel-adm14/penerimaan/rekap-layanan'));
+    Route::get('/rekap-lokasi', fn() => redirect('/panel-adm14/penerimaan/rekap-lokasi'));
 
     // Lokasi (Pengganti Cabang)
     Route::get('/lokasi', [LokasiController::class, 'index']);
@@ -169,6 +174,8 @@ Route::group(['prefix' => 'panel-adm14', 'middleware' => ['auth:user', 'role:adm
     Route::post('/lokasi/{kode_cabang}/delete', [LokasiController::class, 'delete']);
 
     // Jadwal Lokasi Layanan
+    Route::get('/presensi/jadwal-layanan', [JadwalLokasiController::class, 'jadwalLayananView']);
+    Route::get('/jadwal-layanan', fn() => redirect('/panel-adm14/presensi/jadwal-layanan'));
     Route::get('/jadwallokasi', [JadwalLokasiController::class, 'index']);
     Route::post('/jadwallokasi/store', [JadwalLokasiController::class, 'store']);
     Route::post('/jadwallokasi/edit', [JadwalLokasiController::class, 'edit']);
@@ -241,6 +248,10 @@ Route::group(['prefix' => 'panel-adm14', 'middleware' => ['auth:user', 'role:adm
     Route::post('/penerimaan/{id}/update', [PenerimaanController::class, 'adminUpdate']);
     Route::post('/penerimaan/{id}/delete', [PenerimaanController::class, 'adminDelete']);
     Route::get('/penerimaan/cetak', [PenerimaanController::class, 'adminCetak']);
+    Route::get('/penerimaan/rekap-layanan', [PenerimaanController::class, 'rekapLayanan']);
+    Route::get('/penerimaan/rekap-lokasi', [PenerimaanController::class, 'rekapLokasi']);
+    Route::get('/rekap-layanan', fn() => redirect('/panel-adm14/penerimaan/rekap-layanan'));
+    Route::get('/rekap-lokasi', fn() => redirect('/panel-adm14/penerimaan/rekap-lokasi'));
 
     // Lokasi (Pengganti Cabang)
     Route::get('/lokasi', [LokasiController::class, 'index']);
