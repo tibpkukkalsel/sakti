@@ -136,7 +136,7 @@
 
         .todaypresence {
             margin-top: 0 !important;
-            margin-bottom: 16px !important;
+            margin-bottom: 0 !important;
         }
 
         /* Card Presensi Masuk & Pulang Simetris */
@@ -283,7 +283,6 @@
             </div>
             <div id="user-info">
                 <h3 id="user-name">{{ Auth::guard('karyawan')->user()->nama_layanan ?? Auth::guard('karyawan')->user()->nama_lengkap }}</h3>
-                <span id="user-role">Akun Pelayanan</span>
                 <span style="font-size: 11px; color: rgba(255, 255, 255, 0.95); display: block; margin-top: 2px;">
                     <ion-icon name="pin" style="vertical-align: -1px; color: #fde047;"></ion-icon> {{ $cabang ? $cabang->nama_cabang : 'UPPD SAMSAT Batu Licin' }}
                 </span>
@@ -293,7 +292,7 @@
 
     <div class="section" id="menu-section">
         <div class="card">
-            <div class="card-body text-center">
+            <div class="card-body text-center" style="padding: 14px 10px !important;">
                 <div class="list-menu">
                     <!-- 1. Lokasi -->
                     <div class="item-menu text-center">
@@ -301,9 +300,6 @@
                             <a href="/editlokasi" class="orange" style="font-size: 40px;">
                                 <ion-icon name="location"></ion-icon>
                             </a>
-                        </div>
-                        <div class="menu-name">
-                            <span class="text-center">Lokasi</span>
                         </div>
                     </div>
                     <!-- 2. Histori -->
@@ -313,9 +309,6 @@
                                 <ion-icon name="calendar-number"></ion-icon>
                             </a>
                         </div>
-                        <div class="menu-name">
-                            <span class="text-center">Histori</span>
-                        </div>
                     </div>
                     <!-- 3. Penerimaan -->
                     <div class="item-menu text-center">
@@ -324,9 +317,6 @@
                                 <ion-icon name="cash-outline"></ion-icon>
                             </a>
                         </div>
-                        <div class="menu-name">
-                            <span class="text-center">Penerimaan</span>
-                        </div>
                     </div>
                     <!-- 4. Maintenance -->
                     <div class="item-menu text-center">
@@ -334,9 +324,6 @@
                             <a href="/maintenance" class="danger" style="font-size: 40px; color: #ef4444;">
                                 <ion-icon name="construct"></ion-icon>
                             </a>
-                        </div>
-                        <div class="menu-name">
-                            <span class="text-center">Maintenance</span>
                         </div>
                     </div>
                 </div>
@@ -366,63 +353,7 @@
     </div>
     @endif
 
-    <!-- Card Status Penerimaan PKB Hari Ini -->
-    <div class="section mt-2">
-        <div class="card" style="border-radius: 14px; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.05); overflow: hidden;">
-            <div class="card-body p-3">
-                <div class="d-flex align-items-center justify-content-between mb-2">
-                    <div class="d-flex align-items-center">
-                        <div style="width: 36px; height: 36px; border-radius: 10px; background: rgba(16, 185, 129, 0.12); display: flex; align-items: center; justify-content: center; margin-right: 10px;">
-                            <ion-icon name="cash-outline" style="font-size: 22px; color: #10b981;"></ion-icon>
-                        </div>
-                        <div>
-                            <div style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Penerimaan PKB Hari Ini</div>
-                            <div style="font-size: 11px; color: #94a3b8;">{{ \Carbon\Carbon::parse($hariini ?? date('Y-m-d'))->translatedFormat('l, d F Y') }}</div>
-                        </div>
-                    </div>
-                    @if (isset($penerimaanHariIniLayanan) && $penerimaanHariIniLayanan)
-                        <span class="badge badge-success" style="font-size: 11px; padding: 4px 10px; background-color: #10b981; color: #ffffff;">Sudah Input</span>
-                    @else
-                        <span class="badge badge-warning" style="font-size: 11px; padding: 4px 10px; background-color: #f59e0b; color: #ffffff;">Belum Input</span>
-                    @endif
-                </div>
-
-                @if (isset($penerimaanHariIniLayanan) && $penerimaanHariIniLayanan)
-                    <div class="d-flex align-items-center justify-content-between p-2 mt-1" style="background: #f8fafc; border-radius: 10px;">
-                        <div>
-                            <div style="font-size: 11px; color: #64748b;">Total Realisasi</div>
-                            <div style="font-size: 16px; font-weight: 800; color: #0f172a;">Rp {{ number_format($penerimaanHariIniLayanan->total_rp, 0, ',', '.') }}</div>
-                        </div>
-                        <div class="text-right">
-                            <div style="font-size: 11px; color: #64748b;">Unit / Notice</div>
-                            <div style="font-size: 13px; font-weight: 700; color: #334155;">{{ $penerimaanHariIniLayanan->total_unit }} Unit / {{ $penerimaanHariIniLayanan->jumlah_notice }} Notice</div>
-                        </div>
-                    </div>
-                    <div class="row mt-2">
-                        <div class="col-6">
-                            <a href="/penerimaan/{{ $penerimaanHariIniLayanan->id }}/edit" class="btn btn-sm btn-outline-primary btn-block" style="border-radius: 8px;">
-                                <ion-icon name="create-outline"></ion-icon> Update
-                            </a>
-                        </div>
-                        <div class="col-6">
-                            <a href="/penerimaan" class="btn btn-sm btn-primary btn-block" style="border-radius: 8px;">
-                                <ion-icon name="list-outline"></ion-icon> Rekap
-                            </a>
-                        </div>
-                    </div>
-                @else
-                    <div class="text-center py-2">
-                        <p class="text-muted mb-2" style="font-size: 12px;">Layanan belum menginput realisasi penerimaan PKB hari ini.</p>
-                        <a href="/penerimaan/create" class="btn btn-sm btn-success btn-block" style="border-radius: 8px; font-weight: 600; background-color: #10b981; border-color: #10b981;">
-                            <ion-icon name="add-circle-outline"></ion-icon> + Input Penerimaan Hari Ini
-                        </a>
-                    </div>
-                @endif
-            </div>
-        </div>
-    </div>
-
-    <div class="section mt-2" id="presence-section">
+        <div class="section mt-2" id="presence-section">
         <div class="todaypresence">
             @if ($dataliburhariini != null)
                 <div class="card mb-2"
@@ -493,7 +424,65 @@
                 </div>
             </div>
         </div>
+    </div>
 
+    <!-- Card Status Penerimaan PKB Hari Ini -->
+    <div class="section mt-2">
+        <div class="card" style="border-radius: 14px; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.05); overflow: hidden;">
+            <div class="card-body p-3">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <div class="d-flex align-items-center">
+                        <div style="width: 36px; height: 36px; border-radius: 10px; background: rgba(16, 185, 129, 0.12); display: flex; align-items: center; justify-content: center; margin-right: 10px;">
+                            <ion-icon name="cash-outline" style="font-size: 22px; color: #10b981;"></ion-icon>
+                        </div>
+                        <div>
+                            <div style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Penerimaan PKB Hari Ini</div>
+                            <div style="font-size: 11px; color: #94a3b8;">{{ \Carbon\Carbon::parse($hariini ?? date('Y-m-d'))->translatedFormat('l, d F Y') }}</div>
+                        </div>
+                    </div>
+                    @if (isset($penerimaanHariIniLayanan) && $penerimaanHariIniLayanan)
+                        <span class="badge badge-success" style="font-size: 11px; padding: 4px 10px; background-color: #10b981; color: #ffffff;">Sudah Input</span>
+                    @else
+                        <span class="badge badge-warning" style="font-size: 11px; padding: 4px 10px; background-color: #f59e0b; color: #ffffff;">Belum Input</span>
+                    @endif
+                </div>
+
+                @if (isset($penerimaanHariIniLayanan) && $penerimaanHariIniLayanan)
+                    <div class="d-flex align-items-center justify-content-between p-2 mt-1" style="background: #f8fafc; border-radius: 10px;">
+                        <div>
+                            <div style="font-size: 11px; color: #64748b;">Total Realisasi</div>
+                            <div style="font-size: 16px; font-weight: 800; color: #0f172a;">Rp {{ number_format($penerimaanHariIniLayanan->total_rp, 0, ',', '.') }}</div>
+                        </div>
+                        <div class="text-right">
+                            <div style="font-size: 11px; color: #64748b;">Unit / Notice</div>
+                            <div style="font-size: 13px; font-weight: 700; color: #334155;">{{ $penerimaanHariIniLayanan->total_unit }} Unit / {{ $penerimaanHariIniLayanan->jumlah_notice }} Notice</div>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-6">
+                            <a href="/penerimaan/{{ $penerimaanHariIniLayanan->id }}/edit" class="btn btn-sm btn-outline-primary btn-block" style="border-radius: 8px;">
+                                <ion-icon name="create-outline"></ion-icon> Update
+                            </a>
+                        </div>
+                        <div class="col-6">
+                            <a href="/penerimaan" class="btn btn-sm btn-primary btn-block" style="border-radius: 8px;">
+                                <ion-icon name="list-outline"></ion-icon> Rekap
+                            </a>
+                        </div>
+                    </div>
+                @else
+                    <div class="text-center py-2">
+                        <p class="text-muted mb-2" style="font-size: 12px;">Layanan belum menginput realisasi penerimaan PKB hari ini.</p>
+                        <a href="/penerimaan/create" class="btn btn-sm btn-success btn-block" style="border-radius: 8px; font-weight: 600; background-color: #10b981; border-color: #10b981;">
+                            <ion-icon name="add-circle-outline"></ion-icon> + Input Penerimaan Hari Ini
+                        </a>
+                    </div>
+                @endif
+            </div>
+        </div>
+    </div>
+
+    <div class="section mt-2">
         <div id="rekappresensi">
             <h3>Rekap Aktivitas Bulan {{ $namabulan[$bulanini] }} Tahun {{ $tahunini }}</h3>
             <div class="row">
