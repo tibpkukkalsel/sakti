@@ -6,7 +6,7 @@
         <div class="row g-2 align-items-center">
             <div class="col">
                 <h2 class="page-title">
-                    Home
+                    <i class="bi bi-house-door-fill text-primary me-2"></i> Home
                 </h2>
             </div>
             <div class="col-auto ms-auto d-print-none">
@@ -30,66 +30,75 @@
         </div>
 
         <div class="row row-deck row-cards mb-4">
-            <!-- Dashboard Presensi -->
+            <!-- 1.1 Dashboard Presensi -->
             <div class="col-md-4 col-sm-6 col-12">
-                <div class="card card-stacked shadow-sm">
+                <div class="card card-stacked shadow-sm" style="position: relative; overflow: hidden;">
                     <div class="card-status-top bg-primary"></div>
-                    <div class="card-body text-center p-4 d-flex flex-column justify-content-between">
+                    <div style="position: absolute; right: 12px; top: 10px; opacity: 0.12; font-size: 64px; pointer-events: none; line-height: 1;">
+                        <i class="bi bi-speedometer2 text-primary"></i>
+                    </div>
+                    <div class="card-body text-center p-4 d-flex flex-column justify-content-between" style="position: relative; z-index: 2;">
                         <div>
-                            <div class="avatar bg-primary-lt rounded-circle mx-auto mb-3" style="width: 56px; height: 56px;">
+                            <div class="avatar bg-primary-lt rounded-circle mx-auto mb-3" style="width: 54px; height: 54px;">
                                 <i class="bi bi-speedometer2 fs-2 text-primary"></i>
                             </div>
                             <h3 class="card-title fw-bold text-dark mb-2">Dashboard</h3>
-                            <div class="d-flex justify-content-center gap-1 mb-3">
-                                <span class="badge bg-success-lt">{{ $jmlHadirHariIni }} Hadir</span>
-                                <span class="badge bg-warning-lt">{{ $jmlMaintenanceHariIni }} Maintenance</span>
-                                <span class="badge bg-danger-lt">{{ $jmlBelumAbsen }} Belum Absen</span>
+                            <div class="d-flex justify-content-center gap-1 mb-3 flex-wrap">
+                                <span class="badge bg-success-lt"><i class="bi bi-check2-circle me-1"></i>{{ $jmlHadirHariIni }} Hadir</span>
+                                <span class="badge bg-warning-lt"><i class="bi bi-tools me-1"></i>{{ $jmlMaintenanceHariIni }} Maint.</span>
+                                <span class="badge bg-danger-lt"><i class="bi bi-clock-history me-1"></i>{{ $jmlBelumAbsen }} Belum</span>
                             </div>
                         </div>
                         <a href="/panel-adm14/dashboardadmin" class="btn btn-primary w-100">
-                            <i class="bi bi-box-arrow-in-right me-1"></i> Buka Dashboard
+                            <i class="bi bi-arrow-right-circle me-1"></i> Buka Dashboard
                         </a>
                     </div>
                 </div>
             </div>
 
-            <!-- Jadwal Layanan -->
+            <!-- 1.2 Jadwal Layanan -->
             <div class="col-md-4 col-sm-6 col-12">
-                <div class="card card-stacked shadow-sm">
+                <div class="card card-stacked shadow-sm" style="position: relative; overflow: hidden;">
                     <div class="card-status-top bg-info"></div>
-                    <div class="card-body text-center p-4 d-flex flex-column justify-content-between">
+                    <div style="position: absolute; right: 12px; top: 10px; opacity: 0.12; font-size: 64px; pointer-events: none; line-height: 1;">
+                        <i class="bi bi-calendar2-week text-info"></i>
+                    </div>
+                    <div class="card-body text-center p-4 d-flex flex-column justify-content-between" style="position: relative; z-index: 2;">
                         <div>
-                            <div class="avatar bg-info-lt rounded-circle mx-auto mb-3" style="width: 56px; height: 56px;">
+                            <div class="avatar bg-info-lt rounded-circle mx-auto mb-3" style="width: 54px; height: 54px;">
                                 <i class="bi bi-calendar2-week fs-2 text-info"></i>
                             </div>
                             <h3 class="card-title fw-bold text-dark mb-2">Jadwal Layanan</h3>
                             <div class="mb-3">
-                                <span class="badge bg-info-lt">{{ $totalJadwalHariIni }} Lokasi Aktif Hari Ini</span>
+                                <span class="badge bg-info-lt"><i class="bi bi-geo-alt-fill me-1"></i>{{ $totalJadwalHariIni }} Lokasi Aktif Hari Ini</span>
                             </div>
                         </div>
                         <a href="/panel-adm14/presensi/jadwal-layanan" class="btn btn-outline-primary w-100">
-                            <i class="bi bi-calendar-event me-1"></i> Buka Jadwal Layanan
+                            <i class="bi bi-arrow-right-circle me-1"></i> Buka Jadwal Layanan
                         </a>
                     </div>
                 </div>
             </div>
 
-            <!-- Monitoring Presensi -->
+            <!-- 1.3 Monitoring Presensi -->
             <div class="col-md-4 col-sm-6 col-12">
-                <div class="card card-stacked shadow-sm">
+                <div class="card card-stacked shadow-sm" style="position: relative; overflow: hidden;">
                     <div class="card-status-top bg-azure"></div>
-                    <div class="card-body text-center p-4 d-flex flex-column justify-content-between">
+                    <div style="position: absolute; right: 12px; top: 10px; opacity: 0.12; font-size: 64px; pointer-events: none; line-height: 1;">
+                        <i class="bi bi-display text-azure"></i>
+                    </div>
+                    <div class="card-body text-center p-4 d-flex flex-column justify-content-between" style="position: relative; z-index: 2;">
                         <div>
-                            <div class="avatar bg-azure-lt rounded-circle mx-auto mb-3" style="width: 56px; height: 56px;">
+                            <div class="avatar bg-azure-lt rounded-circle mx-auto mb-3" style="width: 54px; height: 54px;">
                                 <i class="bi bi-display fs-2 text-azure"></i>
                             </div>
                             <h3 class="card-title fw-bold text-dark mb-2">Monitoring Presensi</h3>
                             <div class="mb-3">
-                                <span class="badge bg-azure-lt">Real-Time Presensi</span>
+                                <span class="badge bg-azure-lt"><i class="bi bi-broadcast me-1"></i>Real-Time Presensi</span>
                             </div>
                         </div>
                         <a href="/panel-adm14/presensi/monitoring" class="btn btn-outline-primary w-100">
-                            <i class="bi bi-display me-1"></i> Buka Monitoring Presensi
+                            <i class="bi bi-arrow-right-circle me-1"></i> Buka Monitoring Presensi
                         </a>
                     </div>
                 </div>
@@ -105,64 +114,73 @@
         </div>
 
         <div class="row row-deck row-cards mb-4">
-            <!-- Dashboard Penerimaan -->
+            <!-- 2.1 Dashboard Penerimaan -->
             <div class="col-md-4 col-sm-6 col-12">
-                <div class="card card-stacked shadow-sm">
+                <div class="card card-stacked shadow-sm" style="position: relative; overflow: hidden;">
                     <div class="card-status-top bg-success"></div>
-                    <div class="card-body text-center p-4 d-flex flex-column justify-content-between">
+                    <div style="position: absolute; right: 12px; top: 10px; opacity: 0.12; font-size: 64px; pointer-events: none; line-height: 1;">
+                        <i class="bi bi-graph-up-arrow text-success"></i>
+                    </div>
+                    <div class="card-body text-center p-4 d-flex flex-column justify-content-between" style="position: relative; z-index: 2;">
                         <div>
-                            <div class="avatar bg-success-lt rounded-circle mx-auto mb-3" style="width: 56px; height: 56px;">
+                            <div class="avatar bg-success-lt rounded-circle mx-auto mb-3" style="width: 54px; height: 54px;">
                                 <i class="bi bi-graph-up-arrow fs-2 text-success"></i>
                             </div>
                             <h3 class="card-title fw-bold text-dark mb-2">Dashboard</h3>
                             <div class="mb-3">
-                                <span class="badge bg-success-lt">Rp {{ number_format($penerimaanBulanIni->total_rp ?? 0, 0, ',', '.') }}</span>
+                                <span class="badge bg-success-lt"><i class="bi bi-cash-stack me-1"></i>Rp {{ number_format($penerimaanBulanIni->total_rp ?? 0, 0, ',', '.') }}</span>
                             </div>
                         </div>
                         <a href="/panel-adm14/dashboard-penerimaan" class="btn btn-success w-100">
-                            <i class="bi bi-box-arrow-in-right me-1"></i> Buka Dashboard PKB
+                            <i class="bi bi-arrow-right-circle me-1"></i> Buka Dashboard PKB
                         </a>
                     </div>
                 </div>
             </div>
 
-            <!-- Rekap Layanan -->
+            <!-- 2.2 Rekap Layanan -->
             <div class="col-md-4 col-sm-6 col-12">
-                <div class="card card-stacked shadow-sm">
+                <div class="card card-stacked shadow-sm" style="position: relative; overflow: hidden;">
                     <div class="card-status-top bg-teal"></div>
-                    <div class="card-body text-center p-4 d-flex flex-column justify-content-between">
+                    <div style="position: absolute; right: 12px; top: 10px; opacity: 0.12; font-size: 64px; pointer-events: none; line-height: 1;">
+                        <i class="bi bi-layers-fill text-teal"></i>
+                    </div>
+                    <div class="card-body text-center p-4 d-flex flex-column justify-content-between" style="position: relative; z-index: 2;">
                         <div>
-                            <div class="avatar bg-teal-lt rounded-circle mx-auto mb-3" style="width: 56px; height: 56px;">
+                            <div class="avatar bg-teal-lt rounded-circle mx-auto mb-3" style="width: 54px; height: 54px;">
                                 <i class="bi bi-layers-fill fs-2 text-teal"></i>
                             </div>
                             <h3 class="card-title fw-bold text-dark mb-2">Rekap Layanan</h3>
                             <div class="mb-3">
-                                <span class="badge bg-teal-lt">Filter &amp; Data Per Layanan</span>
+                                <span class="badge bg-teal-lt"><i class="bi bi-truck me-1"></i>Rincian Per Akun Layanan</span>
                             </div>
                         </div>
                         <a href="/panel-adm14/penerimaan/rekap-layanan" class="btn btn-outline-success w-100">
-                            <i class="bi bi-table me-1"></i> Buka Rekap Layanan
+                            <i class="bi bi-arrow-right-circle me-1"></i> Buka Rekap Layanan
                         </a>
                     </div>
                 </div>
             </div>
 
-            <!-- Rekap Lokasi -->
+            <!-- 2.3 Rekap Lokasi -->
             <div class="col-md-4 col-sm-6 col-12">
-                <div class="card card-stacked shadow-sm">
+                <div class="card card-stacked shadow-sm" style="position: relative; overflow: hidden;">
                     <div class="card-status-top bg-emerald"></div>
-                    <div class="card-body text-center p-4 d-flex flex-column justify-content-between">
+                    <div style="position: absolute; right: 12px; top: 10px; opacity: 0.12; font-size: 64px; pointer-events: none; line-height: 1;">
+                        <i class="bi bi-geo-alt-fill text-green"></i>
+                    </div>
+                    <div class="card-body text-center p-4 d-flex flex-column justify-content-between" style="position: relative; z-index: 2;">
                         <div>
-                            <div class="avatar bg-green-lt rounded-circle mx-auto mb-3" style="width: 56px; height: 56px;">
+                            <div class="avatar bg-green-lt rounded-circle mx-auto mb-3" style="width: 54px; height: 54px;">
                                 <i class="bi bi-geo-alt-fill fs-2 text-green"></i>
                             </div>
                             <h3 class="card-title fw-bold text-dark mb-2">Rekap Lokasi</h3>
                             <div class="mb-3">
-                                <span class="badge bg-green-lt">Data &amp; Grafik Per Lokasi</span>
+                                <span class="badge bg-green-lt"><i class="bi bi-pin-map-fill me-1"></i>Rincian Per Titik Lokasi</span>
                             </div>
                         </div>
                         <a href="/panel-adm14/penerimaan/rekap-lokasi" class="btn btn-outline-success w-100">
-                            <i class="bi bi-geo me-1"></i> Buka Rekap Lokasi
+                            <i class="bi bi-arrow-right-circle me-1"></i> Buka Rekap Lokasi
                         </a>
                     </div>
                 </div>
