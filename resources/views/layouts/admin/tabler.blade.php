@@ -223,6 +223,67 @@
         }
 
         /* =========================================================
+           AdminLTE Info-Box Customization (Pixel-perfect to standard)
+           ========================================================= */
+        .info-box {
+            display: flex;
+            align-items: center;
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 1rem 1.25rem;
+            min-height: 95px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s ease-in-out;
+        }
+
+        .info-box:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .info-box .info-box-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 72px;
+            height: 72px;
+            min-width: 72px;
+            border-radius: 10px;
+            font-size: 2rem;
+            flex-shrink: 0;
+        }
+
+        .info-box .info-box-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding-left: 1.25rem;
+            flex-grow: 1;
+        }
+
+        .info-box .info-box-text {
+            font-size: 0.825rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #64748b;
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .info-box .info-box-number {
+            font-size: 1.85rem;
+            font-weight: 700;
+            color: #1e293b;
+            line-height: 1.2;
+            margin: 0.25rem 0 0.15rem 0;
+            white-space: nowrap;
+        }
+
+        /* =========================================================
            Admin Tables & Action Buttons Styling (Clean, Centered, No Offside)
            ========================================================= */
         .table-responsive {

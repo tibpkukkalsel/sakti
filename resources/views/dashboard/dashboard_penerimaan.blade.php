@@ -93,107 +93,72 @@
         </div>
     </div>
 
-    <!-- Summary Cards -->
-    <div class="row row-deck row-cards mb-3">
-        <!-- Card 1: Total Penerimaan -->
-        <div class="col-sm-6 col-lg-3">
-            <div class="card card-sm">
-                <div class="card-body">
-                    <div class="row align-items-center">
-                        <div class="col-auto">
-                            <span class="bg-primary text-white avatar">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-coin" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                    <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
-                                    <path d="M14.8 9a2 2 0 0 0 -1.8 -1h-2a2 2 0 1 0 0 4h2a2 2 0 1 1 0 4h-2a2 2 0 0 1 -1.8 -1"></path>
-                                    <path d="M12 7v10"></path>
-                                </svg>
-                            </span>
-                        </div>
-                        <div class="col">
-                            <div class="font-weight-medium text-muted">Total Penerimaan</div>
-                            <div class="fs-4 font-weight-bold text-dark">Rp {{ number_format($summary->total_rp, 0, ',', '.') }}</div>
-                        </div>
-                    </div>
+    <!-- Summary Cards (Info-Box Style, 1 Baris 2 Card) -->
+    <div class="row g-3 mb-4">
+        <!-- Card 1: Total Penerimaan PKB -->
+        <div class="col-md-6 col-12">
+            <div class="info-box shadow-sm border rounded-3 p-3 bg-white h-100 d-flex align-items-center">
+                <span class="info-box-icon text-bg-primary rounded-3 shadow-sm flex-shrink-0" style="width: 72px; height: 72px; display: flex; align-items: center; justify-content: center;">
+                    <i class="bi bi-cash-stack" style="font-size: 34px; color: #fff;"></i>
+                </span>
+                <div class="info-box-content ps-3 flex-grow-1">
+                    <span class="info-box-text text-muted text-uppercase fw-semibold" style="font-size: 12px; letter-spacing: 0.5px;">Total Penerimaan (PKB)</span>
+                    <span class="info-box-number text-dark fw-bold d-block" style="font-size: 1.75rem; line-height: 1.25; margin-top: 2px;">
+                        Rp {{ number_format($summary->total_rp, 0, ',', '.') }}
+                    </span>
+                    <small class="text-muted d-block mt-1">Total pendapatan PKB periode terpilih</small>
                 </div>
             </div>
         </div>
 
-        <!-- Card 2: Penerimaan R2 -->
-        <div class="col-sm-6 col-lg-3">
-            <div class="card card-sm">
-                <div class="card-body">
-                    <div class="row align-items-center">
-                        <div class="col-auto">
-                            <span class="bg-success text-white avatar">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-motorbike" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                    <path d="M5 16m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
-                                    <path d="M19 16m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
-                                    <path d="M7.5 14h5l4 -4H7.5m4 0h4l2 -3h-3"></path>
-                                </svg>
-                            </span>
-                        </div>
-                        <div class="col">
-                            <div class="font-weight-medium text-muted">Penerimaan Roda 2 (R2)</div>
-                            <div class="fs-4 font-weight-bold text-success">Rp {{ number_format($summary->sum_rp_r2, 0, ',', '.') }}</div>
-                            <small class="text-muted">{{ number_format($summary->sum_unit_r2, 0, ',', '.') }} Unit</small>
-                        </div>
-                    </div>
+        <!-- Card 2: Penerimaan Roda 2 (R2) -->
+        <div class="col-md-6 col-12">
+            <div class="info-box shadow-sm border rounded-3 p-3 bg-white h-100 d-flex align-items-center">
+                <span class="info-box-icon text-bg-success rounded-3 shadow-sm flex-shrink-0" style="width: 72px; height: 72px; display: flex; align-items: center; justify-content: center;">
+                    <i class="bi bi-bicycle" style="font-size: 34px; color: #fff;"></i>
+                </span>
+                <div class="info-box-content ps-3 flex-grow-1">
+                    <span class="info-box-text text-muted text-uppercase fw-semibold" style="font-size: 12px; letter-spacing: 0.5px;">Penerimaan Roda 2 (R2)</span>
+                    <span class="info-box-number text-success fw-bold d-block" style="font-size: 1.75rem; line-height: 1.25; margin-top: 2px;">
+                        Rp {{ number_format($summary->sum_rp_r2, 0, ',', '.') }}
+                    </span>
+                    <small class="text-muted d-block mt-1">{{ number_format($summary->sum_unit_r2, 0, ',', '.') }} Unit Kendaraan R2</small>
                 </div>
             </div>
         </div>
 
-        <!-- Card 3: Penerimaan R4 -->
-        <div class="col-sm-6 col-lg-3">
-            <div class="card card-sm">
-                <div class="card-body">
-                    <div class="row align-items-center">
-                        <div class="col-auto">
-                            <span class="bg-info text-white avatar">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-car" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                    <path d="M7 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
-                                    <path d="M17 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
-                                    <path d="M5 17h-2v-6l2 -5h9l4 5h1a2 2 0 0 1 2 2v4h-2m-4 0h-6"></path>
-                                    <path d="M7 9l1 3h8l1 -3"></path>
-                                </svg>
-                            </span>
-                        </div>
-                        <div class="col">
-                            <div class="font-weight-medium text-muted">Penerimaan Roda 4 (R4)</div>
-                            <div class="fs-4 font-weight-bold text-info">Rp {{ number_format($summary->sum_rp_r4, 0, ',', '.') }}</div>
-                            <small class="text-muted">{{ number_format($summary->sum_unit_r4, 0, ',', '.') }} Unit</small>
-                        </div>
-                    </div>
+        <!-- Card 3: Penerimaan Roda 4 (R4) -->
+        <div class="col-md-6 col-12">
+            <div class="info-box shadow-sm border rounded-3 p-3 bg-white h-100 d-flex align-items-center">
+                <span class="info-box-icon text-bg-info text-white rounded-3 shadow-sm flex-shrink-0" style="width: 72px; height: 72px; display: flex; align-items: center; justify-content: center;">
+                    <i class="bi bi-car-front-fill" style="font-size: 34px; color: #fff;"></i>
+                </span>
+                <div class="info-box-content ps-3 flex-grow-1">
+                    <span class="info-box-text text-muted text-uppercase fw-semibold" style="font-size: 12px; letter-spacing: 0.5px;">Penerimaan Roda 4 (R4)</span>
+                    <span class="info-box-number text-info fw-bold d-block" style="font-size: 1.75rem; line-height: 1.25; margin-top: 2px;">
+                        Rp {{ number_format($summary->sum_rp_r4, 0, ',', '.') }}
+                    </span>
+                    <small class="text-muted d-block mt-1">{{ number_format($summary->sum_unit_r4, 0, ',', '.') }} Unit Kendaraan R4</small>
                 </div>
             </div>
         </div>
 
-        <!-- Card 4: Notice Dicetak -->
-        <div class="col-sm-6 col-lg-3">
-            <div class="card card-sm">
-                <div class="card-body">
-                    <div class="row align-items-center">
-                        <div class="col-auto">
-                            <span class="bg-warning text-white avatar">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-receipt" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                    <path d="M5 21v-16a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v16l-3 -2l-2 2l-2 -2l-2 2l-2 -2l-3 2m4 -14h6m-6 4h6m-2 4h2"></path>
-                                </svg>
-                            </span>
-                        </div>
-                        <div class="col">
-                            <div class="font-weight-medium text-muted">Notice Pajak Dicetak</div>
-                            <div class="fs-4 font-weight-bold text-warning">{{ number_format($summary->sum_notice, 0, ',', '.') }} Lembar</div>
-                            <small class="text-muted">Total {{ number_format($summary->sum_total_unit, 0, ',', '.') }} Unit</small>
-                        </div>
-                    </div>
+        <!-- Card 4: Notice Pajak Dicetak -->
+        <div class="col-md-6 col-12">
+            <div class="info-box shadow-sm border rounded-3 p-3 bg-white h-100 d-flex align-items-center">
+                <span class="info-box-icon text-bg-warning text-white rounded-3 shadow-sm flex-shrink-0" style="width: 72px; height: 72px; display: flex; align-items: center; justify-content: center;">
+                    <i class="bi bi-file-earmark-check-fill" style="font-size: 34px; color: #fff;"></i>
+                </span>
+                <div class="info-box-content ps-3 flex-grow-1">
+                    <span class="info-box-text text-muted text-uppercase fw-semibold" style="font-size: 12px; letter-spacing: 0.5px;">Notice Pajak Dicetak</span>
+                    <span class="info-box-number text-warning fw-bold d-block" style="font-size: 1.75rem; line-height: 1.25; margin-top: 2px;">
+                        {{ number_format($summary->sum_notice, 0, ',', '.') }} Lembar
+                    </span>
+                    <small class="text-muted d-block mt-1">Total {{ number_format($summary->sum_total_unit, 0, ',', '.') }} Unit Kendaraan (R2 + R4)</small>
                 </div>
             </div>
         </div>
     </div>
-
     <!-- Charts Section -->
     <div class="row mb-3">
         <!-- Grafik 1: Tren Penerimaan Per Bulan -->
