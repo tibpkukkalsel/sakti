@@ -38,7 +38,7 @@
                                 <option value="all">-- Semua Layanan --</option>
                                 @foreach ($allLayanan as $l)
                                     <option value="{{ $l->id }}" {{ $layanan_id == $l->id ? 'selected' : '' }}>
-                                        {{ $l->nama_layanan }} (PIC: {{ $l->nama_pic ?: '-' }})
+                                        {{ $l->nama_layanan }}
                                     </option>
                                 @endforeach
                             </select>
@@ -77,7 +77,6 @@
                         <i class="bi bi-calendar2-week-fill text-primary me-2"></i>
                         Matriks Penugasan Lokasi Pelayanan Per Hari
                     </h3>
-                    <small class="text-muted">Data jadwal lokasi operasional yang dikelompokkan per layanan per hari (Senin - Minggu).</small>
                 </div>
                 <span class="badge bg-primary-lt fs-6">{{ count($layananList) }} Layanan Tampil</span>
             </div>
@@ -86,11 +85,10 @@
                     <thead class="table-light">
                         <tr class="text-center align-middle">
                             <th style="width: 40px;">No</th>
-                            <th style="min-width: 180px;" class="text-start">Akun Layanan</th>
-                            <th style="min-width: 130px;" class="text-start">Lokasi Default</th>
+                            <th style="min-width: 200px;" class="text-start">Akun Layanan</th>
                             @foreach ($listHari as $h)
                                 @if (empty($hari) || $hari == 'all' || $hari == $h)
-                                    <th style="min-width: 130px;" class="bg-primary-lt text-dark fw-bold">
+                                    <th style="min-width: 140px;" class="bg-primary-lt text-dark fw-bold">
                                         {{ $h }}
                                     </th>
                                 @endif
@@ -103,20 +101,11 @@
                             <td class="text-center fw-bold text-muted">{{ $loop->iteration }}</td>
                             <td>
                                 <div class="d-flex align-items-center">
-                                    <span class="avatar rounded-circle bg-primary-lt text-primary fw-bold me-2" style="width: 34px; height: 34px;">
+                                    <span class="avatar rounded-circle bg-primary-lt text-primary fw-bold me-2" style="width: 32px; height: 32px;">
                                         {{ strtoupper(substr($l->nama_layanan, 0, 2)) }}
                                     </span>
-                                    <div>
-                                        <strong class="text-dark d-block">{{ $l->nama_layanan }}</strong>
-                                        <span class="text-muted small">PIC: {{ $l->nama_pic ?: '-' }}</span>
-                                    </div>
+                                    <strong class="text-dark">{{ $l->nama_layanan }}</strong>
                                 </div>
-                            </td>
-                            <td>
-                                <span class="badge bg-light text-dark border">
-                                    <i class="bi bi-building me-1 text-muted"></i>
-                                    {{ $l->nama_cabang_default ?: 'UPPD Batulicin' }}
-                                </span>
                             </td>
 
                             <!-- Kolom Hari -->
@@ -137,9 +126,7 @@
                                                 @endif
                                             </div>
                                         @else
-                                            <span class="text-muted small" style="font-size: 11.5px;">
-                                                {{ $l->nama_cabang_default ?: 'UPPD Batulicin' }}
-                                            </span>
+                                            <span class="text-muted">-</span>
                                         @endif
                                     </td>
                                 @endif
@@ -147,7 +134,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="{{ 3 + count($listHari) }}" class="text-center py-4 text-muted">
+                            <td colspan="{{ 2 + count($listHari) }}" class="text-center py-4 text-muted">
                                 Tidak ada data layanan yang sesuai dengan filter yang dipilih.
                             </td>
                         </tr>
@@ -156,7 +143,6 @@
                 </table>
             </div>
             <div class="card-footer bg-white py-2 text-muted small d-flex justify-content-between align-items-center">
-                <span><i class="bi bi-info-circle me-1"></i> Warna biru menandakan jadwal lokasi penugasan khusus pada hari tersebut.</span>
                 <span>Total Jadwal Aktif: <strong>{{ $totalJadwalAktif }}</strong></span>
             </div>
         </div>
@@ -164,4 +150,3 @@
     </div>
 </div>
 @endsection
-
