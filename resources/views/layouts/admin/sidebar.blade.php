@@ -37,7 +37,7 @@
                     <a href="/panel-adm14/dashboard-penerimaan"
                         class="nav-link {{ request()->is(['panel-adm14/dashboard-penerimaan*', 'dashboard-penerimaan*']) ? 'active' : '' }}">
                         <i class="nav-icon bi bi-graph-up-arrow"></i>
-                        <p>Dashboard Penerimaan</p>
+                        <p>Penerimaan PKB</p>
                     </a>
                 </li>
 
