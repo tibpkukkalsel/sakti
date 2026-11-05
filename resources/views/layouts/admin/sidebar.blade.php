@@ -60,15 +60,6 @@
                         </a>
                     </li>
                 @endrole
-                @role('administrator|admin departemen', 'user')
-                    <li class="nav-item">
-                        <a href="/panel-adm14/penerimaan"
-                            class="nav-link {{ request()->is(['panel-adm14/penerimaan', 'panel-adm14/penerimaan/*']) ? 'active' : '' }}">
-                            <i class="nav-icon bi bi-cash-stack"></i>
-                            <p>Penerimaan PKB</p>
-                        </a>
-                    </li>
-                @endrole
                 @role('administrator', 'user')
                     <li class="nav-item">
                         <a href="/panel-adm14/lokasi" class="nav-link {{ request()->is(['panel-adm14/lokasi*', 'panel-adm14/cabang*']) ? 'active' : '' }}">
@@ -135,6 +126,15 @@
                 @endrole
 
                 <li class="nav-header">App</li>
+                @role('administrator|admin departemen', 'user')
+                    <li class="nav-item">
+                        <a href="/panel-adm14/penerimaan"
+                            class="nav-link {{ request()->is(['panel-adm14/penerimaan', 'panel-adm14/penerimaan/*']) ? 'active' : '' }}">
+                            <i class="nav-icon bi bi-cash-stack"></i>
+                            <p>Penerimaan PKB</p>
+                        </a>
+                    </li>
+                @endrole
                 <!-- 3. Monitoring Presensi -->
                 <li class="nav-item">
                     <a href="/panel-adm14/presensi/monitoring"
