@@ -91,7 +91,7 @@
             </div>
         </div>
 
-        <!-- 3. Filter Riwayat (Minggu, Bulan, Tahun) -->
+        <!-- 3. Filter Riwayat (Minggu, Bulan, Tahun, Custom) -->
         <div class="px-3 mt-3 mb-2">
             <div class="text-muted small fw-bold text-uppercase mb-2">Riwayat Rekap Penerimaan</div>
             <ul class="nav nav-tabs style1" role="tablist">
@@ -110,7 +110,33 @@
                         Tahun
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ $filter == 'custom' ? 'active' : '' }}" href="/penerimaan?filter=custom">
+                        Custom
+                    </a>
+                </li>
             </ul>
+
+            @if ($filter == 'custom')
+                <form action="/penerimaan" method="GET" class="mt-2 pt-1 pb-1">
+                    <input type="hidden" name="filter" value="custom">
+                    <div class="row g-2 align-items-end">
+                        <div class="col-5">
+                            <label class="text-muted small mb-1 d-block" style="font-size: 11px;">Dari Tanggal</label>
+                            <input type="date" name="dari" value="{{ $dari }}" class="form-control form-control-sm" required style="font-size: 12px; height: 36px; border-radius: 6px;">
+                        </div>
+                        <div class="col-5">
+                            <label class="text-muted small mb-1 d-block" style="font-size: 11px;">Sampai Tanggal</label>
+                            <input type="date" name="sampai" value="{{ $sampai }}" class="form-control form-control-sm" required style="font-size: 12px; height: 36px; border-radius: 6px;">
+                        </div>
+                        <div class="col-2">
+                            <button type="submit" class="btn btn-primary btn-sm w-100" style="height: 36px; border-radius: 6px; padding: 0;" title="Terapkan Filter">
+                                <ion-icon name="search-outline" style="font-size: 18px; vertical-align: middle;"></ion-icon>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            @endif
         </div>
 
         <!-- 4. Daftar Riwayat Dengan Pembatas Biasa (Tanpa Card) -->
@@ -171,6 +197,8 @@
                             Belum ada riwayat penerimaan pada bulan ini.
                         @elseif ($filter == 'tahun')
                             Belum ada riwayat penerimaan pada tahun ini.
+                        @elseif ($filter == 'custom')
+                            Belum ada riwayat penerimaan pada rentang tanggal yang dipilih.
                         @else
                             Belum ada riwayat rekap penerimaan.
                         @endif

@@ -27,11 +27,14 @@ class PenerimaanController extends Controller
             ->where('tgl_penerimaan', $hariini)
             ->first();
 
-        // Filter: default 'minggu' (Minggu Ini), opsi: 'bulan' (Bulan Ini), 'tahun' (Tahun Ini)
+        // Filter: default 'minggu' (Minggu Ini), opsi: 'bulan', 'tahun', 'custom'
         $filter = $request->get('filter', 'minggu');
-        if (!in_array($filter, ['minggu', 'bulan', 'tahun'])) {
+        if (!in_array($filter, ['minggu', 'bulan', 'tahun', 'custom'])) {
             $filter = 'minggu';
         }
+
+        $dari = $request->get('dari', date('Y-m-01'));
+        $sampai = $request->get('sampai', date('Y-m-d'));
 
         // Ambil histori penerimaan akun layanan ini sesuai filter
         $query = RekapPenerimaanPkb::where('layanan_id', $layananId)
@@ -46,6 +49,14 @@ class PenerimaanController extends Controller
                 ->whereYear('tgl_penerimaan', date('Y'));
         } elseif ($filter === 'tahun') {
             $query->whereYear('tgl_penerimaan', date('Y'));
+        } elseif ($filter === 'custom') {
+            if (!empty($dari) && !empty($sampai)) {
+                $query->whereBetween('tgl_penerimaan', [$dari, $sampai]);
+            } elseif (!empty($dari)) {
+                $query->where('tgl_penerimaan', '>=', $dari);
+            } elseif (!empty($sampai)) {
+                $query->where('tgl_penerimaan', '<=', $sampai);
+            }
         }
 
         $histori = $query->paginate(6)->withQueryString();
@@ -57,7 +68,7 @@ class PenerimaanController extends Controller
             ->selectRaw('SUM(total_rp) as total_rp, SUM(total_unit) as total_unit, SUM(jumlah_notice) as total_notice')
             ->first();
 
-        return view('penerimaan.index', compact('penerimaanHariIni', 'histori', 'totalTahunIni', 'user', 'filter'));
+        return view('penerimaan.index', compact('penerimaanHariIni', 'histori', 'totalTahunIni', 'user', 'filter', 'dari', 'sampai'));
     }
 
     public function create()
