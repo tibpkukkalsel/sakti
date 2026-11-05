@@ -261,19 +261,19 @@
                         </tr>
                         @endforelse
                     </tbody>
-                    <tfoot class="table-dark fw-bold">
+                    <tfoot class="table-light fw-bold text-dark" style="border-top: 2px solid #cbd5e1;">
                         <tr class="align-middle">
-                            <td colspan="2" class="text-center">TOTAL KESELURUHAN</td>
-                            <td class="text-end font-monospace">Rp {{ number_format($grandTotal->rp_r2, 0, ',', '.') }}</td>
-                            <td class="text-center font-monospace">{{ number_format($grandTotal->unit_r2) }}</td>
-                            <td class="text-end font-monospace">Rp {{ number_format($grandTotal->rp_r4, 0, ',', '.') }}</td>
-                            <td class="text-center font-monospace">{{ number_format($grandTotal->unit_r4) }}</td>
-                            <td class="text-end font-monospace text-warning fs-6">
+                            <td colspan="2" class="text-center text-dark fw-bold">TOTAL KESELURUHAN</td>
+                            <td class="text-end font-monospace text-dark">Rp {{ number_format($grandTotal->rp_r2, 0, ',', '.') }}</td>
+                            <td class="text-center font-monospace text-dark">{{ number_format($grandTotal->unit_r2) }}</td>
+                            <td class="text-end font-monospace text-dark">Rp {{ number_format($grandTotal->rp_r4, 0, ',', '.') }}</td>
+                            <td class="text-center font-monospace text-dark">{{ number_format($grandTotal->unit_r4) }}</td>
+                            <td class="text-end font-monospace text-success fw-bold fs-6 bg-success-lt">
                                 Rp {{ number_format($grandTotal->total_rp, 0, ',', '.') }}
                             </td>
-                            <td class="text-center font-monospace">{{ number_format($grandTotal->total_unit) }}</td>
-                            <td class="text-center font-monospace">{{ number_format($grandTotal->total_notice) }}</td>
-                            <td class="text-center">100%</td>
+                            <td class="text-center font-monospace text-dark">{{ number_format($grandTotal->total_unit) }}</td>
+                            <td class="text-center font-monospace text-dark">{{ number_format($grandTotal->total_notice) }}</td>
+                            <td class="text-center text-dark">100%</td>
                         </tr>
                     </tfoot>
                 </table>
