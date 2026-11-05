@@ -108,17 +108,15 @@
                 </div>
 
                 <!-- Ringkasan Total Realisasi -->
-                <div class="card my-2" style="background: #ffffff; border-radius: 10px;">
-                    <div class="card-body p-3">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <div class="text-muted" style="font-size: 11px; font-weight: 600; text-transform: uppercase;">Total Penerimaan</div>
-                                <div style="font-size: 18px; font-weight: 800; color: #1e293b;" id="previewTotalRp">Rp 0</div>
-                            </div>
-                            <div class="text-right">
-                                <div class="text-muted" style="font-size: 11px; font-weight: 600; text-transform: uppercase;">Total Unit</div>
-                                <div style="font-size: 15px; font-weight: 700; color: #1e293b;" id="previewTotalUnit">0 Unit</div>
-                            </div>
+                <div class="p-3 my-2 bg-white border rounded">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="text-muted small fw-bold text-uppercase">Total Penerimaan</div>
+                            <div style="font-size: 18px; font-weight: 800; color: #10b981;" id="previewTotalRp">Rp 0</div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-muted small fw-bold text-uppercase">Total Unit</div>
+                            <div style="font-size: 15px; font-weight: 700; color: #1e293b;" id="previewTotalUnit">0 Unit</div>
                         </div>
                     </div>
                 </div>
