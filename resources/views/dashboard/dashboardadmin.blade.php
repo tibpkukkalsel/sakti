@@ -72,18 +72,18 @@
             </div>
         </div>
 
-        <!-- Box 3: Layanan Izin / Sakit (Yellow) -->
+        <!-- Box 3: Layanan Maintenance (Yellow) -->
         <div class="col-xl-3 col-sm-6 col-12 mb-3 mb-xl-0">
             <div class="small-box text-bg-warning shadow-sm h-100 d-flex flex-column justify-content-between" style="border-radius: 12px; overflow: hidden; position: relative; color: #1e293b;">
                 <div class="inner p-3" style="position: relative; z-index: 2;">
-                    <h3 class="fw-bold mb-1" style="font-size: 2.3rem; line-height: 1.1; color: #1e293b;">{{ $jmlIzin ?? 0 }}</h3>
-                    <p class="mb-0 fs-6 fw-medium" style="color: #1e293b;">Layanan Izin / Sakit</p>
+                    <h3 class="fw-bold mb-1" style="font-size: 2.3rem; line-height: 1.1; color: #1e293b;">{{ $jmlMaintenance }}</h3>
+                    <p class="mb-0 fs-6 fw-medium" style="color: #1e293b;">Layanan Maintenance</p>
                 </div>
                 <div class="small-box-icon" style="position: absolute; right: 15px; top: 12px; z-index: 1; opacity: 0.20; font-size: 72px; line-height: 1; pointer-events: none; color: #000;">
-                    <i class="bi bi-file-earmark-medical-fill"></i>
+                    <i class="bi bi-tools"></i>
                 </div>
-                <a href="/panel-adm14/presensi/izinsakit" class="small-box-footer d-flex align-items-center justify-content-center text-decoration-none py-2" style="background-color: rgba(0, 0, 0, 0.12); font-size: 13.5px; font-weight: 500; color: #1e293b; transition: background-color 0.2s;">
-                    Data Izin &amp; Sakit <i class="bi bi-arrow-right-circle ms-1" style="font-size: 15px;"></i>
+                <a href="/panel-adm14/presensi/maintenance" class="small-box-footer d-flex align-items-center justify-content-center text-decoration-none py-2" style="background-color: rgba(0, 0, 0, 0.12); font-size: 13.5px; font-weight: 500; color: #1e293b; transition: background-color 0.2s;">
+                    Data Maintenance <i class="bi bi-arrow-right-circle ms-1" style="font-size: 15px;"></i>
                 </a>
             </div>
         </div>

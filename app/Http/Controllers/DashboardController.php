@@ -117,15 +117,22 @@ class DashboardController extends Controller
         $rekappresensi = DB::table('presensi')
             ->selectRaw('
             SUM(IF(status="h",1,0)) as jmlhadir,
-            SUM(IF(status="i",1,0)) as jmlizin,
-            SUM(IF(status="s",1,0)) as jmlsakit,
-            SUM(IF(status="c",1,0)) as jmlcuti,
+            SUM(IF(status="m",1,0)) as jmlmaintenance,
             SUM(IF(status="h" AND ((jam_in IS NOT NULL AND jam_in != "" AND jam_in > jam_masuk) OR jam_in IS NULL OR jam_in = ""), 1, 0)) as jmlterlambat
             ')
             ->leftJoin('jam_kerja', 'presensi.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
             ->where('nik', $nik)
             ->whereRaw('MONTH(tgl_presensi)="' . $bulanini . '"')
             ->whereRaw('YEAR(tgl_presensi)="' . $tahunini . '"')
+            ->first();
+
+        // Cek status maintenance aktif untuk akun layanan ini hari ini
+        $maintenanceHariIniLayanan = DB::table('pengajuan_izin')
+            ->where('nik', $nik)
+            ->where('status', 'm')
+            ->where('status_approved', 1)
+            ->where('tgl_izin_dari', '<=', $hariini)
+            ->where('tgl_izin_sampai', '>=', $hariini)
             ->first();
 
         $totalLiburBulanIni = count($hariliburmingguini);
@@ -159,7 +166,7 @@ class DashboardController extends Controller
             ->where('tgl_penerimaan', $hariini)
             ->first();
 
-        return view('dashboard.dashboard', compact('presensihariini', 'dataliburhariini', 'historimingguini', 'historibulanini', 'namabulan', 'bulanini', 'tahunini', 'rekappresensi', 'totalLiburBulanIni', 'leaderboard', 'cabang', 'departemen', 'startOfWeek', 'endOfWeek', 'penerimaanHariIniLayanan', 'jadwalHariIni', 'namahari', 'hariini'));
+        return view('dashboard.dashboard', compact('presensihariini', 'dataliburhariini', 'historimingguini', 'historibulanini', 'namabulan', 'bulanini', 'tahunini', 'rekappresensi', 'totalLiburBulanIni', 'leaderboard', 'cabang', 'departemen', 'startOfWeek', 'endOfWeek', 'penerimaanHariIniLayanan', 'jadwalHariIni', 'namahari', 'hariini', 'maintenanceHariIniLayanan'));
     }
 
     /**
@@ -202,29 +209,37 @@ class DashboardController extends Controller
             ->get()
             ->keyBy('layanan_id');
 
+        // Ambil data maintenance layanan yang aktif hari ini
+        $maintenanceHariIni = DB::table('pengajuan_izin')
+            ->where('status_approved', 1)
+            ->where('status', 'm')
+            ->where('tgl_izin_dari', '<=', $hariini)
+            ->where('tgl_izin_sampai', '>=', $hariini)
+            ->get()
+            ->keyBy(function ($item) {
+                return (string) $item->nik;
+            });
+
         $jmlLayananAktif = 0;
         $jmlLayananPulang = 0;
+        $jmlMaintenance = 0;
         $monitoringLayanan = [];
 
         foreach ($listLayanan as $l) {
             $p = $presensiHariIni->get((string) $l->id) ?: $presensiHariIni->get((string) $l->username);
             $j = $jadwalHariIni->get($l->id);
-
-            // Tentukan lokasi yang ditampilkan
-            $lokasiTampil = '-';
-            if ($j) {
-                $lokasiTampil = $j->nama_cabang . ($j->keterangan ? ' (' . $j->keterangan . ')' : '');
-            } elseif (!empty($l->nama_cabang_default)) {
-                $lokasiTampil = $l->nama_cabang_default;
-            }
+            $m = $maintenanceHariIni->get((string) $l->id) ?: $maintenanceHariIni->get((string) $l->username);
 
             $jamIn = $p ? $p->jam_in : null;
             $jamOut = $p ? $p->jam_out : null;
 
-            $statusText = 'Belum Hadir';
-            $statusBadge = 'bg-secondary text-white';
-
-            if ($p && !empty($jamIn)) {
+            if ($m || ($p && $p->status == 'm')) {
+                $jmlMaintenance++;
+                $statusText = 'Maintenance';
+                $statusBadge = 'bg-warning text-dark';
+                $ketMaint = $m ? $m->keterangan : 'Pemeliharaan Unit';
+                $lokasiTampil = 'Maintenance' . ($ketMaint ? ' (' . $ketMaint . ')' : '');
+            } elseif ($p && !empty($jamIn)) {
                 $jmlLayananAktif++;
                 if (!empty($jamOut)) {
                     $jmlLayananPulang++;
@@ -233,6 +248,25 @@ class DashboardController extends Controller
                 } else {
                     $statusText = 'Sedang Bertugas';
                     $statusBadge = 'bg-primary text-white';
+                }
+
+                // Tentukan lokasi yang ditampilkan
+                $lokasiTampil = '-';
+                if ($j) {
+                    $lokasiTampil = $j->nama_cabang . ($j->keterangan ? ' (' . $j->keterangan . ')' : '');
+                } elseif (!empty($l->nama_cabang_default)) {
+                    $lokasiTampil = $l->nama_cabang_default;
+                }
+            } else {
+                $statusText = 'Belum Hadir';
+                $statusBadge = 'bg-secondary text-white';
+
+                // Tentukan lokasi jadwal hari ini
+                $lokasiTampil = '-';
+                if ($j) {
+                    $lokasiTampil = $j->nama_cabang . ($j->keterangan ? ' (' . $j->keterangan . ')' : '');
+                } elseif (!empty($l->nama_cabang_default)) {
+                    $lokasiTampil = $l->nama_cabang_default;
                 }
             }
 
@@ -251,26 +285,13 @@ class DashboardController extends Controller
             ];
         }
 
-        // Hitung layanan yang izin / sakit / cuti hari ini
-        $jmlIzinPresensi = DB::table('presensi')
-            ->where('tgl_presensi', $hariini)
-            ->whereIn('status', ['i', 's', 'c'])
-            ->count();
-
-        $jmlIzinApproved = DB::table('pengajuan_izin')
-            ->where('status_approved', 1)
-            ->where('tgl_izin_dari', '<=', $hariini)
-            ->where('tgl_izin_sampai', '>=', $hariini)
-            ->count();
-
-        $jmlIzin = max($jmlIzinPresensi, $jmlIzinApproved);
-        $jmlBelumAbsen = max(0, $totalLayanan - $jmlLayananAktif - $jmlIzin);
+        $jmlBelumAbsen = max(0, $totalLayanan - $jmlLayananAktif - $jmlMaintenance);
 
         return view('dashboard.dashboardadmin', compact(
             'totalLayanan',
             'jmlLayananAktif',
             'jmlLayananPulang',
-            'jmlIzin',
+            'jmlMaintenance',
             'jmlBelumAbsen',
             'monitoringLayanan',
             'hariini',

@@ -136,12 +136,12 @@
                     </a>
                 </li>
 
-                <!-- 4. Status Kehadiran Pegawai (Persetujuan Izin / Sakit / Cuti) -->
+                <!-- 4. Status Maintenance Layanan (Jika layanan tidak masuk/beroperasi) -->
                 <li class="nav-item">
-                    <a href="/panel-adm14/presensi/izinsakit"
-                        class="nav-link {{ request()->is(['panel-adm14/presensi/izinsakit*', 'panel-adm14/presensi/statuskehadiran*']) ? 'active' : '' }}">
-                        <i class="nav-icon bi bi-person-check-fill"></i>
-                        <p>Status Kehadiran</p>
+                    <a href="/panel-adm14/presensi/maintenance"
+                        class="nav-link {{ request()->is(['panel-adm14/presensi/maintenance*', 'panel-adm14/presensi/izinsakit*', 'panel-adm14/presensi/statuskehadiran*']) ? 'active' : '' }}">
+                        <i class="nav-icon bi bi-tools"></i>
+                        <p>Maintenance Layanan</p>
                     </a>
                 </li>
 

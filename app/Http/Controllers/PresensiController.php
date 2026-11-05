@@ -2699,4 +2699,128 @@ class PresensiController extends Controller
         }
         return Redirect::back()->with(['warning' => 'Data presensi tidak ditemukan.']);
     }
+
+    /**
+     * Halaman Kelola Status Maintenance Layanan
+     */
+    public function maintenanceLayanan(Request $request)
+    {
+        $query = DB::table('pengajuan_izin')
+            ->join('layanan', 'pengajuan_izin.nik', '=', 'layanan.id')
+            ->select(
+                'pengajuan_izin.*',
+                'layanan.nama_layanan',
+                'layanan.nama_pic',
+                'layanan.jabatan_pic'
+            )
+            ->where('pengajuan_izin.status', 'm');
+
+        if (!empty($request->dari) && !empty($request->sampai)) {
+            $query->where(function ($q) use ($request) {
+                $q->whereBetween('tgl_izin_dari', [$request->dari, $request->sampai])
+                    ->orWhereBetween('tgl_izin_sampai', [$request->dari, $request->sampai]);
+            });
+        }
+
+        if (!empty($request->layanan_id)) {
+            $query->where('pengajuan_izin.nik', $request->layanan_id);
+        }
+
+        $query->orderBy('pengajuan_izin.tgl_izin_dari', 'desc');
+        $maintenance = $query->paginate(15)->withQueryString();
+
+        $daftarLayanan = DB::table('layanan')->orderBy('nama_layanan')->get();
+
+        return view('presensi.maintenance', compact('maintenance', 'daftarLayanan'));
+    }
+
+    /**
+     * Simpan Data Status Maintenance Layanan
+     */
+    public function storeMaintenanceLayanan(Request $request)
+    {
+        $request->validate([
+            'layanan_id' => 'required',
+            'tgl_izin_dari' => 'required|date',
+            'tgl_izin_sampai' => 'required|date|after_or_equal:tgl_izin_dari',
+            'keterangan' => 'required|string',
+        ]);
+
+        $layananId = $request->layanan_id;
+        $tglDari = $request->tgl_izin_dari;
+        $tglSampai = $request->tgl_izin_sampai;
+        $keterangan = $request->keterangan;
+
+        $prefix = 'MT' . date('my');
+        $last = DB::table('pengajuan_izin')
+            ->where('kode_izin', 'like', $prefix . '%')
+            ->orderBy('kode_izin', 'desc')
+            ->first();
+
+        $noUrut = 1;
+        if ($last) {
+            $noUrut = (int) substr($last->kode_izin, -3) + 1;
+        }
+        $kodeIzin = $prefix . sprintf('%03d', $noUrut);
+
+        DB::beginTransaction();
+        try {
+            DB::table('pengajuan_izin')->insert([
+                'kode_izin' => $kodeIzin,
+                'nik' => (string) $layananId,
+                'tgl_izin_dari' => $tglDari,
+                'tgl_izin_sampai' => $tglSampai,
+                'status' => 'm',
+                'keterangan' => $keterangan,
+                'status_approved' => 1,
+            ]);
+
+            // Sinkronkan ke tabel presensi untuk setiap hari dalam rentang tanggal maintenance
+            $curr = strtotime($tglDari);
+            $end = strtotime($tglSampai);
+            while ($curr <= $end) {
+                $tgl = date('Y-m-d', $curr);
+                $cek = DB::table('presensi')->where('nik', (string) $layananId)->where('tgl_presensi', $tgl)->first();
+                if ($cek) {
+                    DB::table('presensi')->where('id', $cek->id)->update([
+                        'status' => 'm',
+                        'kode_izin' => $kodeIzin,
+                    ]);
+                } else {
+                    DB::table('presensi')->insert([
+                        'nik' => (string) $layananId,
+                        'tgl_presensi' => $tgl,
+                        'status' => 'm',
+                        'kode_izin' => $kodeIzin,
+                        'status_in' => null,
+                        'status_out' => null,
+                    ]);
+                }
+                $curr = strtotime('+1 day', $curr);
+            }
+
+            DB::commit();
+            return Redirect::back()->with(['success' => 'Status Maintenance Layanan berhasil disimpan.']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return Redirect::back()->with(['warning' => 'Gagal menyimpan status maintenance: ' . $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Hapus Data Status Maintenance Layanan
+     */
+    public function deleteMaintenanceLayanan($kode_izin)
+    {
+        DB::beginTransaction();
+        try {
+            DB::table('presensi')->where('kode_izin', $kode_izin)->delete();
+            DB::table('pengajuan_izin')->where('kode_izin', $kode_izin)->delete();
+            DB::commit();
+            return Redirect::back()->with(['success' => 'Data maintenance berhasil dihapus.']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return Redirect::back()->with(['warning' => 'Gagal menghapus data: ' . $e->getMessage()]);
+        }
+    }
 }

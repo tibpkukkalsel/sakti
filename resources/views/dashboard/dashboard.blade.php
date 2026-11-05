@@ -339,7 +339,25 @@
             </div>
         </div>
     </div>
-        <!-- Card Status Penerimaan PKB Hari Ini -->
+            @if (isset($maintenanceHariIniLayanan) && $maintenanceHariIniLayanan)
+    <div class="section mt-2">
+        <div class="card" style="border-radius: 14px; border: 1.5px solid #fde047; background: #fefce8; box-shadow: 0 2px 8px rgba(0,0,0,0.04); overflow: hidden;">
+            <div class="card-body p-3">
+                <div class="d-flex align-items-center">
+                    <div style="width: 40px; height: 40px; border-radius: 12px; background: rgba(234, 179, 8, 0.2); display: flex; align-items: center; justify-content: center; margin-right: 12px; flex-shrink: 0;">
+                        <ion-icon name="construct" style="font-size: 24px; color: #ca8a04;"></ion-icon>
+                    </div>
+                    <div>
+                        <div style="font-size: 11px; font-weight: 800; color: #a16207; text-transform: uppercase; letter-spacing: 0.5px;">Status Operasional: Sedang Maintenance</div>
+                        <div style="font-size: 12px; color: #713f12; font-weight: 500;">{{ $maintenanceHariIniLayanan->keterangan ?: 'Unit layanan dalam masa perawatan/servis berkala.' }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+
+    <!-- Card Status Penerimaan PKB Hari Ini -->
     <div class="section mt-2">
         <div class="card" style="border-radius: 14px; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.05); overflow: hidden;">
             <div class="card-body p-3">
@@ -470,57 +488,43 @@
         <div id="rekappresensi">
             <h3>Rekap Aktivitas Bulan {{ $namabulan[$bulanini] }} Tahun {{ $tahunini }}</h3>
             <div class="row">
-                <div class="col-3">
+                <div class="col-4">
                     <div class="card">
-                        <div class="card-body text-center" style="padding: 12px 8px !important; line-height:0.8rem">
+                        <div class="card-body text-center" style="padding: 14px 8px !important; line-height:0.9rem">
                             <span class="badge bg-success"
-                                style="position: absolute; top:3px; right:10px; font-size:0.6rem; z-index:999">{{ $rekappresensi->jmlhadir ?? 0 }}</span>
-                            <ion-icon name="accessibility-outline" style="font-size: 1.6rem;"
+                                style="position: absolute; top:4px; right:10px; font-size:0.65rem; z-index:999">{{ $rekappresensi->jmlhadir ?? 0 }}</span>
+                            <ion-icon name="checkmark-circle-outline" style="font-size: 1.8rem;"
                                 class="text-success mb-1"></ion-icon>
                             <br>
-                            <span style="font-size: 0.75rem; font-weight:500">Hadir</span>
+                            <span style="font-size: 0.8rem; font-weight:600">Hadir</span>
                         </div>
                     </div>
                 </div>
-                <div class="col-3">
+                <div class="col-4">
                     <div class="card">
-                        <div class="card-body text-center" style="padding: 12px 8px !important; line-height:0.8rem">
-                            <span class="badge bg-warning"
-                                style="position: absolute; top:3px; right:10px; font-size:0.6rem; z-index:999">
-                                {{ ($rekappresensi->jmlizin ?? 0) + ($rekappresensi->jmlsakit ?? 0) }}
+                        <div class="card-body text-center" style="padding: 14px 8px !important; line-height:0.9rem">
+                            <span class="badge bg-warning text-dark"
+                                style="position: absolute; top:4px; right:10px; font-size:0.65rem; z-index:999">
+                                {{ $rekappresensi->jmlmaintenance ?? 0 }}
                             </span>
-                            <ion-icon name="newspaper-outline" style="font-size: 1.6rem;"
+                            <ion-icon name="construct-outline" style="font-size: 1.8rem;"
                                 class="text-warning mb-1"></ion-icon>
                             <br>
-                            <span style="font-size: 0.75rem; font-weight:500">Izin/Sakit</span>
+                            <span style="font-size: 0.8rem; font-weight:600">Maintenance</span>
                         </div>
                     </div>
                 </div>
-                <div class="col-3">
+                <div class="col-4">
                     <div class="card">
-                        <div class="card-body text-center" style="padding: 12px 8px !important; line-height:0.8rem">
-                            <span class="badge bg-info"
-                                style="position: absolute; top:3px; right:10px; font-size:0.6rem; z-index:999">
-                                {{ $rekappresensi->jmlcuti ?? 0 }}
-                            </span>
-                            <ion-icon name="calendar-outline" style="font-size: 1.6rem;"
-                                class="text-info mb-1"></ion-icon>
-                            <br>
-                            <span style="font-size: 0.75rem; font-weight:500">Cuti</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-3">
-                    <div class="card">
-                        <div class="card-body text-center" style="padding: 12px 8px !important; line-height:0.8rem">
+                        <div class="card-body text-center" style="padding: 14px 8px !important; line-height:0.9rem">
                             <span class="badge bg-danger"
-                                style="position: absolute; top:3px; right:10px; font-size:0.6rem; z-index:999">
+                                style="position: absolute; top:4px; right:10px; font-size:0.65rem; z-index:999">
                                 {{ $rekappresensi->jmlterlambat ?? 0 }}
                             </span>
-                            <ion-icon name="alarm-outline" style="font-size: 1.6rem;"
+                            <ion-icon name="alarm-outline" style="font-size: 1.8rem;"
                                 class="text-danger mb-1"></ion-icon>
                             <br>
-                            <span style="font-size: 0.75rem; font-weight:500">Telat</span>
+                            <span style="font-size: 0.8rem; font-weight:600">Terlambat</span>
                         </div>
                     </div>
                 </div>

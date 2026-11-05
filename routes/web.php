@@ -194,10 +194,15 @@ Route::group(['prefix' => 'panel-adm14', 'middleware' => ['auth:user', 'role:adm
     Route::post('/presensi/cetakrekap', [PresensiController::class, 'cetakrekap']);
 
 
-    Route::get('/presensi/izinsakit', [PresensiController::class, 'izinsakit']);
+        Route::get('/presensi/maintenance', [PresensiController::class, 'maintenanceLayanan']);
+    Route::post('/presensi/maintenance/store', [PresensiController::class, 'storeMaintenanceLayanan']);
+    Route::get('/presensi/maintenance/{kode_izin}/delete', [PresensiController::class, 'deleteMaintenanceLayanan']);
+    Route::post('/presensi/maintenance/{kode_izin}/delete', [PresensiController::class, 'deleteMaintenanceLayanan']);
+
+    Route::get('/presensi/izinsakit', fn() => redirect('/panel-adm14/presensi/maintenance'));
 
     // Menu Status Kehadiran diarahkan ke persetujuan izin pegawai (izinsakit)
-    Route::get('/presensi/statuskehadiran', fn() => redirect('/panel-adm14/presensi/izinsakit'));
+    Route::get('/presensi/statuskehadiran', fn() => redirect('/panel-adm14/presensi/maintenance'));
     Route::post('/presensi/storestatuskehadiran', [PresensiController::class, 'storestatuskehadiran']);
     Route::post('/presensi/editstatuskehadiran', [PresensiController::class, 'editstatuskehadiran']);
     Route::post('/presensi/updatestatuskehadiran', [PresensiController::class, 'updatestatuskehadiran']);
@@ -360,8 +365,9 @@ Route::group(['middleware' => ['auth:user', 'role:administrator|admin departemen
     Route::get('/presensi/monitoring', fn() => redirect('/panel-adm14/presensi/monitoring'));
     Route::get('/presensi/laporan', fn() => redirect('/panel-adm14/presensi/laporan'));
     Route::get('/presensi/rekap', fn() => redirect('/panel-adm14/presensi/rekap'));
-    Route::get('/presensi/izinsakit', fn() => redirect('/panel-adm14/presensi/izinsakit'));
-    Route::get('/presensi/statuskehadiran', fn() => redirect('/panel-adm14/presensi/izinsakit'));
+        Route::get('/presensi/maintenance', fn() => redirect('/panel-adm14/presensi/maintenance'));
+    Route::get('/presensi/izinsakit', fn() => redirect('/panel-adm14/presensi/maintenance'));
+    Route::get('/presensi/statuskehadiran', fn() => redirect('/panel-adm14/presensi/maintenance'));
     Route::get('/cuti', fn() => redirect('/panel-adm14/cuti'));
     Route::get('/konfigurasi/harilibur', fn() => redirect('/panel-adm14/konfigurasi/harilibur'));
     Route::get('/konfigurasi/jamkerja', fn() => redirect('/panel-adm14/konfigurasi/jamkerja'));
