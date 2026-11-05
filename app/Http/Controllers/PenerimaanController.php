@@ -27,18 +27,28 @@ class PenerimaanController extends Controller
             ->where('tgl_penerimaan', $hariini)
             ->first();
 
-        // Ambil histori penerimaan akun layanan ini
+        // Filter: default 'minggu' (Minggu Ini), opsi: 'bulan' (Bulan Ini), 'tahun' (Tahun Ini)
+        $filter = $request->get('filter', 'minggu');
+        if (!in_array($filter, ['minggu', 'bulan', 'tahun'])) {
+            $filter = 'minggu';
+        }
+
+        // Ambil histori penerimaan akun layanan ini sesuai filter
         $query = RekapPenerimaanPkb::where('layanan_id', $layananId)
             ->orderBy('tgl_penerimaan', 'desc');
 
-        if (!empty($request->bulan)) {
-            $query->whereMonth('tgl_penerimaan', $request->bulan);
-        }
-        if (!empty($request->tahun)) {
-            $query->whereYear('tgl_penerimaan', $request->tahun);
+        if ($filter === 'minggu') {
+            $startOfWeek = Carbon::now()->startOfWeek()->format('Y-m-d');
+            $endOfWeek = Carbon::now()->endOfWeek()->format('Y-m-d');
+            $query->whereBetween('tgl_penerimaan', [$startOfWeek, $endOfWeek]);
+        } elseif ($filter === 'bulan') {
+            $query->whereMonth('tgl_penerimaan', date('m'))
+                ->whereYear('tgl_penerimaan', date('Y'));
+        } elseif ($filter === 'tahun') {
+            $query->whereYear('tgl_penerimaan', date('Y'));
         }
 
-        $histori = $query->paginate(15);
+        $histori = $query->paginate(6)->withQueryString();
 
         // Hitung total penerimaan bulan ini untuk akun layanan ini
         $bulanSekarang = date('m');
@@ -49,7 +59,7 @@ class PenerimaanController extends Controller
             ->selectRaw('SUM(total_rp) as total_rp, SUM(total_unit) as total_unit, SUM(jumlah_notice) as total_notice')
             ->first();
 
-        return view('penerimaan.index', compact('penerimaanHariIni', 'histori', 'totalBulanIni', 'user'));
+        return view('penerimaan.index', compact('penerimaanHariIni', 'histori', 'totalBulanIni', 'user', 'filter'));
     }
 
     public function create()

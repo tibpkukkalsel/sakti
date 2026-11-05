@@ -9,11 +9,7 @@
             </a>
         </div>
         <div class="pageTitle">Rekap Penerimaan PKB</div>
-        <div class="right">
-            <a href="/penerimaan/create" class="headerButton text-light">
-                <ion-icon name="add-circle-outline" style="font-size: 26px;"></ion-icon>
-            </a>
-        </div>
+        <div class="right"></div>
     </div>
     <!-- * App Header -->
 @endsection
@@ -95,12 +91,26 @@
             </div>
         </div>
 
-        <!-- 3. Header Riwayat -->
-        <div class="d-flex justify-content-between align-items-center px-3 mt-3 mb-1">
-            <span class="text-muted small fw-bold text-uppercase">Riwayat Rekap Penerimaan</span>
-            <a href="/penerimaan/create" class="text-primary small fw-bold">
-                <ion-icon name="add-circle-outline"></ion-icon> Input Tanggal Lain
-            </a>
+        <!-- 3. Filter Riwayat (Minggu, Bulan, Tahun) -->
+        <div class="px-3 mt-3 mb-2">
+            <div class="text-muted small fw-bold text-uppercase mb-2">Riwayat Rekap Penerimaan</div>
+            <ul class="nav nav-tabs style1" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link {{ $filter == 'minggu' ? 'active' : '' }}" href="/penerimaan?filter=minggu">
+                        Minggu
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ $filter == 'bulan' ? 'active' : '' }}" href="/penerimaan?filter=bulan">
+                        Bulan
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ $filter == 'tahun' ? 'active' : '' }}" href="/penerimaan?filter=tahun">
+                        Tahun
+                    </a>
+                </li>
+            </ul>
         </div>
 
         <!-- 4. Daftar Riwayat Dengan Pembatas Biasa (Tanpa Card) -->
@@ -154,13 +164,23 @@
             @empty
                 <div class="text-center py-4 text-muted">
                     <ion-icon name="wallet-outline" style="font-size: 36px; opacity: 0.4;"></ion-icon>
-                    <div class="mt-1 small">Belum ada riwayat rekap penerimaan.</div>
+                    <div class="mt-1 small">
+                        @if ($filter == 'minggu')
+                            Belum ada riwayat penerimaan pada minggu ini.
+                        @elseif ($filter == 'bulan')
+                            Belum ada riwayat penerimaan pada bulan ini.
+                        @elseif ($filter == 'tahun')
+                            Belum ada riwayat penerimaan pada tahun ini.
+                        @else
+                            Belum ada riwayat rekap penerimaan.
+                        @endif
+                    </div>
                 </div>
             @endforelse
         </div>
 
         <div class="p-3">
-            {{ $histori->links() }}
+            {{ $histori->links('vendor.pagination.bootstrap-5') }}
         </div>
     </div>
 @endsection
