@@ -5,10 +5,10 @@
     <div class="container-xl">
         <div class="row g-2 align-items-center">
             <div class="col">
-                <div class="page-pretitle">
+                <div class="page-pretitle text-muted fw-semibold small text-uppercase">
                     Penerimaan Pajak Kendaraan Bermotor
                 </div>
-                <h2 class="page-title">
+                <h2 class="page-title fw-bold text-dark">
                     Rekap Penerimaan Per Layanan
                 </h2>
             </div>
@@ -28,7 +28,7 @@
     <div class="container-xl">
 
         <!-- Filter Form -->
-        <div class="card mb-3 shadow-sm border-0">
+        <div class="card card-outline card-success shadow-sm mb-3">
             <div class="card-body">
                 <form action="/panel-adm14/penerimaan/rekap-layanan" method="GET" id="formFilter" autocomplete="off">
                     <div class="row g-2 align-items-end">
@@ -76,7 +76,7 @@
         </div>
 
         <!-- Banner Periode Aktif -->
-        <div class="alert alert-info py-2 px-3 mb-3 d-flex align-items-center justify-content-between" style="border-radius: 10px;">
+        <div class="alert alert-info py-2 px-3 mb-3 d-flex align-items-center justify-content-between" style="border-radius: 8px;">
             <div>
                 <i class="bi bi-info-circle-fill me-1"></i>
                 Menampilkan data rekap untuk periode: <strong>{{ $periodeLabel }}</strong>
@@ -91,8 +91,8 @@
 
         <!-- Summary Cards -->
         <div class="row row-cards mb-3">
-            <div class="col-md-3 col-sm-6 col-12">
-                <div class="card card-sm shadow-sm">
+            <div class="col-md-3 col-sm-6 col-12 mb-3">
+                <div class="card shadow-sm h-100">
                     <div class="card-body">
                         <div class="row align-items-center">
                             <div class="col-auto">
@@ -101,7 +101,7 @@
                                 </span>
                             </div>
                             <div class="col">
-                                <div class="font-weight-medium text-dark fw-bold fs-4">
+                                <div class="text-dark fw-bold fs-4">
                                     Rp {{ number_format($grandTotal->total_rp, 0, ',', '.') }}
                                 </div>
                                 <div class="text-muted small">Total Penerimaan PKB</div>
@@ -111,8 +111,8 @@
                 </div>
             </div>
 
-            <div class="col-md-3 col-sm-6 col-12">
-                <div class="card card-sm shadow-sm">
+            <div class="col-md-3 col-sm-6 col-12 mb-3">
+                <div class="card shadow-sm h-100">
                     <div class="card-body">
                         <div class="row align-items-center">
                             <div class="col-auto">
@@ -121,7 +121,7 @@
                                 </span>
                             </div>
                             <div class="col">
-                                <div class="font-weight-medium text-dark fw-bold fs-4">
+                                <div class="text-dark fw-bold fs-4">
                                     Rp {{ number_format($grandTotal->rp_r2, 0, ',', '.') }}
                                 </div>
                                 <div class="text-muted small">R2: {{ number_format($grandTotal->unit_r2) }} Unit</div>
@@ -131,8 +131,8 @@
                 </div>
             </div>
 
-            <div class="col-md-3 col-sm-6 col-12">
-                <div class="card card-sm shadow-sm">
+            <div class="col-md-3 col-sm-6 col-12 mb-3">
+                <div class="card shadow-sm h-100">
                     <div class="card-body">
                         <div class="row align-items-center">
                             <div class="col-auto">
@@ -141,7 +141,7 @@
                                 </span>
                             </div>
                             <div class="col">
-                                <div class="font-weight-medium text-dark fw-bold fs-4">
+                                <div class="text-dark fw-bold fs-4">
                                     Rp {{ number_format($grandTotal->rp_r4, 0, ',', '.') }}
                                 </div>
                                 <div class="text-muted small">R4: {{ number_format($grandTotal->unit_r4) }} Unit</div>
@@ -151,8 +151,8 @@
                 </div>
             </div>
 
-            <div class="col-md-3 col-sm-6 col-12">
-                <div class="card card-sm shadow-sm">
+            <div class="col-md-3 col-sm-6 col-12 mb-3">
+                <div class="card shadow-sm h-100">
                     <div class="card-body">
                         <div class="row align-items-center">
                             <div class="col-auto">
@@ -161,7 +161,7 @@
                                 </span>
                             </div>
                             <div class="col">
-                                <div class="font-weight-medium text-dark fw-bold fs-4">
+                                <div class="text-dark fw-bold fs-4">
                                     {{ number_format($grandTotal->total_notice) }}
                                 </div>
                                 <div class="text-muted small">Notice Pajak Dicetak (Lbr)</div>
@@ -173,7 +173,7 @@
         </div>
 
         <!-- GRAFIK PENERIMAAN PER LAYANAN -->
-        <div class="card shadow-sm border-0 mb-4">
+        <div class="card card-outline card-success shadow-sm mb-4">
             <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
                 <div>
                     <h3 class="card-title fw-bold text-dark mb-0">
@@ -200,7 +200,7 @@
         </div>
 
         <!-- TABEL REKAP PENERIMAAN PER LAYANAN -->
-        <div class="card shadow-sm border-0 mb-4">
+        <div class="card card-outline card-success shadow-sm mb-4">
             <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
                 <div>
                     <h3 class="card-title fw-bold text-dark mb-0">
@@ -214,13 +214,13 @@
                 <table class="table table-bordered table-striped table-hover align-middle mb-0 text-nowrap">
                     <thead class="table-light">
                         <tr class="text-center align-middle">
-                            <th style="width: 40px;">No</th>
+                            <th style="width: 50px;">No</th>
                             <th style="min-width: 180px;" class="text-start">Akun Layanan &amp; PIC</th>
                             <th style="min-width: 140px;">Penerimaan R2 (Rp)</th>
                             <th style="width: 90px;">Unit R2</th>
                             <th style="min-width: 140px;">Penerimaan R4 (Rp)</th>
                             <th style="width: 90px;">Unit R4</th>
-                            <th style="min-width: 160px;" class="bg-success-lt text-dark fw-bold">Total Penerimaan (Rp)</th>
+                            <th style="min-width: 160px;" class="table-light text-dark fw-bold">Total Penerimaan (Rp)</th>
                             <th style="width: 90px;">Total Unit</th>
                             <th style="width: 100px;">Notice (Lbr)</th>
                             <th style="width: 90px;">Kontribusi</th>
@@ -237,17 +237,17 @@
                                 <strong class="text-dark d-block">{{ $row->nama_layanan }}</strong>
                                 <span class="text-muted small">PIC: {{ $row->nama_pic ?: '-' }}</span>
                             </td>
-                            <td class="text-end font-monospace">Rp {{ number_format($row->rp_r2, 0, ',', '.') }}</td>
-                            <td class="text-center font-monospace">{{ number_format($row->unit_r2) }}</td>
-                            <td class="text-end font-monospace">Rp {{ number_format($row->rp_r4, 0, ',', '.') }}</td>
-                            <td class="text-center font-monospace">{{ number_format($row->unit_r4) }}</td>
-                            <td class="text-end font-monospace fw-bold text-success bg-success-lt">
+                            <td class="text-end">Rp {{ number_format($row->rp_r2, 0, ',', '.') }}</td>
+                            <td class="text-center">{{ number_format($row->unit_r2) }}</td>
+                            <td class="text-end">Rp {{ number_format($row->rp_r4, 0, ',', '.') }}</td>
+                            <td class="text-center">{{ number_format($row->unit_r4) }}</td>
+                            <td class="text-end fw-bold text-success">
                                 Rp {{ number_format($row->total_rp, 0, ',', '.') }}
                             </td>
-                            <td class="text-center font-monospace fw-bold">{{ number_format($row->total_unit) }}</td>
-                            <td class="text-center font-monospace">{{ number_format($row->total_notice) }}</td>
+                            <td class="text-center fw-bold">{{ number_format($row->total_unit) }}</td>
+                            <td class="text-center">{{ number_format($row->total_notice) }}</td>
                             <td class="text-center">
-                                <span class="badge bg-primary-lt fw-bold">{{ number_format($persen, 1) }}%</span>
+                                <span class="badge bg-primary fw-bold">{{ number_format($persen, 1) }}%</span>
                             </td>
                         </tr>
                         @empty
@@ -258,18 +258,18 @@
                         </tr>
                         @endforelse
                     </tbody>
-                    <tfoot class="table-light fw-bold text-dark" style="border-top: 2px solid #cbd5e1;">
+                    <tfoot class="table-light fw-bold text-dark" style="border-top: 2px solid #dee2e6;">
                         <tr class="align-middle">
                             <td colspan="2" class="text-center text-dark fw-bold">TOTAL KESELURUHAN</td>
-                            <td class="text-end font-monospace text-dark">Rp {{ number_format($grandTotal->rp_r2, 0, ',', '.') }}</td>
-                            <td class="text-center font-monospace text-dark">{{ number_format($grandTotal->unit_r2) }}</td>
-                            <td class="text-end font-monospace text-dark">Rp {{ number_format($grandTotal->rp_r4, 0, ',', '.') }}</td>
-                            <td class="text-center font-monospace text-dark">{{ number_format($grandTotal->unit_r4) }}</td>
-                            <td class="text-end font-monospace text-success fw-bold fs-6 bg-success-lt">
+                            <td class="text-end text-dark">Rp {{ number_format($grandTotal->rp_r2, 0, ',', '.') }}</td>
+                            <td class="text-center text-dark">{{ number_format($grandTotal->unit_r2) }}</td>
+                            <td class="text-end text-dark">Rp {{ number_format($grandTotal->rp_r4, 0, ',', '.') }}</td>
+                            <td class="text-center text-dark">{{ number_format($grandTotal->unit_r4) }}</td>
+                            <td class="text-end text-success fw-bold fs-6">
                                 Rp {{ number_format($grandTotal->total_rp, 0, ',', '.') }}
                             </td>
-                            <td class="text-center font-monospace text-dark">{{ number_format($grandTotal->total_unit) }}</td>
-                            <td class="text-center font-monospace text-dark">{{ number_format($grandTotal->total_notice) }}</td>
+                            <td class="text-center text-dark">{{ number_format($grandTotal->total_unit) }}</td>
+                            <td class="text-center text-dark">{{ number_format($grandTotal->total_notice) }}</td>
                             <td class="text-center text-dark">100%</td>
                         </tr>
                     </tfoot>
@@ -367,4 +367,3 @@
 </script>
 @endpush
 @endsection
-

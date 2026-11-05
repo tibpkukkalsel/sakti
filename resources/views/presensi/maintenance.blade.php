@@ -2,13 +2,15 @@
 
 @section('content')
     <div class="page-header d-print-none">
-        <div class="container-fluid">
+        <div class="container-xl">
             <div class="row g-2 align-items-center">
                 <div class="col">
+                    <div class="page-pretitle text-muted fw-semibold small text-uppercase">
+                        Presensi Layanan
+                    </div>
                     <h2 class="page-title fw-bold text-dark">
                         Maintenance Layanan
                     </h2>
-                    <div class="text-muted small mt-1">Pencatatan &amp; Riwayat Status Pemeliharaan / Perbaikan Unit Layanan UPPD SAMSAT Batu Licin</div>
                 </div>
                 <div class="col-auto ms-auto d-print-none">
                     <button class="btn btn-primary" id="btnTambahMaintenance">
@@ -27,30 +29,30 @@
     </div>
 
     <div class="page-body">
-        <div class="container-fluid">
+        <div class="container-xl">
             <div class="row">
                 <div class="col-12">
                     @if (Session::get('success'))
-                        <div class="alert alert-success alert-dismissible" role="alert">
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
                             <div class="d-flex">
                                 <div>
                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon alert-icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M5 12l5 5l10 -10"></path></svg>
                                 </div>
-                                <div>{{ Session::get('success') }}</div>
+                                <div class="ms-2">{{ Session::get('success') }}</div>
                             </div>
-                            <a class="btn-close" data-bs-dismiss="alert" aria-label="close"></a>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
                         </div>
                     @endif
 
                     @if (Session::get('warning'))
-                        <div class="alert alert-warning alert-dismissible" role="alert">
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
                             <div class="d-flex">
                                 <div>
                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon alert-icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M12 9v4"></path><path d="M12 16v.01"></path></svg>
                                 </div>
-                                <div>{{ Session::get('warning') }}</div>
+                                <div class="ms-2">{{ Session::get('warning') }}</div>
                             </div>
-                            <a class="btn-close" data-bs-dismiss="alert" aria-label="close"></a>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
                         </div>
                     @endif
                 </div>
@@ -59,7 +61,7 @@
             <!-- Filter Card -->
             <div class="row mb-3">
                 <div class="col-12">
-                    <div class="card shadow-sm border-0">
+                    <div class="card card-outline card-primary shadow-sm">
                         <div class="card-body">
                             <form action="/panel-adm14/presensi/maintenance" method="GET" autocomplete="off">
                                 <div class="row g-2 align-items-center">
@@ -121,10 +123,10 @@
             <!-- Tabel Data Maintenance -->
             <div class="row">
                 <div class="col-12">
-                    <div class="card shadow-sm border-0">
+                    <div class="card card-outline card-primary shadow-sm mb-4">
                         <div class="table-responsive">
                             <table class="table table-bordered table-striped table-hover align-middle mb-0">
-                                <thead>
+                                <thead class="table-light">
                                     <tr>
                                         <th style="width: 50px;" class="text-center">No.</th>
                                         <th style="width: 140px;">Kode Status</th>
@@ -141,7 +143,7 @@
                                         <tr>
                                             <td class="text-center text-muted fw-bold">{{ $loop->iteration + $maintenance->firstItem() - 1 }}</td>
                                             <td>
-                                                <span class="badge bg-light text-dark border font-monospace">{{ $d->kode_izin }}</span>
+                                                <span class="badge bg-light text-dark border">{{ $d->kode_izin }}</span>
                                             </td>
                                             <td>
                                                 <div class="fw-semibold text-dark">
@@ -170,7 +172,7 @@
                                                     $isAktif = ($d->tgl_izin_dari <= $today && $d->tgl_izin_sampai >= $today);
                                                 @endphp
                                                 @if ($isAktif)
-                                                    <span class="badge bg-warning text-dark px-2 py-1 font-weight-bold">
+                                                    <span class="badge bg-warning text-dark px-2 py-1 fw-bold">
                                                         <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-tools me-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M3 21h4l13 -13a1.5 1.5 0 0 0 -4 -4l-13 13v4"></path><path d="M14.5 5.5l4 4"></path><path d="M12 8l-5 -5l-4 4l5 5"></path><path d="M7 8l-1.5 1.5"></path><path d="M16 12l5 5l-4 4l-5 -5"></path><path d="M16 17l-1.5 1.5"></path></svg>
                                                         Maintenance
                                                     </span>
@@ -218,7 +220,7 @@
     </div>
 
     <!-- Modal Tambah Status Maintenance -->
-    <div class="modal modal-blur fade" id="modal-tambahmaintenance" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal fade" id="modal-tambahmaintenance" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -282,8 +284,7 @@
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Ya, Hapus Data!',
-                cancelButtonText: 'Batal'
+                confirmButtonText: 'Ya, Hapus!'
             }).then((result) => {
                 if (result.isConfirmed) {
                     form.submit();
@@ -293,4 +294,3 @@
     });
 </script>
 @endpush
-
