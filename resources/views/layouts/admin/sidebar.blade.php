@@ -61,6 +61,12 @@
                             <p>Lokasi</p>
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a href="/panel-adm14/jadwallokasi" class="nav-link {{ request()->is(['panel-adm14/jadwallokasi*']) ? 'active' : '' }}">
+                            <i class="nav-icon bi bi-calendar2-week-fill"></i>
+                            <p>Jadwal Lokasi</p>
+                        </a>
+                    </li>
                 @endrole
                 <!-- 7. Konfigurasi (Dropdown - Administrator Only) -->
                 @role('administrator', 'user')

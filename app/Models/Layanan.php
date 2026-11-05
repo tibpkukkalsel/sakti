@@ -61,5 +61,15 @@ class Layanan extends Authenticatable
     {
         return $this->hasMany(RekapPenerimaanPkb::class, 'layanan_id', 'id');
     }
+
+    public function jadwalLokasi()
+    {
+        return $this->hasMany(JadwalLokasiLayanan::class, 'layanan_id', 'id');
+    }
+
+    public function lokasi()
+    {
+        return $this->belongsTo(Cabang::class, 'kode_cabang', 'kode_cabang');
+    }
 }
 

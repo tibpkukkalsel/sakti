@@ -137,7 +137,20 @@ class DashboardController extends Controller
             ->get();
         $namabulan = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
 
-        $cabang = DB::table('cabang')->where('kode_cabang', $kode_cabang)->first();
+        $namahari = (new PresensiController)->gethari(date('D', strtotime($hariini)));
+        $jadwalHariIni = DB::table('jadwal_lokasi_layanan')
+            ->join('cabang', 'jadwal_lokasi_layanan.kode_cabang', '=', 'cabang.kode_cabang')
+            ->where('jadwal_lokasi_layanan.layanan_id', Auth::guard('karyawan')->user()->id)
+            ->where('jadwal_lokasi_layanan.hari', $namahari)
+            ->where('jadwal_lokasi_layanan.status', 1)
+            ->select('cabang.*', 'jadwal_lokasi_layanan.keterangan as ket_jadwal')
+            ->first();
+
+        if ($jadwalHariIni) {
+            $cabang = $jadwalHariIni;
+        } else {
+            $cabang = DB::table('cabang')->where('kode_cabang', $kode_cabang)->first();
+        }
         $departemen = DB::table('seksi')->where('kode_dept', $kode_dept)->first();
 
         // Penerimaan PKB hari ini untuk akun layanan ini
@@ -146,7 +159,7 @@ class DashboardController extends Controller
             ->where('tgl_penerimaan', $hariini)
             ->first();
 
-        return view('dashboard.dashboard', compact('presensihariini', 'dataliburhariini', 'historimingguini', 'historibulanini', 'namabulan', 'bulanini', 'tahunini', 'rekappresensi', 'totalLiburBulanIni', 'leaderboard', 'cabang', 'departemen', 'startOfWeek', 'endOfWeek', 'penerimaanHariIniLayanan'));
+        return view('dashboard.dashboard', compact('presensihariini', 'dataliburhariini', 'historimingguini', 'historibulanini', 'namabulan', 'bulanini', 'tahunini', 'rekappresensi', 'totalLiburBulanIni', 'leaderboard', 'cabang', 'departemen', 'startOfWeek', 'endOfWeek', 'penerimaanHariIniLayanan', 'jadwalHariIni', 'namahari'));
     }
 
     public function dashboardadmin()

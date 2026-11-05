@@ -12,6 +12,7 @@ use App\Http\Controllers\IzinsakitController;
 use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\KonfigurasiController;
 use App\Http\Controllers\LayananController;
+use App\Http\Controllers\JadwalLokasiController;
 use App\Http\Controllers\LokasiController;
 use App\Http\Controllers\PenerimaanController;
 use App\Http\Controllers\PresensiController;
@@ -84,7 +85,10 @@ Route::middleware(['auth:karyawan'])->group(function () {
     Route::get('/editprofile', [PresensiController::class, 'editprofile']);
     Route::post('/presensi/{nik}/updateprofile', [PresensiController::class, 'updateprofile']);
     //Edit lokasi
-    Route::get('/editlokasi', [PresensiController::class, 'editlokasi']);
+    Route::get('/editlokasi', [JadwalLokasiController::class, 'userJadwal']);
+    // Jadwal Lokasi Layanan (Mobile)
+    Route::get('/jadwallokasi', [JadwalLokasiController::class, 'userJadwal']);
+
     Route::post('/presensi/{nik}/updatelokasi', [PresensiController::class, 'updatelokasi']);
 
     //Histori
@@ -155,6 +159,14 @@ Route::group(['prefix' => 'panel-adm14', 'middleware' => ['auth:user', 'role:adm
     Route::post('/lokasi/edit', [LokasiController::class, 'edit']);
     Route::post('/lokasi/update', [LokasiController::class, 'update']);
     Route::post('/lokasi/{kode_cabang}/delete', [LokasiController::class, 'delete']);
+
+    // Jadwal Lokasi Layanan
+    Route::get('/jadwallokasi', [JadwalLokasiController::class, 'index']);
+    Route::post('/jadwallokasi/store', [JadwalLokasiController::class, 'store']);
+    Route::post('/jadwallokasi/edit', [JadwalLokasiController::class, 'edit']);
+    Route::post('/jadwallokasi/bulk', [JadwalLokasiController::class, 'storeBulk']);
+    Route::post('/jadwallokasi/{id}/update', [JadwalLokasiController::class, 'update']);
+    Route::post('/jadwallokasi/{id}/delete', [JadwalLokasiController::class, 'delete']);
 
     //Pegawai / Karyawan Fallback
     Route::get('/layanan', [LayananController::class, 'index']);
@@ -341,6 +353,7 @@ Route::group(['middleware' => ['auth:user', 'role:administrator|admin departemen
     Route::get('/seksi', fn() => redirect('/panel-adm14/seksi'));
     Route::get('/departemen', fn() => redirect('/panel-adm14/seksi'));
     Route::get('/cabang', fn() => redirect('/panel-adm14/cabang'));
+    Route::get('/jadwallokasi', fn() => redirect('/panel-adm14/jadwallokasi'));
     Route::get('/presensi/monitoring', fn() => redirect('/panel-adm14/presensi/monitoring'));
     Route::get('/presensi/laporan', fn() => redirect('/panel-adm14/presensi/laporan'));
     Route::get('/presensi/rekap', fn() => redirect('/panel-adm14/presensi/rekap'));

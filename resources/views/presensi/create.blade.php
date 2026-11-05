@@ -397,6 +397,16 @@
                 </div>
                 @endif
 
+                <!-- Info Lokasi Operasional Presensi Hari Ini -->
+                <div class="mt-2 mb-1 p-2 bg-light rounded text-center border" style="font-size: 11.5px; color: #475569;">
+                    <ion-icon name="pin" style="color: #ef4444; vertical-align: -2px; font-size: 14px;"></ion-icon>
+                    <strong>Lokasi Presensi:</strong> {{ $lok_kantor->nama_cabang }}
+                    <span class="badge badge-secondary ms-1" style="font-size: 10px;">Radius {{ $lok_kantor->radius_cabang }}m</span>
+                    @if (!empty($lok_kantor->ket_jadwal))
+                        <div class="small text-muted mt-1">{{ $lok_kantor->ket_jadwal }}</div>
+                    @endif
+                </div>
+
                 <!-- Map Container -->
                 <div class="row mt-2">
                     <div class="col">

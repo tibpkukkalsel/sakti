@@ -87,8 +87,22 @@ class PresensiController extends Controller
         $presensi = DB::table('presensi')->where('tgl_presensi', $hariini)->where('nik', $nik);
         $cek = $presensi->count();
         $datapresensi = $presensi->first();
-        $kode_cabang = Auth::guard('karyawan')->user()->kode_cabang;
-        $lok_kantor = DB::table('cabang')->where('kode_cabang', $kode_cabang)->first();
+        $namahari = $this->gethari(date('D', strtotime($hariini)));
+        $jadwalLokasi = DB::table('jadwal_lokasi_layanan')
+            ->join('cabang', 'jadwal_lokasi_layanan.kode_cabang', '=', 'cabang.kode_cabang')
+            ->where('jadwal_lokasi_layanan.layanan_id', $nik)
+            ->where('jadwal_lokasi_layanan.hari', $namahari)
+            ->where('jadwal_lokasi_layanan.status', 1)
+            ->select('cabang.*', 'jadwal_lokasi_layanan.keterangan as ket_jadwal')
+            ->first();
+
+        if ($jadwalLokasi != null) {
+            $lok_kantor = $jadwalLokasi;
+            $kode_cabang = $jadwalLokasi->kode_cabang;
+        } else {
+            $kode_cabang = Auth::guard('karyawan')->user()->kode_cabang;
+            $lok_kantor = DB::table('cabang')->where('kode_cabang', $kode_cabang)->first();
+        }
 
         // Cek apakah hari ini adalah Hari Libur
         $datalibur = DB::table('harilibur')
@@ -223,7 +237,21 @@ class PresensiController extends Controller
         }
 
         $jam = date("H:i:s");
-        $lok_kantor = DB::table('cabang')->where('kode_cabang', $kode_cabang)->first();
+        $namahari = $this->gethari(date('D', strtotime($tgl_presensi)));
+        $jadwalLokasi = DB::table('jadwal_lokasi_layanan')
+            ->join('cabang', 'jadwal_lokasi_layanan.kode_cabang', '=', 'cabang.kode_cabang')
+            ->where('jadwal_lokasi_layanan.layanan_id', $nik)
+            ->where('jadwal_lokasi_layanan.hari', $namahari)
+            ->where('jadwal_lokasi_layanan.status', 1)
+            ->select('cabang.*', 'jadwal_lokasi_layanan.keterangan as ket_jadwal')
+            ->first();
+
+        if ($jadwalLokasi != null) {
+            $lok_kantor = $jadwalLokasi;
+            $kode_cabang = $jadwalLokasi->kode_cabang;
+        } else {
+            $lok_kantor = DB::table('cabang')->where('kode_cabang', $kode_cabang)->first();
+        }
         if (!$lok_kantor) {
             echo "error|Data kantor / cabang tidak ditemukan|radius";
             return;
