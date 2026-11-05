@@ -25,12 +25,19 @@
                 id="navigation">
 
                 <!-- 1. Home / Dashboard -->
-                <li class="nav-header">Home</li>
+                <li class="nav-header">Dashboard</li>
                 <li class="nav-item">
                     <a href="/panel-adm14/dashboardadmin"
                         class="nav-link {{ request()->is('panel-adm14/dashboardadmin') ? 'active' : '' }}">
-                        <i class="nav-icon bi bi-speedometer2"></i>
-                        <p>Dashboard</p>
+                        <i class="nav-icon bi bi-person-badge"></i>
+                        <p>Presensi Layanan</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/panel-adm14/dashboard-penerimaan"
+                        class="nav-link {{ request()->is(['panel-adm14/dashboard-penerimaan*', 'dashboard-penerimaan*']) ? 'active' : '' }}">
+                        <i class="nav-icon bi bi-graph-up-arrow"></i>
+                        <p>Dashboard Penerimaan</p>
                     </a>
                 </li>
 

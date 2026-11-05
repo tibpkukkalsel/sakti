@@ -131,6 +131,7 @@ Route::middleware(['auth:karyawan'])->group(function () {
 Route::group(['prefix' => 'panel-adm14', 'middleware' => ['auth:user', 'role:administrator|admin departemen,user']], function () {
     Route::get('/proseslogoutadmin', [AuthController::class, 'proseslogoutadmin']);
     Route::get('/dashboardadmin', [DashboardController::class, 'dashboardadmin']);
+    Route::get('/dashboard-penerimaan', [DashboardController::class, 'dashboardPenerimaan']);
 
     // Profil Admin
     Route::get('/profile', [UserController::class, 'profile']);
@@ -346,6 +347,8 @@ Route::group(['prefix' => 'panel-adm14', 'middleware' => ['auth:user', 'role:adm
 // Redirect URL admin lama & alias ke prefix panel-adm14
 Route::group(['middleware' => ['auth:user', 'role:administrator|admin departemen,user']], function () {
     Route::get('/panel/dashboardadmin', fn() => redirect('/panel-adm14/dashboardadmin'));
+    Route::get('/dashboard-penerimaan', fn() => redirect('/panel-adm14/dashboard-penerimaan'));
+    Route::get('/panel/dashboard-penerimaan', fn() => redirect('/panel-adm14/dashboard-penerimaan'));
     Route::get('/proseslogoutadmin', fn() => redirect('/panel-adm14/proseslogoutadmin'));
     Route::get('/profile', fn() => redirect('/panel-adm14/profile'));
     Route::get('/karyawan', fn() => redirect('/panel-adm14/pegawai'));
