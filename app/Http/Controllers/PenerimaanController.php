@@ -66,11 +66,11 @@ class PenerimaanController extends Controller
 
         $request->validate([
             'tgl_penerimaan' => 'required|date',
-            'jumlah_rp_r2' => 'required',
-            'jumlah_rp_r4' => 'required',
-            'jumlah_unit_r2' => 'required|numeric|min:0',
-            'jumlah_unit_r4' => 'required|numeric|min:0',
-            'jumlah_notice' => 'required|numeric|min:0',
+            'jumlah_rp_r2' => 'nullable',
+            'jumlah_rp_r4' => 'nullable',
+            'jumlah_unit_r2' => 'nullable|numeric|min:0',
+            'jumlah_unit_r4' => 'nullable|numeric|min:0',
+            'jumlah_notice' => 'nullable|numeric|min:0',
         ]);
 
         // Bersihkan format rupiah jika ada titik atau koma
@@ -210,11 +210,11 @@ class PenerimaanController extends Controller
         $request->validate([
             'layanan_id' => 'required',
             'tgl_penerimaan' => 'required|date',
-            'jumlah_rp_r2' => 'required',
-            'jumlah_rp_r4' => 'required',
-            'jumlah_unit_r2' => 'required|numeric|min:0',
-            'jumlah_unit_r4' => 'required|numeric|min:0',
-            'jumlah_notice' => 'required|numeric|min:0',
+            'jumlah_rp_r2' => 'nullable',
+            'jumlah_rp_r4' => 'nullable',
+            'jumlah_unit_r2' => 'nullable|numeric|min:0',
+            'jumlah_unit_r4' => 'nullable|numeric|min:0',
+            'jumlah_notice' => 'nullable|numeric|min:0',
         ]);
 
         $rpR2 = (float) preg_replace('/[^0-9]/', '', $request->jumlah_rp_r2);

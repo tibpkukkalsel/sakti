@@ -320,8 +320,9 @@
                             </div>
                         </div>
                     </div>
+                    <!-- Baris Roda 2 (R2): Penerimaan Rp & Jumlah Unit Berdampingan -->
                     <div class="row">
-                        <div class="col-12">
+                        <div class="col-7">
                             <div class="input-icon mb-3">
                                 <span class="input-icon-addon">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-motorbike" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -331,12 +332,27 @@
                                         <path d="M7.5 14h5l4 -4H7.5m4 0h4l2 -3h-3"></path>
                                     </svg>
                                 </span>
-                                <input type="text" id="admin_rp_r2" class="form-control rupiah-admin" name="jumlah_rp_r2" placeholder="Penerimaan R2 (Rp)">
+                                <input type="text" id="admin_rp_r2" class="form-control rupiah-admin" name="jumlah_rp_r2" placeholder="Penerimaan R2 (Rp)" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="col-5">
+                            <div class="input-icon mb-3">
+                                <span class="input-icon-addon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                        <path d="M5 9l14 0"></path>
+                                        <path d="M5 15l14 0"></path>
+                                        <path d="M11 4l-4 16"></path>
+                                        <path d="M17 4l-4 16"></path>
+                                    </svg>
+                                </span>
+                                <input type="number" id="jumlah_unit_r2" class="form-control" name="jumlah_unit_r2" placeholder="Unit R2" min="0">
                             </div>
                         </div>
                     </div>
+                    <!-- Baris Roda 4 (R4): Penerimaan Rp & Jumlah Unit Berdampingan -->
                     <div class="row">
-                        <div class="col-12">
+                        <div class="col-7">
                             <div class="input-icon mb-3">
                                 <span class="input-icon-addon">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-car" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -347,7 +363,21 @@
                                         <path d="M7 9l1 3h8l1 -3"></path>
                                     </svg>
                                 </span>
-                                <input type="text" id="admin_rp_r4" class="form-control rupiah-admin" name="jumlah_rp_r4" placeholder="Penerimaan R4 (Rp)">
+                                <input type="text" id="admin_rp_r4" class="form-control rupiah-admin" name="jumlah_rp_r4" placeholder="Penerimaan R4 (Rp)" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="col-5">
+                            <div class="input-icon mb-3">
+                                <span class="input-icon-addon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                        <path d="M5 9l14 0"></path>
+                                        <path d="M5 15l14 0"></path>
+                                        <path d="M11 4l-4 16"></path>
+                                        <path d="M17 4l-4 16"></path>
+                                    </svg>
+                                </span>
+                                <input type="number" id="jumlah_unit_r4" class="form-control" name="jumlah_unit_r4" placeholder="Unit R4" min="0">
                             </div>
                         </div>
                     </div>
@@ -360,36 +390,6 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-6">
-                            <div class="input-icon mb-3">
-                                <span class="input-icon-addon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                        <path d="M5 9l14 0"></path>
-                                        <path d="M5 15l14 0"></path>
-                                        <path d="M11 4l-4 16"></path>
-                                        <path d="M17 4l-4 16"></path>
-                                    </svg>
-                                </span>
-                                <input type="number" id="jumlah_unit_r2" class="form-control" name="jumlah_unit_r2" placeholder="Unit R2" min="0" value="0">
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="input-icon mb-3">
-                                <span class="input-icon-addon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                        <path d="M5 9l14 0"></path>
-                                        <path d="M5 15l14 0"></path>
-                                        <path d="M11 4l-4 16"></path>
-                                        <path d="M17 4l-4 16"></path>
-                                    </svg>
-                                </span>
-                                <input type="number" id="jumlah_unit_r4" class="form-control" name="jumlah_unit_r4" placeholder="Unit R4" min="0" value="0">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
                         <div class="col-12">
                             <div class="input-icon mb-3">
                                 <span class="input-icon-addon">
@@ -398,7 +398,7 @@
                                         <path d="M5 21v-16a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v16l-3 -2l-2 2l-2 -2l-2 2l-2 -2l-3 2m4 -14h6m-6 4h6m-2 4h2"></path>
                                     </svg>
                                 </span>
-                                <input type="number" id="jumlah_notice" class="form-control" name="jumlah_notice" placeholder="Jumlah Notice Dicetak" min="0" value="0">
+                                <input type="number" id="jumlah_notice" class="form-control" name="jumlah_notice" placeholder="Jumlah Notice Dicetak" min="0">
                             </div>
                         </div>
                     </div>
@@ -480,6 +480,13 @@
 
     $(function() {
         $("#btnTambahPenerimaan").click(function() {
+            $("#frmPenerimaan")[0].reset();
+            $("#admin_rp_r2").val("");
+            $("#admin_rp_r4").val("");
+            $("#jumlah_unit_r2").val("");
+            $("#jumlah_unit_r4").val("");
+            $("#jumlah_notice").val("");
+            $("#admin_preview_total_rp").text("Rp 0");
             $("#modal-inputpenerimaan").modal("show");
         });
 

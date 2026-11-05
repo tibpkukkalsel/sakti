@@ -115,19 +115,38 @@
                         value="{{ old('tgl_penerimaan', $data->tgl_penerimaan->format('Y-m-d')) }}" required>
                 </div>
 
-                <div class="row g-2">
-                    <div class="col-12">
-                        <div class="input-group-custom">
-                            <label>Jumlah Penerimaan Roda 2 / R2 (Rp)</label>
+                <!-- Baris Penerimaan R2 dan Unit R2 Berdampingan -->
+                <div class="row g-2 mb-2">
+                    <div class="col-7">
+                        <div class="input-group-custom mb-0">
+                            <label>Penerimaan R2 (Rp)</label>
                             <input type="text" name="jumlah_rp_r2" id="jumlah_rp_r2" class="form-control-custom rupiah-input"
-                                placeholder="0" value="{{ old('jumlah_rp_r2', number_format($data->jumlah_rp_r2, 0, ',', '.')) }}" required autocomplete="off">
+                                placeholder="Rp 0" value="{{ old('jumlah_rp_r2', $data->jumlah_rp_r2 > 0 ? number_format($data->jumlah_rp_r2, 0, ',', '.') : '') }}" autocomplete="off">
                         </div>
                     </div>
-                    <div class="col-12">
-                        <div class="input-group-custom">
-                            <label>Jumlah Penerimaan Roda 4 / R4 (Rp)</label>
+                    <div class="col-5">
+                        <div class="input-group-custom mb-0">
+                            <label>Unit R2</label>
+                            <input type="number" name="jumlah_unit_r2" id="jumlah_unit_r2" class="form-control-custom unit-calc"
+                                placeholder="Unit R2" min="0" value="{{ old('jumlah_unit_r2', $data->jumlah_unit_r2 > 0 ? $data->jumlah_unit_r2 : '') }}">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Baris Penerimaan R4 dan Unit R4 Berdampingan -->
+                <div class="row g-2 mb-2">
+                    <div class="col-7">
+                        <div class="input-group-custom mb-0">
+                            <label>Penerimaan R4 (Rp)</label>
                             <input type="text" name="jumlah_rp_r4" id="jumlah_rp_r4" class="form-control-custom rupiah-input"
-                                placeholder="0" value="{{ old('jumlah_rp_r4', number_format($data->jumlah_rp_r4, 0, ',', '.')) }}" required autocomplete="off">
+                                placeholder="Rp 0" value="{{ old('jumlah_rp_r4', $data->jumlah_rp_r4 > 0 ? number_format($data->jumlah_rp_r4, 0, ',', '.') : '') }}" autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="col-5">
+                        <div class="input-group-custom mb-0">
+                            <label>Unit R4</label>
+                            <input type="number" name="jumlah_unit_r4" id="jumlah_unit_r4" class="form-control-custom unit-calc"
+                                placeholder="Unit R4" min="0" value="{{ old('jumlah_unit_r4', $data->jumlah_unit_r4 > 0 ? $data->jumlah_unit_r4 : '') }}">
                         </div>
                     </div>
                 </div>
@@ -146,27 +165,10 @@
                     </div>
                 </div>
 
-                <div class="row g-2">
-                    <div class="col-6">
-                        <div class="input-group-custom">
-                            <label>Jumlah Unit R2</label>
-                            <input type="number" name="jumlah_unit_r2" id="jumlah_unit_r2" class="form-control-custom unit-calc"
-                                placeholder="0" min="0" value="{{ old('jumlah_unit_r2', $data->jumlah_unit_r2) }}" required>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="input-group-custom">
-                            <label>Jumlah Unit R4</label>
-                            <input type="number" name="jumlah_unit_r4" id="jumlah_unit_r4" class="form-control-custom unit-calc"
-                                placeholder="0" min="0" value="{{ old('jumlah_unit_r4', $data->jumlah_unit_r4) }}" required>
-                        </div>
-                    </div>
-                </div>
-
                 <div class="input-group-custom">
                     <label>Jumlah Notice Pajak yang Dicetak (Lembar)</label>
                     <input type="number" name="jumlah_notice" id="jumlah_notice" class="form-control-custom"
-                        placeholder="0" min="0" value="{{ old('jumlah_notice', $data->jumlah_notice) }}" required>
+                        placeholder="Jumlah Lembar Notice" min="0" value="{{ old('jumlah_notice', $data->jumlah_notice > 0 ? $data->jumlah_notice : '') }}">
                 </div>
 
                 <div class="input-group-custom">
