@@ -251,12 +251,26 @@ class DashboardController extends Controller
             ];
         }
 
-        $jmlBelumAbsen = max(0, $totalLayanan - $jmlLayananAktif);
+        // Hitung layanan yang izin / sakit / cuti hari ini
+        $jmlIzinPresensi = DB::table('presensi')
+            ->where('tgl_presensi', $hariini)
+            ->whereIn('status', ['i', 's', 'c'])
+            ->count();
+
+        $jmlIzinApproved = DB::table('pengajuan_izin')
+            ->where('status_approved', 1)
+            ->where('tgl_izin_dari', '<=', $hariini)
+            ->where('tgl_izin_sampai', '>=', $hariini)
+            ->count();
+
+        $jmlIzin = max($jmlIzinPresensi, $jmlIzinApproved);
+        $jmlBelumAbsen = max(0, $totalLayanan - $jmlLayananAktif - $jmlIzin);
 
         return view('dashboard.dashboardadmin', compact(
             'totalLayanan',
             'jmlLayananAktif',
             'jmlLayananPulang',
+            'jmlIzin',
             'jmlBelumAbsen',
             'monitoringLayanan',
             'hariini',

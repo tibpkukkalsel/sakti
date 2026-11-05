@@ -38,99 +38,69 @@
         </div>
     </div>
 
-    <!-- Summary Cards -->
-    <div class="row row-deck row-cards mb-3">
-        <!-- Card 1: Jumlah Akun Layanan -->
-        <div class="col-sm-6 col-lg-3">
-            <div class="card card-sm">
-                <div class="card-body">
-                    <div class="row align-items-center">
-                        <div class="col-auto">
-                            <span class="bg-primary text-white avatar">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-layers-intersect" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                    <path d="M8 4m0 2a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-8a2 2 0 0 1 -2 -2z"></path>
-                                    <path d="M4 8m0 2a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-8a2 2 0 0 1 -2 -2z"></path>
-                                </svg>
-                            </span>
-                        </div>
-                        <div class="col">
-                            <div class="font-weight-medium">Jumlah Layanan</div>
-                            <div class="text-muted fs-3 font-weight-bold text-dark">{{ $totalLayanan }} Akun</div>
-                        </div>
-                    </div>
+    <!-- Small boxes (Stat box) - AdminLTE Style -->
+    <div class="row mb-4">
+        <!-- Box 1: Jumlah Layanan (Blue) -->
+        <div class="col-xl-3 col-sm-6 col-12 mb-3 mb-xl-0">
+            <div class="small-box text-bg-primary shadow-sm h-100 d-flex flex-column justify-content-between" style="border-radius: 12px; overflow: hidden; position: relative;">
+                <div class="inner p-3" style="position: relative; z-index: 2;">
+                    <h3 class="fw-bold mb-1 text-white" style="font-size: 2.3rem; line-height: 1.1;">{{ $totalLayanan }}</h3>
+                    <p class="mb-0 fs-6 text-white text-opacity-90 fw-medium">Jumlah Layanan</p>
                 </div>
+                <div class="small-box-icon" style="position: absolute; right: 15px; top: 12px; z-index: 1; opacity: 0.25; font-size: 72px; line-height: 1; pointer-events: none; color: #fff;">
+                    <i class="bi bi-people-fill"></i>
+                </div>
+                <a href="/panel-adm14/layanan" class="small-box-footer d-flex align-items-center justify-content-center text-white text-decoration-none py-2" style="background-color: rgba(0, 0, 0, 0.15); font-size: 13.5px; font-weight: 500; transition: background-color 0.2s;">
+                    Lihat Data Layanan <i class="bi bi-arrow-right-circle ms-1" style="font-size: 15px;"></i>
+                </a>
             </div>
         </div>
 
-        <!-- Card 2: Layanan Aktif Hari Ini -->
-        <div class="col-sm-6 col-lg-3">
-            <div class="card card-sm">
-                <div class="card-body">
-                    <div class="row align-items-center">
-                        <div class="col-auto">
-                            <span class="bg-success text-white avatar">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle-check" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                    <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
-                                    <path d="M9 12l2 2l4 -4"></path>
-                                </svg>
-                            </span>
-                        </div>
-                        <div class="col">
-                            <div class="font-weight-medium">Layanan Aktif Hari Ini</div>
-                            <div class="text-success fs-3 font-weight-bold">{{ $jmlLayananAktif }} Layanan</div>
-                        </div>
-                    </div>
+        <!-- Box 2: Layanan Hadir (Green) -->
+        <div class="col-xl-3 col-sm-6 col-12 mb-3 mb-xl-0">
+            <div class="small-box text-bg-success shadow-sm h-100 d-flex flex-column justify-content-between" style="border-radius: 12px; overflow: hidden; position: relative;">
+                <div class="inner p-3" style="position: relative; z-index: 2;">
+                    <h3 class="fw-bold mb-1 text-white" style="font-size: 2.3rem; line-height: 1.1;">{{ $jmlLayananAktif }}</h3>
+                    <p class="mb-0 fs-6 text-white text-opacity-90 fw-medium">Layanan Hadir</p>
                 </div>
+                <div class="small-box-icon" style="position: absolute; right: 15px; top: 12px; z-index: 1; opacity: 0.25; font-size: 72px; line-height: 1; pointer-events: none; color: #fff;">
+                    <i class="bi bi-fingerprint"></i>
+                </div>
+                <a href="/panel-adm14/presensi/monitoring" class="small-box-footer d-flex align-items-center justify-content-center text-white text-decoration-none py-2" style="background-color: rgba(0, 0, 0, 0.15); font-size: 13.5px; font-weight: 500; transition: background-color 0.2s;">
+                    Monitoring Presensi <i class="bi bi-arrow-right-circle ms-1" style="font-size: 15px;"></i>
+                </a>
             </div>
         </div>
 
-        <!-- Card 3: Layanan Sudah Pulang -->
-        <div class="col-sm-6 col-lg-3">
-            <div class="card card-sm">
-                <div class="card-body">
-                    <div class="row align-items-center">
-                        <div class="col-auto">
-                            <span class="bg-info text-white avatar">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home-check" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                    <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2"></path>
-                                    <path d="M19 12h2l-9 -9l-9 9h2v7a2 2 0 0 0 2 2h5.5"></path>
-                                    <path d="M15 19l2 2l4 -4"></path>
-                                </svg>
-                            </span>
-                        </div>
-                        <div class="col">
-                            <div class="font-weight-medium">Sudah Absen Pulang</div>
-                            <div class="text-info fs-3 font-weight-bold">{{ $jmlLayananPulang }} Layanan</div>
-                        </div>
-                    </div>
+        <!-- Box 3: Layanan Izin / Sakit (Yellow) -->
+        <div class="col-xl-3 col-sm-6 col-12 mb-3 mb-xl-0">
+            <div class="small-box text-bg-warning shadow-sm h-100 d-flex flex-column justify-content-between" style="border-radius: 12px; overflow: hidden; position: relative; color: #1e293b;">
+                <div class="inner p-3" style="position: relative; z-index: 2;">
+                    <h3 class="fw-bold mb-1" style="font-size: 2.3rem; line-height: 1.1; color: #1e293b;">{{ $jmlIzin ?? 0 }}</h3>
+                    <p class="mb-0 fs-6 fw-medium" style="color: #1e293b;">Layanan Izin / Sakit</p>
                 </div>
+                <div class="small-box-icon" style="position: absolute; right: 15px; top: 12px; z-index: 1; opacity: 0.20; font-size: 72px; line-height: 1; pointer-events: none; color: #000;">
+                    <i class="bi bi-file-earmark-medical-fill"></i>
+                </div>
+                <a href="/panel-adm14/presensi/izinsakit" class="small-box-footer d-flex align-items-center justify-content-center text-decoration-none py-2" style="background-color: rgba(0, 0, 0, 0.12); font-size: 13.5px; font-weight: 500; color: #1e293b; transition: background-color 0.2s;">
+                    Data Izin &amp; Sakit <i class="bi bi-arrow-right-circle ms-1" style="font-size: 15px;"></i>
+                </a>
             </div>
         </div>
 
-        <!-- Card 4: Belum Absen -->
-        <div class="col-sm-6 col-lg-3">
-            <div class="card card-sm">
-                <div class="card-body">
-                    <div class="row align-items-center">
-                        <div class="col-auto">
-                            <span class="bg-warning text-white avatar">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock-hour-4" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                    <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
-                                    <path d="M12 12l3 2"></path>
-                                    <path d="M12 7v5"></path>
-                                </svg>
-                            </span>
-                        </div>
-                        <div class="col">
-                            <div class="font-weight-medium">Belum Presensi</div>
-                            <div class="text-warning fs-3 font-weight-bold">{{ $jmlBelumAbsen }} Layanan</div>
-                        </div>
-                    </div>
+        <!-- Box 4: Belum Absen (Red) -->
+        <div class="col-xl-3 col-sm-6 col-12 mb-3 mb-xl-0">
+            <div class="small-box text-bg-danger shadow-sm h-100 d-flex flex-column justify-content-between" style="border-radius: 12px; overflow: hidden; position: relative;">
+                <div class="inner p-3" style="position: relative; z-index: 2;">
+                    <h3 class="fw-bold mb-1 text-white" style="font-size: 2.3rem; line-height: 1.1;">{{ $jmlBelumAbsen }}</h3>
+                    <p class="mb-0 fs-6 text-white text-opacity-90 fw-medium">Belum Absen</p>
                 </div>
+                <div class="small-box-icon" style="position: absolute; right: 15px; top: 12px; z-index: 1; opacity: 0.25; font-size: 72px; line-height: 1; pointer-events: none; color: #fff;">
+                    <i class="bi bi-clock-history"></i>
+                </div>
+                <a href="/panel-adm14/presensi/monitoring" class="small-box-footer d-flex align-items-center justify-content-center text-white text-decoration-none py-2" style="background-color: rgba(0, 0, 0, 0.15); font-size: 13.5px; font-weight: 500; transition: background-color 0.2s;">
+                    Monitoring Presensi <i class="bi bi-arrow-right-circle ms-1" style="font-size: 15px;"></i>
+                </a>
             </div>
         </div>
     </div>
