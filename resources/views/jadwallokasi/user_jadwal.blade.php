@@ -35,7 +35,7 @@
                 @if ($jadwalHariIni)
                     <span class="badge bg-success" style="font-size: 11px;">Aktif Beroperasi</span>
                 @else
-                    <span class="badge bg-secondary" style="font-size: 11px;">Tidak Beroperasi</span>
+                    <span class="badge bg-danger" style="font-size: 11px;">Libur</span>
                 @endif
             </div>
 
@@ -62,7 +62,7 @@
                 </div>
             @else
                 <div class="text-muted small mt-2">
-                    Tidak ada jadwal operasional keliling pada hari ini.
+                    Libur (tidak ada operasional hari ini).
                 </div>
             @endif
         </div>
@@ -83,12 +83,19 @@
                 @php
                     $j = $jadwalMingguan->firstWhere('hari', $h);
                     $isHariIni = ($h === $namahariIni);
+                    if (!$j) {
+                        $badgeClass = 'bg-danger';
+                    } elseif ($isHariIni) {
+                        $badgeClass = 'bg-success';
+                    } else {
+                        $badgeClass = 'bg-secondary';
+                    }
                 @endphp
                 <div class="px-3 py-3 border-bottom {{ $isHariIni ? 'bg-light' : '' }}">
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="d-flex align-items-center gap-2">
                             <div style="min-width: 58px; text-align: center;">
-                                <span class="badge {{ $isHariIni ? 'bg-success' : 'bg-secondary' }}" style="font-size: 11px; padding: 5px 8px; border-radius: 6px;">
+                                <span class="badge {{ $badgeClass }}" style="font-size: 11px; padding: 5px 8px; border-radius: 6px;">
                                     {{ $h }}
                                 </span>
                             </div>
@@ -98,9 +105,9 @@
                                         {{ $j->nama_cabang }}
                                     </strong>
                                 @else
-                                    <div class="text-muted fst-italic" style="font-size: 13px;">
-                                        - Libur / Tidak Beroperasi -
-                                    </div>
+                                    <span class="text-muted fst-italic" style="font-size: 13px;">
+                                        Libur
+                                    </span>
                                 @endif
                             </div>
                         </div>
