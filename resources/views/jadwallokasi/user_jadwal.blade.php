@@ -61,8 +61,10 @@
                     <span>Layanan: <strong>{{ $user->nama_layanan }}</strong></span>
                 </div>
             @else
-                <div class="text-muted small mt-2">
-                    Libur (tidak ada operasional hari ini).
+                <div class="mt-2">
+                    <div style="font-size: 17px; font-weight: 700; color: #1e293b;">
+                        Libur
+                    </div>
                 </div>
             @endif
         </div>
@@ -100,15 +102,9 @@
                                 </span>
                             </div>
                             <div>
-                                @if ($j)
-                                    <strong class="text-dark" style="font-size: 14px;">
-                                        {{ $j->nama_cabang }}
-                                    </strong>
-                                @else
-                                    <span class="text-muted fst-italic" style="font-size: 13px;">
-                                        Libur
-                                    </span>
-                                @endif
+                                <strong class="text-dark" style="font-size: 14px;">
+                                    {{ $j ? $j->nama_cabang : 'Libur' }}
+                                </strong>
                             </div>
                         </div>
 
