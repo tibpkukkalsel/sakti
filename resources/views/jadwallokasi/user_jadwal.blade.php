@@ -15,97 +15,71 @@
 @endsection
 
 @section('content')
-    <style>
-        body {
-            background-color: #f8fafc !important;
-        }
+    <div style="padding-top: 65px; padding-bottom: 75px;">
+        @if (Session::get('success'))
+            <div class="alert alert-success mx-3 my-2">
+                {{ Session::get('success') }}
+            </div>
+        @endif
 
-        #appCapsule {
-            padding-top: 65px !important;
-            padding-bottom: 95px !important;
-        }
+        @if (Session::get('warning'))
+            <div class="alert alert-warning mx-3 my-2">
+                {{ Session::get('warning') }}
+            </div>
+        @endif
 
-        .today-card {
-            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-            color: #ffffff;
-            border-radius: 20px;
-            padding: 20px 18px;
-            margin: 12px 14px 18px 14px;
-            box-shadow: 0 8px 24px rgba(37, 99, 235, 0.25);
-        }
-
-        .day-badge {
-            display: inline-block;
-            background: rgba(255, 255, 255, 0.22);
-            color: #ffffff;
-            padding: 4px 12px;
-            border-radius: 30px;
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            backdrop-filter: blur(4px);
-        }
-
-        .schedule-card {
-            background: #ffffff;
-            border-radius: 16px;
-            padding: 14px 16px;
-            margin-bottom: 12px;
-            border: 1px solid #f1f5f9;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .schedule-card.is-today {
-            border: 2px solid #3b82f6;
-            background: #eff6ff;
-        }
-    </style>
-
-    <div class="section pt-1">
-        <!-- Card Lokasi Hari Ini -->
-        <div class="today-card">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="day-badge"><ion-icon name="calendar-outline" class="me-1"></ion-icon> Hari Ini ({{ $namahariIni }})</span>
-                <span style="font-size: 11px; opacity: 0.85;">{{ $user->nama_layanan }}</span>
+        <!-- 1. Lokasi Hari Ini (Pembatas Biasa) -->
+        <div class="bg-white border-bottom px-3 py-3 mb-2">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="text-muted small fw-bold text-uppercase">Lokasi Hari Ini ({{ $namahariIni }})</span>
+                @if ($jadwalHariIni)
+                    <span class="badge bg-success" style="font-size: 11px;">Aktif Beroperasi</span>
+                @else
+                    <span class="badge bg-secondary" style="font-size: 11px;">Tidak Beroperasi</span>
+                @endif
             </div>
 
             @if ($jadwalHariIni)
-                <h3 style="font-size: 20px; font-weight: 800; margin-bottom: 4px;">
-                    {{ $jadwalHariIni->nama_cabang }}
-                </h3>
-                <p style="font-size: 12px; opacity: 0.92; margin-bottom: 10px;">
-                    <ion-icon name="pin-outline" class="me-1"></ion-icon> {{ $jadwalHariIni->keterangan ?: 'Posko Operasional Layanan' }}
-                </p>
-                <div class="d-flex align-items-center justify-content-between pt-2 border-top border-white-50">
-                    <span style="font-size: 11.5px; opacity: 0.9;">Radius Presensi: <strong>{{ $jadwalHariIni->radius_cabang }} meter</strong></span>
+                <div class="d-flex justify-content-between align-items-center mt-2">
+                    <div>
+                        <div style="font-size: 17px; font-weight: 700; color: #1e293b;">
+                            {{ $jadwalHariIni->nama_cabang }}
+                        </div>
+                        <div class="text-muted small mt-1">
+                            <ion-icon name="location-outline" class="text-primary"></ion-icon>
+                            {{ $jadwalHariIni->keterangan ?: 'Posko Operasional Pelayanan' }}
+                        </div>
+                    </div>
                     @php
                         $coords = explode(',', $jadwalHariIni->lokasi_cabang);
                         $mapsUrl = count($coords) >= 2 ? 'https://www.google.com/maps?q=' . trim($coords[0]) . ',' . trim($coords[1]) : '#';
                     @endphp
-                    <a href="{{ $mapsUrl }}" target="_blank" class="btn btn-sm btn-light text-primary" style="border-radius: 10px; font-weight: 600; padding: 4px 12px; font-size: 11px;">
-                        <ion-icon name="navigate-outline" class="me-1"></ion-icon> Buka Peta
-                    </a>
+                    @if ($mapsUrl !== '#')
+                        <a href="{{ $mapsUrl }}" target="_blank" class="btn btn-sm btn-outline-primary" style="padding: 3px 12px; font-size: 12px;">
+                            <ion-icon name="navigate-outline"></ion-icon> Buka Peta
+                        </a>
+                    @endif
+                </div>
+
+                <div class="d-flex justify-content-between text-muted small mt-2 pt-2 border-top">
+                    <span>Radius Presensi: <strong>{{ $jadwalHariIni->radius_cabang }} meter</strong></span>
+                    <span>Layanan: <strong>{{ $user->nama_layanan }}</strong></span>
                 </div>
             @else
-                <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 4px;">
-                    Lokasi Kantor Induk / Libur
-                </h3>
-                <p style="font-size: 12px; opacity: 0.85; margin-bottom: 0;">
-                    Tidak ada jadwal keliling khusus hari ini. Presensi mengacu pada lokasi default UPPD SAMSAT Batu Licin.
-                </p>
+                <div class="text-muted small mt-2">
+                    Tidak ada jadwal operasional keliling pada hari ini.
+                </div>
             @endif
         </div>
 
-        <!-- Jadwal Mingguan Lengkap -->
-        <div class="px-3">
-            <h4 style="font-size: 14px; font-weight: 700; color: #334155; margin-bottom: 12px;">
-                <ion-icon name="time-outline" class="me-1 text-primary"></ion-icon> Jadwal Operasional Mingguan
-            </h4>
+        <!-- 2. Header Jadwal Mingguan -->
+        <div class="d-flex justify-content-between align-items-center px-3 mt-3 mb-2">
+            <span class="text-muted small fw-bold text-uppercase">Jadwal Operasional Mingguan</span>
+            <span class="text-muted small">{{ $user->nama_layanan }}</span>
+        </div>
 
+        <!-- 3. Daftar Jadwal Dengan Pembatas Biasa (Tanpa Card) -->
+        <div class="bg-white border-top border-bottom">
             @php
                 $listSemuaHari = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
             @endphp
@@ -115,46 +89,50 @@
                     $j = $jadwalMingguan->firstWhere('hari', $h);
                     $isHariIni = ($h === $namahariIni);
                 @endphp
-                <div class="schedule-card {{ $isHariIni ? 'is-today' : '' }}">
-                    <div class="d-flex align-items-center gap-3">
-                        <div style="width: 48px; text-align: center;">
-                            <span class="badge {{ $isHariIni ? 'badge-primary' : 'badge-secondary' }}" style="font-size: 11px; padding: 5px 8px; border-radius: 8px;">
-                                {{ $h }}
-                            </span>
+                <div class="px-3 py-3 border-bottom {{ $isHariIni ? 'bg-light' : '' }}">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div class="d-flex align-items-start gap-2">
+                            <div style="min-width: 58px;">
+                                <span class="badge {{ $isHariIni ? 'bg-primary' : 'bg-secondary' }}" style="font-size: 11px; padding: 4px 8px;">
+                                    {{ $h }}
+                                </span>
+                                @if ($isHariIni)
+                                    <div class="text-primary fw-bold mt-1" style="font-size: 10px; text-transform: uppercase;">Hari Ini</div>
+                                @endif
+                            </div>
+                            <div>
+                                @if ($j)
+                                    <strong class="text-dark" style="font-size: 14px;">
+                                        {{ $j->nama_cabang }}
+                                    </strong>
+                                    <div class="text-muted small mt-1">
+                                        {{ $j->keterangan ?: 'Posko Operasional' }} &bull; Radius: {{ $j->radius_cabang }}m
+                                    </div>
+                                @else
+                                    <div class="text-muted fst-italic" style="font-size: 13px;">
+                                        - Libur / Tidak Beroperasi -
+                                    </div>
+                                    <div class="text-muted small mt-1">
+                                        Tidak ada jadwal layanan
+                                    </div>
+                                @endif
+                            </div>
                         </div>
-                        <div>
-                            @if ($j)
-                                <div style="font-size: 14px; font-weight: 700; color: #1e293b;">
-                                    {{ $j->nama_cabang }}
-                                    @if ($isHariIni)
-                                        <span class="badge badge-success ms-1" style="font-size: 9px;">HARI INI</span>
-                                    @endif
-                                </div>
-                                <small class="text-muted d-block" style="font-size: 11px;">
-                                    {{ $j->keterangan ?: 'Posko Pelayanan' }} &bull; Radius: {{ $j->radius_cabang }}m
-                                </small>
-                            @else
-                                <div style="font-size: 13px; font-weight: 600; color: #64748b;">
-                                    - SAMSAT Induk / Libur -
-                                </div>
-                                <small class="text-muted" style="font-size: 11px;">Lokasi Default</small>
+
+                        @if ($j && !empty($j->lokasi_cabang))
+                            @php
+                                $c = explode(',', $j->lokasi_cabang);
+                                $map = count($c) >= 2 ? 'https://www.google.com/maps?q=' . trim($c[0]) . ',' . trim($c[1]) : null;
+                            @endphp
+                            @if ($map)
+                                <a href="{{ $map }}" target="_blank" class="btn btn-sm btn-outline-primary py-1 px-2" style="font-size: 12px; border-radius: 4px;" title="Buka di Maps">
+                                    <ion-icon name="navigate-outline"></ion-icon>
+                                </a>
                             @endif
-                        </div>
-                    </div>
-                    @if ($j && !empty($j->lokasi_cabang))
-                        @php
-                            $c = explode(',', $j->lokasi_cabang);
-                            $map = count($c) >= 2 ? 'https://www.google.com/maps?q=' . trim($c[0]) . ',' . trim($c[1]) : null;
-                        @endphp
-                        @if ($map)
-                            <a href="{{ $map }}" target="_blank" class="text-primary" style="font-size: 22px;">
-                                <ion-icon name="map-outline"></ion-icon>
-                            </a>
                         @endif
-                    @endif
+                    </div>
                 </div>
             @endforeach
         </div>
     </div>
 @endsection
-
