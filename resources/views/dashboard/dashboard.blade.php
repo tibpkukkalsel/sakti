@@ -286,7 +286,7 @@
                     {{ Auth::guard('karyawan')->user()->nama_layanan ?? Auth::guard('karyawan')->user()->nama_lengkap }}
                 </h3>
                 <span style="font-size: 11px; color: rgba(255, 255, 255, 0.95); display: block; margin-top: 2px;">
-                    <ion-icon name="pin" style="vertical-align: -1px; color: #fde047;"></ion-icon>
+                    <ion-icon name="location" style="vertical-align: -1px; color: #fde047;"></ion-icon>
                     {{ $cabang ? $cabang->nama_cabang : 'UPPD SAMSAT Batu Licin' }}
                 </span>
             </div>
