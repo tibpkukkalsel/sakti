@@ -55,8 +55,8 @@
                         $mapsUrl = count($coords) >= 2 ? 'https://www.google.com/maps?q=' . trim($coords[0]) . ',' . trim($coords[1]) : '#';
                     @endphp
                     @if ($mapsUrl !== '#')
-                        <a href="{{ $mapsUrl }}" target="_blank" class="btn btn-sm btn-outline-primary" style="padding: 3px 12px; font-size: 12px; border-radius: 6px;">
-                            <ion-icon name="location"></ion-icon> Buka Peta
+                        <a href="{{ $mapsUrl }}" target="_blank" class="btn btn-sm btn-success text-white d-inline-flex align-items-center justify-content-center" style="padding: 4px 12px; font-size: 12px; border-radius: 6px;">
+                            <ion-icon name="location" class="me-1" style="font-size: 15px;"></ion-icon> Buka Peta
                         </a>
                     @endif
                 </div>
@@ -93,7 +93,7 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="d-flex align-items-center gap-2">
                             <div style="min-width: 58px; text-align: center;">
-                                <span class="badge {{ $isHariIni ? 'bg-primary' : 'bg-secondary' }}" style="font-size: 11px; padding: 5px 8px; border-radius: 6px;">
+                                <span class="badge {{ $isHariIni ? 'bg-success' : 'bg-secondary' }}" style="font-size: 11px; padding: 5px 8px; border-radius: 6px;">
                                     {{ $h }}
                                 </span>
                             </div>
@@ -122,8 +122,11 @@
                                 $map = count($c) >= 2 ? 'https://www.google.com/maps?q=' . trim($c[0]) . ',' . trim($c[1]) : null;
                             @endphp
                             @if ($map)
-                                <a href="{{ $map }}" target="_blank" class="btn btn-sm btn-outline-primary py-1 px-2" style="font-size: 16px; border-radius: 6px;" title="Buka di Maps">
-                                    <ion-icon name="location"></ion-icon>
+                                <a href="{{ $map }}" target="_blank"
+                                    class="btn btn-sm {{ $isHariIni ? 'btn-success' : 'btn-primary' }} text-white d-inline-flex align-items-center justify-content-center"
+                                    style="width: 36px; height: 36px; min-width: 36px; border-radius: 8px; padding: 0; line-height: 1;"
+                                    title="Buka di Maps">
+                                    <ion-icon name="location" style="font-size: 18px; line-height: 1;"></ion-icon>
                                 </a>
                             @endif
                         @endif
