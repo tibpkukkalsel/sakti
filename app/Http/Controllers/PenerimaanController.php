@@ -36,39 +36,47 @@ class PenerimaanController extends Controller
         $dari = $request->get('dari', date('Y-m-01'));
         $sampai = $request->get('sampai', date('Y-m-d'));
 
-        // Ambil histori penerimaan akun layanan ini sesuai filter
-        $query = RekapPenerimaanPkb::where('layanan_id', $layananId)
-            ->orderBy('tgl_penerimaan', 'desc');
+        // Ambil query histori penerimaan akun layanan ini sesuai filter
+        $query = RekapPenerimaanPkb::where('layanan_id', $layananId);
 
         if ($filter === 'minggu') {
             $startOfWeek = Carbon::now()->startOfWeek()->format('Y-m-d');
             $endOfWeek = Carbon::now()->endOfWeek()->format('Y-m-d');
             $query->whereBetween('tgl_penerimaan', [$startOfWeek, $endOfWeek]);
+            $labelAkumulasi = 'Akumulasi Minggu Ini';
         } elseif ($filter === 'bulan') {
             $query->whereMonth('tgl_penerimaan', date('m'))
                 ->whereYear('tgl_penerimaan', date('Y'));
+            $labelAkumulasi = 'Akumulasi Bulan ' . Carbon::now()->translatedFormat('F Y');
         } elseif ($filter === 'tahun') {
             $query->whereYear('tgl_penerimaan', date('Y'));
+            $labelAkumulasi = 'Akumulasi Tahun ' . date('Y');
         } elseif ($filter === 'custom') {
             if (!empty($dari) && !empty($sampai)) {
                 $query->whereBetween('tgl_penerimaan', [$dari, $sampai]);
+                $labelAkumulasi = 'Akumulasi (' . Carbon::parse($dari)->format('d/m/Y') . ' - ' . Carbon::parse($sampai)->format('d/m/Y') . ')';
             } elseif (!empty($dari)) {
                 $query->where('tgl_penerimaan', '>=', $dari);
+                $labelAkumulasi = 'Akumulasi (Mulai ' . Carbon::parse($dari)->format('d/m/Y') . ')';
             } elseif (!empty($sampai)) {
                 $query->where('tgl_penerimaan', '<=', $sampai);
+                $labelAkumulasi = 'Akumulasi (Sampai ' . Carbon::parse($sampai)->format('d/m/Y') . ')';
+            } else {
+                $labelAkumulasi = 'Akumulasi Periode';
             }
         }
 
-        $histori = $query->paginate(6)->withQueryString();
-
-        // Hitung total penerimaan tahun berjalan untuk akun layanan ini
-        $tahunSekarang = date('Y');
-        $totalTahunIni = RekapPenerimaanPkb::where('layanan_id', $layananId)
-            ->whereYear('tgl_penerimaan', $tahunSekarang)
+        // Hitung total penerimaan akumulasi mengikuti filter yang aktif
+        $totalAkumulasi = (clone $query)
             ->selectRaw('SUM(total_rp) as total_rp, SUM(total_unit) as total_unit, SUM(jumlah_notice) as total_notice')
             ->first();
 
-        return view('penerimaan.index', compact('penerimaanHariIni', 'histori', 'totalTahunIni', 'user', 'filter', 'dari', 'sampai'));
+        // Ambil histori penerimaan terpaginasi (6 item per halaman)
+        $histori = $query->orderBy('tgl_penerimaan', 'desc')
+            ->paginate(6)
+            ->withQueryString();
+
+        return view('penerimaan.index', compact('penerimaanHariIni', 'histori', 'totalAkumulasi', 'labelAkumulasi', 'user', 'filter', 'dari', 'sampai'));
     }
 
     public function create()

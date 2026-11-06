@@ -92,21 +92,8 @@
             @endif
         </div>
 
-        <!-- 2. Akumulasi Tahun Berjalan (Pembatas Biasa) -->
-        <div class="bg-white border-top border-bottom px-3 py-2 mb-2">
-            <div class="d-flex justify-content-between align-items-center mb-1">
-                <span class="text-muted small fw-bold text-uppercase">Akumulasi Tahun {{ date('Y') }}</span>
-                <strong style="color: #2A8BF2; font-size: 15px;">Rp {{ number_format($totalTahunIni->total_rp ?? 0, 0, ',', '.') }}</strong>
-            </div>
-            <div class="d-flex justify-content-between text-muted small">
-                <span>Total Unit: <strong>{{ number_format($totalTahunIni->total_unit ?? 0, 0, ',', '.') }}</strong></span>
-                <span>Notice Dicetak: <strong>{{ number_format($totalTahunIni->total_notice ?? 0, 0, ',', '.') }} Lembar</strong></span>
-            </div>
-        </div>
-
-        <!-- 3. Filter Riwayat (Minggu, Bulan, Tahun, Custom) -->
+        <!-- 2. Filter (Minggu, Bulan, Tahun, Custom) -->
         <div class="px-3 mt-3 mb-2">
-            <div class="text-muted small fw-bold text-uppercase mb-2">Riwayat Rekap Penerimaan</div>
             <ul class="nav nav-tabs style1" role="tablist">
                 <li class="nav-item">
                     <a class="nav-link {{ $filter == 'minggu' ? 'active' : '' }}" href="/penerimaan?filter=minggu">
@@ -150,6 +137,23 @@
                     </div>
                 </form>
             @endif
+        </div>
+
+        <!-- 3. Akumulasi Total Sesuai Filter (Pembatas Biasa) -->
+        <div class="bg-white border-top border-bottom px-3 py-2 mb-2">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="text-muted small fw-bold text-uppercase">{{ $labelAkumulasi }}</span>
+                <strong style="color: #2A8BF2; font-size: 15px;">Rp {{ number_format($totalAkumulasi->total_rp ?? 0, 0, ',', '.') }}</strong>
+            </div>
+            <div class="d-flex justify-content-between text-muted small">
+                <span>Total Unit: <strong>{{ number_format($totalAkumulasi->total_unit ?? 0, 0, ',', '.') }}</strong></span>
+                <span>Notice Dicetak: <strong>{{ number_format($totalAkumulasi->total_notice ?? 0, 0, ',', '.') }} Lembar</strong></span>
+            </div>
+        </div>
+
+        <!-- 4. Header Riwayat -->
+        <div class="px-3 mt-3 mb-2">
+            <div class="text-muted small fw-bold text-uppercase">Riwayat Rekap Penerimaan</div>
         </div>
 
         <!-- 4. Daftar Riwayat Dengan Pembatas Biasa (Tanpa Card) -->
