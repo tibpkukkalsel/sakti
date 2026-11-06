@@ -889,15 +889,32 @@
             </div>
         </div>
     </div>
+@endsection
+
+@push('myscript')
     <!-- ApexCharts Script -->
     <script src="{{ asset('tabler/dist/libs/apexcharts/dist/apexcharts.min.js') }}"></script>
     <script>
+        if (typeof ApexCharts === 'undefined') {
+            document.write('<script src="https://cdn.jsdelivr.net/npm/apexcharts"><\/script>');
+        }
+    </script>
+    <script>
         var chartPenerimaanDashboard = null;
 
-        function initChartPenerimaanDashboard() {
-            if (chartPenerimaanDashboard) {
-                chartPenerimaanDashboard.resize();
+        function renderChartPenerimaanDashboard() {
+            var el = document.querySelector("#chart-penerimaan-dashboard");
+            if (!el) return;
+
+            if (typeof ApexCharts === 'undefined') {
+                setTimeout(renderChartPenerimaanDashboard, 200);
                 return;
+            }
+
+            if (chartPenerimaanDashboard) {
+                try {
+                    chartPenerimaanDashboard.destroy();
+                } catch(e) {}
             }
 
             var optionsPenerimaan = {
@@ -913,7 +930,7 @@
                 }],
                 chart: {
                     type: 'area',
-                    height: 250,
+                    height: 260,
                     toolbar: { show: false },
                     zoom: { enabled: false },
                     fontFamily: 'inherit'
@@ -987,16 +1004,31 @@
                 }
             };
 
-            chartPenerimaanDashboard = new ApexCharts(document.querySelector("#chart-penerimaan-dashboard"), optionsPenerimaan);
+            chartPenerimaanDashboard = new ApexCharts(el, optionsPenerimaan);
             chartPenerimaanDashboard.render();
         }
 
-        // Render chart saat tab Penerimaan dibuka
-        $('a[data-toggle="tab"][href="#profile"]').on('shown.bs.tab', function(e) {
-            initChartPenerimaanDashboard();
-            setTimeout(function() {
-                window.dispatchEvent(new Event('resize'));
-            }, 60);
+        // 1. Event listener saat tab Penerimaan di-klik atau aktif via Bootstrap / jQuery
+        $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function(e) {
+            if ($(e.target).attr('href') === '#profile') {
+                setTimeout(renderChartPenerimaanDashboard, 50);
+            }
+        });
+
+        // 2. Fallback event listener native click
+        $(document).ready(function() {
+            var tabBtn = document.querySelector('a[data-toggle="tab"][href="#profile"]');
+            if (tabBtn) {
+                tabBtn.addEventListener('click', function() {
+                    setTimeout(renderChartPenerimaanDashboard, 150);
+                    setTimeout(renderChartPenerimaanDashboard, 350);
+                });
+            }
+
+            // Jika tab profile sedang aktif saat pertama load
+            if (document.querySelector('#profile.show.active')) {
+                setTimeout(renderChartPenerimaanDashboard, 100);
+            }
         });
 
         // Mencegah kembali ke halaman login saat tombol Back ditekan di dashboard
@@ -1007,4 +1039,4 @@
             };
         }
     </script>
-@endsection
+@endpush
