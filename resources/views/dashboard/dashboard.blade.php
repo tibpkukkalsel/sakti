@@ -282,9 +282,12 @@
                 @endif
             </div>
             <div id="user-info">
-                <h3 id="user-name">{{ Auth::guard('karyawan')->user()->nama_layanan ?? Auth::guard('karyawan')->user()->nama_lengkap }}</h3>
+                <h3 id="user-name">
+                    {{ Auth::guard('karyawan')->user()->nama_layanan ?? Auth::guard('karyawan')->user()->nama_lengkap }}
+                </h3>
                 <span style="font-size: 11px; color: rgba(255, 255, 255, 0.95); display: block; margin-top: 2px;">
-                    <ion-icon name="pin" style="vertical-align: -1px; color: #fde047;"></ion-icon> {{ $cabang ? $cabang->nama_cabang : 'UPPD SAMSAT Batu Licin' }}
+                    <ion-icon name="pin" style="vertical-align: -1px; color: #fde047;"></ion-icon>
+                    {{ $cabang ? $cabang->nama_cabang : 'UPPD SAMSAT Batu Licin' }}
                 </span>
             </div>
         </div>
@@ -330,30 +333,37 @@
             </div>
         </div>
     </div>
-            @if (isset($maintenanceHariIniLayanan) && $maintenanceHariIniLayanan)
-    <div class="section mt-2">
-        <a href="/maintenance" style="text-decoration: none; color: inherit; display: block;">
-            <div class="card" style="border-radius: 14px; border: 1.5px solid #fde047; background: #fefce8; box-shadow: 0 2px 8px rgba(0,0,0,0.04); overflow: hidden;">
-                <div class="card-body p-3">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div class="d-flex align-items-center">
-                            <div style="width: 40px; height: 40px; border-radius: 12px; background: rgba(234, 179, 8, 0.2); display: flex; align-items: center; justify-content: center; margin-right: 12px; flex-shrink: 0;">
-                                <ion-icon name="construct" style="font-size: 24px; color: #ca8a04;"></ion-icon>
+    @if (isset($maintenanceHariIniLayanan) && $maintenanceHariIniLayanan)
+        <div class="section mt-2">
+            <a href="/maintenance" style="text-decoration: none; color: inherit; display: block;">
+                <div class="card"
+                    style="border-radius: 14px; border: 1.5px solid #fde047; background: #fefce8; box-shadow: 0 2px 8px rgba(0,0,0,0.04); overflow: hidden;">
+                    <div class="card-body p-3">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center">
+                                <div
+                                    style="width: 40px; height: 40px; border-radius: 12px; background: rgba(234, 179, 8, 0.2); display: flex; align-items: center; justify-content: center; margin-right: 12px; flex-shrink: 0;">
+                                    <ion-icon name="construct" style="font-size: 24px; color: #ca8a04;"></ion-icon>
+                                </div>
+                                <div>
+                                    <div
+                                        style="font-size: 11px; font-weight: 800; color: #a16207; text-transform: uppercase; letter-spacing: 0.5px;">
+                                        Status Operasional: Sedang Maintenance</div>
+                                    <div style="font-size: 12px; color: #713f12; font-weight: 500;">
+                                        {{ $maintenanceHariIniLayanan->keterangan ?: 'Unit layanan dalam masa perawatan/servis berkala.' }}
+                                    </div>
+                                </div>
                             </div>
-                            <div>
-                                <div style="font-size: 11px; font-weight: 800; color: #a16207; text-transform: uppercase; letter-spacing: 0.5px;">Status Operasional: Sedang Maintenance</div>
-                                <div style="font-size: 12px; color: #713f12; font-weight: 500;">{{ $maintenanceHariIniLayanan->keterangan ?: 'Unit layanan dalam masa perawatan/servis berkala.' }}</div>
-                            </div>
+                            <ion-icon name="chevron-forward-outline"
+                                style="font-size: 20px; color: #ca8a04; flex-shrink: 0; margin-left: 8px;"></ion-icon>
                         </div>
-                        <ion-icon name="chevron-forward-outline" style="font-size: 20px; color: #ca8a04; flex-shrink: 0; margin-left: 8px;"></ion-icon>
                     </div>
                 </div>
-            </div>
-        </a>
-    </div>
+            </a>
+        </div>
     @endif
 
-        <div class="section mt-2" id="presence-section">
+    <div class="section mt-2" id="presence-section">
         <div class="todaypresence">
             @if ($dataliburhariini != null)
                 <div class="card mb-2"
@@ -428,39 +438,53 @@
 
     <!-- Card Status Penerimaan PKB Hari Ini -->
     <div class="section mt-2">
-        <div class="card" style="border-radius: 14px; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.05); overflow: hidden;">
+        <div class="card"
+            style="border-radius: 14px; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.05); overflow: hidden;">
             <div class="card-body p-3">
                 <div class="d-flex align-items-center justify-content-between mb-2">
                     <div class="d-flex align-items-center">
-                        <div style="width: 36px; height: 36px; border-radius: 10px; background: rgba(16, 185, 129, 0.12); display: flex; align-items: center; justify-content: center; margin-right: 10px;">
+                        <div
+                            style="width: 36px; height: 36px; border-radius: 10px; background: rgba(16, 185, 129, 0.12); display: flex; align-items: center; justify-content: center; margin-right: 10px;">
                             <ion-icon name="cash-outline" style="font-size: 22px; color: #10b981;"></ion-icon>
                         </div>
                         <div>
-                            <div style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Penerimaan PKB Hari Ini</div>
-                            <div style="font-size: 11px; color: #94a3b8;">{{ \Carbon\Carbon::parse($hariini ?? date('Y-m-d'))->translatedFormat('l, d F Y') }}</div>
+                            <div
+                                style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">
+                                Penerimaan PKB Hari Ini</div>
+                            <div style="font-size: 11px; color: #94a3b8;">
+                                {{ \Carbon\Carbon::parse($hariini ?? date('Y-m-d'))->translatedFormat('l, d F Y') }}</div>
                         </div>
                     </div>
                     @if (isset($penerimaanHariIniLayanan) && $penerimaanHariIniLayanan)
-                        <span class="badge badge-success" style="font-size: 11px; padding: 4px 10px; background-color: #10b981; color: #ffffff;">Sudah Input</span>
+                        <span class="badge badge-success"
+                            style="font-size: 11px; padding: 4px 10px; background-color: #10b981; color: #ffffff;">Sudah
+                            Input</span>
                     @else
-                        <span class="badge badge-warning" style="font-size: 11px; padding: 4px 10px; background-color: #f59e0b; color: #ffffff;">Belum Input</span>
+                        <span class="badge badge-warning"
+                            style="font-size: 11px; padding: 4px 10px; background-color: #f59e0b; color: #ffffff;">Belum
+                            Input</span>
                     @endif
                 </div>
 
                 @if (isset($penerimaanHariIniLayanan) && $penerimaanHariIniLayanan)
-                    <div class="d-flex align-items-center justify-content-between p-2 mt-1" style="background: #f8fafc; border-radius: 10px;">
+                    <div class="d-flex align-items-center justify-content-between p-2 mt-1"
+                        style="background: #f8fafc; border-radius: 10px;">
                         <div>
                             <div style="font-size: 11px; color: #64748b;">Total Realisasi</div>
-                            <div style="font-size: 16px; font-weight: 800; color: #0f172a;">Rp {{ number_format($penerimaanHariIniLayanan->total_rp, 0, ',', '.') }}</div>
+                            <div style="font-size: 16px; font-weight: 800; color: #0f172a;">Rp
+                                {{ number_format($penerimaanHariIniLayanan->total_rp, 0, ',', '.') }}</div>
                         </div>
                         <div class="text-right">
                             <div style="font-size: 11px; color: #64748b;">Unit / Notice</div>
-                            <div style="font-size: 13px; font-weight: 700; color: #334155;">{{ $penerimaanHariIniLayanan->total_unit }} Unit / {{ $penerimaanHariIniLayanan->jumlah_notice }} Notice</div>
+                            <div style="font-size: 13px; font-weight: 700; color: #334155;">
+                                {{ $penerimaanHariIniLayanan->total_unit }} Unit /
+                                {{ $penerimaanHariIniLayanan->jumlah_notice }} Notice</div>
                         </div>
                     </div>
                     <div class="row mt-2">
                         <div class="col-6">
-                            <a href="/penerimaan/{{ $penerimaanHariIniLayanan->id }}/edit" class="btn btn-sm btn-outline-primary btn-block" style="border-radius: 8px;">
+                            <a href="/penerimaan/{{ $penerimaanHariIniLayanan->id }}/edit"
+                                class="btn btn-sm btn-outline-primary btn-block" style="border-radius: 8px;">
                                 <ion-icon name="create-outline"></ion-icon> Update
                             </a>
                         </div>
@@ -472,8 +496,8 @@
                     </div>
                 @else
                     <div class="text-center py-2">
-                        <p class="text-muted mb-2" style="font-size: 12px;">Layanan belum menginput realisasi penerimaan PKB hari ini.</p>
-                        <a href="/penerimaan/create" class="btn btn-sm btn-success btn-block" style="border-radius: 8px; font-weight: 600; background-color: #10b981; border-color: #10b981;">
+                        <a href="/penerimaan/create" class="btn btn-sm btn-success btn-block"
+                            style="border-radius: 8px; font-weight: 600; background-color: #10b981; border-color: #10b981;">
                             <ion-icon name="add-circle-outline"></ion-icon> + Input Penerimaan Hari Ini
                         </a>
                     </div>
@@ -538,7 +562,7 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" data-toggle="tab" href="#profile" role="tab">
-                            Leaderboard
+                            Penerimaan
                         </a>
                     </li>
                 </ul>
@@ -826,25 +850,32 @@
                     @endforeach
                 </div>
                 <div class="tab-pane fade" id="profile" role="tabpanel">
-                    <ul class="listview image-listview">
-                        @foreach ($leaderboard as $d)
-                            <li>
-                                <div class="item">
-                                    <img src="assets/img/sample/avatar/avatar1.jpg" alt="image" class="image">
-                                    <div class="in">
-                                        <div>
-                                            <b>{{ $d->nama_lengkap }}</b><br>
-                                            <small class="text-muted">{{ $d->jabatan }}</small>
-                                        </div>
-                                        <span class="badge {{ $d->jam_in < '07:00' ? 'bg-success' : 'bg-danger' }}">
-                                            {{ $d->jam_in }}
-                                        </span>
-                                    </div>
-                                </div>
-                            </li>
-                        @endforeach
+                    <!-- Ringkasan Akumulasi Tahun Berjalan -->
+                    <div class="card mb-2" style="border-radius: 12px; border: 1px solid #e2e8f0;">
+                        <div class="card-body p-3">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="text-muted small fw-bold text-uppercase" style="font-size: 11px;">Total Penerimaan {{ $tahunini }}</span>
+                                <strong style="color: #2A8BF2; font-size: 16px;">Rp {{ number_format($totalTahunBerjalanRp, 0, ',', '.') }}</strong>
+                            </div>
+                            <div class="d-flex justify-content-between text-muted small" style="font-size: 12px;">
+                                <span>Total Unit: <strong>{{ number_format($totalTahunBerjalanUnit, 0, ',', '.') }}</strong></span>
+                                <span>Notice: <strong>{{ number_format($totalTahunBerjalanNotice, 0, ',', '.') }} Lbr</strong></span>
+                            </div>
+                        </div>
+                    </div>
 
-                    </ul>
+                    <!-- Card Grafik Tren Penerimaan Bulanan -->
+                    <div class="card" style="border-radius: 12px; border: 1px solid #e2e8f0;">
+                        <div class="card-body p-2">
+                            <div class="d-flex justify-content-between align-items-center px-2 pt-2 mb-1">
+                                <span class="fw-bold text-dark" style="font-size: 13px;">Grafik Tren Bulanan ({{ $tahunini }})</span>
+                                <a href="/penerimaan" class="text-primary small fw-semibold" style="font-size: 11.5px; text-decoration: none;">
+                                    Detail <ion-icon name="chevron-forward-outline" style="vertical-align: -1px;"></ion-icon>
+                                </a>
+                            </div>
+                            <div id="chart-penerimaan-dashboard" style="min-height: 250px;"></div>
+                        </div>
+                    </div>
                 </div>
 
             </div>
@@ -858,11 +889,120 @@
             </div>
         </div>
     </div>
+    <!-- ApexCharts Script -->
+    <script src="{{ asset('tabler/dist/libs/apexcharts/dist/apexcharts.min.js') }}"></script>
     <script>
+        var chartPenerimaanDashboard = null;
+
+        function initChartPenerimaanDashboard() {
+            if (chartPenerimaanDashboard) {
+                chartPenerimaanDashboard.resize();
+                return;
+            }
+
+            var optionsPenerimaan = {
+                series: [{
+                    name: 'Total (Rp)',
+                    data: @json($chartBulanValuesTotal)
+                }, {
+                    name: 'R2 (Rp)',
+                    data: @json($chartBulanValuesR2)
+                }, {
+                    name: 'R4 (Rp)',
+                    data: @json($chartBulanValuesR4)
+                }],
+                chart: {
+                    type: 'area',
+                    height: 250,
+                    toolbar: { show: false },
+                    zoom: { enabled: false },
+                    fontFamily: 'inherit'
+                },
+                colors: ['#2A8BF2', '#10b981', '#f59e0b'],
+                fill: {
+                    type: 'gradient',
+                    gradient: {
+                        shadeIntensity: 1,
+                        opacityFrom: 0.35,
+                        opacityTo: 0.05,
+                        stops: [0, 90, 100]
+                    }
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    curve: 'smooth',
+                    width: [3, 2, 2]
+                },
+                legend: {
+                    position: 'top',
+                    horizontalAlign: 'right',
+                    fontSize: '11px',
+                    markers: {
+                        radius: 12
+                    }
+                },
+                xaxis: {
+                    categories: @json($chartBulanLabels),
+                    labels: {
+                        style: {
+                            fontSize: '10.5px',
+                            colors: '#64748b'
+                        }
+                    },
+                    axisBorder: { show: false },
+                    axisTicks: { show: false }
+                },
+                yaxis: {
+                    labels: {
+                        formatter: function(val) {
+                            if (val >= 1000000000) return (val / 1000000000).toFixed(1) + 'M';
+                            if (val >= 1000000) return (val / 1000000).toFixed(0) + 'Jt';
+                            if (val >= 1000) return (val / 1000).toFixed(0) + 'Rb';
+                            return val;
+                        },
+                        style: {
+                            fontSize: '10px',
+                            colors: '#64748b'
+                        }
+                    }
+                },
+                tooltip: {
+                    y: {
+                        formatter: function(val) {
+                            return 'Rp ' + new Intl.NumberFormat('id-ID').format(val);
+                        }
+                    }
+                },
+                grid: {
+                    strokeDashArray: 4,
+                    borderColor: '#f1f5f9',
+                    padding: {
+                        top: 5,
+                        right: 10,
+                        bottom: 0,
+                        left: 10
+                    }
+                }
+            };
+
+            chartPenerimaanDashboard = new ApexCharts(document.querySelector("#chart-penerimaan-dashboard"), optionsPenerimaan);
+            chartPenerimaanDashboard.render();
+        }
+
+        // Render chart saat tab Penerimaan dibuka
+        $('a[data-toggle="tab"][href="#profile"]').on('shown.bs.tab', function(e) {
+            initChartPenerimaanDashboard();
+            setTimeout(function() {
+                window.dispatchEvent(new Event('resize'));
+            }, 60);
+        });
+
         // Mencegah kembali ke halaman login saat tombol Back ditekan di dashboard
         if (window.history && window.history.pushState) {
             window.history.pushState(null, null, window.location.href);
-            window.onpopstate = function () {
+            window.onpopstate = function() {
                 window.history.pushState(null, null, window.location.href);
             };
         }

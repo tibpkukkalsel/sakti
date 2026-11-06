@@ -161,12 +161,51 @@ class DashboardController extends Controller
         $departemen = DB::table('seksi')->where('kode_dept', $kode_dept)->first();
 
         // Penerimaan PKB hari ini untuk akun layanan ini
+        $layananId = Auth::guard('karyawan')->user()->id;
         $penerimaanHariIniLayanan = DB::table('rekap_penerimaan_pkb')
-            ->where('layanan_id', Auth::guard('karyawan')->user()->id)
+            ->where('layanan_id', $layananId)
             ->where('tgl_penerimaan', $hariini)
             ->first();
 
-        return view('dashboard.dashboard', compact('presensihariini', 'dataliburhariini', 'historimingguini', 'historibulanini', 'namabulan', 'bulanini', 'tahunini', 'rekappresensi', 'totalLiburBulanIni', 'leaderboard', 'cabang', 'departemen', 'startOfWeek', 'endOfWeek', 'penerimaanHariIniLayanan', 'jadwalHariIni', 'namahari', 'hariini', 'maintenanceHariIniLayanan'));
+        // Data grafik penerimaan PKB tahun berjalan untuk akun layanan ini
+        $monthlyDataRaw = DB::table('rekap_penerimaan_pkb')
+            ->selectRaw('MONTH(tgl_penerimaan) as bulan, SUM(total_rp) as total_rp, SUM(jumlah_rp_r2) as rp_r2, SUM(jumlah_rp_r4) as rp_r4, SUM(total_unit) as total_unit, SUM(jumlah_notice) as total_notice')
+            ->where('layanan_id', $layananId)
+            ->whereYear('tgl_penerimaan', $tahunini)
+            ->groupBy(DB::raw('MONTH(tgl_penerimaan)'))
+            ->get()
+            ->keyBy('bulan');
+
+        $chartBulanLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+        $chartBulanValuesTotal = [];
+        $chartBulanValuesR2 = [];
+        $chartBulanValuesR4 = [];
+
+        $totalTahunBerjalanRp = 0;
+        $totalTahunBerjalanUnit = 0;
+        $totalTahunBerjalanNotice = 0;
+
+        for ($m = 1; $m <= 12; $m++) {
+            $row = $monthlyDataRaw->get($m);
+            $totalRp = (float) ($row ? $row->total_rp : 0);
+            $chartBulanValuesTotal[] = $totalRp;
+            $chartBulanValuesR2[] = (float) ($row ? $row->rp_r2 : 0);
+            $chartBulanValuesR4[] = (float) ($row ? $row->rp_r4 : 0);
+
+            $totalTahunBerjalanRp += $totalRp;
+            $totalTahunBerjalanUnit += (int) ($row ? $row->total_unit : 0);
+            $totalTahunBerjalanNotice += (int) ($row ? $row->total_notice : 0);
+        }
+
+        return view('dashboard.dashboard', compact(
+            'presensihariini', 'dataliburhariini', 'historimingguini', 'historibulanini',
+            'namabulan', 'bulanini', 'tahunini', 'rekappresensi', 'totalLiburBulanIni',
+            'leaderboard', 'cabang', 'departemen', 'startOfWeek', 'endOfWeek',
+            'penerimaanHariIniLayanan', 'jadwalHariIni', 'namahari', 'hariini',
+            'maintenanceHariIniLayanan', 'chartBulanLabels', 'chartBulanValuesTotal',
+            'chartBulanValuesR2', 'chartBulanValuesR4', 'totalTahunBerjalanRp',
+            'totalTahunBerjalanUnit', 'totalTahunBerjalanNotice'
+        ));
     }
 
     /**
