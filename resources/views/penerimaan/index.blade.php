@@ -49,9 +49,22 @@
                             {{ \Carbon\Carbon::parse($penerimaanHariIni->tgl_penerimaan)->translatedFormat('l, d F Y') }}
                         </div>
                     </div>
-                    <a href="/penerimaan/{{ $penerimaanHariIni->id }}/edit" class="btn btn-sm btn-outline-primary" style="padding: 3px 12px; font-size: 12px;">
-                        <ion-icon name="create-outline"></ion-icon> Edit
-                    </a>
+                    <div class="dropdown">
+                        <a href="javascript:;" class="text-secondary d-inline-flex align-items-center justify-content-center" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width: 32px; height: 32px; text-decoration: none;">
+                            <ion-icon name="ellipsis-vertical" style="font-size: 20px;"></ion-icon>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right shadow-sm" style="min-width: 120px; border-radius: 8px; border: 1px solid #e2e8f0; padding: 4px 0; z-index: 1050;">
+                            <a class="dropdown-item" href="/penerimaan/{{ $penerimaanHariIni->id }}/edit" style="padding: 8px 16px; font-size: 13px; font-weight: 500;">
+                                Edit
+                            </a>
+                            <form action="/penerimaan/{{ $penerimaanHariIni->id }}/delete" method="POST" onsubmit="return confirm('Hapus data penerimaan hari ini?')" class="m-0">
+                                @csrf
+                                <button type="submit" class="dropdown-item text-danger" style="padding: 8px 16px; font-size: 13px; font-weight: 500; border: none; background: transparent; width: 100%; text-align: left; cursor: pointer;">
+                                    Hapus
+                                </button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="row text-muted small mt-2 pt-2 border-top">
@@ -152,16 +165,21 @@
                                 Rp {{ number_format($h->total_rp, 0, ',', '.') }}
                             </div>
                         </div>
-                        <div class="d-flex align-items-center gap-1">
-                            <a href="/penerimaan/{{ $h->id }}/edit" class="btn btn-sm btn-outline-warning py-1 px-2" style="font-size: 12px; border-radius: 4px;">
-                                <ion-icon name="create-outline"></ion-icon>
+                        <div class="dropdown">
+                            <a href="javascript:;" class="text-secondary d-inline-flex align-items-center justify-content-center" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width: 32px; height: 32px; text-decoration: none;">
+                                <ion-icon name="ellipsis-vertical" style="font-size: 20px;"></ion-icon>
                             </a>
-                            <form action="/penerimaan/{{ $h->id }}/delete" method="POST" onsubmit="return confirm('Hapus data penerimaan tanggal ini?')" class="m-0 d-inline">
-                                @csrf
-                                <button type="submit" class="btn btn-sm btn-outline-danger py-1 px-2" style="font-size: 12px; border-radius: 4px;">
-                                    <ion-icon name="trash-outline"></ion-icon>
-                                </button>
-                            </form>
+                            <div class="dropdown-menu dropdown-menu-right shadow-sm" style="min-width: 120px; border-radius: 8px; border: 1px solid #e2e8f0; padding: 4px 0; z-index: 1050;">
+                                <a class="dropdown-item" href="/penerimaan/{{ $h->id }}/edit" style="padding: 8px 16px; font-size: 13px; font-weight: 500;">
+                                    Edit
+                                </a>
+                                <form action="/penerimaan/{{ $h->id }}/delete" method="POST" onsubmit="return confirm('Hapus data penerimaan tanggal ini?')" class="m-0">
+                                    @csrf
+                                    <button type="submit" class="dropdown-item text-danger" style="padding: 8px 16px; font-size: 13px; font-weight: 500; border: none; background: transparent; width: 100%; text-align: left; cursor: pointer;">
+                                        Hapus
+                                    </button>
+                                </form>
+                            </div>
                         </div>
                     </div>
 
