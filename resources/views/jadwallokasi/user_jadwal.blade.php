@@ -45,10 +45,6 @@
                         <div style="font-size: 17px; font-weight: 700; color: #1e293b;">
                             {{ $jadwalHariIni->nama_cabang }}
                         </div>
-                        <div class="text-muted small mt-1">
-                            <ion-icon name="location-outline" class="text-primary"></ion-icon>
-                            {{ $jadwalHariIni->keterangan ?: 'Posko Operasional Pelayanan' }}
-                        </div>
                     </div>
                     @php
                         $coords = explode(',', $jadwalHariIni->lokasi_cabang);
@@ -56,13 +52,12 @@
                     @endphp
                     @if ($mapsUrl !== '#')
                         <a href="{{ $mapsUrl }}" target="_blank" class="btn btn-sm btn-success text-white d-inline-flex align-items-center justify-content-center" style="padding: 4px 12px; font-size: 12px; border-radius: 6px;">
-                            <ion-icon name="location" class="me-1" style="font-size: 15px;"></ion-icon> Buka Peta
+                            <ion-icon name="location" class="me-1" style="font-size: 15px; margin: 0 4px 0 0 !important;"></ion-icon> Buka Peta
                         </a>
                     @endif
                 </div>
 
                 <div class="d-flex justify-content-between text-muted small mt-2 pt-2 border-top">
-                    <span>Radius Presensi: <strong>{{ $jadwalHariIni->radius_cabang }} meter</strong></span>
                     <span>Layanan: <strong>{{ $user->nama_layanan }}</strong></span>
                 </div>
             @else
@@ -102,15 +97,9 @@
                                     <strong class="text-dark" style="font-size: 14px;">
                                         {{ $j->nama_cabang }}
                                     </strong>
-                                    <div class="text-muted small mt-1">
-                                        {{ $j->keterangan ?: 'Posko Operasional' }} &bull; Radius: {{ $j->radius_cabang }}m
-                                    </div>
                                 @else
                                     <div class="text-muted fst-italic" style="font-size: 13px;">
                                         - Libur / Tidak Beroperasi -
-                                    </div>
-                                    <div class="text-muted small mt-1">
-                                        Tidak ada jadwal layanan
                                     </div>
                                 @endif
                             </div>
@@ -123,10 +112,10 @@
                             @endphp
                             @if ($map)
                                 <a href="{{ $map }}" target="_blank"
-                                    class="btn btn-sm {{ $isHariIni ? 'btn-success' : 'btn-primary' }} text-white d-inline-flex align-items-center justify-content-center"
-                                    style="width: 36px; height: 36px; min-width: 36px; border-radius: 8px; padding: 0; line-height: 1;"
+                                    class="btn btn-icon {{ $isHariIni ? 'btn-success' : 'btn-primary' }} text-white"
+                                    style="width: 36px !important; height: 36px !important; min-width: 36px !important; border-radius: 8px !important; padding: 0 !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; line-height: 1 !important;"
                                     title="Buka di Maps">
-                                    <ion-icon name="location" style="font-size: 18px; line-height: 1;"></ion-icon>
+                                    <ion-icon name="location" style="margin: 0 !important; font-size: 20px !important; line-height: 1 !important;"></ion-icon>
                                 </a>
                             @endif
                         @endif
