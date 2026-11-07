@@ -178,6 +178,87 @@ class MonitoringController extends Controller
         $pieLayananLabels = $pendapatanPerLayananTahunIni->pluck('nama_layanan')->toArray();
         $pieLayananValues = $pendapatanPerLayananTahunIni->pluck('total_rp')->map(fn($v) => (float) $v)->toArray();
 
+        // 3d. Data Pie Chart Persentase Pendapatan Berdasarkan Hari (Tahun Berjalan)
+        $dayQuery = DB::table('rekap_penerimaan_pkb')
+            ->whereYear('tgl_penerimaan', $tahunini)
+            ->selectRaw("
+                CASE DAYOFWEEK(tgl_penerimaan)
+                    WHEN 2 THEN 'Senin'
+                    WHEN 3 THEN 'Selasa'
+                    WHEN 4 THEN 'Rabu'
+                    WHEN 5 THEN 'Kamis'
+                    WHEN 6 THEN 'Jumat'
+                    WHEN 7 THEN 'Sabtu'
+                    ELSE 'Minggu'
+                END as nama_hari,
+                DAYOFWEEK(tgl_penerimaan) as day_num,
+                COALESCE(SUM(total_rp), 0) as total_rp
+            ")
+            ->groupBy('day_num', 'nama_hari')
+            ->orderByRaw("FIELD(day_num, 2, 3, 4, 5, 6, 7, 1)")
+            ->get();
+
+        $pieHariLabels = $dayQuery->pluck('nama_hari')->toArray();
+        $pieHariValues = $dayQuery->pluck('total_rp')->map(fn($v) => (float) $v)->toArray();
+
+        // 3e. Detail Penerimaan Per Hari: Nama Layanan, Nama Lokasi, Detail Rp (Urutan Tertinggi Diatas)
+        $detailHariQuery = DB::table('rekap_penerimaan_pkb')
+            ->join('layanan', 'rekap_penerimaan_pkb.layanan_id', '=', 'layanan.id')
+            ->leftJoin('jadwal_lokasi_layanan as j_khusus', function ($join) {
+                $join->on('j_khusus.layanan_id', '=', 'rekap_penerimaan_pkb.layanan_id')
+                    ->on('j_khusus.tanggal', '=', 'rekap_penerimaan_pkb.tgl_penerimaan')
+                    ->where('j_khusus.status', 1);
+            })
+            ->leftJoin('jadwal_lokasi_layanan as j_rutin', function ($join) {
+                $join->on('j_rutin.layanan_id', '=', 'rekap_penerimaan_pkb.layanan_id')
+                    ->where('j_rutin.jenis_jadwal', 'rutin')
+                    ->where('j_rutin.status', 1)
+                    ->whereRaw("j_rutin.hari = CASE DAYOFWEEK(rekap_penerimaan_pkb.tgl_penerimaan)
+                        WHEN 1 THEN 'Minggu'
+                        WHEN 2 THEN 'Senin'
+                        WHEN 3 THEN 'Selasa'
+                        WHEN 4 THEN 'Rabu'
+                        WHEN 5 THEN 'Kamis'
+                        WHEN 6 THEN 'Jumat'
+                        WHEN 7 THEN 'Sabtu'
+                    END");
+            })
+            ->leftJoin('cabang as c_lokasi', DB::raw("COALESCE(j_khusus.kode_cabang, j_rutin.kode_cabang, layanan.kode_cabang)"), '=', 'c_lokasi.kode_cabang')
+            ->whereYear('rekap_penerimaan_pkb.tgl_penerimaan', $tahunini)
+            ->selectRaw("
+                CASE DAYOFWEEK(rekap_penerimaan_pkb.tgl_penerimaan)
+                    WHEN 2 THEN 'Senin'
+                    WHEN 3 THEN 'Selasa'
+                    WHEN 4 THEN 'Rabu'
+                    WHEN 5 THEN 'Kamis'
+                    WHEN 6 THEN 'Jumat'
+                    WHEN 7 THEN 'Sabtu'
+                    ELSE 'Minggu'
+                END as nama_hari,
+                layanan.nama_layanan,
+                COALESCE(c_lokasi.nama_cabang, 'UPPD SAMSAT Batulicin') as nama_lokasi,
+                COALESCE(SUM(rekap_penerimaan_pkb.total_rp), 0) as total_rp,
+                COALESCE(SUM(rekap_penerimaan_pkb.total_unit), 0) as total_unit
+            ")
+            ->groupBy(
+                DB::raw("CASE DAYOFWEEK(rekap_penerimaan_pkb.tgl_penerimaan)
+                    WHEN 2 THEN 'Senin'
+                    WHEN 3 THEN 'Selasa'
+                    WHEN 4 THEN 'Rabu'
+                    WHEN 5 THEN 'Kamis'
+                    WHEN 6 THEN 'Jumat'
+                    WHEN 7 THEN 'Sabtu'
+                    ELSE 'Minggu'
+                END"),
+                'layanan.id',
+                'layanan.nama_layanan',
+                DB::raw("COALESCE(c_lokasi.nama_cabang, 'UPPD SAMSAT Batulicin')")
+            )
+            ->orderBy('total_rp', 'desc')
+            ->get();
+
+        $detailPerHariJson = $detailHariQuery->groupBy('nama_hari')->toArray();
+
         // 4. Data Status Real-time Layanan Hari Ini
         $monitoringLayanan = DB::table('layanan')
             ->leftJoin('jadwal_lokasi_layanan as j_khusus', function ($join) use ($hariini) {
@@ -254,6 +335,9 @@ class MonitoringController extends Controller
             'chartLayananPerBulanSeries',
             'pieLayananLabels',
             'pieLayananValues',
+            'pieHariLabels',
+            'pieHariValues',
+            'detailPerHariJson',
             'monitoringLayanan'
         ));
     }

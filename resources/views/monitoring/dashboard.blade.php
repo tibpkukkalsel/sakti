@@ -740,6 +740,32 @@
                             <div id="chart-pie-layanan-monitoring" style="min-height: 280px;"></div>
                         </div>
                     </div>
+
+                    <!-- Card Chart Pie Persentase Pendapatan Berdasarkan Hari (ApexCharts) -->
+                    <div class="card mt-2" style="border-radius: 12px; border: 1px solid #e2e8f0;">
+                        <div class="card-body p-2">
+                            <div class="d-flex justify-content-between align-items-center px-2 pt-2 mb-1">
+                                <span class="fw-bold text-dark" style="font-size: 13px;">Persentase Pendapatan Berdasarkan Hari ({{ $tahunini }})</span>
+                            </div>
+                            <div id="chart-pie-hari-monitoring" style="min-height: 280px;"></div>
+
+                            <!-- Petunjuk atau Rincian saat Warna Pie Hari Diklik -->
+                            <div id="detail-hari-hint" class="text-center py-2 px-1 text-muted" style="font-size: 11px; font-style: italic; border-top: 1px dashed #e2e8f0;">
+                                <ion-icon name="finger-print-outline" style="vertical-align: -2px; font-size: 13px;"></ion-icon>
+                                Ketuk salah satu warna/bagian hari untuk melihat rincian layanan & lokasi
+                            </div>
+
+                            <div id="detail-hari-wrapper" class="mt-2 pt-2 border-top" style="display: none;">
+                                <div class="d-flex justify-content-between align-items-center px-1 mb-2">
+                                    <span style="font-size: 12px; font-weight: 700; color: #1e293b;">
+                                        Rincian Hari <span id="label-selected-hari" class="badge" style="background-color: #0c234b; color: #ffd700; font-size: 11px; padding: 4px 8px;"></span>
+                                    </span>
+                                    <span style="font-size: 10px; color: #64748b; font-weight: 600;">Urutan Tertinggi</span>
+                                </div>
+                                <div id="detail-hari-list"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -997,10 +1023,7 @@
                         var val = opts.w.globals.series[opts.seriesIndex];
                         var total = opts.w.globals.series.reduce(function(a, b) { return a + b; }, 0);
                         var percent = total > 0 ? (val / total * 100).toFixed(1) : 0;
-                        var formattedRp = val >= 1000000000 
-                            ? (val / 1000000000).toFixed(2) + ' M' 
-                            : (val / 1000000).toFixed(0) + ' Jt';
-                        return seriesName + ': Rp ' + formattedRp + ' (' + percent + '%)';
+                        return seriesName + ': Rp ' + Number(val).toLocaleString('id-ID') + ' (' + percent + '%)';
                     }
                 },
                 responsive: [{
@@ -1020,10 +1043,143 @@
             chartPieLayananMonitoring.render();
         }
 
+        var chartPieHariMonitoring = null;
+        var detailPerHariData = @json($detailPerHariJson);
+
+        function showDetailHari(hariName) {
+            var hint = document.getElementById('detail-hari-hint');
+            var wrapper = document.getElementById('detail-hari-wrapper');
+            var labelHari = document.getElementById('label-selected-hari');
+            var listContainer = document.getElementById('detail-hari-list');
+
+            if (!wrapper || !listContainer) return;
+
+            if (hint) hint.style.display = 'none';
+            wrapper.style.display = 'block';
+            if (labelHari) labelHari.textContent = hariName;
+
+            var items = detailPerHariData[hariName] || [];
+            if (items.length === 0) {
+                listContainer.innerHTML = '<div class="text-center py-2 text-muted" style="font-size: 11.5px;">Tidak ada data penerimaan pada hari ini.</div>';
+                return;
+            }
+
+            var html = '';
+            items.forEach(function(item, idx) {
+                var rankColor = (idx === 0) ? '#d97706' : '#64748b';
+                var rankBg = (idx === 0) ? '#fef3c7' : '#f1f5f9';
+
+                html += '<div class="p-2 mb-2" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; box-shadow: 0 1px 2px rgba(0,0,0,0.03);">';
+                html += '  <div class="d-flex justify-content-between align-items-center">';
+                html += '    <div style="flex: 1; min-width: 0;" class="pe-2">';
+                html += '      <div class="d-flex align-items-center mb-1">';
+                html += '        <span class="badge me-1" style="background:' + rankBg + '; color:' + rankColor + '; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px;">#' + (idx + 1) + '</span>';
+                html += '        <span class="fw-bold text-dark text-truncate" style="font-size: 12.5px;">' + (item.nama_layanan || '-') + '</span>';
+                html += '      </div>';
+                html += '      <div class="text-muted text-truncate" style="font-size: 11px;">';
+                html += '        <ion-icon name="location-outline" style="vertical-align: -1px; font-size: 12px; color: #2A8BF2;"></ion-icon> ' + (item.nama_lokasi || 'UPPD SAMSAT Batulicin');
+                html += '      </div>';
+                html += '    </div>';
+                html += '    <div class="text-end text-nowrap">';
+                html += '      <div class="fw-bold" style="font-size: 12.5px; color: #10b981;">Rp ' + Number(item.total_rp).toLocaleString('id-ID') + '</div>';
+                if (item.total_unit) {
+                    html += '      <div class="text-muted" style="font-size: 10.5px;">' + Number(item.total_unit).toLocaleString('id-ID') + ' Unit</div>';
+                }
+                html += '    </div>';
+                html += '  </div>';
+                html += '</div>';
+            });
+
+            listContainer.innerHTML = html;
+        }
+
+        function renderChartPieHariMonitoring() {
+            var el = document.querySelector("#chart-pie-hari-monitoring");
+            if (!el) return;
+
+            if (typeof ApexCharts === 'undefined') {
+                setTimeout(renderChartPieHariMonitoring, 200);
+                return;
+            }
+
+            if (chartPieHariMonitoring) {
+                try {
+                    chartPieHariMonitoring.destroy();
+                } catch (e) {}
+            }
+
+            var hariLabels = @json($pieHariLabels);
+            var hariValues = @json($pieHariValues);
+
+            var optionsPieHari = {
+                series: hariValues,
+                labels: hariLabels,
+                chart: {
+                    type: 'pie',
+                    height: 290,
+                    fontFamily: 'inherit',
+                    events: {
+                        dataPointSelection: function(event, chartContext, config) {
+                            var selectedIndex = config.dataPointIndex;
+                            if (selectedIndex !== undefined && hariLabels[selectedIndex]) {
+                                showDetailHari(hariLabels[selectedIndex]);
+                            }
+                        }
+                    }
+                },
+                colors: ['#2A8BF2', '#10b981', '#f59e0b', '#8b5cf6', '#06b6d4', '#ec4899', '#64748b'],
+                dataLabels: {
+                    enabled: true,
+                    formatter: function (val) {
+                        return val.toFixed(1) + "%";
+                    },
+                    style: {
+                        fontSize: '11.5px',
+                        fontWeight: 700
+                    },
+                    dropShadow: {
+                        enabled: false
+                    }
+                },
+                tooltip: {
+                    y: {
+                        formatter: function (val) {
+                            return 'Rp ' + Number(val).toLocaleString('id-ID');
+                        }
+                    }
+                },
+                legend: {
+                    position: 'bottom',
+                    fontSize: '11px',
+                    formatter: function(seriesName, opts) {
+                        var val = opts.w.globals.series[opts.seriesIndex];
+                        var total = opts.w.globals.series.reduce(function(a, b) { return a + b; }, 0);
+                        var percent = total > 0 ? (val / total * 100).toFixed(1) : 0;
+                        return seriesName + ': Rp ' + Number(val).toLocaleString('id-ID') + ' (' + percent + '%)';
+                    }
+                },
+                responsive: [{
+                    breakpoint: 480,
+                    options: {
+                        chart: {
+                            height: 310
+                        },
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }]
+            };
+
+            chartPieHariMonitoring = new ApexCharts(el, optionsPieHari);
+            chartPieHariMonitoring.render();
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             renderChartPenerimaanMonitoring();
             renderChartLayananPerBulanMonitoring();
             renderChartPieLayananMonitoring();
+            renderChartPieHariMonitoring();
 
             // Re-render chart saat tab Grafik diklik
             $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
@@ -1032,6 +1188,7 @@
                         renderChartPenerimaanMonitoring();
                         renderChartLayananPerBulanMonitoring();
                         renderChartPieLayananMonitoring();
+                        renderChartPieHariMonitoring();
                     }, 150);
                 }
             });
