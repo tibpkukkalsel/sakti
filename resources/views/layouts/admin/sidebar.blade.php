@@ -129,7 +129,7 @@
                 @role('administrator|admin departemen', 'user')
                     <li class="nav-item">
                         <a href="/panel-adm14/penerimaan"
-                            class="nav-link {{ request()->is(['panel-adm14/penerimaan', 'panel-adm14/penerimaan/*']) ? 'active' : '' }}">
+                            class="nav-link {{ request()->is('panel-adm14/penerimaan') || (request()->is('panel-adm14/penerimaan/*') && !request()->is(['panel-adm14/penerimaan/rekap-*', 'panel-adm14/penerimaan/cetak-rekap*'])) ? 'active' : '' }}">
                             <i class="nav-icon bi bi-cash-stack"></i>
                             <p>Penerimaan PKB</p>
                         </a>
