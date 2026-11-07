@@ -15,117 +15,6 @@
 
     <div class="page-body">
         <div class="container-xl">
-            <!-- Summary Cards -->
-            <div class="row row-deck row-cards mb-3">
-                <div class="col-sm-6 col-lg-3">
-                    <div class="card card-sm">
-                        <div class="card-body">
-                            <div class="row align-items-center">
-                                <div class="col-auto">
-                                    <span class="bg-primary text-white avatar">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-coin"
-                                            width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
-                                            stroke="currentColor" fill="none" stroke-linecap="round"
-                                            stroke-linejoin="round">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                            <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
-                                            <path
-                                                d="M14.8 9a2 2 0 0 0 -1.8 -1h-2a2 2 0 1 0 0 4h2a2 2 0 1 1 0 4h-2a2 2 0 0 1 -1.8 -1">
-                                            </path>
-                                            <path d="M12 7v10"></path>
-                                        </svg>
-                                    </span>
-                                </div>
-                                <div class="col">
-                                    <div class="font-weight-medium">Total Penerimaan</div>
-                                    <div class="text-muted">Rp {{ number_format($summary->sum_total_rp ?? 0, 0, ',', '.') }}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-6 col-lg-3">
-                    <div class="card card-sm">
-                        <div class="card-body">
-                            <div class="row align-items-center">
-                                <div class="col-auto">
-                                    <span class="bg-success text-white avatar">
-                                        <svg xmlns="http://www.w3.org/2000/svg"
-                                            class="icon icon-tabler icon-tabler-motorbike" width="24" height="24"
-                                            viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
-                                            stroke-linecap="round" stroke-linejoin="round">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                            <path d="M5 16m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
-                                            <path d="M19 16m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
-                                            <path d="M7.5 14h5l4 -4H7.5m4 0h4l2 -3h-3"></path>
-                                        </svg>
-                                    </span>
-                                </div>
-                                <div class="col">
-                                    <div class="font-weight-medium">Penerimaan R2</div>
-                                    <div class="text-muted">Rp {{ number_format($summary->sum_rp_r2 ?? 0, 0, ',', '.') }}
-                                        ({{ number_format($summary->sum_unit_r2 ?? 0, 0, ',', '.') }} Unit)</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-6 col-lg-3">
-                    <div class="card card-sm">
-                        <div class="card-body">
-                            <div class="row align-items-center">
-                                <div class="col-auto">
-                                    <span class="bg-info text-white avatar">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-car"
-                                            width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
-                                            stroke="currentColor" fill="none" stroke-linecap="round"
-                                            stroke-linejoin="round">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                            <path d="M7 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
-                                            <path d="M17 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
-                                            <path d="M5 17h-2v-6l2 -5h9l4 5h1a2 2 0 0 1 2 2v4h-2m-4 0h-6"></path>
-                                            <path d="M7 9l1 3h8l1 -3"></path>
-                                        </svg>
-                                    </span>
-                                </div>
-                                <div class="col">
-                                    <div class="font-weight-medium">Penerimaan R4</div>
-                                    <div class="text-muted">Rp {{ number_format($summary->sum_rp_r4 ?? 0, 0, ',', '.') }}
-                                        ({{ number_format($summary->sum_unit_r4 ?? 0, 0, ',', '.') }} Unit)</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-6 col-lg-3">
-                    <div class="card card-sm">
-                        <div class="card-body">
-                            <div class="row align-items-center">
-                                <div class="col-auto">
-                                    <span class="bg-warning text-white avatar">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-receipt"
-                                            width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
-                                            stroke="currentColor" fill="none" stroke-linecap="round"
-                                            stroke-linejoin="round">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                            <path
-                                                d="M5 21v-16a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v16l-3 -2l-2 2l-2 -2l-2 2l-2 -2l-3 2m4 -14h6m-6 4h6m-2 4h2">
-                                            </path>
-                                        </svg>
-                                    </span>
-                                </div>
-                                <div class="col">
-                                    <div class="font-weight-medium">Notice Dicetak</div>
-                                    <div class="text-muted">{{ number_format($summary->sum_notice ?? 0, 0, ',', '.') }}
-                                        Notice ({{ number_format($summary->sum_total_unit ?? 0, 0, ',', '.') }} Unit)</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <div class="row">
                 <div class="col-12">
                     <div class="card">
@@ -145,53 +34,9 @@
                                     @endif
                                 </div>
                             </div>
+
+                            <!-- Filter Data -->
                             <div class="row">
-                                <div class="col-12 d-flex">
-                                    <a href="#" class="btn btn-primary" id="btnTambahPenerimaan">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus"
-                                            width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
-                                            stroke="currentColor" fill="none" stroke-linecap="round"
-                                            stroke-linejoin="round">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                            <path d="M12 5l0 14"></path>
-                                            <path d="M5 12l14 0"></path>
-                                        </svg>
-                                        Tambah Data
-                                    </a>
-                                    <form action="/panel-adm14/penerimaan/bulk-lock" method="POST" class="d-inline" style="margin-left: 10px;" onsubmit="return confirm('Kunci semua data penerimaan pada periode filter ini? User layanan tidak dapat mengubah atau menghapus data yang terkunci.')">
-                                        @csrf
-                                        <input type="hidden" name="lock_action" value="lock">
-                                        <input type="hidden" name="tgl_dari" value="{{ $tgl_dari }}">
-                                        <input type="hidden" name="tgl_sampai" value="{{ $tgl_sampai }}">
-                                        <input type="hidden" name="layanan_id" value="{{ $layanan_id }}">
-                                        <button type="submit" class="btn btn-warning">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-lock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                                <path d="M5 11m0 2a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2z"></path>
-                                                <path d="M8 11v-4a4 4 0 0 1 8 0v4"></path>
-                                            </svg>
-                                            Kunci Semua Data Filter
-                                        </button>
-                                    </form>
-                                    <form action="/panel-adm14/penerimaan/bulk-lock" method="POST" class="d-inline" style="margin-left: 5px;" onsubmit="return confirm('Buka kunci semua data penerimaan pada periode filter ini?')">
-                                        @csrf
-                                        <input type="hidden" name="lock_action" value="unlock">
-                                        <input type="hidden" name="tgl_dari" value="{{ $tgl_dari }}">
-                                        <input type="hidden" name="tgl_sampai" value="{{ $tgl_sampai }}">
-                                        <input type="hidden" name="layanan_id" value="{{ $layanan_id }}">
-                                        <button type="submit" class="btn btn-outline-secondary">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-lock-open" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                                <path d="M5 11m0 2a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2z"></path>
-                                                <path d="M12 16m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
-                                                <path d="M8 11v-5a4 4 0 0 1 8 0"></path>
-                                            </svg>
-                                            Buka Kunci Filter
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                            <div class="row mt-2">
                                 <div class="col-12">
                                     <form action="/panel-adm14/penerimaan" method="GET">
                                         <div class="row">
@@ -240,6 +85,24 @@
                                     </form>
                                 </div>
                             </div>
+
+                            <!-- Tombol Aksi -->
+                            <div class="row mt-2">
+                                <div class="col-12">
+                                    <a href="#" class="btn btn-primary" id="btnTambahPenerimaan">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus"
+                                            width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
+                                            stroke="currentColor" fill="none" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                            <path d="M12 5l0 14"></path>
+                                            <path d="M5 12l14 0"></path>
+                                        </svg>
+                                        Tambah Data
+                                    </a>
+                                </div>
+                            </div>
+
                             <div class="row mt-2" id="containerTablePenerimaan">
                                 <div class="col-12">
                                     <div class="table-responsive">
