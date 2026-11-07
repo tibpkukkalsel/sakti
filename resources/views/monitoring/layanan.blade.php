@@ -11,7 +11,7 @@
         <div class="pageTitle">Data Layanan</div>
         <div class="right">
             <span class="badge bg-light text-primary font-weight-bold" style="font-size: 11px;">
-                {{ $totalLayanan }} Unit
+                {{ $totalLayanan }} Layanan
             </span>
         </div>
     </div>
@@ -100,7 +100,7 @@
 
                         <!-- Baris PIC -->
                         <div class="d-flex align-items-center mb-1" style="font-size: 12.5px; line-height: 1.35;">
-                            <span style="color: #64748b; font-weight: 500; min-width: 48px;">PIC:</span>
+                            <span style="color: #64748b; margin-right: 4px;">PIC:</span>
                             <strong style="color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                                 {{ $item->nama_pic ?: '-' }}
                             </strong>
@@ -108,10 +108,8 @@
 
                         <!-- Baris Lokasi -->
                         <div class="d-flex align-items-center" style="font-size: 12.5px; line-height: 1.35;">
-                            <span style="color: #64748b; font-weight: 500; min-width: 48px; display: inline-flex; align-items: center;">
-                                <ion-icon name="location" style="color: #ef4444; font-size: 14px; margin-right: 4px; flex-shrink: 0;"></ion-icon>
-                                Lokasi:
-                            </span>
+                            <ion-icon name="location" style="color: #ef4444; font-size: 14px; margin-right: 3px; flex-shrink: 0;"></ion-icon>
+                            <span style="color: #64748b; margin-right: 4px;">Lokasi:</span>
                             <strong style="color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                                 {{ $item->lokasi_hari_ini }}
                             </strong>
