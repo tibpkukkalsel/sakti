@@ -111,6 +111,15 @@ class PenerimaanController extends Controller
         $totalRp = $rpR2 + $rpR4;
         $totalUnit = $unitR2 + $unitR4;
 
+        // Cek jika data pada tanggal tersebut sudah ada dan dikunci oleh admin
+        $existing = RekapPenerimaanPkb::where('layanan_id', $layananId)
+            ->where('tgl_penerimaan', $tgl)
+            ->first();
+
+        if ($existing && $existing->is_locked) {
+            return redirect()->back()->withInput()->with(['error' => 'Data penerimaan untuk tanggal tersebut telah dikunci oleh admin dan tidak dapat diubah lagi.']);
+        }
+
         try {
             RekapPenerimaanPkb::updateOrCreate(
                 [
@@ -142,6 +151,10 @@ class PenerimaanController extends Controller
             ->where('layanan_id', $user->id)
             ->firstOrFail();
 
+        if ($data->is_locked) {
+            return redirect('/penerimaan')->with(['warning' => 'Data penerimaan ini telah dikunci oleh admin dan tidak dapat diubah lagi.']);
+        }
+
         return view('penerimaan.edit', compact('data', 'user'));
     }
 
@@ -151,6 +164,10 @@ class PenerimaanController extends Controller
         $data = RekapPenerimaanPkb::where('id', $id)
             ->where('layanan_id', $user->id)
             ->firstOrFail();
+
+        if ($data->is_locked) {
+            return redirect('/penerimaan')->with(['error' => 'Data penerimaan ini telah dikunci oleh admin dan tidak dapat diubah lagi.']);
+        }
 
         $rpR2 = (float) preg_replace('/[^0-9]/', '', $request->jumlah_rp_r2);
         $rpR4 = (float) preg_replace('/[^0-9]/', '', $request->jumlah_rp_r4);
@@ -186,6 +203,10 @@ class PenerimaanController extends Controller
         $data = RekapPenerimaanPkb::where('id', $id)
             ->where('layanan_id', $user->id)
             ->firstOrFail();
+
+        if ($data->is_locked) {
+            return redirect('/penerimaan')->with(['error' => 'Data penerimaan ini telah dikunci oleh admin dan tidak dapat dihapus lagi.']);
+        }
 
         $data->delete();
         return redirect('/penerimaan')->with(['success' => 'Data berhasil dihapus']);
@@ -268,6 +289,7 @@ class PenerimaanController extends Controller
                     'total_unit' => $totalUnit,
                     'jumlah_notice' => $notice,
                     'keterangan' => $request->keterangan,
+                    'is_locked' => $request->has('is_locked') ? 1 : 0,
                 ]
             );
 
@@ -311,6 +333,7 @@ class PenerimaanController extends Controller
                 'total_unit' => $totalUnit,
                 'jumlah_notice' => $notice,
                 'keterangan' => $request->keterangan,
+                'is_locked' => $request->has('is_locked') ? 1 : 0,
             ]);
 
             return Redirect::back()->with(['success' => 'Data Penerimaan PKB Berhasil Diupdate']);
@@ -325,6 +348,39 @@ class PenerimaanController extends Controller
         $data->delete();
 
         return Redirect::back()->with(['success' => 'Data Penerimaan PKB Berhasil Dihapus']);
+    }
+
+    public function adminToggleLock($id)
+    {
+        $data = RekapPenerimaanPkb::findOrFail($id);
+        $data->is_locked = !$data->is_locked;
+        $data->save();
+
+        $statusText = $data->is_locked ? 'dikunci (user tidak dapat mengedit/menghapus)' : 'dibuka kuncinya (user dapat mengedit)';
+        return Redirect::back()->with(['success' => "Data penerimaan tanggal " . date('d-m-Y', strtotime($data->tgl_penerimaan)) . " berhasil {$statusText}."]);
+    }
+
+    public function adminBulkLock(Request $request)
+    {
+        $lockAction = $request->input('lock_action', 'lock'); // 'lock' atau 'unlock'
+        $tgl_dari = $request->tgl_dari;
+        $tgl_sampai = $request->tgl_sampai;
+        $layanan_id = $request->layanan_id;
+
+        $query = RekapPenerimaanPkb::query();
+
+        if (!empty($tgl_dari) && !empty($tgl_sampai)) {
+            $query->whereBetween('tgl_penerimaan', [$tgl_dari, $tgl_sampai]);
+        }
+        if (!empty($layanan_id)) {
+            $query->where('layanan_id', $layanan_id);
+        }
+
+        $newVal = ($lockAction === 'lock') ? 1 : 0;
+        $count = $query->update(['is_locked' => $newVal]);
+
+        $label = ($lockAction === 'lock') ? 'dikunci (user tidak dapat mengedit/menghapus)' : 'dibuka kuncinya';
+        return Redirect::back()->with(['success' => "Sebanyak {$count} data penerimaan berhasil {$label}."]);
     }
 
     public function adminCetak(Request $request)

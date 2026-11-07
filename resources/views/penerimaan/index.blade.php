@@ -49,31 +49,46 @@
                             {{ \Carbon\Carbon::parse($penerimaanHariIni->tgl_penerimaan)->translatedFormat('l, d F Y') }}
                         </div>
                     </div>
-                    <div class="dropdown">
-                        <a href="javascript:;" class="text-secondary d-inline-flex align-items-center justify-content-center" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width: 32px; height: 32px; text-decoration: none;">
-                            <ion-icon name="ellipsis-vertical" style="font-size: 20px;"></ion-icon>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right shadow-sm" style="min-width: 120px; border-radius: 8px; border: 1px solid #e2e8f0; padding: 4px 0; z-index: 1050;">
-                            <a class="dropdown-item" href="/penerimaan/{{ $penerimaanHariIni->id }}/edit" style="padding: 8px 16px; font-size: 13px; font-weight: 500;">
-                                Edit
+                    @if ($penerimaanHariIni->is_locked)
+                        <span class="badge bg-warning text-dark d-inline-flex align-items-center gap-1" style="font-size: 11px; padding: 5px 8px;" title="Data dikunci oleh admin">
+                            <ion-icon name="lock-closed" style="font-size: 13px;"></ion-icon> Terkunci
+                        </span>
+                    @else
+                        <div class="dropdown">
+                            <a href="javascript:;"
+                                class="text-secondary d-inline-flex align-items-center justify-content-center"
+                                data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                style="width: 32px; height: 32px; text-decoration: none;">
+                                <ion-icon name="ellipsis-vertical" style="font-size: 20px;"></ion-icon>
                             </a>
-                            <form action="/penerimaan/{{ $penerimaanHariIni->id }}/delete" method="POST" onsubmit="return confirm('Hapus data penerimaan hari ini?')" class="m-0">
-                                @csrf
-                                <button type="submit" class="dropdown-item text-danger" style="padding: 8px 16px; font-size: 13px; font-weight: 500; border: none; background: transparent; width: 100%; text-align: left; cursor: pointer;">
-                                    Hapus
-                                </button>
-                            </form>
+                            <div class="dropdown-menu dropdown-menu-right shadow-sm"
+                                style="min-width: 120px; border-radius: 8px; border: 1px solid #e2e8f0; padding: 4px 0; z-index: 1050;">
+                                <a class="dropdown-item" href="/penerimaan/{{ $penerimaanHariIni->id }}/edit"
+                                    style="padding: 8px 16px; font-size: 13px; font-weight: 500;">
+                                    Edit
+                                </a>
+                                <form action="/penerimaan/{{ $penerimaanHariIni->id }}/delete" method="POST"
+                                    onsubmit="return confirm('Hapus data penerimaan hari ini?')" class="m-0">
+                                    @csrf
+                                    <button type="submit" class="dropdown-item text-danger"
+                                        style="padding: 8px 16px; font-size: 13px; font-weight: 500; border: none; background: transparent; width: 100%; text-align: left; cursor: pointer;">
+                                        Hapus
+                                    </button>
+                                </form>
+                            </div>
                         </div>
-                    </div>
+                    @endif
                 </div>
 
                 <div class="row text-muted small mt-2 pt-2 border-top">
                     <div class="col-6">
-                        <span>R2: <strong>Rp {{ number_format($penerimaanHariIni->jumlah_rp_r2, 0, ',', '.') }}</strong></span>
+                        <span>R2: <strong>Rp
+                                {{ number_format($penerimaanHariIni->jumlah_rp_r2, 0, ',', '.') }}</strong></span>
                         <span class="d-block text-secondary">({{ $penerimaanHariIni->jumlah_unit_r2 }} Unit)</span>
                     </div>
                     <div class="col-6 text-end">
-                        <span>R4: <strong>Rp {{ number_format($penerimaanHariIni->jumlah_rp_r4, 0, ',', '.') }}</strong></span>
+                        <span>R4: <strong>Rp
+                                {{ number_format($penerimaanHariIni->jumlah_rp_r4, 0, ',', '.') }}</strong></span>
                         <span class="d-block text-secondary">({{ $penerimaanHariIni->jumlah_unit_r4 }} Unit)</span>
                     </div>
                 </div>
@@ -123,14 +138,19 @@
                     <div class="row g-2 align-items-end">
                         <div class="col-5">
                             <label class="text-muted small mb-1 d-block" style="font-size: 11px;">Dari Tanggal</label>
-                            <input type="date" name="dari" value="{{ $dari }}" class="form-control form-control-sm" required style="font-size: 12px; height: 36px; border-radius: 6px;">
+                            <input type="date" name="dari" value="{{ $dari }}"
+                                class="form-control form-control-sm" required
+                                style="font-size: 12px; height: 36px; border-radius: 6px;">
                         </div>
                         <div class="col-5">
                             <label class="text-muted small mb-1 d-block" style="font-size: 11px;">Sampai Tanggal</label>
-                            <input type="date" name="sampai" value="{{ $sampai }}" class="form-control form-control-sm" required style="font-size: 12px; height: 36px; border-radius: 6px;">
+                            <input type="date" name="sampai" value="{{ $sampai }}"
+                                class="form-control form-control-sm" required
+                                style="font-size: 12px; height: 36px; border-radius: 6px;">
                         </div>
                         <div class="col-2">
-                            <button type="submit" class="btn btn-primary btn-sm w-100" style="height: 36px; border-radius: 6px; padding: 0;" title="Terapkan Filter">
+                            <button type="submit" class="btn btn-primary btn-sm w-100"
+                                style="height: 36px; border-radius: 6px; padding: 0;" title="Terapkan Filter">
                                 <ion-icon name="search-outline" style="font-size: 18px; vertical-align: middle;"></ion-icon>
                             </button>
                         </div>
@@ -143,11 +163,14 @@
         <div class="bg-white border-top border-bottom px-3 py-2 mb-2">
             <div class="d-flex justify-content-between align-items-center mb-1">
                 <span class="text-muted small fw-bold text-uppercase">{{ $labelAkumulasi }}</span>
-                <strong style="color: #2A8BF2; font-size: 15px;">Rp {{ number_format($totalAkumulasi->total_rp ?? 0, 0, ',', '.') }}</strong>
+                <strong style="color: #2A8BF2; font-size: 15px;">Rp
+                    {{ number_format($totalAkumulasi->total_rp ?? 0, 0, ',', '.') }}</strong>
             </div>
             <div class="d-flex justify-content-between text-muted small">
-                <span>Total Unit: <strong>{{ number_format($totalAkumulasi->total_unit ?? 0, 0, ',', '.') }}</strong></span>
-                <span>Notice Dicetak: <strong>{{ number_format($totalAkumulasi->total_notice ?? 0, 0, ',', '.') }} Lembar</strong></span>
+                <span>Total Unit:
+                    <strong>{{ number_format($totalAkumulasi->total_unit ?? 0, 0, ',', '.') }}</strong></span>
+                <span>Notice Dicetak: <strong>{{ number_format($totalAkumulasi->total_notice ?? 0, 0, ',', '.') }}
+                        Lembar</strong></span>
             </div>
         </div>
 
@@ -169,22 +192,35 @@
                                 Rp {{ number_format($h->total_rp, 0, ',', '.') }}
                             </div>
                         </div>
-                        <div class="dropdown">
-                            <a href="javascript:;" class="text-secondary d-inline-flex align-items-center justify-content-center" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width: 32px; height: 32px; text-decoration: none;">
-                                <ion-icon name="ellipsis-vertical" style="font-size: 20px;"></ion-icon>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-right shadow-sm" style="min-width: 120px; border-radius: 8px; border: 1px solid #e2e8f0; padding: 4px 0; z-index: 1050;">
-                                <a class="dropdown-item" href="/penerimaan/{{ $h->id }}/edit" style="padding: 8px 16px; font-size: 13px; font-weight: 500;">
-                                    Edit
+                        @if ($h->is_locked)
+                            <span class="badge bg-warning text-dark d-inline-flex align-items-center gap-1" style="font-size: 11px; padding: 4px 7px;" title="Data dikunci oleh admin">
+                                <ion-icon name="lock-closed" style="font-size: 12px;"></ion-icon> Terkunci
+                            </span>
+                        @else
+                            <div class="dropdown">
+                                <a href="javascript:;"
+                                    class="text-secondary d-inline-flex align-items-center justify-content-center"
+                                    data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true"
+                                    aria-expanded="false" style="width: 32px; height: 32px; text-decoration: none;">
+                                    <ion-icon name="ellipsis-vertical" style="font-size: 20px;"></ion-icon>
                                 </a>
-                                <form action="/penerimaan/{{ $h->id }}/delete" method="POST" onsubmit="return confirm('Hapus data penerimaan tanggal ini?')" class="m-0">
-                                    @csrf
-                                    <button type="submit" class="dropdown-item text-danger" style="padding: 8px 16px; font-size: 13px; font-weight: 500; border: none; background: transparent; width: 100%; text-align: left; cursor: pointer;">
-                                        Hapus
-                                    </button>
-                                </form>
+                                <div class="dropdown-menu dropdown-menu-right shadow-sm"
+                                    style="min-width: 120px; border-radius: 8px; border: 1px solid #e2e8f0; padding: 4px 0; z-index: 1050;">
+                                    <a class="dropdown-item" href="/penerimaan/{{ $h->id }}/edit"
+                                        style="padding: 8px 16px; font-size: 13px; font-weight: 500;">
+                                        Edit
+                                    </a>
+                                    <form action="/penerimaan/{{ $h->id }}/delete" method="POST"
+                                        onsubmit="return confirm('Hapus data penerimaan tanggal ini?')" class="m-0">
+                                        @csrf
+                                        <button type="submit" class="dropdown-item text-danger"
+                                            style="padding: 8px 16px; font-size: 13px; font-weight: 500; border: none; background: transparent; width: 100%; text-align: left; cursor: pointer;">
+                                            Hapus
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
-                        </div>
+                        @endif
                     </div>
 
                     <div class="row text-muted small mt-2">

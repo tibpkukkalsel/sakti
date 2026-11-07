@@ -125,6 +125,14 @@
             </div>
         </div>
     </div>
+    <div class="row mb-3">
+        <div class="col-12">
+            <label class="form-check form-switch m-0">
+                <input class="form-check-input" type="checkbox" name="is_locked" value="1" {{ $data->is_locked ? 'checked' : '' }}>
+                <span class="form-check-label fw-bold">Kunci Data (User Layanan Tidak Dapat Mengedit/Menghapus)</span>
+            </label>
+        </div>
+    </div>
     <div class="row mt-2">
         <div class="col-12">
             <div class="form-group">

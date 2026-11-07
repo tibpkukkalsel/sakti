@@ -160,6 +160,8 @@ Route::group(['prefix' => 'panel-adm14', 'middleware' => ['auth:user', 'role:adm
     Route::post('/penerimaan/edit', [PenerimaanController::class, 'adminEdit']);
     Route::post('/penerimaan/{id}/update', [PenerimaanController::class, 'adminUpdate']);
     Route::post('/penerimaan/{id}/delete', [PenerimaanController::class, 'adminDelete']);
+    Route::post('/penerimaan/{id}/toggle-lock', [PenerimaanController::class, 'adminToggleLock']);
+    Route::post('/penerimaan/bulk-lock', [PenerimaanController::class, 'adminBulkLock']);
     Route::get('/penerimaan/cetak', [PenerimaanController::class, 'adminCetak']);
     Route::get('/penerimaan/rekap-layanan', [PenerimaanController::class, 'rekapLayanan']);
     Route::get('/penerimaan/rekap-lokasi', [PenerimaanController::class, 'rekapLokasi']);
@@ -247,6 +249,8 @@ Route::group(['prefix' => 'panel-adm14', 'middleware' => ['auth:user', 'role:adm
     Route::post('/penerimaan/edit', [PenerimaanController::class, 'adminEdit']);
     Route::post('/penerimaan/{id}/update', [PenerimaanController::class, 'adminUpdate']);
     Route::post('/penerimaan/{id}/delete', [PenerimaanController::class, 'adminDelete']);
+    Route::post('/penerimaan/{id}/toggle-lock', [PenerimaanController::class, 'adminToggleLock']);
+    Route::post('/penerimaan/bulk-lock', [PenerimaanController::class, 'adminBulkLock']);
     Route::get('/penerimaan/cetak', [PenerimaanController::class, 'adminCetak']);
     Route::get('/penerimaan/rekap-layanan', [PenerimaanController::class, 'rekapLayanan']);
     Route::get('/penerimaan/rekap-lokasi', [PenerimaanController::class, 'rekapLokasi']);

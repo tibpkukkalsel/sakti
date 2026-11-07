@@ -23,6 +23,7 @@ class RekapPenerimaanPkb extends Model
         'total_unit',
         'jumlah_notice',
         'keterangan',
+        'is_locked',
     ];
 
     protected $casts = [
@@ -34,6 +35,7 @@ class RekapPenerimaanPkb extends Model
         'jumlah_unit_r4' => 'integer',
         'total_unit' => 'integer',
         'jumlah_notice' => 'integer',
+        'is_locked' => 'boolean',
     ];
 
     public function layanan()

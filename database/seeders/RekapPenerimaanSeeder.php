@@ -100,3 +100,4 @@ class RekapPenerimaanSeeder extends Seeder
         }
     }
 }
+
