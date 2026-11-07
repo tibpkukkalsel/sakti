@@ -197,14 +197,15 @@ class MonitoringController extends Controller
     }
 
     /**
-     * Jadwal Lokasi Seluruh Layanan
+     * Jadwal Lokasi Seluruh Layanan (Dikelompokkan per Hari)
      */
     public function jadwal(Request $request)
     {
-        $hariPilihan = $request->hari;
+        $namahari_array = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+        $hariini = $namahari_array[date('w')];
         $listHari = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
 
-        $query = DB::table('jadwal_lokasi_layanan')
+        $jadwalRaw = DB::table('jadwal_lokasi_layanan')
             ->join('layanan', 'jadwal_lokasi_layanan.layanan_id', '=', 'layanan.id')
             ->join('cabang', 'jadwal_lokasi_layanan.kode_cabang', '=', 'cabang.kode_cabang')
             ->leftJoin('jam_kerja', 'jadwal_lokasi_layanan.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
@@ -212,25 +213,18 @@ class MonitoringController extends Controller
                 'jadwal_lokasi_layanan.*',
                 'layanan.nama_layanan',
                 'layanan.foto as foto_layanan',
-                'layanan.nama_pic',
-                'layanan.no_hp',
                 'cabang.nama_cabang',
-                'cabang.lokasi_cabang',
-                'cabang.radius_cabang',
                 'jam_kerja.nama_jam_kerja',
                 'jam_kerja.jam_masuk',
                 'jam_kerja.jam_pulang'
-            );
-
-        if (!empty($hariPilihan) && $hariPilihan != 'all') {
-            $query->where('jadwal_lokasi_layanan.hari', $hariPilihan);
-        }
-
-        $jadwalList = $query->orderByRaw("FIELD(jadwal_lokasi_layanan.hari, 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu')")
+            )
+            ->orderByRaw("FIELD(jadwal_lokasi_layanan.hari, 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu')")
             ->orderBy('layanan.nama_layanan', 'asc')
             ->get();
 
-        return view('monitoring.jadwal', compact('jadwalList', 'listHari', 'hariPilihan'));
+        $jadwalByHari = $jadwalRaw->groupBy('hari');
+
+        return view('monitoring.jadwal', compact('jadwalByHari', 'listHari', 'hariini'));
     }
 
     /**
