@@ -858,7 +858,7 @@
                         <div class="card-body p-3">
                             <div class="d-flex justify-content-between align-items-center mb-1">
                                 <span class="text-muted small fw-bold text-uppercase" style="font-size: 11px;">Total Penerimaan {{ $tahunini }}</span>
-                                <strong style="color: #2A8BF2; font-size: 16px;">Rp {{ number_format($totalTahunBerjalanRp, 0, ',', '.') }}</strong>
+                                <strong style="color: #2A8BF2; font-size: 16px; white-space: nowrap;">Rp {{ number_format($totalTahunBerjalanRp, 0, ',', '.') }}</strong>
                             </div>
                             <div class="d-flex justify-content-between text-muted small" style="font-size: 12px;">
                                 <span>Total Unit: <strong>{{ number_format($totalTahunBerjalanUnit, 0, ',', '.') }}</strong></span>

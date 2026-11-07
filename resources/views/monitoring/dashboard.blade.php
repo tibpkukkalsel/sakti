@@ -468,7 +468,7 @@
 
                 <div class="p-2 mt-1" style="background: #f8fafc; border-radius: 10px; border: 1px solid #f1f5f9;">
                     <div style="font-size: 11px; color: #64748b;">Total Realisasi Hari Ini</div>
-                    <div style="font-size: 18px; font-weight: 800; color: #0f172a;">
+                    <div style="font-size: 18px; font-weight: 800; color: #0f172a; white-space: nowrap;">
                         Rp {{ number_format($penerimaanHariIni, 0, ',', '.') }}
                     </div>
                 </div>
@@ -490,7 +490,7 @@
                                     <path d="M7.5 14h5l4 -4H7.5m4 0h4l2 -3h-3"></path>
                                 </svg>
                             </div>
-                            <div style="font-size: 15px; font-weight: 800; color: #1e293b;">
+                            <div style="font-size: 15px; font-weight: 800; color: #1e293b; white-space: nowrap;">
                                 Rp {{ number_format($r2HariIniRp, 0, ',', '.') }}
                             </div>
                         </div>
@@ -519,7 +519,7 @@
                                     <path d="M7 9l1 3h8l1 -3"></path>
                                 </svg>
                             </div>
-                            <div style="font-size: 15px; font-weight: 800; color: #1e293b;">
+                            <div style="font-size: 15px; font-weight: 800; color: #1e293b; white-space: nowrap;">
                                 Rp {{ number_format($r4HariIniRp, 0, ',', '.') }}
                             </div>
                         </div>
@@ -692,13 +692,13 @@
                     <!-- Ringkasan Akumulasi Tahun Berjalan -->
                     <div class="card mb-2" style="border-radius: 14px; border: 1px solid #e2e8f0; box-shadow: 0 1px 4px rgba(0,0,0,0.03);">
                         <div class="card-body p-3">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <span class="text-muted small fw-bold text-uppercase" style="font-size: 11.5px; letter-spacing: 0.5px;">
+                            <div class="mb-2">
+                                <div class="text-muted small fw-bold text-uppercase" style="font-size: 11px; letter-spacing: 0.5px;">
                                     Total Penerimaan {{ $tahunini }}
-                                </span>
-                                <strong style="color: #2A8BF2; font-size: 17px; font-weight: 800;">
+                                </div>
+                                <div style="color: #2A8BF2; font-size: 18px; font-weight: 800; white-space: nowrap; margin-top: 2px;">
                                     Rp {{ number_format($totalTahunBerjalanRp, 0, ',', '.') }}
-                                </strong>
+                                </div>
                             </div>
 
                             <!-- Baris R2 (Motor) -->
@@ -716,7 +716,7 @@
                                             <path d="M7.5 14h5l4 -4H7.5m4 0h4l2 -3h-3"></path>
                                         </svg>
                                     </div>
-                                    <div style="font-size: 14px; font-weight: 700; color: #1e293b;">
+                                    <div style="font-size: 14px; font-weight: 700; color: #1e293b; white-space: nowrap;">
                                         Rp {{ number_format($totalTahunBerjalanR2Rp, 0, ',', '.') }}
                                     </div>
                                 </div>
@@ -745,7 +745,7 @@
                                             <path d="M7 9l1 3h8l1 -3"></path>
                                         </svg>
                                     </div>
-                                    <div style="font-size: 14px; font-weight: 700; color: #1e293b;">
+                                    <div style="font-size: 14px; font-weight: 700; color: #1e293b; white-space: nowrap;">
                                         Rp {{ number_format($totalTahunBerjalanR4Rp, 0, ',', '.') }}
                                     </div>
                                 </div>
