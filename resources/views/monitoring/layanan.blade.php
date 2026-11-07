@@ -90,7 +90,7 @@
                             PIC: <strong>{{ $item->nama_pic ?: '-' }}</strong>
                         </div>
                         <div class="text-muted small" style="margin-top: 2px;">
-                            <ion-icon name="navigate-outline" style="vertical-align: -2px; color: #2A8BF2; margin-right: 4px;"></ion-icon> Lokasi: {{ $item->lokasi_default ?: 'UPPD SAMSAT Batulicin' }}
+                            <ion-icon name="navigate-outline" style="vertical-align: -2px; color: #2A8BF2; margin-right: 4px;"></ion-icon> Lokasi: <strong>{{ $item->lokasi_hari_ini }}</strong>
                         </div>
                     </div>
                 </div>
