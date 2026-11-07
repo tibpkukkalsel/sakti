@@ -242,7 +242,7 @@
             <div class="card shadow-sm border-0" id="cardTablePenerimaan">
                 <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
                     <div>
-                        <h4 class="card-title fw-bold text-dark mb-0">Rincian Data Penerimaan Harian PKB</h4>
+                        <h4 class="card-title fw-bold text-dark mb-0">Data Penerimaan PKB Berdasarkan Layanan</h4>
                     </div>
                 </div>
                 <div class="card-body p-0">
@@ -331,8 +331,8 @@
             <div class="card shadow-sm border-0" id="cardTablePenerimaanLokasi">
                 <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
                     <div>
-                        <h4 class="card-title fw-bold text-dark mb-0">Peringkat Penerimaan PKB Berdasarkan Lokasi</h4>
-                        <small class="text-muted">Diurutkan dari total penerimaan terbanyak ({{ $periodeLabel }})</small>
+                        <h4 class="card-title fw-bold text-dark mb-0">Data Penerimaan PKB Berdasarkan Lokasi</h4>
+                        <small class="text-muted"><br>{{ $periodeLabel }}</small>
                     </div>
                 </div>
                 <div class="card-body p-0">
@@ -342,7 +342,6 @@
                                 <tr>
                                     <th style="width: 50px;" class="text-center">No</th>
                                     <th>Lokasi Pelayanan</th>
-                                    <th style="width: 120px;" class="text-center">Hari Operasi</th>
                                     <th class="text-end">Realisasi R2</th>
                                     <th class="text-end">Realisasi R4</th>
                                     <th class="text-end">Total Penerimaan (Rp)</th>
@@ -357,33 +356,40 @@
                                             {{ $loop->iteration + $rekapLokasiTabel->firstItem() - 1 }}
                                         </td>
                                         <td>
-                                            <strong class="text-primary">{{ $lok->nama_cabang }}</strong>
-                                            <div class="small text-muted font-monospace">Kode: {{ $lok->kode_cabang }} @if($lok->titik_lokasi != '-') &bull; Radius {{ $lok->radius_cabang }}m @endif</div>
-                                        </td>
-                                        <td class="text-center">
-                                            <span class="badge bg-light text-dark border">{{ $lok->total_hari }} Hari</span>
+                                            <span class="badge bg-light text-dark border fs-6 px-2 py-1">
+                                                {{ $lok->nama_cabang }}
+                                            </span>
                                         </td>
                                         <td class="text-end">
-                                            <div class="text-success font-weight-bold">Rp {{ number_format($lok->rp_r2, 0, ',', '.') }}</div>
-                                            <small class="text-muted">{{ number_format($lok->unit_r2, 0, ',', '.') }} unit</small>
+                                            <div class="text-success font-weight-bold">Rp
+                                                {{ number_format($lok->rp_r2, 0, ',', '.') }}</div>
+                                            <small class="text-muted">{{ number_format($lok->unit_r2, 0, ',', '.') }}
+                                                unit</small>
                                         </td>
                                         <td class="text-end">
-                                            <div class="text-info font-weight-bold">Rp {{ number_format($lok->rp_r4, 0, ',', '.') }}</div>
-                                            <small class="text-muted">{{ number_format($lok->unit_r4, 0, ',', '.') }} unit</small>
+                                            <div class="text-info font-weight-bold">Rp
+                                                {{ number_format($lok->rp_r4, 0, ',', '.') }}</div>
+                                            <small class="text-muted">{{ number_format($lok->unit_r4, 0, ',', '.') }}
+                                                unit</small>
                                         </td>
                                         <td class="text-end">
-                                            <strong class="text-dark fs-6">Rp {{ number_format($lok->total_rp, 0, ',', '.') }}</strong>
+                                            <strong class="text-dark fs-6">Rp
+                                                {{ number_format($lok->total_rp, 0, ',', '.') }}</strong>
                                         </td>
                                         <td class="text-center">
-                                            <span class="badge bg-light text-dark border">{{ number_format($lok->total_unit, 0, ',', '.') }} Unit</span>
+                                            <span
+                                                class="badge bg-light text-dark border">{{ number_format($lok->total_unit, 0, ',', '.') }}
+                                                Unit</span>
                                         </td>
                                         <td class="text-center">
-                                            <span class="badge bg-warning text-dark border">{{ number_format($lok->total_notice, 0, ',', '.') }} Lembar</span>
+                                            <span
+                                                class="badge bg-warning text-dark border">{{ number_format($lok->total_notice, 0, ',', '.') }}
+                                                Lembar</span>
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="8" class="text-center py-4 text-muted">
+                                        <td colspan="7" class="text-center py-4 text-muted">
                                             Tidak ada data penerimaan lokasi pada periode yang dipilih.
                                         </td>
                                     </tr>
@@ -560,7 +566,8 @@
                     }
                 };
 
-                var chartLayananPerBulan = new ApexCharts(document.querySelector("#chart-layanan-perbulan"), optionsLayananPerBulan);
+                var chartLayananPerBulan = new ApexCharts(document.querySelector("#chart-layanan-perbulan"),
+                    optionsLayananPerBulan);
                 chartLayananPerBulan.render();
             @endif
 
@@ -591,7 +598,9 @@
                             if (newCard) {
                                 card.innerHTML = newCard.innerHTML;
                                 if (pushState && window.history && window.history.pushState) {
-                                    window.history.pushState({ path: url }, '', url);
+                                    window.history.pushState({
+                                        path: url
+                                    }, '', url);
                                 }
                             } else {
                                 window.location.href = url;
@@ -611,6 +620,57 @@
                 var url = $(this).attr('href');
                 if (!url || url === '#' || url.indexOf('javascript') === 0) return;
                 loadDashboardTable(url, true);
+            });
+
+            // AJAX Pagination untuk Tabel Penerimaan Lokasi
+            function loadDashboardTableLokasi(url, pushState) {
+                if (pushState === undefined) pushState = true;
+                var card = document.getElementById('cardTablePenerimaanLokasi');
+                if (!card) return;
+
+                $('#cardTablePenerimaanLokasi .table-responsive, #cardTablePenerimaanLokasi .card-footer').css({
+                    'opacity': '0.35',
+                    'pointer-events': 'none',
+                    'transition': 'opacity 0.2s ease'
+                });
+
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    success: function(response) {
+                        try {
+                            var parser = new DOMParser();
+                            var doc = parser.parseFromString(response, 'text/html');
+                            var newCard = doc.getElementById('cardTablePenerimaanLokasi');
+
+                            if (newCard) {
+                                card.innerHTML = newCard.innerHTML;
+                                if (pushState && window.history && window.history.pushState) {
+                                    window.history.pushState({
+                                        path: url
+                                    }, '', url);
+                                }
+                            } else {
+                                window.location.href = url;
+                            }
+                        } catch (err) {
+                            window.location.href = url;
+                        }
+                    },
+                    error: function() {
+                        window.location.href = url;
+                    }
+                });
+            }
+
+            $(document).on('click', '#cardTablePenerimaanLokasi .pagination a', function(e) {
+                e.preventDefault();
+                var url = $(this).attr('href');
+                if (!url || url === '#' || url.indexOf('javascript') === 0) return;
+                loadDashboardTableLokasi(url, true);
             });
 
             window.addEventListener('popstate', function() {
