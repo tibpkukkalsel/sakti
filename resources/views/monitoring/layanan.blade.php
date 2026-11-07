@@ -22,82 +22,107 @@
     <style>
         .service-list-card {
             background: #ffffff;
-            border-radius: 14px;
-            padding: 14px;
+            border-radius: 16px;
+            padding: 16px;
             margin-bottom: 12px;
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
             border: 1px solid #e2e8f0;
         }
 
-        .service-avatar {
-            width: 52px;
-            height: 52px;
+        .service-avatar-wrap {
+            width: 54px;
+            height: 54px;
+            min-width: 54px;
             border-radius: 50%;
-            object-fit: cover;
+            overflow: hidden;
+            background: #f0f7ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             border: 2px solid #e2e8f0;
-            background: #ffffff;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
             flex-shrink: 0;
+            margin-right: 14px;
+        }
+
+        .service-avatar {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .btn-wa-action {
             display: inline-flex;
             align-items: center;
-            gap: 4px;
+            justify-content: center;
+            height: 30px;
             background: #25d366;
             color: #ffffff !important;
-            padding: 5px 10px;
+            padding: 0 13px;
             border-radius: 20px;
-            font-size: 11px;
+            font-size: 11.5px;
             font-weight: 600;
             text-decoration: none;
-            box-shadow: 0 2px 6px rgba(37, 211, 102, 0.25);
+            box-shadow: 0 2px 6px rgba(37, 211, 102, 0.28);
+            transition: all 0.2s ease;
+        }
+
+        .btn-wa-action:active {
+            transform: scale(0.97);
+            box-shadow: 0 1px 3px rgba(37, 211, 102, 0.2);
         }
     </style>
 
     <div class="section" style="padding-top: 70px; padding-bottom: 75px;">
-        <!-- Search Box -->
-        <div class="mb-3 px-1">
-            <form action="/monitoring/layanan" method="GET">
-                <div class="input-group" style="background: #ffffff; border-radius: 12px; border: 1px solid #cbd5e1; overflow: hidden; padding: 2px 8px; display: flex; align-items: center;">
-                    <ion-icon name="search-outline" style="font-size: 20px; color: #64748b; margin-right: 6px;"></ion-icon>
-                    <input type="text" name="q" value="{{ $search }}" class="form-control" placeholder="Cari nama layanan atau PIC..." style="border: none; outline: none; box-shadow: none; font-size: 13.5px; height: 38px;">
-                    @if (!empty($search))
-                        <a href="/monitoring/layanan" class="text-muted" style="text-decoration: none; margin-right: 6px;">
-                            <ion-icon name="close-circle" style="font-size: 18px;"></ion-icon>
-                        </a>
-                    @endif
-                    <button type="submit" class="btn btn-sm btn-primary" style="border-radius: 8px; padding: 4px 12px; background-color: #2A8BF2; border-color: #2A8BF2;">Cari</button>
-                </div>
-            </form>
-        </div>
-
         @forelse ($layananList as $item)
             <div class="service-list-card">
-                <div class="d-flex align-items-center gap-3">
-                    @if (!empty($item->foto))
-                        <img src="{{ Storage::url('uploads/karyawan/' . $item->foto) }}" class="service-avatar"
-                            alt="Foto Layanan" onerror="this.src='{{ asset('assets/img/avatar_layanan.png') }}'">
-                    @else
-                        <img src="{{ asset('assets/img/avatar_layanan.png') }}" class="service-avatar" alt="Avatar Layanan">
-                    @endif
+                <div class="d-flex align-items-center">
+                    <!-- Avatar Layanan -->
+                    <div class="service-avatar-wrap">
+                        @if (!empty($item->foto))
+                            <img src="{{ Storage::url('uploads/karyawan/' . $item->foto) }}" class="service-avatar"
+                                alt="Foto Layanan" onerror="this.src='{{ asset('assets/img/avatar_layanan.png') }}'">
+                        @else
+                            <img src="{{ asset('assets/img/avatar_layanan.png') }}" class="service-avatar" alt="Avatar Layanan">
+                        @endif
+                    </div>
 
+                    <!-- Informasi Layanan Presisi -->
                     <div style="flex: 1; min-width: 0;">
-                        <div class="d-flex align-items-center justify-content-between">
-                            <h4 class="mb-0 font-weight-bold text-dark" style="font-size: 14px;">{{ $item->nama_layanan }}</h4>
-                            <span class="badge bg-light text-primary border" style="font-size: 10px;">ID: {{ $item->id }}</span>
+                        <div class="d-flex align-items-center justify-content-between mb-1">
+                            <h4 class="mb-0 font-weight-bold text-dark" style="font-size: 15px; letter-spacing: 0.2px;">
+                                {{ $item->nama_layanan }}
+                            </h4>
+                            <span class="badge" style="background: #f1f5f9; color: #475569; font-weight: 600; font-size: 10.5px; padding: 2px 7px; border-radius: 6px; border: 1px solid #e2e8f0;">
+                                ID: {{ $item->id }}
+                            </span>
                         </div>
-                        <div class="text-muted small mt-1">
-                            PIC: <strong>{{ $item->nama_pic ?: '-' }}</strong>
+
+                        <!-- Baris PIC -->
+                        <div class="d-flex align-items-center mb-1" style="font-size: 12.5px; line-height: 1.35;">
+                            <span style="color: #64748b; font-weight: 500; min-width: 48px;">PIC:</span>
+                            <strong style="color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                {{ $item->nama_pic ?: '-' }}
+                            </strong>
                         </div>
-                        <div class="text-muted small" style="margin-top: 2px;">
-                            <ion-icon name="navigate-outline" style="vertical-align: -2px; color: #2A8BF2; margin-right: 4px;"></ion-icon> Lokasi: <strong>{{ $item->lokasi_hari_ini }}</strong>
+
+                        <!-- Baris Lokasi -->
+                        <div class="d-flex align-items-center" style="font-size: 12.5px; line-height: 1.35;">
+                            <span style="color: #64748b; font-weight: 500; min-width: 48px; display: inline-flex; align-items: center;">
+                                <ion-icon name="location" style="color: #ef4444; font-size: 14px; margin-right: 4px; flex-shrink: 0;"></ion-icon>
+                                Lokasi:
+                            </span>
+                            <strong style="color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                {{ $item->lokasi_hari_ini }}
+                            </strong>
                         </div>
                     </div>
                 </div>
 
-                <div class="mt-3 pt-2 border-top d-flex align-items-center justify-content-between">
+                <!-- Footer Kartu: Status Layanan & Tombol WA -->
+                <div class="mt-3 pt-2 d-flex align-items-center justify-content-between" style="border-top: 1px solid #f1f5f9;">
                     <div>
-                        <span class="badge bg-success text-white" style="font-size: 10.5px;">
+                        <span style="display: inline-flex; align-items: center; justify-content: center; height: 30px; background: rgba(34, 197, 94, 0.12); color: #15803d; font-size: 11.5px; font-weight: 600; padding: 0 12px; border-radius: 20px; border: 1px solid rgba(34, 197, 94, 0.25);">
                             Siap Layanan
                         </span>
                     </div>
@@ -110,11 +135,11 @@
                             }
                         @endphp
                         <a href="https://wa.me/{{ $waNumber }}" target="_blank" class="btn-wa-action">
-                            <ion-icon name="logo-whatsapp" style="font-size: 14px;"></ion-icon>
+                            <ion-icon name="logo-whatsapp" style="font-size: 15px; margin-right: 5px;"></ion-icon>
                             <span>Hubungi PIC</span>
                         </a>
                     @else
-                        <span class="text-muted small">No HP: -</span>
+                        <span class="text-muted small" style="font-size: 11.5px;">No. HP: -</span>
                     @endif
                 </div>
             </div>
@@ -126,4 +151,3 @@
         @endforelse
     </div>
 @endsection
-
