@@ -118,7 +118,6 @@ class LayananController extends Controller
         $nip_pic = $request->nip_pic;
         $jabatan_pic = $request->jabatan_pic;
         $no_hp = $request->no_hp;
-        $kode_cabang = $request->kode_cabang;
         $old_foto = $request->old_foto;
 
         $cekUsername = DB::table('layanan')
@@ -144,10 +143,13 @@ class LayananController extends Controller
                 'nip_pic' => $nip_pic,
                 'jabatan_pic' => $jabatan_pic,
                 'no_hp' => $no_hp,
-                'kode_cabang' => $kode_cabang,
                 'foto' => $foto,
                 'updated_at' => now(),
             ];
+
+            if ($request->has('kode_cabang')) {
+                $data['kode_cabang'] = $request->kode_cabang;
+            }
 
             if (!empty($request->password)) {
                 $data['password'] = Hash::make($request->password);
