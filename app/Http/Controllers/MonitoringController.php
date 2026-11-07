@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -602,16 +603,36 @@ class MonitoringController extends Controller
      */
     public function penerimaan(Request $request)
     {
-        $bulan = $request->bulan ?: date('m');
-        $tahun = $request->tahun ?: date('Y');
+        $periode = $request->periode ?: 'bulan_ini';
         $layanan_id = $request->layanan_id;
+        $namabulan = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
+        $hariini = date('Y-m-d');
+        if ($periode == 'minggu_ini') {
+            $dari_tanggal = Carbon::now()->startOfWeek()->toDateString();
+            $sampai_tanggal = Carbon::now()->endOfWeek()->toDateString();
+            $labelPeriode = 'Minggu Ini (' . date('d M', strtotime($dari_tanggal)) . ' - ' . date('d M Y', strtotime($sampai_tanggal)) . ')';
+        } elseif ($periode == 'tahun_ini') {
+            $dari_tanggal = date('Y-01-01');
+            $sampai_tanggal = date('Y-12-31');
+            $labelPeriode = 'Tahun ' . date('Y');
+        } elseif ($periode == 'custom') {
+            $dari_tanggal = $request->dari_tanggal ?: date('Y-m-01');
+            $sampai_tanggal = $request->sampai_tanggal ?: date('Y-m-d');
+            $labelPeriode = date('d/m/Y', strtotime($dari_tanggal)) . ' - ' . date('d/m/Y', strtotime($sampai_tanggal));
+        } else {
+            // Default: bulan_ini
+            $periode = 'bulan_ini';
+            $dari_tanggal = date('Y-m-01');
+            $sampai_tanggal = date('Y-m-t');
+            $labelPeriode = $namabulan[(int)date('m')] . ' ' . date('Y');
+        }
 
         $layananList = DB::table('layanan')->orderBy('nama_layanan')->get();
 
         $query = DB::table('rekap_penerimaan_pkb')
             ->join('layanan', 'rekap_penerimaan_pkb.layanan_id', '=', 'layanan.id')
-            ->whereYear('rekap_penerimaan_pkb.tgl_penerimaan', $tahun)
-            ->whereMonth('rekap_penerimaan_pkb.tgl_penerimaan', $bulan);
+            ->whereBetween('rekap_penerimaan_pkb.tgl_penerimaan', [$dari_tanggal, $sampai_tanggal]);
 
         if (!empty($layanan_id) && $layanan_id != 'all') {
             $query->where('rekap_penerimaan_pkb.layanan_id', $layanan_id);
@@ -625,23 +646,25 @@ class MonitoringController extends Controller
             ->orderBy('rekap_penerimaan_pkb.tgl_penerimaan', 'desc')
             ->get();
 
-        $totalRp = $rekapList->sum('total_rp');
-        $totalUnit = $rekapList->sum('total_unit');
-        $totalR2Rp = $rekapList->sum('jumlah_rp_r2');
-        $totalR4Rp = $rekapList->sum('jumlah_rp_r4');
-        $totalUnitR2 = $rekapList->sum('jumlah_unit_r2');
-        $totalUnitR4 = $rekapList->sum('jumlah_unit_r4');
-
-        $namabulan = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+        $totalRp = (float) $rekapList->sum('total_rp');
+        $totalUnit = (int) $rekapList->sum('total_unit');
+        $totalNotice = (int) $rekapList->sum('jumlah_notice');
+        $totalR2Rp = (float) $rekapList->sum('jumlah_rp_r2');
+        $totalR4Rp = (float) $rekapList->sum('jumlah_rp_r4');
+        $totalUnitR2 = (int) $rekapList->sum('jumlah_unit_r2');
+        $totalUnitR4 = (int) $rekapList->sum('jumlah_unit_r4');
 
         return view('monitoring.penerimaan', compact(
             'rekapList',
             'layananList',
-            'bulan',
-            'tahun',
+            'periode',
+            'dari_tanggal',
+            'sampai_tanggal',
+            'labelPeriode',
             'layanan_id',
             'totalRp',
             'totalUnit',
+            'totalNotice',
             'totalR2Rp',
             'totalR4Rp',
             'totalUnitR2',
