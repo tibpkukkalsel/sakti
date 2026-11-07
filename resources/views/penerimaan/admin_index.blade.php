@@ -131,7 +131,14 @@
                                                         </td>
                                                         <td>
                                                             <strong>{{ $d->layanan->nama_layanan ?? '-' }}</strong>
-
+                                                            <div class="text-muted small d-flex align-items-center gap-1 mt-1">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-map-pin text-danger" width="14" height="14" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                                    <circle cx="12" cy="11" r="3"></circle>
+                                                                    <path d="M17.657 16.657l-4.243 4.243a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0z"></path>
+                                                                </svg>
+                                                                <span>{{ $d->cabang->nama_cabang ?? 'UPPD SAMSAT Batulicin' }}</span>
+                                                            </div>
                                                         </td>
                                                         <td class="text-end">
                                                             <div class="text-success font-weight-bold">Rp
@@ -293,6 +300,16 @@
                                     <option value="">Pilih Layanan</option>
                                     @foreach ($daftarLayanan as $l)
                                         <option value="{{ $l->id }}">{{ $l->nama_layanan }} </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <select name="kode_cabang" id="kode_cabang" class="form-select mb-3">
+                                    <option value="">Lokasi Layanan</option>
+                                    @foreach ($daftarLokasi as $lok)
+                                        <option value="{{ $lok->kode_cabang }}">{{ $lok->nama_cabang }}</option>
                                     @endforeach
                                 </select>
                             </div>

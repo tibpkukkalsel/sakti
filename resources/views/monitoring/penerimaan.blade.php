@@ -265,8 +265,14 @@
 
         @forelse ($rekapList as $row)
             <div class="revenue-item-card">
-                <div class="d-flex align-items-center justify-content-between mb-1">
-                    <strong class="text-dark" style="font-size: 13.5px;">{{ $row->nama_layanan }}</strong>
+                <div class="d-flex align-items-start justify-content-between mb-1">
+                    <div>
+                        <strong class="text-dark" style="font-size: 13.5px;">{{ $row->nama_layanan }}</strong>
+                        <div class="text-muted" style="font-size: 11.5px; display: flex; align-items: center; gap: 4px; margin-top: 2px;">
+                            <ion-icon name="location-outline" style="font-size: 13px; color: #ef4444; flex-shrink: 0;"></ion-icon>
+                            <span>{{ $row->nama_lokasi ?? 'UPPD SAMSAT Batulicin' }}</span>
+                        </div>
+                    </div>
                     <span class="badge bg-light text-primary border" style="font-size: 11px; padding: 4px 8px; border-radius: 6px;">
                         {{ date('d-m-Y', strtotime($row->tgl_penerimaan)) }}
                     </span>

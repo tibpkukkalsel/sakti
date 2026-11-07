@@ -188,7 +188,11 @@
                             <strong class="text-dark" style="font-size: 14px;">
                                 {{ \Carbon\Carbon::parse($h->tgl_penerimaan)->translatedFormat('l, d F Y') }}
                             </strong>
-                            <div style="font-size: 16px; font-weight: 800; color: #10b981; margin-top: 1px;">
+                            <div class="text-muted" style="font-size: 11.5px; display: flex; align-items: center; gap: 4px; margin-top: 1px;">
+                                <ion-icon name="location-outline" style="font-size: 13px; color: #ef4444; flex-shrink: 0;"></ion-icon>
+                                <span>{{ $h->cabang->nama_cabang ?? 'UPPD SAMSAT Batulicin' }}</span>
+                            </div>
+                            <div style="font-size: 16px; font-weight: 800; color: #10b981; margin-top: 2px;">
                                 Rp {{ number_format($h->total_rp, 0, ',', '.') }}
                             </div>
                         </div>

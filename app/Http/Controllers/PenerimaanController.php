@@ -37,7 +37,7 @@ class PenerimaanController extends Controller
         $sampai = $request->get('sampai', date('Y-m-d'));
 
         // Ambil query histori penerimaan akun layanan ini sesuai filter
-        $query = RekapPenerimaanPkb::where('layanan_id', $layananId);
+        $query = RekapPenerimaanPkb::with('cabang')->where('layanan_id', $layananId);
 
         if ($filter === 'minggu') {
             $startOfWeek = Carbon::now()->startOfWeek()->format('Y-m-d');
@@ -83,7 +83,25 @@ class PenerimaanController extends Controller
     {
         $user = Auth::guard('karyawan')->user();
         $tglDefault = date('Y-m-d');
-        return view('penerimaan.create', compact('user', 'tglDefault'));
+        $daftarLokasi = DB::table('cabang')->orderBy('nama_cabang')->get();
+
+        // Deteksi lokasi hari ini dari jadwal
+        $dayNum = date('w', strtotime($tglDefault));
+        $hariMap = [0 => 'Minggu', 1 => 'Senin', 2 => 'Selasa', 3 => 'Rabu', 4 => 'Kamis', 5 => 'Jumat', 6 => 'Sabtu'];
+        $hariIndo = $hariMap[$dayNum] ?? 'Senin';
+        $jadwalToday = DB::table('jadwal_lokasi_layanan')
+            ->where('layanan_id', $user->id)
+            ->where(function ($q) use ($tglDefault, $hariIndo) {
+                $q->where('tanggal', $tglDefault)->orWhere(function ($q2) use ($hariIndo) {
+                    $q2->where('jenis_jadwal', 'rutin')->where('hari', $hariIndo);
+                });
+            })
+            ->where('status', 1)
+            ->orderBy('jenis_jadwal', 'desc')
+            ->first();
+        $lokasiDefault = $jadwalToday ? $jadwalToday->kode_cabang : ($user->kode_cabang ?: 'SM1');
+
+        return view('penerimaan.create', compact('user', 'tglDefault', 'daftarLokasi', 'lokasiDefault'));
     }
 
     public function store(Request $request)
@@ -93,6 +111,7 @@ class PenerimaanController extends Controller
 
         $request->validate([
             'tgl_penerimaan' => 'required|date',
+            'kode_cabang' => 'nullable',
             'jumlah_rp_r2' => 'nullable',
             'jumlah_rp_r4' => 'nullable',
             'jumlah_unit_r2' => 'nullable|numeric|min:0',
@@ -111,6 +130,30 @@ class PenerimaanController extends Controller
         $totalRp = $rpR2 + $rpR4;
         $totalUnit = $unitR2 + $unitR4;
 
+        // Resolusi kode cabang / id lokasi
+        $kodeCabang = $request->kode_cabang;
+        if (empty($kodeCabang)) {
+            $jadwalKhusus = DB::table('jadwal_lokasi_layanan')
+                ->where('layanan_id', $layananId)
+                ->where('tanggal', $tgl)
+                ->where('status', 1)
+                ->first();
+            if ($jadwalKhusus && !empty($jadwalKhusus->kode_cabang)) {
+                $kodeCabang = $jadwalKhusus->kode_cabang;
+            } else {
+                $dayNum = date('w', strtotime($tgl));
+                $hariMap = [0 => 'Minggu', 1 => 'Senin', 2 => 'Selasa', 3 => 'Rabu', 4 => 'Kamis', 5 => 'Jumat', 6 => 'Sabtu'];
+                $hariIndo = $hariMap[$dayNum] ?? 'Senin';
+                $jadwalRutin = DB::table('jadwal_lokasi_layanan')
+                    ->where('layanan_id', $layananId)
+                    ->where('jenis_jadwal', 'rutin')
+                    ->where('hari', $hariIndo)
+                    ->where('status', 1)
+                    ->first();
+                $kodeCabang = $jadwalRutin ? $jadwalRutin->kode_cabang : ($user->kode_cabang ?: 'SM1');
+            }
+        }
+
         // Cek jika data pada tanggal tersebut sudah ada dan dikunci oleh admin
         $existing = RekapPenerimaanPkb::where('layanan_id', $layananId)
             ->where('tgl_penerimaan', $tgl)
@@ -127,6 +170,7 @@ class PenerimaanController extends Controller
                     'tgl_penerimaan' => $tgl,
                 ],
                 [
+                    'kode_cabang' => $kodeCabang,
                     'jumlah_rp_r2' => $rpR2,
                     'jumlah_rp_r4' => $rpR4,
                     'total_rp' => $totalRp,
@@ -155,7 +199,9 @@ class PenerimaanController extends Controller
             return redirect('/penerimaan')->with(['warning' => 'Data penerimaan ini telah dikunci oleh admin dan tidak dapat diubah lagi.']);
         }
 
-        return view('penerimaan.edit', compact('data', 'user'));
+        $daftarLokasi = DB::table('cabang')->orderBy('nama_cabang')->get();
+
+        return view('penerimaan.edit', compact('data', 'user', 'daftarLokasi'));
     }
 
     public function update($id, Request $request)
@@ -179,7 +225,7 @@ class PenerimaanController extends Controller
         $totalUnit = $unitR2 + $unitR4;
 
         try {
-            $data->update([
+            $updateData = [
                 'tgl_penerimaan' => $request->tgl_penerimaan ?: $data->tgl_penerimaan,
                 'jumlah_rp_r2' => $rpR2,
                 'jumlah_rp_r4' => $rpR4,
@@ -189,7 +235,11 @@ class PenerimaanController extends Controller
                 'total_unit' => $totalUnit,
                 'jumlah_notice' => $notice,
                 'keterangan' => $request->keterangan,
-            ]);
+            ];
+            if (!empty($request->kode_cabang)) {
+                $updateData['kode_cabang'] = $request->kode_cabang;
+            }
+            $data->update($updateData);
 
             return redirect('/penerimaan')->with(['success' => 'Data Penerimaan PKB berhasil diperbarui!']);
         } catch (\Exception $e) {
@@ -222,7 +272,7 @@ class PenerimaanController extends Controller
         $tgl_sampai = $request->tgl_sampai ?: date('Y-m-d');
         $layanan_id = $request->layanan_id;
 
-        $query = RekapPenerimaanPkb::with('layanan')
+        $query = RekapPenerimaanPkb::with(['layanan', 'cabang'])
             ->whereBetween('tgl_penerimaan', [$tgl_dari, $tgl_sampai])
             ->orderBy('tgl_penerimaan', 'desc');
 
@@ -249,14 +299,16 @@ class PenerimaanController extends Controller
         ')->first();
 
         $daftarLayanan = Layanan::orderBy('nama_layanan')->get();
+        $daftarLokasi = DB::table('cabang')->orderBy('nama_cabang')->get();
 
-        return view('penerimaan.admin_index', compact('penerimaan', 'summary', 'daftarLayanan', 'tgl_dari', 'tgl_sampai', 'layanan_id'));
+        return view('penerimaan.admin_index', compact('penerimaan', 'summary', 'daftarLayanan', 'daftarLokasi', 'tgl_dari', 'tgl_sampai', 'layanan_id'));
     }
 
     public function adminStore(Request $request)
     {
         $request->validate([
             'layanan_id' => 'required',
+            'kode_cabang' => 'nullable',
             'tgl_penerimaan' => 'required|date',
             'jumlah_rp_r2' => 'nullable',
             'jumlah_rp_r4' => 'nullable',
@@ -274,6 +326,31 @@ class PenerimaanController extends Controller
         $totalRp = $rpR2 + $rpR4;
         $totalUnit = $unitR2 + $unitR4;
 
+        // Resolusi kode cabang / id lokasi
+        $kodeCabang = $request->kode_cabang;
+        if (empty($kodeCabang)) {
+            $jadwalKhusus = DB::table('jadwal_lokasi_layanan')
+                ->where('layanan_id', $request->layanan_id)
+                ->where('tanggal', $request->tgl_penerimaan)
+                ->where('status', 1)
+                ->first();
+            if ($jadwalKhusus && !empty($jadwalKhusus->kode_cabang)) {
+                $kodeCabang = $jadwalKhusus->kode_cabang;
+            } else {
+                $dayNum = date('w', strtotime($request->tgl_penerimaan));
+                $hariMap = [0 => 'Minggu', 1 => 'Senin', 2 => 'Selasa', 3 => 'Rabu', 4 => 'Kamis', 5 => 'Jumat', 6 => 'Sabtu'];
+                $hariIndo = $hariMap[$dayNum] ?? 'Senin';
+                $jadwalRutin = DB::table('jadwal_lokasi_layanan')
+                    ->where('layanan_id', $request->layanan_id)
+                    ->where('jenis_jadwal', 'rutin')
+                    ->where('hari', $hariIndo)
+                    ->where('status', 1)
+                    ->first();
+                $layananItem = Layanan::find($request->layanan_id);
+                $kodeCabang = $jadwalRutin ? $jadwalRutin->kode_cabang : ($layananItem ? $layananItem->kode_cabang : 'SM1');
+            }
+        }
+
         try {
             RekapPenerimaanPkb::updateOrCreate(
                 [
@@ -281,6 +358,7 @@ class PenerimaanController extends Controller
                     'tgl_penerimaan' => $request->tgl_penerimaan,
                 ],
                 [
+                    'kode_cabang' => $kodeCabang,
                     'jumlah_rp_r2' => $rpR2,
                     'jumlah_rp_r4' => $rpR4,
                     'total_rp' => $totalRp,
@@ -302,10 +380,11 @@ class PenerimaanController extends Controller
     public function adminEdit(Request $request)
     {
         $id = $request->id;
-        $data = RekapPenerimaanPkb::with('layanan')->where('id', $id)->firstOrFail();
+        $data = RekapPenerimaanPkb::with(['layanan', 'cabang'])->where('id', $id)->firstOrFail();
         $daftarLayanan = Layanan::orderBy('nama_layanan')->get();
+        $daftarLokasi = DB::table('cabang')->orderBy('nama_cabang')->get();
 
-        return view('penerimaan.admin_edit', compact('data', 'daftarLayanan'));
+        return view('penerimaan.admin_edit', compact('data', 'daftarLayanan', 'daftarLokasi'));
     }
 
     public function adminUpdate($id, Request $request)
@@ -322,7 +401,7 @@ class PenerimaanController extends Controller
         $totalUnit = $unitR2 + $unitR4;
 
         try {
-            $data->update([
+            $updateData = [
                 'layanan_id' => $request->layanan_id ?: $data->layanan_id,
                 'tgl_penerimaan' => $request->tgl_penerimaan ?: $data->tgl_penerimaan,
                 'jumlah_rp_r2' => $rpR2,
@@ -334,7 +413,11 @@ class PenerimaanController extends Controller
                 'jumlah_notice' => $notice,
                 'keterangan' => $request->keterangan,
                 'is_locked' => $request->has('is_locked') ? 1 : 0,
-            ]);
+            ];
+            if (!empty($request->kode_cabang)) {
+                $updateData['kode_cabang'] = $request->kode_cabang;
+            }
+            $data->update($updateData);
 
             return Redirect::back()->with(['success' => 'Data Penerimaan PKB Berhasil Diupdate']);
         } catch (\Exception $e) {
@@ -389,7 +472,7 @@ class PenerimaanController extends Controller
         $tgl_sampai = $request->tgl_sampai ?: date('Y-m-d');
         $layanan_id = $request->layanan_id;
 
-        $query = RekapPenerimaanPkb::with('layanan')
+        $query = RekapPenerimaanPkb::with(['layanan', 'cabang'])
             ->whereBetween('tgl_penerimaan', [$tgl_dari, $tgl_sampai])
             ->orderBy('tgl_penerimaan', 'asc');
 
@@ -634,7 +717,7 @@ class PenerimaanController extends Controller
                         WHEN 7 THEN 'Sabtu'
                     END");
             })
-            ->leftJoin("cabang as c_lokasi", DB::raw("COALESCE(j_khusus.kode_cabang, j_rutin.kode_cabang, layanan.kode_cabang)"), "=", "c_lokasi.kode_cabang")
+            ->leftJoin("cabang as c_lokasi", DB::raw("COALESCE(rekap_penerimaan_pkb.kode_cabang, j_khusus.kode_cabang, j_rutin.kode_cabang, layanan.kode_cabang)"), "=", "c_lokasi.kode_cabang")
             ->whereBetween("rekap_penerimaan_pkb.tgl_penerimaan", [$startDate, $endDate]);
 
         if (!empty($kode_cabang) && $kode_cabang != "all") {

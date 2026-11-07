@@ -53,6 +53,19 @@
                     </div>
                 </div>
 
+                <div class="form-group boxed">
+                    <div class="input-wrapper">
+                        <label class="label">Lokasi Layanan</label>
+                        <select class="form-control" name="kode_cabang" id="kode_cabang">
+                            @foreach ($daftarLokasi as $lok)
+                                <option value="{{ $lok->kode_cabang }}" {{ (old('kode_cabang', $data->kode_cabang) == $lok->kode_cabang) ? 'selected' : '' }}>
+                                    {{ $lok->nama_cabang }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+
                 <div class="row">
                     <div class="col-7">
                         <div class="form-group boxed">

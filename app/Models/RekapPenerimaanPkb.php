@@ -14,6 +14,7 @@ class RekapPenerimaanPkb extends Model
 
     protected $fillable = [
         'layanan_id',
+        'kode_cabang',
         'tgl_penerimaan',
         'jumlah_rp_r2',
         'jumlah_rp_r4',
@@ -41,6 +42,26 @@ class RekapPenerimaanPkb extends Model
     public function layanan()
     {
         return $this->belongsTo(Layanan::class, 'layanan_id', 'id');
+    }
+
+    public function cabang()
+    {
+        return $this->belongsTo(Cabang::class, 'kode_cabang', 'kode_cabang');
+    }
+
+    public function lokasi()
+    {
+        return $this->belongsTo(Cabang::class, 'kode_cabang', 'kode_cabang');
+    }
+
+    public function getIdLokasiAttribute()
+    {
+        return $this->kode_cabang;
+    }
+
+    public function setIdLokasiAttribute($value)
+    {
+        $this->attributes['kode_cabang'] = $value;
     }
 }
 

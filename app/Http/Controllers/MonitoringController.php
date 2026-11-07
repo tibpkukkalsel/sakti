@@ -241,7 +241,7 @@ class MonitoringController extends Controller
                         WHEN 7 THEN 'Sabtu'
                     END");
             })
-            ->leftJoin('cabang as c_lokasi', DB::raw("COALESCE(j_khusus.kode_cabang, j_rutin.kode_cabang, layanan.kode_cabang)"), '=', 'c_lokasi.kode_cabang')
+            ->leftJoin('cabang as c_lokasi', DB::raw("COALESCE(rekap_penerimaan_pkb.kode_cabang, j_khusus.kode_cabang, j_rutin.kode_cabang, layanan.kode_cabang)"), '=', 'c_lokasi.kode_cabang')
             ->whereYear('rekap_penerimaan_pkb.tgl_penerimaan', $tahunini)
             ->selectRaw("
                 CASE DAYOFWEEK(rekap_penerimaan_pkb.tgl_penerimaan)
@@ -748,6 +748,7 @@ class MonitoringController extends Controller
 
         $query = DB::table('rekap_penerimaan_pkb')
             ->join('layanan', 'rekap_penerimaan_pkb.layanan_id', '=', 'layanan.id')
+            ->leftJoin('cabang', 'rekap_penerimaan_pkb.kode_cabang', '=', 'cabang.kode_cabang')
             ->whereBetween('rekap_penerimaan_pkb.tgl_penerimaan', [$dari_tanggal, $sampai_tanggal]);
 
         if (!empty($layanan_id) && $layanan_id != 'all') {
@@ -777,7 +778,8 @@ class MonitoringController extends Controller
         $rekapList = $query->select(
             'rekap_penerimaan_pkb.*',
             'layanan.nama_layanan',
-            'layanan.foto as foto_layanan'
+            'layanan.foto as foto_layanan',
+            'cabang.nama_cabang as nama_lokasi'
         )
             ->orderBy('rekap_penerimaan_pkb.tgl_penerimaan', 'desc')
             ->orderBy('rekap_penerimaan_pkb.id', 'desc')

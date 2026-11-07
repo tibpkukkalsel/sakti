@@ -14,6 +14,18 @@
     </div>
     <div class="row">
         <div class="col-12">
+            <select name="kode_cabang" id="kode_cabang_edit" class="form-select mb-3">
+                <option value="">Lokasi Layanan</option>
+                @foreach ($daftarLokasi as $lok)
+                <option value="{{ $lok->kode_cabang }}" {{ $data->kode_cabang == $lok->kode_cabang ? 'selected' : '' }}>
+                    {{ $lok->nama_cabang }}
+                </option>
+                @endforeach
+            </select>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
             <div class="input-icon mb-3">
                 <span class="input-icon-addon">
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">

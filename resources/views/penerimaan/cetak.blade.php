@@ -158,7 +158,10 @@
                 <tr>
                     <td class="text-center">{{ $loop->iteration }}</td>
                     <td class="text-center">{{ \Carbon\Carbon::parse($d->tgl_penerimaan)->format('d/m/Y') }}</td>
-                    <td class="fw-bold">{{ $d->layanan->nama_layanan ?? '-' }}</td>
+                    <td class="fw-bold">
+                        {{ $d->layanan->nama_layanan ?? '-' }}
+                        <div style="font-size: 8pt; font-weight: normal; color: #555;">{{ $d->cabang->nama_cabang ?? 'UPPD SAMSAT Batulicin' }}</div>
+                    </td>
                     
                     <td class="text-center">{{ number_format($d->jumlah_unit_r2, 0, ',', '.') }}</td>
                     <td class="text-end">{{ number_format($d->jumlah_rp_r2, 0, ',', '.') }}</td>
