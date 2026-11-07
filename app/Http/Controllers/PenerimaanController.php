@@ -419,253 +419,28 @@ class PenerimaanController extends Controller
      * Menampilkan grafik dan data tabel untuk penerimaan per layanan,
      * dilengkapi filter layanan yang dipilih dan periode tanggal.
      */
-    public function rekapLayanan(Request $request)
+    /**
+     * Tampilan Menu Laporan Rekap Penerimaan PKB Per Layanan
+     * Form sederhana untuk memilih periode (bulan & tahun) dan layanan
+     */
+    public function rekapLayanan()
     {
-        $hariini = date("Y-m-d");
-        $bulanini = date("m");
-        $tahunini = date("Y");
-
-        $periode = $request->get("periode", "bulan_ini");
-        $layanan_id = $request->get("layanan_id", "all");
-
-        if ($periode == "hari_ini") {
-            $startDate = $hariini;
-            $endDate = $hariini;
-            $periodeLabel = "Hari Ini (" . date("d/m/Y", strtotime($hariini)) . ")";
-        } elseif ($periode == "tahun_ini") {
-            $startDate = $tahunini . "-01-01";
-            $endDate = $tahunini . "-12-31";
-            $periodeLabel = "Tahun Ini (" . $tahunini . ")";
-        } elseif ($periode == "custom") {
-            $startDate = $request->get("tgl_dari", date("Y-m-01"));
-            $endDate = $request->get("tgl_sampai", $hariini);
-            $periodeLabel = date("d/m/Y", strtotime($startDate)) . " s/d " . date("d/m/Y", strtotime($endDate));
-        } else {
-            // Default: bulan_ini
-            $periode = "bulan_ini";
-            $startDate = date("Y-m-01");
-            $endDate = date("Y-m-t");
-            $namaBulan = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-            $periodeLabel = "Bulan " . $namaBulan[(int)$bulanini] . " " . $tahunini;
-        }
-
-        $tgl_dari = $startDate;
-        $tgl_sampai = $endDate;
-
+        $namabulan = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
         $daftarLayanan = DB::table("layanan")->orderBy("nama_layanan", "asc")->get();
 
-        // Query data agregasi per layanan
-        $query = DB::table("layanan")
-            ->leftJoin("rekap_penerimaan_pkb", function ($join) use ($startDate, $endDate) {
-                $join->on("layanan.id", "=", "rekap_penerimaan_pkb.layanan_id")
-                    ->whereBetween("rekap_penerimaan_pkb.tgl_penerimaan", [$startDate, $endDate]);
-            });
-
-        if (!empty($layanan_id) && $layanan_id != "all") {
-            $query->where("layanan.id", $layanan_id);
-        }
-
-        $rekapLayanan = $query->select(
-            "layanan.id as layanan_id",
-            "layanan.nama_layanan",
-            "layanan.nama_pic",
-            "layanan.nip_pic",
-            "layanan.jabatan_pic",
-            DB::raw("COALESCE(SUM(rekap_penerimaan_pkb.jumlah_rp_r2), 0) as rp_r2"),
-            DB::raw("COALESCE(SUM(rekap_penerimaan_pkb.jumlah_unit_r2), 0) as unit_r2"),
-            DB::raw("COALESCE(SUM(rekap_penerimaan_pkb.jumlah_rp_r4), 0) as rp_r4"),
-            DB::raw("COALESCE(SUM(rekap_penerimaan_pkb.jumlah_unit_r4), 0) as unit_r4"),
-            DB::raw("COALESCE(SUM(rekap_penerimaan_pkb.total_rp), 0) as total_rp"),
-            DB::raw("COALESCE(SUM(rekap_penerimaan_pkb.total_unit), 0) as total_unit"),
-            DB::raw("COALESCE(SUM(rekap_penerimaan_pkb.jumlah_notice), 0) as total_notice"),
-            DB::raw("COUNT(rekap_penerimaan_pkb.id) as total_input")
-        )
-        ->groupBy("layanan.id", "layanan.nama_layanan", "layanan.nama_pic", "layanan.nip_pic", "layanan.jabatan_pic")
-        ->orderBy("total_rp", "desc")
-        ->get();
-
-        // Hitung Grand Total
-        $grandTotal = (object) [
-            "rp_r2" => $rekapLayanan->sum("rp_r2"),
-            "unit_r2" => $rekapLayanan->sum("unit_r2"),
-            "rp_r4" => $rekapLayanan->sum("rp_r4"),
-            "unit_r4" => $rekapLayanan->sum("unit_r4"),
-            "total_rp" => $rekapLayanan->sum("total_rp"),
-            "total_unit" => $rekapLayanan->sum("total_unit"),
-            "total_notice" => $rekapLayanan->sum("total_notice"),
-        ];
-
-        // Siapkan Data Grafik
-        $chartLabels = [];
-        $chartValuesTotal = [];
-        $chartValuesR2 = [];
-        $chartValuesR4 = [];
-
-        if (!empty($layanan_id) && $layanan_id != "all") {
-            // Jika 1 layanan dipilih: Grafik tren harian pada periode tersebut
-            $trenHarian = DB::table("rekap_penerimaan_pkb")
-                ->where("layanan_id", $layanan_id)
-                ->whereBetween("tgl_penerimaan", [$startDate, $endDate])
-                ->orderBy("tgl_penerimaan", "asc")
-                ->get();
-
-            foreach ($trenHarian as $th) {
-                $chartLabels[] = date("d/m", strtotime($th->tgl_penerimaan));
-                $chartValuesTotal[] = (float) $th->total_rp;
-                $chartValuesR2[] = (float) $th->jumlah_rp_r2;
-                $chartValuesR4[] = (float) $th->jumlah_rp_r4;
-            }
-        } else {
-            // Semua Layanan: Grafik Bar Perbandingan Antar Layanan
-            foreach ($rekapLayanan as $row) {
-                $chartLabels[] = $row->nama_layanan;
-                $chartValuesTotal[] = (float) $row->total_rp;
-                $chartValuesR2[] = (float) $row->rp_r2;
-                $chartValuesR4[] = (float) $row->rp_r4;
-            }
-        }
-
-        $layananTerpilih = (!empty($layanan_id) && $layanan_id != "all")
-            ? DB::table("layanan")->where("id", $layanan_id)->first()
-            : null;
-
-        return view("penerimaan.rekap_layanan", compact(
-            "daftarLayanan",
-            "rekapLayanan",
-            "grandTotal",
-            "chartLabels",
-            "chartValuesTotal",
-            "chartValuesR2",
-            "chartValuesR4",
-            "layanan_id",
-            "layananTerpilih",
-            "periode",
-            "periodeLabel",
-            "tgl_dari",
-            "tgl_sampai"
-        ));
+        return view("penerimaan.rekap_layanan", compact("namabulan", "daftarLayanan"));
     }
 
     /**
-     * Tampilan Rekap Penerimaan PKB Per Lokasi
-     * Menampilkan grafik dan data tabel untuk penerimaan per lokasi pelayanan.
+     * Tampilan Menu Laporan Rekap Penerimaan PKB Per Lokasi
+     * Form sederhana untuk memilih periode (bulan & tahun) dan lokasi pelayanan
      */
-    public function rekapLokasi(Request $request)
+    public function rekapLokasi()
     {
-        $hariini = date("Y-m-d");
-        $bulanini = date("m");
-        $tahunini = date("Y");
-
-        $periode = $request->get("periode", "bulan_ini");
-        $kode_cabang = $request->get("kode_cabang", "all");
-
-        if ($periode == "hari_ini") {
-            $startDate = $hariini;
-            $endDate = $hariini;
-            $periodeLabel = "Hari Ini (" . date("d/m/Y", strtotime($hariini)) . ")";
-        } elseif ($periode == "tahun_ini") {
-            $startDate = $tahunini . "-01-01";
-            $endDate = $tahunini . "-12-31";
-            $periodeLabel = "Tahun Ini (" . $tahunini . ")";
-        } elseif ($periode == "custom") {
-            $startDate = $request->get("tgl_dari", date("Y-m-01"));
-            $endDate = $request->get("tgl_sampai", $hariini);
-            $periodeLabel = date("d/m/Y", strtotime($startDate)) . " s/d " . date("d/m/Y", strtotime($endDate));
-        } else {
-            // Default: bulan_ini
-            $periode = "bulan_ini";
-            $startDate = date("Y-m-01");
-            $endDate = date("Y-m-t");
-            $namaBulan = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-            $periodeLabel = "Bulan " . $namaBulan[(int)$bulanini] . " " . $tahunini;
-        }
-
-        $tgl_dari = $startDate;
-        $tgl_sampai = $endDate;
-
+        $namabulan = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
         $daftarLokasi = DB::table("cabang")->orderBy("nama_cabang", "asc")->get();
 
-        // Query penerimaan dengan pemetaan lokasi jadwal harian atau default cabang layanan
-        $query = DB::table("rekap_penerimaan_pkb")
-            ->join("layanan", "rekap_penerimaan_pkb.layanan_id", "=", "layanan.id")
-            ->leftJoin("jadwal_lokasi_layanan", function ($join) {
-                $join->on("jadwal_lokasi_layanan.layanan_id", "=", "rekap_penerimaan_pkb.layanan_id")
-                    ->where("jadwal_lokasi_layanan.status", 1)
-                    ->whereRaw("jadwal_lokasi_layanan.hari = CASE DAYOFWEEK(rekap_penerimaan_pkb.tgl_penerimaan)
-                        WHEN 1 THEN 'Minggu'
-                        WHEN 2 THEN 'Senin'
-                        WHEN 3 THEN 'Selasa'
-                        WHEN 4 THEN 'Rabu'
-                        WHEN 5 THEN 'Kamis'
-                        WHEN 6 THEN 'Jumat'
-                        WHEN 7 THEN 'Sabtu'
-                    END");
-            })
-            ->leftJoin("cabang as c_jadwal", "jadwal_lokasi_layanan.kode_cabang", "=", "c_jadwal.kode_cabang")
-            ->leftJoin("cabang as c_default", "layanan.kode_cabang", "=", "c_default.kode_cabang")
-            ->whereBetween("rekap_penerimaan_pkb.tgl_penerimaan", [$startDate, $endDate]);
-
-        if (!empty($kode_cabang) && $kode_cabang != "all") {
-            $query->whereRaw("COALESCE(c_jadwal.kode_cabang, c_default.kode_cabang) = ?", [$kode_cabang]);
-        }
-
-        $rekapLokasi = $query->select(
-            DB::raw("COALESCE(c_jadwal.kode_cabang, c_default.kode_cabang, 'LAIN') as kode_cabang"),
-            DB::raw("COALESCE(c_jadwal.nama_cabang, c_default.nama_cabang, 'Lokasi Lainnya') as nama_cabang"),
-            DB::raw("COALESCE(c_jadwal.lokasi_cabang, c_default.lokasi_cabang, '-') as lokasi_cabang"),
-            DB::raw("COALESCE(SUM(rekap_penerimaan_pkb.jumlah_rp_r2), 0) as rp_r2"),
-            DB::raw("COALESCE(SUM(rekap_penerimaan_pkb.jumlah_unit_r2), 0) as unit_r2"),
-            DB::raw("COALESCE(SUM(rekap_penerimaan_pkb.jumlah_rp_r4), 0) as rp_r4"),
-            DB::raw("COALESCE(SUM(rekap_penerimaan_pkb.jumlah_unit_r4), 0) as unit_r4"),
-            DB::raw("COALESCE(SUM(rekap_penerimaan_pkb.total_rp), 0) as total_rp"),
-            DB::raw("COALESCE(SUM(rekap_penerimaan_pkb.total_unit), 0) as total_unit"),
-            DB::raw("COALESCE(SUM(rekap_penerimaan_pkb.jumlah_notice), 0) as total_notice"),
-            DB::raw("COUNT(rekap_penerimaan_pkb.id) as total_input")
-        )
-        ->groupBy(
-            DB::raw("COALESCE(c_jadwal.kode_cabang, c_default.kode_cabang, 'LAIN')"),
-            DB::raw("COALESCE(c_jadwal.nama_cabang, c_default.nama_cabang, 'Lokasi Lainnya')"),
-            DB::raw("COALESCE(c_jadwal.lokasi_cabang, c_default.lokasi_cabang, '-')")
-        )
-        ->orderBy("total_rp", "desc")
-        ->get();
-
-        // Hitung Grand Total
-        $grandTotal = (object) [
-            "rp_r2" => $rekapLokasi->sum("rp_r2"),
-            "unit_r2" => $rekapLokasi->sum("unit_r2"),
-            "rp_r4" => $rekapLokasi->sum("rp_r4"),
-            "unit_r4" => $rekapLokasi->sum("unit_r4"),
-            "total_rp" => $rekapLokasi->sum("total_rp"),
-            "total_unit" => $rekapLokasi->sum("total_unit"),
-            "total_notice" => $rekapLokasi->sum("total_notice"),
-        ];
-
-        // Siapkan Data Grafik
-        $chartLabels = $rekapLokasi->pluck("nama_cabang")->toArray();
-        $chartValuesTotal = $rekapLokasi->pluck("total_rp")->map(fn($v) => (float)$v)->toArray();
-        $chartValuesR2 = $rekapLokasi->pluck("rp_r2")->map(fn($v) => (float)$v)->toArray();
-        $chartValuesR4 = $rekapLokasi->pluck("rp_r4")->map(fn($v) => (float)$v)->toArray();
-
-        $lokasiTerpilih = (!empty($kode_cabang) && $kode_cabang != "all")
-            ? DB::table("cabang")->where("kode_cabang", $kode_cabang)->first()
-            : null;
-
-        return view("penerimaan.rekap_lokasi", compact(
-            "daftarLokasi",
-            "rekapLokasi",
-            "grandTotal",
-            "chartLabels",
-            "chartValuesTotal",
-            "chartValuesR2",
-            "chartValuesR4",
-            "kode_cabang",
-            "lokasiTerpilih",
-            "periode",
-            "periodeLabel",
-            "tgl_dari",
-            "tgl_sampai"
-        ));
+        return view("penerimaan.rekap_lokasi", compact("namabulan", "daftarLokasi"));
     }
 
     /**
@@ -677,10 +452,18 @@ class PenerimaanController extends Controller
         $bulanini = date("m");
         $tahunini = date("Y");
 
+        $bulan = $request->bulan ?: $request->get("bulan");
+        $tahun = $request->tahun ?: $request->get("tahun");
         $periode = $request->get("periode", "bulan_ini");
         $layanan_id = $request->get("layanan_id", "all");
 
-        if ($periode == "hari_ini") {
+        $namaBulan = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+
+        if (!empty($bulan) && !empty($tahun)) {
+            $startDate = $tahun . "-" . str_pad($bulan, 2, "0", STR_PAD_LEFT) . "-01";
+            $endDate = date("Y-m-t", strtotime($startDate));
+            $periodeLabel = "Bulan " . $namaBulan[(int)$bulan] . " " . $tahun;
+        } elseif ($periode == "hari_ini") {
             $startDate = $hariini;
             $endDate = $hariini;
             $periodeLabel = "Hari Ini (" . date("d/m/Y", strtotime($hariini)) . ")";
@@ -693,10 +476,8 @@ class PenerimaanController extends Controller
             $endDate = $request->get("tgl_sampai", $hariini);
             $periodeLabel = date("d/m/Y", strtotime($startDate)) . " s/d " . date("d/m/Y", strtotime($endDate));
         } else {
-            $periode = "bulan_ini";
             $startDate = date("Y-m-01");
             $endDate = date("Y-m-t");
-            $namaBulan = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
             $periodeLabel = "Bulan " . $namaBulan[(int)$bulanini] . " " . $tahunini;
         }
 
@@ -803,10 +584,18 @@ class PenerimaanController extends Controller
         $bulanini = date("m");
         $tahunini = date("Y");
 
+        $bulan = $request->bulan ?: $request->get("bulan");
+        $tahun = $request->tahun ?: $request->get("tahun");
         $periode = $request->get("periode", "bulan_ini");
         $kode_cabang = $request->get("kode_cabang", "all");
 
-        if ($periode == "hari_ini") {
+        $namaBulan = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+
+        if (!empty($bulan) && !empty($tahun)) {
+            $startDate = $tahun . "-" . str_pad($bulan, 2, "0", STR_PAD_LEFT) . "-01";
+            $endDate = date("Y-m-t", strtotime($startDate));
+            $periodeLabel = "Bulan " . $namaBulan[(int)$bulan] . " " . $tahun;
+        } elseif ($periode == "hari_ini") {
             $startDate = $hariini;
             $endDate = $hariini;
             $periodeLabel = "Hari Ini (" . date("d/m/Y", strtotime($hariini)) . ")";
@@ -819,10 +608,8 @@ class PenerimaanController extends Controller
             $endDate = $request->get("tgl_sampai", $hariini);
             $periodeLabel = date("d/m/Y", strtotime($startDate)) . " s/d " . date("d/m/Y", strtotime($endDate));
         } else {
-            $periode = "bulan_ini";
             $startDate = date("Y-m-01");
             $endDate = date("Y-m-t");
-            $namaBulan = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
             $periodeLabel = "Bulan " . $namaBulan[(int)$bulanini] . " " . $tahunini;
         }
 
