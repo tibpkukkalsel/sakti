@@ -503,12 +503,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" crossorigin=""></script>
 
-    <!-- AdminLTE OverlayScrollbars Init -->
+    <!-- AdminLTE OverlayScrollbars Init & Active Sidebar Auto-Scroll -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const sidebarWrapper = document.querySelector('.sidebar-wrapper');
+            let osInstance = null;
             if (sidebarWrapper && typeof OverlayScrollbarsGlobal?.OverlayScrollbars !== 'undefined') {
-                OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
+                osInstance = OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
                     scrollbars: {
                         theme: 'os-theme-light',
                         autoHide: 'leave',
@@ -516,6 +517,49 @@
                     },
                 });
             }
+
+            function scrollActiveSidebar(isSmooth) {
+                if (!sidebarWrapper) return;
+
+                // Prioritaskan link submenu yang aktif di dalam nav-treeview, lalu link aktif level atas
+                const activeItem = document.querySelector('.sidebar-wrapper .nav-treeview .nav-link.active')
+                    || document.querySelector('.sidebar-wrapper .nav-link.active')
+                    || document.querySelector('.sidebar-wrapper .nav-item.menu-open');
+
+                if (!activeItem) return;
+
+                const scrollContainer = (osInstance && osInstance.elements)
+                    ? osInstance.elements().viewport
+                    : sidebarWrapper;
+
+                if (!scrollContainer) return;
+
+                const containerRect = scrollContainer.getBoundingClientRect();
+                const itemRect = activeItem.getBoundingClientRect();
+
+                // Hitung posisi relatif elemen di dalam scrollable container
+                const relativeTop = (itemRect.top - containerRect.top) + scrollContainer.scrollTop;
+                const targetScrollTop = relativeTop - (scrollContainer.clientHeight / 2) + (itemRect.height / 2);
+
+                scrollContainer.scrollTo({
+                    top: Math.max(0, targetScrollTop),
+                    behavior: isSmooth ? 'smooth' : 'auto'
+                });
+            }
+
+            // Jalankan auto-scroll setelah layout & status menu-open siap
+            setTimeout(function() {
+                scrollActiveSidebar(true);
+            }, 150);
+
+            // Jalankan ulang jika tombol toggle sidebar diklik (misal pada mode mobile/tablet)
+            document.querySelectorAll('[data-lte-toggle="sidebar"]').forEach(function(toggleBtn) {
+                toggleBtn.addEventListener('click', function() {
+                    setTimeout(function() {
+                        scrollActiveSidebar(true);
+                    }, 300);
+                });
+            });
         });
     </script>
 
