@@ -30,10 +30,9 @@ class DashboardController extends Controller
         $dataliburhariini = DB::table('harilibur')
             ->leftJoin('harilibur_detail', 'harilibur.kode_libur', '=', 'harilibur_detail.kode_libur')
             ->where('harilibur.tanggal_libur', $hariini)
-            ->where(function ($query) use ($nik, $kode_cabang) {
+            ->where(function ($query) use ($nik) {
                 $query->where('harilibur_detail.nik', $nik)
-                    ->orWhere('harilibur.kode_cabang', 'ALL')
-                    ->orWhere('harilibur.kode_cabang', $kode_cabang);
+                    ->orWhere('harilibur.kode_cabang', 'ALL');
             })
             ->select('harilibur.kode_libur', 'harilibur.tanggal_libur', 'harilibur.keterangan')
             ->first();
@@ -64,10 +63,9 @@ class DashboardController extends Controller
         $hariliburmingguini = DB::table('harilibur')
             ->leftJoin('harilibur_detail', 'harilibur.kode_libur', '=', 'harilibur_detail.kode_libur')
             ->whereBetween('harilibur.tanggal_libur', [$startOfWeek, $endOfWeek])
-            ->where(function ($query) use ($nik, $kode_cabang) {
+            ->where(function ($query) use ($nik) {
                 $query->where('harilibur_detail.nik', $nik)
-                    ->orWhere('harilibur.kode_cabang', 'ALL')
-                    ->orWhere('harilibur.kode_cabang', $kode_cabang);
+                    ->orWhere('harilibur.kode_cabang', 'ALL');
             })
             ->select('harilibur.tanggal_libur', 'harilibur.keterangan')
             ->distinct()

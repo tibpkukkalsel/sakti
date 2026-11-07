@@ -176,17 +176,19 @@ function getkaryawanlibur($dari, $sampai)
         ];
     }
 
-    // Pastikan setiap hari libur berlaku untuk seluruh pegawai
+    // Pastikan hari libur 'ALL' berlaku untuk seluruh pegawai
     foreach ($harilibur as $hl) {
-        foreach ($allPegawai as $p) {
-            $key = $hl->kode_libur . '_' . $p->nik;
-            if (!isset($assigned[$key])) {
-                $assigned[$key] = true;
-                $karyawanlibur[] = [
-                    'nik' => $p->nik,
-                    'tanggal_libur' => $hl->tanggal_libur,
-                    'keterangan' => $hl->keterangan
-                ];
+        if ($hl->kode_cabang == 'ALL') {
+            foreach ($allPegawai as $p) {
+                $key = $hl->kode_libur . '_' . $p->nik;
+                if (!isset($assigned[$key])) {
+                    $assigned[$key] = true;
+                    $karyawanlibur[] = [
+                        'nik' => $p->nik,
+                        'tanggal_libur' => $hl->tanggal_libur,
+                        'keterangan' => $hl->keterangan
+                    ];
+                }
             }
         }
     }

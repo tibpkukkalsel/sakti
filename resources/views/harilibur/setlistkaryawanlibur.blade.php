@@ -4,9 +4,8 @@
             <thead>
                 <tr>
                     <th>No.</th>
-                    <th>NIK</th>
-                    <th>Nama Karyawan</th>
-                    <th>Jabatan</th>
+                    <th>Nama Layanan</th>
+                    <th>PIC</th>
                     <th>#</th>
                 </tr>
             </thead>

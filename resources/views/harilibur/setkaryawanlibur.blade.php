@@ -57,16 +57,18 @@
                                 <div class="col-12">
                                     <table class="table">
                                         <tr>
-                                            <th>Kode Libur</th>
-                                            <td>{{ $harilibur->kode_libur }}</td>
-                                        </tr>
-                                        <tr>
                                             <th>Tanggal</th>
                                             <td>{{ date('d-m-Y', strtotime($harilibur->tanggal_libur)) }}</td>
                                         </tr>
                                         <tr>
-                                            <th>Cabang</th>
-                                            <td>{{ $harilibur->nama_cabang ?? 'Semua Cabang (Semua Pegawai)' }}</td>
+                                            <th>Layanan</th>
+                                            <td>
+                                                @if ($harilibur->kode_cabang == 'ALL')
+                                                    <span class="badge bg-primary text-white">Semua Layanan</span>
+                                                @else
+                                                    <span class="badge bg-info text-white">{{ $layanan[$harilibur->kode_cabang]->nama_layanan ?? $harilibur->kode_cabang }}</span>
+                                                @endif
+                                            </td>
                                         </tr>
                                         <tr>
                                             <th>Keterangan</th>
@@ -81,9 +83,8 @@
                                         <thead>
                                             <tr>
                                                 <th>No</th>
-                                                <th>NIK</th>
-                                                <th>Nama Karyawan</th>
-                                                <th>Jabatan</th>
+                                                <th>Nama Layanan</th>
+                                                <th>PIC</th>
                                                 <th>#</th>
                                             </tr>
                                         </thead>

@@ -4,31 +4,6 @@
         <div class="col-12">
             <div class="input-icon mb-3">
                 <span class="input-icon-addon">
-                    <!-- Download SVG icon from http://tabler-icons.io/i/user -->
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-barcode" width="24"
-                        height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                        <path d="M4 7v-1a2 2 0 0 1 2 -2h2"></path>
-                        <path d="M4 17v1a2 2 0 0 0 2 2h2"></path>
-                        <path d="M16 4h2a2 2 0 0 1 2 2v1"></path>
-                        <path d="M16 20h2a2 2 0 0 0 2 -2v-1"></path>
-                        <path d="M5 11h1v2h-1z"></path>
-                        <path d="M10 11l0 2"></path>
-                        <path d="M14 11h1v2h-1z"></path>
-                        <path d="M19 11l0 2"></path>
-                    </svg>
-                </span>
-                <input type="text" id="kode_libur" class="form-control" value="{{ $harilibur->kode_libur }}"
-                    placeholder="Auto" name="kode_libur" disabled>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-12">
-            <div class="input-icon mb-3">
-                <span class="input-icon-addon">
-                    <!-- Download SVG icon from http://tabler-icons.io/i/user -->
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" width="24"
                         height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none"
                         stroke-linecap="round" stroke-linejoin="round">
@@ -49,16 +24,14 @@
     <div class="row mb-3">
         <div class="col-12">
             <div class="form-group">
-                <select name="kode_cabang" id="kode_cabang" class="form-select">
-                    <option value="ALL" {{ $harilibur->kode_cabang == 'ALL' ? 'selected' : '' }}>SEMUA CABANG (SEMUA PEGAWAI)</option>
-                    @foreach ($cabang as $d)
-                        <option {{ $harilibur->kode_cabang == $d->kode_cabang ? 'selected' : '' }}
-                            value="{{ $d->kode_cabang }}">{{ strtoupper($d->nama_cabang) }}</option>
+                <select name="layanan_id" id="layanan_id" class="form-select">
+                    <option value="ALL" {{ $harilibur->kode_cabang == 'ALL' ? 'selected' : '' }}>Semua Layanan</option>
+                    @foreach ($layanan as $l)
+                        <option value="{{ $l->id }}" {{ $harilibur->kode_cabang == $l->id ? 'selected' : '' }}>
+                            {{ $l->nama_layanan }}
+                        </option>
                     @endforeach
                 </select>
-                <small class="text-muted d-block mt-1">
-                    * Hari libur otomatis berlaku dan diterapkan ke semua pegawai.
-                </small>
             </div>
         </div>
     </div>
@@ -66,7 +39,6 @@
         <div class="col-12">
             <div class="input-icon mb-3">
                 <span class="input-icon-addon">
-                    <!-- Download SVG icon from http://tabler-icons.io/i/user -->
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-file-description"
                         width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
                         fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -110,7 +82,7 @@
 
         $("#frmeditHarilibur").submit(function(e) {
             var tanggal_libur = $("#tanggal_libur").val();
-            var kode_cabang = $("#kode_cabang").val();
+            var layanan_id = $("#layanan_id").val();
             var keterangan = $("#keterangan").val();
 
             if (tanggal_libur == "") {
@@ -123,16 +95,15 @@
                     $("#tanggal_libur").focus();
                 });
                 return false;
-            } else if (kode_cabang == "") {
+            } else if (layanan_id == "") {
                 Swal.fire({
                     title: 'Warning!',
-                    text: 'Cabang Harus Diisi !',
+                    text: 'Layanan Harus Dipilih !',
                     icon: 'warning',
                     confirmButtonText: 'Ok'
                 }).then((result) => {
-                    $("#kode_cabang").focus();
+                    $("#layanan_id").focus();
                 });
-
                 return false;
             } else if (keterangan == "") {
                 Swal.fire({
@@ -143,7 +114,6 @@
                 }).then((result) => {
                     $("#keterangan").focus();
                 });
-
                 return false;
             }
         });

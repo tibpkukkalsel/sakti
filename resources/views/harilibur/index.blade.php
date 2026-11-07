@@ -91,9 +91,8 @@
                                             <thead>
                                                 <tr>
                                                     <th style="width: 50px;" class="text-center">No</th>
-                                                    <th style="width: 120px;">Kode Libur</th>
                                                     <th>Tanggal Libur</th>
-                                                    <th>Cabang</th>
+                                                    <th>Layanan</th>
                                                     <th>Keterangan</th>
                                                     <th style="width: 120px;" class="text-center">Aksi</th>
                                                 </tr>
@@ -102,13 +101,12 @@
                                                 @foreach ($harilibur as $d)
                                                     <tr>
                                                         <td class="text-center">{{ $loop->iteration + $harilibur->firstItem() - 1 }}</td>
-                                                        <td><span class="badge bg-light text-dark border">{{ $d->kode_libur }}</span></td>
                                                         <td class="fw-bold">{{ date('d-m-Y', strtotime($d->tanggal_libur)) }}</td>
                                                         <td>
                                                             @if ($d->kode_cabang == 'ALL')
-                                                                <span class="badge bg-primary text-white">Semua Pegawai</span>
+                                                                <span class="badge bg-primary text-white">Semua Layanan</span>
                                                             @else
-                                                                <span class="badge bg-secondary text-white">{{ $d->kode_cabang }}</span>
+                                                                <span class="badge bg-info text-white">{{ $layanan[$d->kode_cabang]->nama_layanan ?? $d->kode_cabang }}</span>
                                                             @endif
                                                         </td>
                                                         <td>{{ $d->keterangan }}</td>

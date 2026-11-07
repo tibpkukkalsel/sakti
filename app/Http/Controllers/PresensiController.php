@@ -121,10 +121,9 @@ class PresensiController extends Controller
         $datalibur = DB::table('harilibur')
             ->leftJoin('harilibur_detail', 'harilibur.kode_libur', '=', 'harilibur_detail.kode_libur')
             ->where('harilibur.tanggal_libur', $hariini)
-            ->where(function ($query) use ($nik, $kode_cabang) {
+            ->where(function ($query) use ($nik) {
                 $query->where('harilibur_detail.nik', $nik)
-                    ->orWhere('harilibur.kode_cabang', 'ALL')
-                    ->orWhere('harilibur.kode_cabang', $kode_cabang);
+                    ->orWhere('harilibur.kode_cabang', 'ALL');
             })
             ->select('harilibur.kode_libur', 'harilibur.tanggal_libur', 'harilibur.keterangan')
             ->first();
@@ -218,10 +217,9 @@ class PresensiController extends Controller
         $datalibur = DB::table('harilibur')
             ->leftJoin('harilibur_detail', 'harilibur.kode_libur', '=', 'harilibur_detail.kode_libur')
             ->where('harilibur.tanggal_libur', $tgl_presensi)
-            ->where(function ($query) use ($nik, $kode_cabang) {
+            ->where(function ($query) use ($nik) {
                 $query->where('harilibur_detail.nik', $nik)
-                    ->orWhere('harilibur.kode_cabang', 'ALL')
-                    ->orWhere('harilibur.kode_cabang', $kode_cabang);
+                    ->orWhere('harilibur.kode_cabang', 'ALL');
             })
             ->select('harilibur.keterangan')
             ->first();
@@ -809,10 +807,9 @@ class PresensiController extends Controller
             ->leftJoin('harilibur_detail', 'harilibur.kode_libur', '=', 'harilibur_detail.kode_libur')
             ->whereRaw('MONTH(harilibur.tanggal_libur)="' . (int)$bulan . '"')
             ->whereRaw('YEAR(harilibur.tanggal_libur)="' . (int)$tahun . '"')
-            ->where(function ($query) use ($nik, $kode_cabang) {
+            ->where(function ($query) use ($nik) {
                 $query->where('harilibur_detail.nik', $nik)
-                    ->orWhere('harilibur.kode_cabang', 'ALL')
-                    ->orWhere('harilibur.kode_cabang', $kode_cabang);
+                    ->orWhere('harilibur.kode_cabang', 'ALL');
             })
             ->select('harilibur.tanggal_libur', 'harilibur.keterangan')
             ->distinct()
@@ -2196,10 +2193,9 @@ class PresensiController extends Controller
         $datalibur = DB::table('harilibur')
             ->leftJoin('harilibur_detail', 'harilibur.kode_libur', '=', 'harilibur_detail.kode_libur')
             ->where('harilibur.tanggal_libur', $hariini)
-            ->where(function ($query) use ($nik, $kode_cabang) {
+            ->where(function ($query) use ($nik) {
                 $query->where('harilibur_detail.nik', $nik)
-                    ->orWhere('harilibur.kode_cabang', 'ALL')
-                    ->orWhere('harilibur.kode_cabang', $kode_cabang);
+                    ->orWhere('harilibur.kode_cabang', 'ALL');
             })
             ->select('harilibur.kode_libur', 'harilibur.tanggal_libur', 'harilibur.keterangan')
             ->first();
