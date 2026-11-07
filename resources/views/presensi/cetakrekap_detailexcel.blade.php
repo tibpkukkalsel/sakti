@@ -78,7 +78,7 @@
         $pejabat2_nama = $konfigurasi_laporan->pejabat2_nama ?? 'ADIMAS FITRIANDI, ST';
         $pejabat2_nip = $konfigurasi_laporan->pejabat2_nip ?? '19800813 200712 1 001';
 
-        $totalCols = $jmlhari + 5;
+        $totalCols = $jmlhari + 6;
     @endphp
 
     <table style="width: 100%;">
@@ -105,6 +105,7 @@
                 <th rowspan="2" style="width: 35px;">H</th>
                 <th rowspan="2" style="width: 35px;">X</th>
                 <th rowspan="2" style="width: 35px;">L</th>
+                <th rowspan="2" style="width: 35px;">TK</th>
             </tr>
             <tr>
                 @foreach ($rangetanggal as $d)
@@ -122,10 +123,9 @@
 
                     @php
                         $jml_hadir = 0;
-                        $jml_izin = 0;
-                        $jml_sakit = 0;
-                        $jml_cuti = 0;
-                        $jml_alpa = 0;
+                        $jml_maintenance = 0;
+                        $jml_libur = 0;
+                        $jml_tk = 0;
                         $color = '';
 
                         for ($i = 1; $i <= $jmlhari; $i++) {
@@ -201,9 +201,12 @@
                             } elseif ($status == 'm' || $status == 'x') {
                                 $jml_maintenance += 1;
                                 $color = '#fd7e14';
-                            } else {
+                            } elseif (!empty($ceklibur) || !$is_harikerja) {
                                 $jml_libur += 1;
                                 $color = '#198754';
+                            } else {
+                                $jml_tk += 1;
+                                $color = '#dc3545';
                             }
                     @endphp
                         <td style="background-color: {{ $color }}; vertical-align: middle;">
@@ -214,8 +217,10 @@
                                 <span style="color: blue;">Jam: {{ $total_jam_kerja }}</span>
                             @elseif ($status == 'm' || $status == 'x')
                                 <span style="color: white; font-weight: bold;">X</span>
-                            @else
+                            @elseif (!empty($ceklibur) || !$is_harikerja)
                                 <span style="color: white; font-weight: bold;">L</span>
+                            @else
+                                <span style="color: white; font-weight: bold;">TK</span>
                             @endif
                         </td>
                     @php
@@ -224,6 +229,7 @@
                     <td class="text-bold" style="vertical-align: middle;">{{ !empty($jml_hadir) ? $jml_hadir : '-' }}</td>
                     <td class="text-bold" style="vertical-align: middle; color: {{ !empty($jml_maintenance) ? '#fd7e14' : '#000' }};">{{ !empty($jml_maintenance) ? $jml_maintenance : '-' }}</td>
                     <td class="text-bold" style="vertical-align: middle; color: {{ !empty($jml_libur) ? '#198754' : '#000' }};">{{ !empty($jml_libur) ? $jml_libur : '-' }}</td>
+                    <td class="text-bold" style="vertical-align: middle; color: {{ !empty($jml_tk) ? '#dc3545' : '#000' }};">{{ !empty($jml_tk) ? $jml_tk : '-' }}</td>
                 </tr>
             @endforeach
         </tbody>
@@ -235,7 +241,8 @@
                 <b>Keterangan:</b> &nbsp;
                 <b>H</b> = Hadir Layanan &nbsp;|&nbsp;
                 <b>X</b> = Maintance Layanan &nbsp;|&nbsp;
-                <b>L</b> = Libur
+                <b>L</b> = Libur &nbsp;|&nbsp;
+                <b>TK</b> = Tidak Ada Keterangan
             </td>
         </tr>
         @if ($harilibur->isNotEmpty())

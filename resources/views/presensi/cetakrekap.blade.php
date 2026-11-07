@@ -145,7 +145,7 @@
                 <th rowspan="2" style="width: 20px;">NO.</th>
                 <th rowspan="2" style="width: 140px;">NAMA LAYANAN</th>
                 <th colspan="{{ $jmlhari }}">BULAN {{ strtoupper($namabulan[(int)$bulan] ?? '') }} {{ $tahun }}</th>
-                <th colspan="3">REKAP</th>
+                <th colspan="4">REKAP</th>
             </tr>
             <tr>
                 @foreach ($rangetanggal as $d)
@@ -156,6 +156,7 @@
                 <th style="width: 25px;">H</th>
                 <th style="width: 25px;">X</th>
                 <th style="width: 25px;">L</th>
+                <th style="width: 25px;">TK</th>
             </tr>
         </thead>
         <tbody>
@@ -168,6 +169,7 @@
                         $jml_hadir = 0;
                         $jml_maintenance = 0;
                         $jml_libur = 0;
+                        $jml_tk = 0;
 
                         for ($i = 1; $i <= $jmlhari; $i++) {
                             $tgl = 'tgl_' . $i;
@@ -186,6 +188,18 @@
                             $text_color = '#000000';
                             $text_display = '';
 
+                            // Cek apakah hari ini merupakan hari kerja sesuai jadwal layanan
+                            $is_harikerja = cekJadwalKerja(
+                                $r->nik, 
+                                $r->kode_cabang ?? null, 
+                                $r->kode_dept ?? null, 
+                                $tgl_presensi, 
+                                $cekhari, 
+                                $jadwal_by_date ?? null, 
+                                $jadwal_pegawai ?? null, 
+                                $jadwal_dept ?? null
+                            );
+
                             if ($status == 'h' || $status == 'tl') {
                                 $jml_hadir += 1;
                                 $color = '#ffffff';
@@ -196,11 +210,16 @@
                                 $color = '#fd7e14';
                                 $text_color = '#ffffff';
                                 $text_display = 'X';
-                            } else {
+                            } elseif (!empty($ceklibur) || !$is_harikerja) {
                                 $jml_libur += 1;
                                 $color = '#198754';
                                 $text_color = '#ffffff';
                                 $text_display = 'L';
+                            } else {
+                                $jml_tk += 1;
+                                $color = '#dc3545';
+                                $text_color = '#ffffff';
+                                $text_display = 'TK';
                             }
                     @endphp
                         <td style="background-color: {{ $color }}; color: {{ $text_color }}; font-weight: bold;">
@@ -212,10 +231,11 @@
                     <td style="font-weight: bold;">{{ !empty($jml_hadir) ? $jml_hadir : '-' }}</td>
                     <td style="font-weight: bold; color: {{ !empty($jml_maintenance) ? '#fd7e14' : '#000' }};">{{ !empty($jml_maintenance) ? $jml_maintenance : '-' }}</td>
                     <td style="font-weight: bold; color: {{ !empty($jml_libur) ? '#198754' : '#000' }};">{{ !empty($jml_libur) ? $jml_libur : '-' }}</td>
+                    <td style="font-weight: bold; color: {{ !empty($jml_tk) ? '#dc3545' : '#000' }};">{{ !empty($jml_tk) ? $jml_tk : '-' }}</td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="{{ $jmlhari + 5 }}" style="padding: 15px; font-style: italic; color: #777;">
+                    <td colspan="{{ $jmlhari + 6 }}" style="padding: 15px; font-style: italic; color: #777;">
                         Tidak ada data layanan yang dapat ditampilkan.
                     </td>
                 </tr>
@@ -230,6 +250,7 @@
                 <span class="legend-item"><span class="color-badge" style="background-color: #ffffff;"></span><b>H</b> = Hadir Layanan</span>
                 <span class="legend-item"><span class="color-badge" style="background-color: #fd7e14;"></span><b>X</b> = Maintance Layanan</span>
                 <span class="legend-item"><span class="color-badge" style="background-color: #198754;"></span><b>L</b> = Libur</span>
+                <span class="legend-item"><span class="color-badge" style="background-color: #dc3545;"></span><b>TK</b> = Tidak Ada Keterangan</span>
             </td>
         </tr>
     </table>

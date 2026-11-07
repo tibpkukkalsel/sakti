@@ -78,7 +78,7 @@
         $pejabat2_nama = $konfigurasi_laporan->pejabat2_nama ?? 'ADIMAS FITRIANDI, ST';
         $pejabat2_nip = $konfigurasi_laporan->pejabat2_nip ?? '19800813 200712 1 001';
 
-        $totalCols = $jmlhari + 5;
+        $totalCols = $jmlhari + 6;
     @endphp
 
     <table style="width: 100%;">
@@ -102,7 +102,7 @@
                 <th rowspan="2" style="width: 35px;">NO.</th>
                 <th rowspan="2" style="width: 200px;">NAMA LAYANAN</th>
                 <th colspan="{{ $jmlhari }}">BULAN {{ strtoupper($namabulan[(int)$bulan] ?? '') }} {{ $tahun }}</th>
-                <th colspan="3">REKAP</th>
+                <th colspan="4">REKAP</th>
             </tr>
             <tr>
                 @foreach ($rangetanggal as $d)
@@ -113,6 +113,7 @@
                 <th style="width: 35px;">H</th>
                 <th style="width: 35px;">X</th>
                 <th style="width: 35px;">L</th>
+                <th style="width: 35px;">TK</th>
             </tr>
         </thead>
         <tbody>
@@ -125,6 +126,7 @@
                         $jml_hadir = 0;
                         $jml_maintenance = 0;
                         $jml_libur = 0;
+                        $jml_tk = 0;
 
                         for ($i = 1; $i <= $jmlhari; $i++) {
                             $tgl = 'tgl_' . $i;
@@ -143,6 +145,18 @@
                             $text_color = '#000000';
                             $text_display = '';
 
+                            // Cek apakah hari ini merupakan hari kerja sesuai jadwal layanan
+                            $is_harikerja = cekJadwalKerja(
+                                $r->nik, 
+                                $r->kode_cabang ?? null, 
+                                $r->kode_dept ?? null, 
+                                $tgl_presensi, 
+                                $cekhari, 
+                                $jadwal_by_date ?? null, 
+                                $jadwal_pegawai ?? null, 
+                                $jadwal_dept ?? null
+                            );
+
                             if ($status == 'h' || $status == 'tl') {
                                 $jml_hadir += 1;
                                 $color = '#ffffff';
@@ -153,11 +167,16 @@
                                 $color = '#fd7e14';
                                 $text_color = '#ffffff';
                                 $text_display = 'X';
-                            } else {
+                            } elseif (!empty($ceklibur) || !$is_harikerja) {
                                 $jml_libur += 1;
                                 $color = '#198754';
                                 $text_color = '#ffffff';
                                 $text_display = 'L';
+                            } else {
+                                $jml_tk += 1;
+                                $color = '#dc3545';
+                                $text_color = '#ffffff';
+                                $text_display = 'TK';
                             }
                     @endphp
                         <td style="background-color: {{ $color }}; color: {{ $text_color }}; font-weight: bold;">
@@ -169,6 +188,7 @@
                     <td class="text-bold">{{ !empty($jml_hadir) ? $jml_hadir : '-' }}</td>
                     <td class="text-bold" style="color: {{ !empty($jml_maintenance) ? '#fd7e14' : '#000' }};">{{ !empty($jml_maintenance) ? $jml_maintenance : '-' }}</td>
                     <td class="text-bold" style="color: {{ !empty($jml_libur) ? '#198754' : '#000' }};">{{ !empty($jml_libur) ? $jml_libur : '-' }}</td>
+                    <td class="text-bold" style="color: {{ !empty($jml_tk) ? '#dc3545' : '#000' }};">{{ !empty($jml_tk) ? $jml_tk : '-' }}</td>
                 </tr>
             @empty
                 <tr>
@@ -186,7 +206,8 @@
                 <b>Keterangan:</b> &nbsp;
                 <b>H</b> = Hadir Layanan &nbsp;|&nbsp;
                 <b>X</b> = Maintance Layanan &nbsp;|&nbsp;
-                <b>L</b> = Libur
+                <b>L</b> = Libur &nbsp;|&nbsp;
+                <b>TK</b> = Tidak Ada Keterangan
             </td>
         </tr>
         @if ($harilibur->isNotEmpty())

@@ -124,6 +124,7 @@
                 <th rowspan="2" style="width: 25px;">H</th>
                 <th rowspan="2" style="width: 25px;">X</th>
                 <th rowspan="2" style="width: 25px;">L</th>
+                <th rowspan="2" style="width: 25px;">TK</th>
             </tr>
             <tr>
                 @foreach ($rangetanggal as $d)
@@ -143,6 +144,7 @@
                         $jml_hadir = 0;
                         $jml_maintenance = 0;
                         $jml_libur = 0;
+                        $jml_tk = 0;
                         $color = '';
                         for ($i = 1; $i <= $jmlhari; $i++) {
                             $tgl = 'tgl_' . $i;
@@ -198,15 +200,30 @@
 
                             $cekhari = gethari(date('D', strtotime($tgl_presensi)));
 
+                            // Cek apakah hari ini merupakan hari kerja sesuai jadwal layanan
+                            $is_harikerja = cekJadwalKerja(
+                                $r->nik, 
+                                $r->kode_cabang ?? null, 
+                                $r->kode_dept ?? null, 
+                                $tgl_presensi, 
+                                $cekhari, 
+                                $jadwal_by_date ?? null, 
+                                $jadwal_pegawai ?? null, 
+                                $jadwal_dept ?? null
+                            );
+
                             if ($status == 'h' || $status == 'tl') {
                                 $jml_hadir += 1;
                                 $color = 'white';
                             } elseif ($status == 'm' || $status == 'x') {
                                 $jml_maintenance += 1;
                                 $color = '#fd7e14';
-                            } else {
+                            } elseif (!empty($ceklibur) || !$is_harikerja) {
                                 $jml_libur += 1;
                                 $color = '#198754';
+                            } else {
+                                $jml_tk += 1;
+                                $color = '#dc3545';
                             }
                     @endphp
                         <td style="background-color: {{ $color }}; font-size: 6pt;">
@@ -217,8 +234,10 @@
                                 <span style="color: blue;">Jam: {{ $total_jam_kerja }}</span>
                             @elseif ($status == 'm' || $status == 'x')
                                 <span style="color: white; font-weight: bold;">X</span>
-                            @else
+                            @elseif (!empty($ceklibur) || !$is_harikerja)
                                 <span style="color: white; font-weight: bold;">L</span>
+                            @else
+                                <span style="color: white; font-weight: bold;">TK</span>
                             @endif
                         </td>
                     @php
@@ -227,6 +246,7 @@
                     <td style="font-weight: bold;">{{ !empty($jml_hadir) ? $jml_hadir : '-' }}</td>
                     <td style="font-weight: bold; color: {{ !empty($jml_maintenance) ? '#fd7e14' : '#000' }};">{{ !empty($jml_maintenance) ? $jml_maintenance : '-' }}</td>
                     <td style="font-weight: bold; color: {{ !empty($jml_libur) ? '#198754' : '#000' }};">{{ !empty($jml_libur) ? $jml_libur : '-' }}</td>
+                    <td style="font-weight: bold; color: {{ !empty($jml_tk) ? '#dc3545' : '#000' }};">{{ !empty($jml_tk) ? $jml_tk : '-' }}</td>
                 </tr>
             @endforeach
         </tbody>
@@ -238,7 +258,8 @@
                 <b>Keterangan:</b> &nbsp;
                 <span class="legend-item"><span class="color-badge" style="display:inline-block;width:12px;height:12px;border:0.5px solid #555;vertical-align:middle;margin-right:3px;background-color: #ffffff;"></span><b>H</b> = Hadir Layanan</span> &nbsp;
                 <span class="legend-item"><span class="color-badge" style="display:inline-block;width:12px;height:12px;border:0.5px solid #555;vertical-align:middle;margin-right:3px;background-color: #fd7e14;"></span><b>X</b> = Maintance Layanan</span> &nbsp;
-                <span class="legend-item"><span class="color-badge" style="display:inline-block;width:12px;height:12px;border:0.5px solid #555;vertical-align:middle;margin-right:3px;background-color: #198754;"></span><b>L</b> = Libur</span>
+                <span class="legend-item"><span class="color-badge" style="display:inline-block;width:12px;height:12px;border:0.5px solid #555;vertical-align:middle;margin-right:3px;background-color: #198754;"></span><b>L</b> = Libur</span> &nbsp;
+                <span class="legend-item"><span class="color-badge" style="display:inline-block;width:12px;height:12px;border:0.5px solid #555;vertical-align:middle;margin-right:3px;background-color: #dc3545;"></span><b>TK</b> = Tidak Ada Keterangan</span>
             </td>
         </tr>
     </table>
