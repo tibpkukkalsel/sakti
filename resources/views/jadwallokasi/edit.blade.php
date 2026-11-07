@@ -12,7 +12,19 @@
             </select>
         </div>
     </div>
-    <div class="row">
+    <div class="row mb-3">
+        <div class="col-12">
+            <label class="form-label fw-bold">Tipe Jadwal</label>
+            <div class="btn-group w-100" role="group">
+                <input type="radio" class="btn-check" name="jenis_jadwal" id="tipe_rutin_edit" value="rutin" {{ ($jadwal->jenis_jadwal ?? 'rutin') == 'rutin' ? 'checked' : '' }} autocomplete="off">
+                <label class="btn btn-outline-primary" for="tipe_rutin_edit">Rutin Mingguan</label>
+
+                <input type="radio" class="btn-check" name="jenis_jadwal" id="tipe_khusus_edit" value="khusus" {{ ($jadwal->jenis_jadwal ?? '') == 'khusus' ? 'checked' : '' }} autocomplete="off">
+                <label class="btn btn-outline-warning" for="tipe_khusus_edit">Event Khusus (Custom Tanggal)</label>
+            </div>
+        </div>
+    </div>
+    <div class="row {{ ($jadwal->jenis_jadwal ?? 'rutin') == 'khusus' ? 'd-none' : '' }}" id="group_hari_edit">
         <div class="col-12">
             <select name="hari" id="hari_edit" class="form-select mb-3">
                 <option value="">Pilih Hari</option>
@@ -22,6 +34,17 @@
                 </option>
                 @endforeach
             </select>
+        </div>
+    </div>
+    <div class="row {{ ($jadwal->jenis_jadwal ?? 'rutin') == 'khusus' ? '' : 'd-none' }}" id="group_tanggal_edit">
+        <div class="col-12">
+            <label class="form-label small text-muted">Tanggal Event Khusus</label>
+            <input type="date" name="tanggal" id="tanggal_edit" value="{{ $jadwal->tanggal }}" class="form-control mb-1">
+            <div id="info_hari_tanggal_edit" class="small text-muted mb-3">
+                @if (!empty($jadwal->tanggal))
+                    <span class="badge bg-light text-dark border">Hari {{ $jadwal->hari }}</span>
+                @endif
+            </div>
         </div>
     </div>
     <div class="row">
@@ -77,10 +100,35 @@
 </form>
 <script>
     $(function() {
+        $('#frmJadwalEdit input[name="jenis_jadwal"]').change(function() {
+            if ($(this).val() == 'khusus') {
+                $('#group_hari_edit').addClass('d-none');
+                $('#group_tanggal_edit').removeClass('d-none');
+            } else {
+                $('#group_tanggal_edit').addClass('d-none');
+                $('#group_hari_edit').removeClass('d-none');
+            }
+        });
+
+        const namaHariIndoEdit = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+        $('#tanggal_edit').on('input change', function() {
+            var val = $(this).val();
+            if (val) {
+                var d = new Date(val + 'T00:00:00');
+                var dayName = namaHariIndoEdit[d.getDay()];
+                $('#info_hari_tanggal_edit').html('<span class="badge bg-light text-dark border">Hari ' + dayName + '</span>');
+            } else {
+                $('#info_hari_tanggal_edit').html('');
+            }
+        });
+
         $("#frmJadwalEdit").submit(function() {
-            var layanan_id = $("#frmJadwalEdit").find("#layanan_id_edit").val();
-            var hari = $("#frmJadwalEdit").find("#hari_edit").val();
-            var kode_cabang = $("#frmJadwalEdit").find("#kode_cabang_edit").val();
+            var form = $(this);
+            var layanan_id = form.find("#layanan_id_edit").val();
+            var jenis_jadwal = form.find("input[name='jenis_jadwal']:checked").val();
+            var hari = form.find("#hari_edit").val();
+            var tanggal = form.find("#tanggal_edit").val();
+            var kode_cabang = form.find("#kode_cabang_edit").val();
 
             if (layanan_id == "") {
                 Swal.fire({
@@ -89,17 +137,27 @@
                     icon: 'warning',
                     confirmButtonText: 'Ok'
                 }).then((result) => {
-                    $("#layanan_id_edit").focus();
+                    form.find("#layanan_id_edit").focus();
                 });
                 return false;
-            } else if (hari == "") {
+            } else if (jenis_jadwal == "rutin" && hari == "") {
                 Swal.fire({
                     title: 'Warning!',
                     text: 'Hari Harus Dipilih !',
                     icon: 'warning',
                     confirmButtonText: 'Ok'
                 }).then((result) => {
-                    $("#hari_edit").focus();
+                    form.find("#hari_edit").focus();
+                });
+                return false;
+            } else if (jenis_jadwal == "khusus" && tanggal == "") {
+                Swal.fire({
+                    title: 'Warning!',
+                    text: 'Tanggal Event Harus Dipilih !',
+                    icon: 'warning',
+                    confirmButtonText: 'Ok'
+                }).then((result) => {
+                    form.find("#tanggal_edit").focus();
                 });
                 return false;
             } else if (kode_cabang == "") {
@@ -109,7 +167,7 @@
                     icon: 'warning',
                     confirmButtonText: 'Ok'
                 }).then((result) => {
-                    $("#kode_cabang_edit").focus();
+                    form.find("#kode_cabang_edit").focus();
                 });
                 return false;
             }

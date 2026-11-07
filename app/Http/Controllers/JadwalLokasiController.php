@@ -35,16 +35,26 @@ class JadwalLokasiController extends Controller
             $query->where('jadwal_lokasi_layanan.layanan_id', $request->layanan_id);
         }
 
+        if ($request->filled('jenis_jadwal')) {
+            $query->where('jadwal_lokasi_layanan.jenis_jadwal', $request->jenis_jadwal);
+        }
+
         if ($request->filled('hari')) {
             $query->where('jadwal_lokasi_layanan.hari', $request->hari);
+        }
+
+        if ($request->filled('tanggal')) {
+            $query->where('jadwal_lokasi_layanan.tanggal', $request->tanggal);
         }
 
         if ($request->filled('kode_cabang')) {
             $query->where('jadwal_lokasi_layanan.kode_cabang', $request->kode_cabang);
         }
 
-        // Urutkan berdasarkan Layanan dan Urutan Hari (Senin - Minggu)
+        // Urutkan: Event Khusus terbaru / tanggal terdekat dulu, lalu Rutin Mingguan (Senin - Minggu)
         $jadwal = $query->orderBy('layanan.nama_layanan', 'asc')
+            ->orderBy('jadwal_lokasi_layanan.jenis_jadwal', 'asc') // 'khusus' then 'rutin'
+            ->orderBy('jadwal_lokasi_layanan.tanggal', 'desc')
             ->orderByRaw("FIELD(jadwal_lokasi_layanan.hari, 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu')")
             ->paginate(15);
 
@@ -57,6 +67,7 @@ class JadwalLokasiController extends Controller
         // Ambil data matriks jadwal mingguan untuk quick overview
         $rawMatrix = DB::table('jadwal_lokasi_layanan')
             ->join('cabang', 'jadwal_lokasi_layanan.kode_cabang', '=', 'cabang.kode_cabang')
+            ->where('jadwal_lokasi_layanan.jenis_jadwal', 'rutin')
             ->select('jadwal_lokasi_layanan.layanan_id', 'jadwal_lokasi_layanan.hari', 'cabang.nama_cabang', 'jadwal_lokasi_layanan.keterangan')
             ->get();
 
@@ -65,7 +76,14 @@ class JadwalLokasiController extends Controller
             $matrix[$row->layanan_id][$row->hari] = $row;
         }
 
-        return view('jadwallokasi.index', compact('jadwal', 'listLayanan', 'listLokasi', 'listHari', 'matrix'));
+        // Hitung total event khusus aktif mendatang
+        $totalEventKhusus = DB::table('jadwal_lokasi_layanan')
+            ->where('jenis_jadwal', 'khusus')
+            ->where('status', 1)
+            ->where('tanggal', '>=', date('Y-m-d'))
+            ->count();
+
+        return view('jadwallokasi.index', compact('jadwal', 'listLayanan', 'listLokasi', 'listHari', 'matrix', 'totalEventKhusus'));
     }
 
     /**
@@ -73,29 +91,78 @@ class JadwalLokasiController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $jenisJadwal = $request->jenis_jadwal ?? 'rutin';
+
+        $rules = [
             'layanan_id' => 'required|exists:layanan,id',
-            'hari' => 'required|in:Senin,Selasa,Rabu,Kamis,Jumat,Sabtu,Minggu',
+            'jenis_jadwal' => 'required|in:rutin,khusus',
             'kode_cabang' => 'required|exists:cabang,kode_cabang',
             'keterangan' => 'nullable|string|max:255',
-        ]);
+        ];
+
+        if ($jenisJadwal == 'khusus') {
+            $rules['tanggal'] = 'required|date';
+        } else {
+            $rules['hari'] = 'required|in:Senin,Selasa,Rabu,Kamis,Jumat,Sabtu,Minggu';
+        }
+
+        $request->validate($rules);
 
         try {
-            DB::table('jadwal_lokasi_layanan')->updateOrInsert(
-                [
-                    'layanan_id' => $request->layanan_id,
-                    'hari' => $request->hari
-                ],
-                [
-                    'kode_cabang' => $request->kode_cabang,
-                    'keterangan' => $request->keterangan,
-                    'status' => $request->status ?? 1,
-                    'updated_at' => now(),
-                    'created_at' => now()
-                ]
-            );
+            if ($jenisJadwal == 'khusus') {
+                $tanggal = $request->tanggal;
+                $dayEng = date('D', strtotime($tanggal));
+                $hari = (new PresensiController)->gethari($dayEng);
 
-            return Redirect::back()->with(['success' => 'Jadwal lokasi layanan hari ' . $request->hari . ' berhasil disimpan!']);
+                DB::table('jadwal_lokasi_layanan')->updateOrInsert(
+                    [
+                        'layanan_id' => $request->layanan_id,
+                        'tanggal' => $tanggal,
+                    ],
+                    [
+                        'jenis_jadwal' => 'khusus',
+                        'hari' => $hari,
+                        'kode_cabang' => $request->kode_cabang,
+                        'keterangan' => $request->keterangan,
+                        'status' => $request->status ?? 1,
+                        'updated_at' => now(),
+                        'created_at' => now()
+                    ]
+                );
+
+                $tglFormatted = date('d-m-Y', strtotime($tanggal));
+                return Redirect::back()->with(['success' => 'Jadwal khusus event tanggal ' . $tglFormatted . ' (' . $hari . ') berhasil disimpan!']);
+            } else {
+                // Rutin Mingguan
+                $exist = DB::table('jadwal_lokasi_layanan')
+                    ->where('layanan_id', $request->layanan_id)
+                    ->where('hari', $request->hari)
+                    ->where('jenis_jadwal', 'rutin')
+                    ->first();
+
+                if ($exist) {
+                    DB::table('jadwal_lokasi_layanan')->where('id', $exist->id)->update([
+                        'kode_cabang' => $request->kode_cabang,
+                        'keterangan' => $request->keterangan,
+                        'status' => $request->status ?? 1,
+                        'updated_at' => now(),
+                    ]);
+                } else {
+                    DB::table('jadwal_lokasi_layanan')->insert([
+                        'layanan_id' => $request->layanan_id,
+                        'jenis_jadwal' => 'rutin',
+                        'hari' => $request->hari,
+                        'tanggal' => null,
+                        'kode_cabang' => $request->kode_cabang,
+                        'keterangan' => $request->keterangan,
+                        'status' => $request->status ?? 1,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                }
+
+                return Redirect::back()->with(['success' => 'Jadwal lokasi rutin hari ' . $request->hari . ' berhasil disimpan!']);
+            }
         } catch (\Exception $e) {
             return Redirect::back()->with(['warning' => 'Gagal menyimpan jadwal: ' . $e->getMessage()]);
         }
@@ -123,35 +190,76 @@ class JadwalLokasiController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
+        $jenisJadwal = $request->jenis_jadwal ?? 'rutin';
+
+        $rules = [
             'layanan_id' => 'required|exists:layanan,id',
-            'hari' => 'required|in:Senin,Selasa,Rabu,Kamis,Jumat,Sabtu,Minggu',
+            'jenis_jadwal' => 'required|in:rutin,khusus',
             'kode_cabang' => 'required|exists:cabang,kode_cabang',
             'keterangan' => 'nullable|string|max:255',
-        ]);
+        ];
+
+        if ($jenisJadwal == 'khusus') {
+            $rules['tanggal'] = 'required|date';
+        } else {
+            $rules['hari'] = 'required|in:Senin,Selasa,Rabu,Kamis,Jumat,Sabtu,Minggu';
+        }
+
+        $request->validate($rules);
 
         try {
-            // Cek duplikasi hari pada layanan yang sama selain ID ini
-            $exist = DB::table('jadwal_lokasi_layanan')
-                ->where('layanan_id', $request->layanan_id)
-                ->where('hari', $request->hari)
-                ->where('id', '!=', $id)
-                ->first();
+            if ($jenisJadwal == 'khusus') {
+                $tanggal = $request->tanggal;
+                $dayEng = date('D', strtotime($tanggal));
+                $hari = (new PresensiController)->gethari($dayEng);
 
-            if ($exist) {
-                return Redirect::back()->with(['warning' => 'Jadwal untuk layanan tersebut pada hari ' . $request->hari . ' sudah ada!']);
+                $exist = DB::table('jadwal_lokasi_layanan')
+                    ->where('layanan_id', $request->layanan_id)
+                    ->where('tanggal', $tanggal)
+                    ->where('id', '!=', $id)
+                    ->first();
+
+                if ($exist) {
+                    return Redirect::back()->with(['warning' => 'Jadwal khusus untuk layanan tersebut pada tanggal ' . date('d-m-Y', strtotime($tanggal)) . ' sudah ada!']);
+                }
+
+                DB::table('jadwal_lokasi_layanan')->where('id', $id)->update([
+                    'layanan_id' => $request->layanan_id,
+                    'jenis_jadwal' => 'khusus',
+                    'hari' => $hari,
+                    'tanggal' => $tanggal,
+                    'kode_cabang' => $request->kode_cabang,
+                    'keterangan' => $request->keterangan,
+                    'status' => $request->status ?? 1,
+                    'updated_at' => now(),
+                ]);
+
+                return Redirect::back()->with(['success' => 'Jadwal khusus event berhasil diperbarui!']);
+            } else {
+                $exist = DB::table('jadwal_lokasi_layanan')
+                    ->where('layanan_id', $request->layanan_id)
+                    ->where('hari', $request->hari)
+                    ->where('jenis_jadwal', 'rutin')
+                    ->where('id', '!=', $id)
+                    ->first();
+
+                if ($exist) {
+                    return Redirect::back()->with(['warning' => 'Jadwal rutin untuk layanan tersebut pada hari ' . $request->hari . ' sudah ada!']);
+                }
+
+                DB::table('jadwal_lokasi_layanan')->where('id', $id)->update([
+                    'layanan_id' => $request->layanan_id,
+                    'jenis_jadwal' => 'rutin',
+                    'hari' => $request->hari,
+                    'tanggal' => null,
+                    'kode_cabang' => $request->kode_cabang,
+                    'keterangan' => $request->keterangan,
+                    'status' => $request->status ?? 1,
+                    'updated_at' => now(),
+                ]);
+
+                return Redirect::back()->with(['success' => 'Jadwal rutin lokasi layanan berhasil diperbarui!']);
             }
-
-            DB::table('jadwal_lokasi_layanan')->where('id', $id)->update([
-                'layanan_id' => $request->layanan_id,
-                'hari' => $request->hari,
-                'kode_cabang' => $request->kode_cabang,
-                'keterangan' => $request->keterangan,
-                'status' => $request->status ?? 1,
-                'updated_at' => now(),
-            ]);
-
-            return Redirect::back()->with(['success' => 'Jadwal lokasi layanan berhasil diperbarui!']);
         } catch (\Exception $e) {
             return Redirect::back()->with(['warning' => 'Gagal memperbarui jadwal: ' . $e->getMessage()]);
         }
@@ -187,24 +295,38 @@ class JadwalLokasiController extends Controller
             DB::beginTransaction();
             foreach ($jadwalInput as $hari => $data) {
                 if (!empty($data['kode_cabang'])) {
-                    DB::table('jadwal_lokasi_layanan')->updateOrInsert(
-                        [
-                            'layanan_id' => $layananId,
-                            'hari' => $hari
-                        ],
-                        [
+                    $exist = DB::table('jadwal_lokasi_layanan')
+                        ->where('layanan_id', $layananId)
+                        ->where('hari', $hari)
+                        ->where('jenis_jadwal', 'rutin')
+                        ->first();
+
+                    if ($exist) {
+                        DB::table('jadwal_lokasi_layanan')->where('id', $exist->id)->update([
                             'kode_cabang' => $data['kode_cabang'],
                             'keterangan' => $data['keterangan'] ?? null,
                             'status' => isset($data['status']) ? 1 : 0,
                             'updated_at' => now(),
-                            'created_at' => now()
-                        ]
-                    );
+                        ]);
+                    } else {
+                        DB::table('jadwal_lokasi_layanan')->insert([
+                            'layanan_id' => $layananId,
+                            'jenis_jadwal' => 'rutin',
+                            'hari' => $hari,
+                            'tanggal' => null,
+                            'kode_cabang' => $data['kode_cabang'],
+                            'keterangan' => $data['keterangan'] ?? null,
+                            'status' => isset($data['status']) ? 1 : 0,
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ]);
+                    }
                 } else {
-                    // Jika dikosongkan, hapus jadwal hari tersebut
+                    // Jika dikosongkan, hapus jadwal rutin hari tersebut (jangan sentuh jadwal event)
                     DB::table('jadwal_lokasi_layanan')
                         ->where('layanan_id', $layananId)
                         ->where('hari', $hari)
+                        ->where('jenis_jadwal', 'rutin')
                         ->delete();
                 }
             }
@@ -226,17 +348,48 @@ class JadwalLokasiController extends Controller
         $hariini = date('Y-m-d');
         $namahariIni = (new PresensiController)->gethari(date('D', strtotime($hariini)));
 
+        // 1. Cek apakah ada jadwal khusus event HARI INI
+        $jadwalKhususHariIni = DB::table('jadwal_lokasi_layanan')
+            ->join('cabang', 'jadwal_lokasi_layanan.kode_cabang', '=', 'cabang.kode_cabang')
+            ->where('jadwal_lokasi_layanan.layanan_id', $user->id)
+            ->where('jadwal_lokasi_layanan.tanggal', $hariini)
+            ->where('jadwal_lokasi_layanan.status', 1)
+            ->select('jadwal_lokasi_layanan.*', 'cabang.nama_cabang', 'cabang.lokasi_cabang', 'cabang.radius_cabang')
+            ->first();
+
+        // 2. Ambil jadwal mingguan rutin
         $jadwalMingguan = DB::table('jadwal_lokasi_layanan')
             ->join('cabang', 'jadwal_lokasi_layanan.kode_cabang', '=', 'cabang.kode_cabang')
             ->where('jadwal_lokasi_layanan.layanan_id', $user->id)
+            ->where('jadwal_lokasi_layanan.jenis_jadwal', 'rutin')
             ->where('jadwal_lokasi_layanan.status', 1)
             ->select('jadwal_lokasi_layanan.*', 'cabang.nama_cabang', 'cabang.lokasi_cabang', 'cabang.radius_cabang')
             ->orderByRaw("FIELD(jadwal_lokasi_layanan.hari, 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu')")
             ->get();
 
-        $jadwalHariIni = $jadwalMingguan->firstWhere('hari', $namahariIni);
+        // Jika ada event khusus hari ini, prioritas event khusus. Jika tidak, ambil rutin
+        $isEventKhususHariIni = ($jadwalKhususHariIni != null);
+        $jadwalHariIni = $isEventKhususHariIni ? $jadwalKhususHariIni : $jadwalMingguan->firstWhere('hari', $namahariIni);
 
-        return view('jadwallokasi.user_jadwal', compact('user', 'jadwalMingguan', 'jadwalHariIni', 'namahariIni'));
+        // 3. Ambil daftar event khusus mendatang (mulai hari ini ke depan)
+        $jadwalEventMendatang = DB::table('jadwal_lokasi_layanan')
+            ->join('cabang', 'jadwal_lokasi_layanan.kode_cabang', '=', 'cabang.kode_cabang')
+            ->where('jadwal_lokasi_layanan.layanan_id', $user->id)
+            ->where('jadwal_lokasi_layanan.jenis_jadwal', 'khusus')
+            ->where('jadwal_lokasi_layanan.tanggal', '>=', $hariini)
+            ->where('jadwal_lokasi_layanan.status', 1)
+            ->select('jadwal_lokasi_layanan.*', 'cabang.nama_cabang', 'cabang.lokasi_cabang', 'cabang.radius_cabang')
+            ->orderBy('jadwal_lokasi_layanan.tanggal', 'asc')
+            ->get();
+
+        return view('jadwallokasi.user_jadwal', compact(
+            'user',
+            'jadwalMingguan',
+            'jadwalHariIni',
+            'namahariIni',
+            'isEventKhususHariIni',
+            'jadwalEventMendatang'
+        ));
     }
 
     /**
@@ -264,7 +417,7 @@ class JadwalLokasiController extends Controller
 
         $layananList = $layananQuery->get();
 
-        // Ambil data jadwal lokasi aktif
+        // Ambil data jadwal lokasi rutin aktif
         $jadwalQuery = DB::table("jadwal_lokasi_layanan")
             ->join("cabang", "jadwal_lokasi_layanan.kode_cabang", "=", "cabang.kode_cabang")
             ->select(
@@ -273,6 +426,7 @@ class JadwalLokasiController extends Controller
                 "cabang.lokasi_cabang",
                 "cabang.radius_cabang"
             )
+            ->where("jadwal_lokasi_layanan.jenis_jadwal", "rutin")
             ->where("jadwal_lokasi_layanan.status", 1);
 
         if (!empty($layanan_id) && $layanan_id != "all") {
@@ -293,6 +447,28 @@ class JadwalLokasiController extends Controller
 
         $totalJadwalAktif = count($rawJadwal);
 
+        // Ambil daftar event khusus mendatang
+        $eventKhususQuery = DB::table("jadwal_lokasi_layanan")
+            ->join("layanan", "jadwal_lokasi_layanan.layanan_id", "=", "layanan.id")
+            ->join("cabang", "jadwal_lokasi_layanan.kode_cabang", "=", "cabang.kode_cabang")
+            ->where("jadwal_lokasi_layanan.jenis_jadwal", "khusus")
+            ->where("jadwal_lokasi_layanan.status", 1)
+            ->where("jadwal_lokasi_layanan.tanggal", ">=", date("Y-m-d"))
+            ->select(
+                "jadwal_lokasi_layanan.*",
+                "layanan.nama_layanan",
+                "cabang.nama_cabang",
+                "cabang.lokasi_cabang",
+                "cabang.radius_cabang"
+            )
+            ->orderBy("jadwal_lokasi_layanan.tanggal", "asc");
+
+        if (!empty($layanan_id) && $layanan_id != "all") {
+            $eventKhususQuery->where("jadwal_lokasi_layanan.layanan_id", $layanan_id);
+        }
+
+        $listEventKhusus = $eventKhususQuery->get();
+
         return view("jadwallokasi.jadwal_layanan", compact(
             "allLayanan",
             "layananList",
@@ -300,7 +476,8 @@ class JadwalLokasiController extends Controller
             "matrix",
             "layanan_id",
             "hari",
-            "totalJadwalAktif"
+            "totalJadwalAktif",
+            "listEventKhusus"
         ));
     }
 }

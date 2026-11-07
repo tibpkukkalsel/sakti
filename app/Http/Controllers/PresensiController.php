@@ -88,13 +88,26 @@ class PresensiController extends Controller
         $cek = $presensi->count();
         $datapresensi = $presensi->first();
         $namahari = $this->gethari(date('D', strtotime($hariini)));
+        // Cek jadwal lokasi: Prioritaskan custom tanggal / event khusus hari ini
         $jadwalLokasi = DB::table('jadwal_lokasi_layanan')
             ->join('cabang', 'jadwal_lokasi_layanan.kode_cabang', '=', 'cabang.kode_cabang')
             ->where('jadwal_lokasi_layanan.layanan_id', $nik)
-            ->where('jadwal_lokasi_layanan.hari', $namahari)
+            ->where('jadwal_lokasi_layanan.tanggal', $hariini)
             ->where('jadwal_lokasi_layanan.status', 1)
-            ->select('cabang.*', 'jadwal_lokasi_layanan.keterangan as ket_jadwal')
+            ->select('cabang.*', 'jadwal_lokasi_layanan.keterangan as ket_jadwal', 'jadwal_lokasi_layanan.jenis_jadwal')
             ->first();
+
+        // Jika tidak ada jadwal khusus hari ini, fallback ke jadwal rutin mingguan
+        if (!$jadwalLokasi) {
+            $jadwalLokasi = DB::table('jadwal_lokasi_layanan')
+                ->join('cabang', 'jadwal_lokasi_layanan.kode_cabang', '=', 'cabang.kode_cabang')
+                ->where('jadwal_lokasi_layanan.layanan_id', $nik)
+                ->where('jadwal_lokasi_layanan.hari', $namahari)
+                ->where('jadwal_lokasi_layanan.jenis_jadwal', 'rutin')
+                ->where('jadwal_lokasi_layanan.status', 1)
+                ->select('cabang.*', 'jadwal_lokasi_layanan.keterangan as ket_jadwal', 'jadwal_lokasi_layanan.jenis_jadwal')
+                ->first();
+        }
 
         if ($jadwalLokasi != null) {
             $lok_kantor = $jadwalLokasi;
@@ -238,13 +251,26 @@ class PresensiController extends Controller
 
         $jam = date("H:i:s");
         $namahari = $this->gethari(date('D', strtotime($tgl_presensi)));
+        // Cek jadwal lokasi: Prioritaskan custom tanggal / event khusus hari ini
         $jadwalLokasi = DB::table('jadwal_lokasi_layanan')
             ->join('cabang', 'jadwal_lokasi_layanan.kode_cabang', '=', 'cabang.kode_cabang')
             ->where('jadwal_lokasi_layanan.layanan_id', $nik)
-            ->where('jadwal_lokasi_layanan.hari', $namahari)
+            ->where('jadwal_lokasi_layanan.tanggal', $tgl_presensi)
             ->where('jadwal_lokasi_layanan.status', 1)
-            ->select('cabang.*', 'jadwal_lokasi_layanan.keterangan as ket_jadwal')
+            ->select('cabang.*', 'jadwal_lokasi_layanan.keterangan as ket_jadwal', 'jadwal_lokasi_layanan.jenis_jadwal')
             ->first();
+
+        // Jika tidak ada jadwal khusus hari ini, fallback ke jadwal rutin mingguan
+        if (!$jadwalLokasi) {
+            $jadwalLokasi = DB::table('jadwal_lokasi_layanan')
+                ->join('cabang', 'jadwal_lokasi_layanan.kode_cabang', '=', 'cabang.kode_cabang')
+                ->where('jadwal_lokasi_layanan.layanan_id', $nik)
+                ->where('jadwal_lokasi_layanan.hari', $namahari)
+                ->where('jadwal_lokasi_layanan.jenis_jadwal', 'rutin')
+                ->where('jadwal_lokasi_layanan.status', 1)
+                ->select('cabang.*', 'jadwal_lokasi_layanan.keterangan as ket_jadwal', 'jadwal_lokasi_layanan.jenis_jadwal')
+                ->first();
+        }
 
         if ($jadwalLokasi != null) {
             $lok_kantor = $jadwalLokasi;

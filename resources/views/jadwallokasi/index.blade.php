@@ -60,8 +60,8 @@
                         <div class="row mt-2">
                             <div class="col-12">
                                 <form action="/panel-adm14/jadwallokasi" method="GET">
-                                    <div class="row">
-                                        <div class="col-4">
+                                    <div class="row g-2">
+                                        <div class="col-md-3 col-sm-6 col-12">
                                             <div class="form-group">
                                                 <select name="layanan_id" class="form-select">
                                                     <option value="">Semua Layanan</option>
@@ -73,7 +73,16 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-3">
+                                        <div class="col-md-2 col-sm-6 col-12">
+                                            <div class="form-group">
+                                                <select name="jenis_jadwal" class="form-select">
+                                                    <option value="">Semua Tipe</option>
+                                                    <option value="rutin" {{ Request('jenis_jadwal') == 'rutin' ? 'selected' : '' }}>Rutin Mingguan</option>
+                                                    <option value="khusus" {{ Request('jenis_jadwal') == 'khusus' ? 'selected' : '' }}>Event Khusus</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-sm-6 col-12">
                                             <div class="form-group">
                                                 <select name="hari" class="form-select">
                                                     <option value="">Semua Hari</option>
@@ -85,7 +94,7 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-3">
+                                        <div class="col-md-3 col-sm-6 col-12">
                                             <div class="form-group">
                                                 <select name="kode_cabang" class="form-select">
                                                     <option value="">Semua Lokasi</option>
@@ -97,7 +106,7 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-2">
+                                        <div class="col-md-2 col-12">
                                             <div class="form-group">
                                                 <button type="submit" class="btn btn-primary w-100">
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -122,7 +131,7 @@
                                             <tr>
                                                 <th style="width: 50px;" class="text-center">No</th>
                                                 <th>Nama Layanan</th>
-                                                <th style="width: 120px;" class="text-center">Hari</th>
+                                                <th style="min-width: 140px;" class="text-center">Jadwal / Waktu</th>
                                                 <th>Lokasi Pelayanan</th>
                                                 <th>Titik Koordinat & Radius</th>
                                                 <th>Keterangan</th>
@@ -135,10 +144,19 @@
                                                 <td class="text-center">{{ $loop->iteration + $jadwal->firstItem() - 1 }}</td>
                                                 <td>
                                                     <strong>{{ $d->nama_layanan }}</strong>
-                                                    
                                                 </td>
                                                 <td class="text-center">
-                                                    <span class="badge bg-primary text-white">Hari {{ $d->hari }}</span>
+                                                    @if ($d->jenis_jadwal == 'khusus')
+                                                        <span class="badge bg-warning text-dark mb-1">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-star" width="14" height="14" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="currentColor" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
+                                                            Event Khusus
+                                                        </span>
+                                                        <div class="fw-bold text-primary">{{ date('d/m/Y', strtotime($d->tanggal)) }}</div>
+                                                        <div class="small text-muted">Hari {{ $d->hari }}</div>
+                                                    @else
+                                                        <span class="badge bg-primary text-white mb-1">Rutin Mingguan</span>
+                                                        <div class="fw-bold">Hari {{ $d->hari }}</div>
+                                                    @endif
                                                 </td>
                                                 <td>
                                                     <strong>{{ $d->nama_cabang }}</strong>
@@ -213,7 +231,19 @@
                             </select>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <label class="form-label fw-bold">Tipe Jadwal</label>
+                            <div class="btn-group w-100" role="group">
+                                <input type="radio" class="btn-check" name="jenis_jadwal" id="tipe_rutin" value="rutin" checked autocomplete="off">
+                                <label class="btn btn-outline-primary" for="tipe_rutin">Rutin Mingguan</label>
+
+                                <input type="radio" class="btn-check" name="jenis_jadwal" id="tipe_khusus" value="khusus" autocomplete="off">
+                                <label class="btn btn-outline-warning" for="tipe_khusus">Event Khusus (Custom Tanggal)</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" id="group_hari">
                         <div class="col-12">
                             <select name="hari" id="hari" class="form-select mb-3">
                                 <option value="">Pilih Hari</option>
@@ -221,6 +251,13 @@
                                 <option value="{{ $h }}">Hari {{ $h }}</option>
                                 @endforeach
                             </select>
+                        </div>
+                    </div>
+                    <div class="row d-none" id="group_tanggal">
+                        <div class="col-12">
+                            <label class="form-label small text-muted">Tanggal Event Khusus</label>
+                            <input type="date" name="tanggal" id="tanggal" class="form-control mb-1">
+                            <div id="info_hari_tanggal" class="small text-muted mb-3"></div>
                         </div>
                     </div>
                     <div class="row">
@@ -400,9 +437,33 @@
             });
         });
 
+        $('input[name="jenis_jadwal"]').change(function() {
+            if ($(this).val() == 'khusus') {
+                $('#group_hari').addClass('d-none');
+                $('#group_tanggal').removeClass('d-none');
+            } else {
+                $('#group_tanggal').addClass('d-none');
+                $('#group_hari').removeClass('d-none');
+            }
+        });
+
+        const namaHariIndo = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+        $('#tanggal').on('input change', function() {
+            var val = $(this).val();
+            if (val) {
+                var d = new Date(val + 'T00:00:00');
+                var dayName = namaHariIndo[d.getDay()];
+                $('#info_hari_tanggal').html('<span class="badge bg-light text-dark border">Hari ' + dayName + '</span>');
+            } else {
+                $('#info_hari_tanggal').html('');
+            }
+        });
+
         $("#frmJadwal").submit(function() {
             var layanan_id = $("#layanan_id").val();
+            var jenis_jadwal = $("input[name='jenis_jadwal']:checked").val();
             var hari = $("#hari").val();
+            var tanggal = $("#tanggal").val();
             var kode_cabang = $("#kode_cabang").val();
 
             if (layanan_id == "") {
@@ -415,7 +476,7 @@
                     $("#layanan_id").focus();
                 });
                 return false;
-            } else if (hari == "") {
+            } else if (jenis_jadwal == "rutin" && hari == "") {
                 Swal.fire({
                     title: 'Warning!',
                     text: 'Hari Harus Dipilih !',
@@ -423,6 +484,16 @@
                     confirmButtonText: 'Ok'
                 }).then((result) => {
                     $("#hari").focus();
+                });
+                return false;
+            } else if (jenis_jadwal == "khusus" && tanggal == "") {
+                Swal.fire({
+                    title: 'Warning!',
+                    text: 'Tanggal Event Harus Dipilih !',
+                    icon: 'warning',
+                    confirmButtonText: 'Ok'
+                }).then((result) => {
+                    $("#tanggal").focus();
                 });
                 return false;
             } else if (kode_cabang == "") {

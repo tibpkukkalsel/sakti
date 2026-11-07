@@ -33,7 +33,13 @@
             <div class="d-flex justify-content-between align-items-center mb-1">
                 <span class="text-muted small fw-bold text-uppercase">Lokasi Hari Ini ({{ $namahariIni }})</span>
                 @if ($jadwalHariIni)
-                    <span class="badge bg-success" style="font-size: 11px;">Aktif</span>
+                    @if (!empty($isEventKhususHariIni))
+                        <span class="badge bg-warning text-dark" style="font-size: 11px;">
+                            <ion-icon name="star" style="font-size: 12px; vertical-align: -1px;"></ion-icon> Event Khusus
+                        </span>
+                    @else
+                        <span class="badge bg-success" style="font-size: 11px;">Aktif</span>
+                    @endif
                 @else
                     <span class="badge bg-danger" style="font-size: 11px;">Libur</span>
                 @endif
@@ -45,6 +51,11 @@
                         <div style="font-size: 17px; font-weight: 700; color: #1e293b;">
                             {{ $jadwalHariIni->nama_cabang }}
                         </div>
+                        @if (!empty($jadwalHariIni->keterangan))
+                            <div class="text-muted small mt-1">
+                                {{ $jadwalHariIni->keterangan }}
+                            </div>
+                        @endif
                     </div>
                     @php
                         $coords = explode(',', $jadwalHariIni->lokasi_cabang);
@@ -71,9 +82,52 @@
             @endif
         </div>
 
+        @if (isset($jadwalEventMendatang) && count($jadwalEventMendatang) > 0)
+            <!-- Jadwal Event Khusus Mendatang -->
+            <div class="d-flex justify-content-between align-items-center px-3 mt-3 mb-2">
+                <span class="text-muted small fw-bold text-uppercase">Jadwal Event Khusus</span>
+                <span class="badge bg-warning text-dark" style="font-size: 11px;">{{ count($jadwalEventMendatang) }} Event</span>
+            </div>
+            <div class="bg-white border-top border-bottom mb-2">
+                @foreach ($jadwalEventMendatang as $ev)
+                    @php
+                        $isEventHariIni = ($ev->tanggal == date('Y-m-d'));
+                        $cCoords = explode(',', $ev->lokasi_cabang);
+                        $evMap = count($cCoords) >= 2 ? 'https://www.google.com/maps?q=' . trim($cCoords[0]) . ',' . trim($cCoords[1]) : null;
+                    @endphp
+                    <div class="px-3 py-3 border-bottom {{ $isEventHariIni ? 'bg-light' : '' }}">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center gap-2">
+                                <div style="min-width: 75px; text-align: center;">
+                                    <span class="badge bg-warning text-dark" style="font-size: 11px; padding: 4px 6px; border-radius: 6px;">
+                                        {{ date('d/m/Y', strtotime($ev->tanggal)) }}
+                                    </span>
+                                    <div class="small text-muted mt-1">{{ $ev->hari }}</div>
+                                </div>
+                                <div>
+                                    <strong class="text-dark" style="font-size: 14px;">{{ $ev->nama_cabang }}</strong>
+                                    @if (!empty($ev->keterangan))
+                                        <div class="small text-muted">{{ $ev->keterangan }}</div>
+                                    @endif
+                                </div>
+                            </div>
+                            @if ($evMap)
+                                <a href="{{ $evMap }}" target="_blank"
+                                    class="btn btn-icon btn-warning text-dark"
+                                    style="width: 36px !important; height: 36px !important; min-width: 36px !important; border-radius: 8px !important; padding: 0 !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; line-height: 1 !important;"
+                                    title="Buka di Maps">
+                                    <ion-icon name="location" style="margin: 0 !important; font-size: 20px !important; line-height: 1 !important;"></ion-icon>
+                                </a>
+                            @endif
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        @endif
+
         <!-- 2. Header Jadwal Mingguan -->
         <div class="d-flex justify-content-between align-items-center px-3 mt-3 mb-2">
-            <span class="text-muted small fw-bold text-uppercase">Jadwal</span>
+            <span class="text-muted small fw-bold text-uppercase">Jadwal Mingguan Rutin</span>
         </div>
 
         <!-- 3. Daftar Jadwal Dengan Pembatas Biasa (Tanpa Card) -->

@@ -144,7 +144,69 @@
                     </table>
                 </div>
                 <div class="card-footer bg-white py-2 text-muted small d-flex justify-content-between align-items-center">
-                    <span>Total Jadwal Aktif: <strong>{{ $totalJadwalAktif }}</strong></span>
+                    <span>Total Jadwal Rutin Aktif: <strong>{{ $totalJadwalAktif }}</strong></span>
+                </div>
+            </div>
+
+            <!-- TABEL JADWAL KHUSUS / EVENT MENDATANG -->
+            <div class="card card-outline card-warning shadow-sm mb-4">
+                <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
+                    <div>
+                        <h3 class="card-title fw-bold text-dark mb-0">
+                            <i class="bi bi-star-fill text-warning me-2"></i> Jadwal Khusus & Event Layanan
+                        </h3>
+                        <div class="text-muted small mt-1">Jadwal lokasi insidental/event yang diatur pada tanggal tertentu (di luar jadwal mingguan)</div>
+                    </div>
+                    <span class="badge bg-warning text-dark">{{ count($listEventKhusus) }} Event</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped table-hover align-middle mb-0 text-nowrap">
+                        <thead class="table-light">
+                            <tr class="text-center align-middle">
+                                <th style="width: 50px;">No</th>
+                                <th style="width: 150px;">Tanggal Event</th>
+                                <th>Hari</th>
+                                <th class="text-start">Akun Layanan</th>
+                                <th>Lokasi Pelayanan</th>
+                                <th>Radius</th>
+                                <th>Keterangan</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($listEventKhusus as $ek)
+                                <tr>
+                                    <td class="text-center fw-bold text-muted">{{ $loop->iteration }}</td>
+                                    <td class="text-center">
+                                        <span class="badge bg-warning text-dark fw-bold">
+                                            {{ date('d/m/Y', strtotime($ek->tanggal)) }}
+                                        </span>
+                                    </td>
+                                    <td class="text-center fw-semibold">
+                                        {{ $ek->hari }}
+                                    </td>
+                                    <td>
+                                        <strong class="text-dark">{{ $ek->nama_layanan }}</strong>
+                                    </td>
+                                    <td>
+                                        <strong class="text-primary">{{ $ek->nama_cabang }}</strong>
+                                        <div class="small text-muted">Kode: {{ $ek->kode_cabang }}</div>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge bg-info text-white">{{ $ek->radius_cabang }} Meter</span>
+                                    </td>
+                                    <td>
+                                        {{ $ek->keterangan ?: '-' }}
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="7" class="text-center py-4 text-muted">
+                                        Tidak ada jadwal event khusus / tanggal khusus mendatang.
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
                 </div>
             </div>
 

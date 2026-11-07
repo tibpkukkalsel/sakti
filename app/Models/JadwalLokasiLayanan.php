@@ -14,6 +14,8 @@ class JadwalLokasiLayanan extends Model
     protected $fillable = [
         'layanan_id',
         'hari',
+        'jenis_jadwal',
+        'tanggal',
         'kode_cabang',
         'keterangan',
         'status',

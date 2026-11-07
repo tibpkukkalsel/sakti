@@ -615,10 +615,16 @@ class PenerimaanController extends Controller
 
         $query = DB::table("rekap_penerimaan_pkb")
             ->join("layanan", "rekap_penerimaan_pkb.layanan_id", "=", "layanan.id")
-            ->leftJoin("jadwal_lokasi_layanan", function ($join) {
-                $join->on("jadwal_lokasi_layanan.layanan_id", "=", "rekap_penerimaan_pkb.layanan_id")
-                    ->where("jadwal_lokasi_layanan.status", 1)
-                    ->whereRaw("jadwal_lokasi_layanan.hari = CASE DAYOFWEEK(rekap_penerimaan_pkb.tgl_penerimaan)
+            ->leftJoin("jadwal_lokasi_layanan as j_khusus", function ($join) {
+                $join->on("j_khusus.layanan_id", "=", "rekap_penerimaan_pkb.layanan_id")
+                    ->on("j_khusus.tanggal", "=", "rekap_penerimaan_pkb.tgl_penerimaan")
+                    ->where("j_khusus.status", 1);
+            })
+            ->leftJoin("jadwal_lokasi_layanan as j_rutin", function ($join) {
+                $join->on("j_rutin.layanan_id", "=", "rekap_penerimaan_pkb.layanan_id")
+                    ->where("j_rutin.jenis_jadwal", "rutin")
+                    ->where("j_rutin.status", 1)
+                    ->whereRaw("j_rutin.hari = CASE DAYOFWEEK(rekap_penerimaan_pkb.tgl_penerimaan)
                         WHEN 1 THEN 'Minggu'
                         WHEN 2 THEN 'Senin'
                         WHEN 3 THEN 'Selasa'
@@ -628,18 +634,17 @@ class PenerimaanController extends Controller
                         WHEN 7 THEN 'Sabtu'
                     END");
             })
-            ->leftJoin("cabang as c_jadwal", "jadwal_lokasi_layanan.kode_cabang", "=", "c_jadwal.kode_cabang")
-            ->leftJoin("cabang as c_default", "layanan.kode_cabang", "=", "c_default.kode_cabang")
+            ->leftJoin("cabang as c_lokasi", DB::raw("COALESCE(j_khusus.kode_cabang, j_rutin.kode_cabang, layanan.kode_cabang)"), "=", "c_lokasi.kode_cabang")
             ->whereBetween("rekap_penerimaan_pkb.tgl_penerimaan", [$startDate, $endDate]);
 
         if (!empty($kode_cabang) && $kode_cabang != "all") {
-            $query->whereRaw("COALESCE(c_jadwal.kode_cabang, c_default.kode_cabang) = ?", [$kode_cabang]);
+            $query->where("c_lokasi.kode_cabang", $kode_cabang);
         }
 
         $rekapLokasi = $query->select(
-            DB::raw("COALESCE(c_jadwal.kode_cabang, c_default.kode_cabang, 'LAIN') as kode_cabang"),
-            DB::raw("COALESCE(c_jadwal.nama_cabang, c_default.nama_cabang, 'Lokasi Lainnya') as nama_cabang"),
-            DB::raw("COALESCE(c_jadwal.lokasi_cabang, c_default.lokasi_cabang, '-') as lokasi_cabang"),
+            DB::raw("COALESCE(c_lokasi.kode_cabang, 'LAIN') as kode_cabang"),
+            DB::raw("COALESCE(c_lokasi.nama_cabang, 'Lokasi Lainnya') as nama_cabang"),
+            DB::raw("COALESCE(c_lokasi.lokasi_cabang, '-') as lokasi_cabang"),
             DB::raw("COALESCE(SUM(rekap_penerimaan_pkb.jumlah_rp_r2), 0) as rp_r2"),
             DB::raw("COALESCE(SUM(rekap_penerimaan_pkb.jumlah_unit_r2), 0) as unit_r2"),
             DB::raw("COALESCE(SUM(rekap_penerimaan_pkb.jumlah_rp_r4), 0) as rp_r4"),
@@ -650,9 +655,9 @@ class PenerimaanController extends Controller
             DB::raw("COUNT(DISTINCT rekap_penerimaan_pkb.tgl_penerimaan) as total_hari_operasi")
         )
         ->groupBy(
-            DB::raw("COALESCE(c_jadwal.kode_cabang, c_default.kode_cabang, 'LAIN')"),
-            DB::raw("COALESCE(c_jadwal.nama_cabang, c_default.nama_cabang, 'Lokasi Lainnya')"),
-            DB::raw("COALESCE(c_jadwal.lokasi_cabang, c_default.lokasi_cabang, '-')")
+            DB::raw("COALESCE(c_lokasi.kode_cabang, 'LAIN')"),
+            DB::raw("COALESCE(c_lokasi.nama_cabang, 'Lokasi Lainnya')"),
+            DB::raw("COALESCE(c_lokasi.lokasi_cabang, '-')")
         )
         ->orderBy("total_rp", "desc")
         ->get();
