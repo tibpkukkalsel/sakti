@@ -56,6 +56,16 @@ File ini mencatat pedoman, preferensi, dan kebiasaan arahan USER untuk aplikasi 
   - **Card Status Penerimaan**: Format card putih sudut melengkung 14px dengan ikon kasir hijau, rincian nominal tebal, dan tombol aksi.
   - **Rekap 3 Kolom**: Menggunakan `#rekappresensi` dengan badge angka di pojok kanan atas.
   - **Tab Navigasi**: Menggunakan `.presencetab` dengan class `.nav-tabs style1`.
-  - **Footer / Bottom Navigation**: Menggunakan class native `.appBottomMenu` dengan 5 menu, termasuk tombol tengah melayang besar (`.action-button large`).
+  - **Footer / Bottom Navigation**: Menggunakan class native `.appBottomMenu` dengan 5 menu, termasuk tombol tengah melayang besar (`.action-button large`) yang merupakan tombol **Home** (Layanan di sisi kiri).
+
+---
+
+## 6. Kelola User & Informasi Profil
+- Pada menu dan tabel Kelola User:
+  - Menu sidebar menggunakan label **User**.
+  - Tabel user menampilkan kolom **Jabatan** (bukan kolom Role Monitoring karena role sudah pasti monitoring).
+  - Modal tambah & edit user menyediakan input **Jabatan**.
+- Pada Header Dashboard Mobile Monitoring:
+  - Menampilkan Nama User dan **Jabatan** (jika belum ada jabatan, tampilkan `UPPD SAMSAT Batulicin`), **TIDAK menampilkan teks role "Role: Monitoring"**.
 
 

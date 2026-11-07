@@ -47,7 +47,7 @@
                                             <path d="M12 5l0 14"></path>
                                             <path d="M5 12l14 0"></path>
                                         </svg>
-                                        Tambah User Monitoring
+                                        Tambah User
                                     </a>
                                 </div>
                             </div>
@@ -89,9 +89,9 @@
                                                 <tr>
                                                     <th style="width: 50px;" class="text-center">No</th>
                                                     <th>Nama</th>
+                                                    <th>Jabatan</th>
                                                     <th>Email</th>
                                                     <th>No. HP</th>
-                                                    <th>Role</th>
                                                     <th style="width: 100px;" class="text-center">Aksi</th>
                                                 </tr>
                                             </thead>
@@ -100,21 +100,19 @@
                                                     <tr>
                                                         <td class="text-center">{{ $loop->iteration }}</td>
                                                         <td class="fw-bold">{{ $d->name }}</td>
+                                                        <td>
+                                                            @if (!empty($d->jabatan))
+                                                                <span class="badge bg-blue-lt fw-semibold text-wrap">{{ $d->jabatan }}</span>
+                                                            @else
+                                                                <span class="text-muted">-</span>
+                                                            @endif
+                                                        </td>
                                                         <td>{{ $d->email }}</td>
                                                         <td>
                                                             @if (!empty($d->no_hp))
                                                                 <span class="text-nowrap"><i class="bi bi-phone me-1 text-success"></i>{{ $d->no_hp }}</span>
                                                             @else
                                                                 <span class="text-muted">-</span>
-                                                            @endif
-                                                        </td>
-                                                        <td>
-                                                            @if ($d->role == 'monitoring')
-                                                                <span class="badge bg-info text-white"><i class="bi bi-eye me-1"></i>Monitoring</span>
-                                                            @elseif ($d->role == 'administrator')
-                                                                <span class="badge bg-primary text-white"><i class="bi bi-shield-lock me-1"></i>Administrator</span>
-                                                            @else
-                                                                <span class="badge bg-secondary text-white">{{ ucwords($d->role) }}</span>
                                                             @endif
                                                         </td>
                                                         <td class="text-center">
@@ -181,7 +179,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Tambah User Monitoring</h5>
+                    <h5 class="modal-title">Tambah User</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -203,6 +201,26 @@
                                     </span>
                                     <input type="text" id="nama_user" value="" class="form-control"
                                         name="nama_user" placeholder="Nama User">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-1">
+                            <div class="col-12">
+                                <div class="input-icon">
+                                    <span class="input-icon-addon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-briefcase"
+                                            width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
+                                            stroke="currentColor" fill="none" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                            <path d="M3 7m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" />
+                                            <path d="M8 7v-2a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v2" />
+                                            <path d="M12 12l0 .01" />
+                                            <path d="M3 13a20 20 0 0 0 18 0" />
+                                        </svg>
+                                    </span>
+                                    <input type="text" id="jabatan" value="" class="form-control"
+                                        name="jabatan" placeholder="Jabatan">
                                 </div>
                             </div>
                         </div>

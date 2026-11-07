@@ -28,7 +28,7 @@
             <div class="mt-2 font-weight-bold" style="font-size: 15px; color: #1e293b;">
                 {{ $user->name }}
             </div>
-            <div class="text-muted" style="font-size: 12px;">Akun Monitoring SAKTI</div>
+            <div class="text-muted" style="font-size: 12px;">{{ $user->jabatan ?? 'UPPD SAMSAT Batulicin' }}</div>
         </div>
 
         <form action="/monitoring/profile/update" method="POST">
@@ -39,6 +39,15 @@
                     <input type="text" class="form-control" value="{{ $user->name }}" name="name" placeholder="Nama Lengkap" required autocomplete="off">
                 </div>
             </div>
+
+            @if (!empty($user->jabatan))
+                <div class="form-group boxed">
+                    <div class="input-wrapper">
+                        <label style="font-size: 11px; font-weight: 600; color: #64748b; margin-bottom: 2px;">Jabatan</label>
+                        <input type="text" class="form-control" value="{{ $user->jabatan }}" disabled autocomplete="off" style="background: #f8fafc;">
+                    </div>
+                </div>
+            @endif
 
             <div class="form-group boxed">
                 <div class="input-wrapper">

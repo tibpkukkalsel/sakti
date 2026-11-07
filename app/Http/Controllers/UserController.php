@@ -18,7 +18,7 @@ class UserController extends Controller
         $role = DB::table('roles')->where('guard_name', 'user')->where('name', '!=', 'administrator')->orderBy('id')->get();
 
         $query = User::query();
-        $query->select('users.id', 'users.name', 'email', 'users.no_hp', 'roles.name as role');
+        $query->select('users.id', 'users.name', 'users.jabatan', 'email', 'users.no_hp', 'roles.name as role');
         $query->join('model_has_roles', 'users.id', '=', 'model_has_roles.model_id');
         $query->join('roles', 'model_has_roles.role_id', '=', 'roles.id');
 
@@ -40,6 +40,7 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $nama_user = $request->nama_user;
+        $jabatan = $request->jabatan;
         $email = $request->email;
         $no_hp = $request->no_hp;
         $kode_dept = null;
@@ -51,6 +52,7 @@ class UserController extends Controller
         try {
             $user = User::create([
                 'name' => $nama_user,
+                'jabatan' => $jabatan,
                 'email' => $email,
                 'no_hp' => $no_hp,
                 'kode_dept' => $kode_dept,
@@ -95,6 +97,7 @@ class UserController extends Controller
         }
 
         $nama_user = $request->nama_user;
+        $jabatan = $request->jabatan;
         $email = $request->email;
         $no_hp = $request->no_hp;
         $kode_dept = null;
@@ -103,6 +106,7 @@ class UserController extends Controller
 
         $data = [
             'name' => $nama_user,
+            'jabatan' => $jabatan,
             'email' => $email,
             'no_hp' => $no_hp,
             'kode_dept' => $kode_dept,

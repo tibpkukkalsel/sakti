@@ -1,9 +1,9 @@
 <!-- App Bottom Menu -->
 <div class="appBottomMenu">
-    <a href="/monitoring/dashboard" class="item {{ request()->is('monitoring/dashboard*') ? 'active' : '' }}">
+    <a href="/monitoring/layanan" class="item {{ request()->is('monitoring/layanan*') ? 'active' : '' }}">
         <div class="col">
-            <ion-icon name="home-outline"></ion-icon>
-            <strong>Home</strong>
+            <ion-icon name="bus-outline"></ion-icon>
+            <strong>Layanan</strong>
         </div>
     </a>
     <a href="/monitoring/jadwal" class="item {{ request()->is('monitoring/jadwal*') ? 'active' : '' }}">
@@ -13,10 +13,10 @@
         </div>
     </a>
 
-    <a href="/monitoring/layanan" class="item {{ request()->is('monitoring/layanan*') ? 'active' : '' }}">
+    <a href="/monitoring/dashboard" class="item {{ request()->is('monitoring/dashboard*') ? 'active' : '' }}">
         <div class="col">
             <div class="action-button large">
-                <ion-icon name="bus-outline"></ion-icon>
+                <ion-icon name="home-outline"></ion-icon>
             </div>
         </div>
     </a>

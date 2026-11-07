@@ -267,9 +267,12 @@
                 <h3 id="user-name">
                     {{ $user->name }}
                 </h3>
-                <span style="font-size: 11px; color: rgba(255, 255, 255, 0.95); display: block; margin-top: 2px;">
-                    <ion-icon name="shield-checkmark" style="vertical-align: -1px; color: #fde047;"></ion-icon>
-                    Role: Monitoring &bull; UPPD SAMSAT Batulicin
+                <span style="font-size: 12px; color: rgba(255, 255, 255, 0.95); display: block; margin-top: 2px; font-weight: 500;">
+                    @if (!empty($user->jabatan))
+                        {{ $user->jabatan }}
+                    @else
+                        UPPD SAMSAT Batulicin
+                    @endif
                 </span>
             </div>
         </div>
