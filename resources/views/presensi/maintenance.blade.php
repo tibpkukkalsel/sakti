@@ -205,7 +205,7 @@
                         </div>
                         @if ($maintenance->hasPages())
                             <div class="card-footer d-flex align-items-center">
-                                {{ $maintenance->links() }}
+                                {{ $maintenance->links('vendor.pagination.bootstrap-5') }}
                             </div>
                         @endif
                     </div>

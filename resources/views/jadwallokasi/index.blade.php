@@ -180,7 +180,7 @@
                                     </table>
                                 </div>
                                 <div class="mt-3">
-                                    {{ $jadwal->links() }}
+                                    {{ $jadwal->links('vendor.pagination.bootstrap-5') }}
                                 </div>
                             </div>
                         </div>

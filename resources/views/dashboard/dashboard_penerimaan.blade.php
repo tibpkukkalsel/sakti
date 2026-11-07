@@ -363,8 +363,8 @@
                     </div>
                 </div>
                 @if ($dataPenerimaan->hasPages())
-                    <div class="card-footer bg-white py-2 border-top">
-                        {{ $dataPenerimaan->links() }}
+                    <div class="card-footer bg-white py-2 border-top d-flex align-items-center">
+                        {{ $dataPenerimaan->links('vendor.pagination.bootstrap-5') }}
                     </div>
                 @endif
             </div>

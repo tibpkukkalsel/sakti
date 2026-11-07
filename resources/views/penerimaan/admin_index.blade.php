@@ -402,7 +402,7 @@
                                         </table>
                                     </div>
                                     <div class="mt-3">
-                                        {{ $penerimaan->links() }}
+                                        {{ $penerimaan->links('vendor.pagination.bootstrap-5') }}
                                     </div>
                                 </div>
                             </div>

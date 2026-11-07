@@ -231,7 +231,7 @@
                                     </table>
                                 </div>
                                 <div class="mt-3">
-                                    {{ $layanan->links() }}
+                                    {{ $layanan->links('vendor.pagination.bootstrap-5') }}
                                 </div>
                             </div>
                         </div>
