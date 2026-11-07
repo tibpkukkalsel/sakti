@@ -4,11 +4,11 @@
     <div class="sidebar-brand">
         <!--begin::Brand Link-->
         <a href="/panel-adm14/home" class="brand-link text-decoration-none d-flex align-items-center gap-2 px-3">
-            <!--begin::Brand Image-->
-            <img src="{{ asset('Logo Sakti.png') }}?v=2" alt="SAKTI Logo" class="brand-image shadow-sm rounded"
-                style="max-height: 34px; width: auto;"
-                onerror="this.src='{{ asset('assets/img/Logo Provinsi Kalimantan Selatan.png') }}'">
-            <!--end::Brand Image-->
+            <!--begin::Brand Icon (Mini Bus)-->
+            <span class="brand-image d-inline-flex align-items-center justify-content-center text-primary fs-3">
+                <i class="bi bi-bus-front-fill"></i>
+            </span>
+            <!--end::Brand Icon-->
             <!--begin::Brand Text-->
             <span class="brand-text fw-semibold text-white fs-6">SAKTI BATULICIN</span>
             <!--end::Brand Text-->
