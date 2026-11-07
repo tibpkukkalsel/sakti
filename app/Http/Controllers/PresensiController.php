@@ -1167,9 +1167,7 @@ class PresensiController extends Controller
         $bulan = $request->bulan;
         $tahun = $request->tahun;
         $namabulan = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-        $karyawan = DB::table('karyawan')->where('nik', $nik)
-            ->join('departemen', 'karyawan.kode_dept', '=', 'departemen.kode_dept')
-            ->first();
+        $karyawan = DB::table('karyawan')->where('nik', $nik)->first();
 
         $penerimaan = DB::table('penerimaan')
             ->select('penerimaan.*', 'nama_cabang', 'nama_lengkap')
@@ -1425,9 +1423,7 @@ class PresensiController extends Controller
         $bulan = $request->bulan;
         $tahun = $request->tahun;
         $namabulan = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-        $karyawan = DB::table('karyawan')->where('nik', $nik)
-            ->leftJoin('departemen', 'karyawan.kode_dept', '=', 'departemen.kode_dept')
-            ->first();
+        $karyawan = DB::table('karyawan')->where('nik', $nik)->first();
 
         $presensi = DB::table('presensi')
             ->select('presensi.*', 'keterangan', 'jam_kerja.*')
@@ -1483,7 +1479,7 @@ class PresensiController extends Controller
     public function rekappenerimaan()
     {
         $namabulan = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-        $departemen = DB::table('departemen')->get();
+        $departemen = collect([]);
         $cabang = DB::table('cabang')->orderBy('kode_cabang')->get();
         return view('presensi.rekappenerimaan', compact('namabulan', 'departemen', 'cabang'));
     }
@@ -1491,9 +1487,10 @@ class PresensiController extends Controller
     public function rekap()
     {
         $namabulan = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-        $departemen = DB::table('departemen')->get();
+        $departemen = collect([]);
         $cabang = DB::table('cabang')->orderBy('kode_cabang')->get();
-        return view('presensi.rekap', compact('namabulan', 'departemen', 'cabang'));
+        $listLayanan = DB::table('layanan')->orderBy('nama_layanan')->get();
+        return view('presensi.rekap', compact('namabulan', 'departemen', 'cabang', 'listLayanan'));
     }
 
     public function cetakrekap(Request $request)
@@ -1548,10 +1545,9 @@ class PresensiController extends Controller
             array_push($rangetanggal, NULL, NULL, NULL);
         }
 
-        $table = (new Karyawan())->getTable();
-        $query = Karyawan::query()->from($table . ' as karyawan');
+        $query = DB::table('layanan as karyawan');
         $query->selectRaw(
-            "$field_date karyawan.nik, nama_lengkap, jabatan, karyawan.kode_dept, karyawan.kode_cabang"
+            "$field_date karyawan.id as nik, karyawan.nama_layanan as nama_lengkap, karyawan.jabatan_pic as jabatan, karyawan.kode_cabang"
         );
 
         $query->leftJoin(
@@ -1566,18 +1562,18 @@ class PresensiController extends Controller
                 GROUP BY nik
             ) presensi"),
             function ($join) {
-                $join->on('karyawan.nik', '=', 'presensi.nik');
+                $join->on('karyawan.id', '=', 'presensi.nik');
             }
         );
 
-        if (!empty($kode_dept)) {
-            $query->where('karyawan.kode_dept', $kode_dept);
+        if ($request->filled('layanan_id')) {
+            $query->where('karyawan.id', $request->layanan_id);
         }
         if (!empty($kode_cabang)) {
             $query->where('karyawan.kode_cabang', $kode_cabang);
         }
 
-        $query->orderBy('nama_lengkap');
+        $query->orderBy('karyawan.nama_layanan');
         $rekap = $query->get();
 
         $konfigurasi_laporan = DB::table('konfigurasi_laporan')->where('id', 1)->first();
@@ -1751,10 +1747,9 @@ class PresensiController extends Controller
             'karyawan.kode_cabang',
             'karyawan.kode_dept',
             'doc_sid',
-            'departemen.nama_dept'
+            DB::raw("'-' as nama_dept")
         );
-        $query->join('karyawan', 'pengajuan_izin.nik', '=', 'karyawan.nik')
-                   ->join ('departemen', 'karyawan.kode_dept', '=', 'departemen.kode_dept');
+        $query->join('karyawan', 'pengajuan_izin.nik', '=', 'karyawan.nik');
         if (!empty($request->dari) && !empty($request->sampai)) {
             $query->whereBetween('tgl_izin_dari', [$request->dari, $request->sampai]);
         }
@@ -1789,7 +1784,7 @@ class PresensiController extends Controller
         $izinsakit->appends($request->all());
 
         $cabang = DB::table('cabang')->orderBy('kode_cabang')->get();
-        $departemen = DB::table('departemen')->orderBy('kode_dept')->get();
+        $departemen = collect([]);
         return view('presensi.izinsakit', compact('izinsakit', 'cabang', 'departemen'));
     }
 

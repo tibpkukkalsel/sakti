@@ -72,23 +72,21 @@
                                         </div>
                                     </div>
                                 </div>
-                                @role('administrator', 'user')
-                                    <div class="row mt-2">
-                                        <div class="col-12">
-                                            <div class="form-group">
-                                                <select name="kode_dept" id="kode_dept" class="form-select" hidden>
-                                                    <option value="">Semua Departemen</option>
-                                                    @foreach ($departemen as $d)
-                                                        <option value="{{ $d->kode_dept }}">{{ $d->nama_dept }}</option>
+                                <div class="row mt-2">
+                                    <div class="col-12">
+                                        <div class="form-group">
+                                            <select name="layanan_id" id="layanan_id" class="form-select">
+                                                <option value="">-- Semua Layanan --</option>
+                                                @if (isset($listLayanan))
+                                                    @foreach ($listLayanan as $l)
+                                                        <option value="{{ $l->id }}">{{ $l->nama_layanan }}</option>
                                                     @endforeach
-                                                </select>
-                                            </div>
+                                                @endif
+                                            </select>
                                         </div>
                                     </div>
-                                @else
-                                    <input type="hidden" name="kode_dept"
-                                        value="{{ Auth::guard('user')->user()->kode_dept }}">
-                                @endrole
+                                </div>
+                                <input type="hidden" name="kode_dept" value="">
                                 <div class="row mt-2">
                                     <div class="col-12">
                                         <div class="form-group">
