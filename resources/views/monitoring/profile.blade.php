@@ -49,6 +49,10 @@
                         <label class="small text-muted font-weight-bold">Email / Akun</label>
                         <input type="text" value="{{ $user->email }}" class="form-control" disabled style="border-radius: 8px; background: #f8fafc;">
                     </div>
+                    <div class="form-group boxed mb-2">
+                        <label class="small text-muted font-weight-bold">No. WhatsApp / HP (Bisa untuk Login)</label>
+                        <input type="text" name="no_hp" value="{{ $user->no_hp }}" placeholder="Contoh: 081234567890" class="form-control" style="border-radius: 8px;">
+                    </div>
                     <div class="form-group boxed mb-3">
                         <label class="small text-muted font-weight-bold">Password Baru (Kosongkan bila tidak diubah)</label>
                         <input type="password" name="password" placeholder="Minimal 6 karakter" class="form-control" style="border-radius: 8px;">

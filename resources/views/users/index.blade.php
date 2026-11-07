@@ -90,6 +90,7 @@
                                                     <th style="width: 50px;" class="text-center">No</th>
                                                     <th>Nama</th>
                                                     <th>Email</th>
+                                                    <th>No. HP</th>
                                                     <th>Role</th>
                                                     <th>Lokasi</th>
                                                     <th style="width: 100px;" class="text-center">Aksi</th>
@@ -101,6 +102,13 @@
                                                         <td class="text-center">{{ $loop->iteration }}</td>
                                                         <td class="fw-bold">{{ $d->name }}</td>
                                                         <td>{{ $d->email }}</td>
+                                                        <td>
+                                                            @if (!empty($d->no_hp))
+                                                                <span class="text-nowrap"><i class="bi bi-phone me-1 text-success"></i>{{ $d->no_hp }}</span>
+                                                            @else
+                                                                <span class="text-muted">-</span>
+                                                            @endif
+                                                        </td>
                                                         <td>
                                                             @if ($d->role == 'monitoring')
                                                                 <span class="badge bg-info text-white"><i class="bi bi-eye me-1"></i>Monitoring</span>
@@ -217,6 +225,24 @@
                                     </span>
                                     <input type="text" id="email" value="" class="form-control"
                                         name="email" placeholder="Email">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-1">
+                            <div class="col-12">
+                                <div class="input-icon">
+                                    <span class="input-icon-addon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-phone"
+                                            width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
+                                            stroke="currentColor" fill="none" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                            <path
+                                                d="M5 4h4l2 5l-2.5 1.5a11 11 0 0 0 5 5l1.5 -2.5l5 2v4a2 2 0 0 1 -2 2a16 16 0 0 1 -15 -15a2 2 0 0 1 2 -2" />
+                                        </svg>
+                                    </span>
+                                    <input type="text" id="no_hp" value="" class="form-control"
+                                        name="no_hp" placeholder="No. WhatsApp / HP (Bisa untuk Login)">
                                 </div>
                             </div>
                         </div>

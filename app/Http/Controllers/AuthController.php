@@ -20,13 +20,23 @@ class AuthController extends Controller
         $password = $request->password;
 
         if (empty($loginInput) || empty($password)) {
-            return redirect('/')->with(['warning' => 'Username/Email dan Password wajib diisi']);
+            return redirect('/')->with(['warning' => 'Username/Email/No. HP dan Password wajib diisi']);
         }
+
+        // Variasi format no HP (misal: 0853..., +62853..., 62853..., 0853-4823-6515)
+        $cleanPhone = preg_replace('/[^0-9]/', '', $loginInput);
+        $phoneCandidates = array_values(array_unique(array_filter([
+            $loginInput,
+            $cleanPhone,
+            (!empty($cleanPhone) && str_starts_with($cleanPhone, '62')) ? ('0' . substr($cleanPhone, 2)) : null,
+            (!empty($cleanPhone) && str_starts_with($cleanPhone, '0')) ? ('62' . substr($cleanPhone, 1)) : null,
+        ])));
 
         // 1. Autentikasi untuk Akun Monitoring
         if ($roleType === 'monitoring') {
             $user = User::where('email', $loginInput)
                 ->orWhere('name', $loginInput)
+                ->orWhereIn('no_hp', $phoneCandidates)
                 ->first();
 
             if ($user && Hash::check($password, $user->password)) {
@@ -40,24 +50,14 @@ class AuthController extends Controller
                     return redirect('/')->with(['warning' => 'Akun tidak memiliki hak akses Monitoring']);
                 }
             } else {
-                return redirect('/')->with(['warning' => 'Email/Username atau Password Monitoring salah']);
+                return redirect('/')->with(['warning' => 'Email/No. HP/Username atau Password Monitoring salah']);
             }
         }
 
         // 2. Autentikasi untuk Akun Layanan
-        // Variasi format no HP (misal: 0853..., +62853..., 62853..., 0853-4823-6515)
-        $cleanPhone = preg_replace('/[^0-9]/', '', $loginInput);
-        $phoneCandidates = array_values(array_unique(array_filter([
-            $loginInput,
-            $cleanPhone,
-            (!empty($cleanPhone) && str_starts_with($cleanPhone, '62')) ? ('0' . substr($cleanPhone, 2)) : null,
-            (!empty($cleanPhone) && str_starts_with($cleanPhone, '0')) ? ('62' . substr($cleanPhone, 1)) : null,
-        ])));
-
-        // Cari pegawai berdasarkan NIK (ID), Username, atau No HP
+        // Cari pegawai/layanan berdasarkan NIK (ID), Username, atau No HP
         $karyawan = Layanan::where('username', $loginInput)
             ->orWhere('id', $loginInput)
-            ->orWhere('username', $loginInput)
             ->orWhereIn('no_hp', $phoneCandidates)
             ->first();
 
@@ -70,7 +70,10 @@ class AuthController extends Controller
         }
 
         // Fallback cerdas: jika pengguna berada di tab Layanan namun memasukkan akun Monitoring yang valid
-        $userAlt = User::where('email', $loginInput)->orWhere('name', $loginInput)->first();
+        $userAlt = User::where('email', $loginInput)
+            ->orWhere('name', $loginInput)
+            ->orWhereIn('no_hp', $phoneCandidates)
+            ->first();
         if ($userAlt && Hash::check($password, $userAlt->password) && ($userAlt->hasRole('monitoring') || $userAlt->hasRole('administrator'))) {
             Auth::guard('user')->login($userAlt, $remember);
             if ($request->hasSession()) {

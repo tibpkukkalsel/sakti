@@ -408,10 +408,14 @@ class MonitoringController extends Controller
         $user = Auth::guard('user')->user();
         $request->validate([
             'name' => 'required|string|max:255',
+            'no_hp' => 'nullable|string|max:25',
             'password' => 'nullable|min:6'
         ]);
 
-        $data = ['name' => $request->name];
+        $data = [
+            'name' => $request->name,
+            'no_hp' => $request->no_hp
+        ];
         if (!empty($request->password)) {
             $data['password'] = Hash::make($request->password);
         }

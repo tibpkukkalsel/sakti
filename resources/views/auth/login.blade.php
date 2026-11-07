@@ -251,15 +251,15 @@
                 btnRoleMonitoring.classList.add('active');
                 btnRoleLayanan.classList.remove('active');
                 roleTypeInput.value = 'monitoring';
-                usernameInput.placeholder = 'Email / Username Monitoring';
-                roleHint.textContent = 'Masuk sebagai akun pimpinan/monitoring untuk pantau layanan & pendapatan';
+                usernameInput.placeholder = 'Email / No. HP / Username Monitoring';
+                roleHint.textContent = 'Masuk dengan Email, No. HP, atau Nama User Monitoring';
                 btnSubmit.textContent = 'LOGIN MONITORING';
                 localStorage.setItem('sakti_selected_role', 'monitoring');
             } else {
                 btnRoleLayanan.classList.add('active');
                 btnRoleMonitoring.classList.remove('active');
                 roleTypeInput.value = 'layanan';
-                usernameInput.placeholder = 'Username Layanan';
+                usernameInput.placeholder = 'Username / No. HP Layanan';
                 roleHint.textContent = 'Masuk sebagai kru/posko armada layanan keliling';
                 btnSubmit.textContent = 'LOGIN LAYANAN';
                 localStorage.setItem('sakti_selected_role', 'layanan');

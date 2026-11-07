@@ -18,7 +18,7 @@ class UserController extends Controller
         $role = DB::table('roles')->where('guard_name', 'user')->where('name', '!=', 'administrator')->orderBy('id')->get();
 
         $query = User::query();
-        $query->select('users.id', 'users.name', 'email', 'roles.name as role', 'kode_cabang');
+        $query->select('users.id', 'users.name', 'email', 'users.no_hp', 'roles.name as role', 'kode_cabang');
         $query->join('model_has_roles', 'users.id', '=', 'model_has_roles.model_id');
         $query->join('roles', 'model_has_roles.role_id', '=', 'roles.id');
 
@@ -42,6 +42,7 @@ class UserController extends Controller
     {
         $nama_user = $request->nama_user;
         $email = $request->email;
+        $no_hp = $request->no_hp;
         $kode_dept = $request->kode_dept;
         $role = 'monitoring';
         $password = bcrypt($request->password);
@@ -52,6 +53,7 @@ class UserController extends Controller
             $user = User::create([
                 'name' => $nama_user,
                 'email' => $email,
+                'no_hp' => $no_hp,
                 'kode_dept' => $kode_dept,
                 'password' => $password,
                 'kode_cabang' => $kode_cabang
@@ -96,6 +98,7 @@ class UserController extends Controller
 
         $nama_user = $request->nama_user;
         $email = $request->email;
+        $no_hp = $request->no_hp;
         $kode_dept = $request->kode_dept;
         $role = 'monitoring';
         $kode_cabang = $request->kode_cabang ?: 'SM1';
@@ -103,6 +106,7 @@ class UserController extends Controller
         $data = [
             'name' => $nama_user,
             'email' => $email,
+            'no_hp' => $no_hp,
             'kode_dept' => $kode_dept,
             'kode_cabang' => $kode_cabang
         ];
