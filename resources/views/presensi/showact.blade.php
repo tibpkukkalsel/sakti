@@ -48,7 +48,7 @@
 
     $alasan = !empty($dataizin->keterangan) ? $dataizin->keterangan : '-';
 
-    $pesanPermohonan = "Assalamu’alaikum Wr. Wb.\nKepada Yth. Kepala UPPD SAMSAT Batu Licin\nCq. Kasubbag Tata Usaha\n\nSaya a.n. " . $namaPegawai . " pada hari ini " . $teksTanggal . " memohon izin " . $jenisIzin . " karena " . $alasan . ".\nDemikian pesan ini disampaikan, atas berkenannya diucapkan terimakasih.";
+    $pesanPermohonan = "Assalamu’alaikum Wr. Wb.\nKepada Yth. Kepala UPPD SAMSAT Batulicin\nCq. Kasubbag Tata Usaha\n\nSaya a.n. " . $namaPegawai . " pada hari ini " . $teksTanggal . " memohon izin " . $jenisIzin . " karena " . $alasan . ".\nDemikian pesan ini disampaikan, atas berkenannya diucapkan terimakasih.";
 @endphp
 
 <ul class="action-button-list">

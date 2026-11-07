@@ -6,7 +6,7 @@
 </head>
 <body>
     <h3>REKAPITULASI PENERIMAAN PAJAK KENDARAAN BERMOTOR (PKB) BERDASARKAN LOKASI</h3>
-    <p>UPPD SAMSAT BATU LICIN</p>
+    <p>UPPD SAMSAT BATULICIN</p>
     <p>Periode: {{ $periodeLabel }}</p>
 
     <table border="1" cellpadding="5" cellspacing="0">

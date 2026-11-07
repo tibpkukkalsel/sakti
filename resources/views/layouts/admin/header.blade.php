@@ -11,7 +11,7 @@
             </li>
             <li class="nav-item d-none d-md-block">
                 <span class="nav-link fw-semibold text-secondary">
-                    Sistem Absensi &amp; Rekap Penerimaan PKB UPPD SAMSAT Batu Licin
+                    Sistem Absensi &amp; Rekap Penerimaan PKB UPPD SAMSAT Batulicin
                 </span>
             </li>
         </ul>

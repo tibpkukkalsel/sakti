@@ -5,7 +5,7 @@
     <div class="row mb-3 align-items-center">
         <div class="col-md-7">
             <h3 class="m-0 fw-bold text-dark">Penerimaan PKB</h3>
-            <small class="text-muted">Statistik &amp; Analitik Penerimaan Pajak Kendaraan Bermotor UPPD SAMSAT Batu Licin
+            <small class="text-muted">Statistik &amp; Analitik Penerimaan Pajak Kendaraan Bermotor UPPD SAMSAT Batulicin
                 &bull; Periode: <strong>{{ $periodeLabel }}</strong></small>
         </div>
         <div class="col-md-5 text-md-end mt-2 mt-md-0">

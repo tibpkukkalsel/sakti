@@ -57,7 +57,7 @@
                             <div class="form-group mb-3">
                                 <label class="form-label fw-bold" for="pejabat1_jabatan">Jabatan</label>
                                 <input type="text" class="form-control" name="pejabat1_jabatan" id="pejabat1_jabatan"
-                                    value="{{ old('pejabat1_jabatan', $konfigurasi->pejabat1_jabatan ?? 'KEPALA UPPD SAMSAT BATU LICIN') }}"
+                                    value="{{ old('pejabat1_jabatan', $konfigurasi->pejabat1_jabatan ?? 'KEPALA UPPD SAMSAT BATULICIN') }}"
                                     placeholder="Jabatan Pejabat" required>
                             </div>
                             <div class="form-group mb-3">
@@ -157,7 +157,7 @@
                                     </tr>
                                     <tr>
                                         <td class="fw-bold" id="preview_pejabat1_jabatan">
-                                            {{ $konfigurasi->pejabat1_jabatan ?? 'KEPALA UPPD SAMSAT BATU LICIN' }}
+                                            {{ $konfigurasi->pejabat1_jabatan ?? 'KEPALA UPPD SAMSAT BATULICIN' }}
                                         </td>
                                         <td class="fw-bold" id="preview_pejabat2_jabatan">
                                             {{ $konfigurasi->pejabat2_jabatan ?? 'KASUBBAG TATA USAHA' }}

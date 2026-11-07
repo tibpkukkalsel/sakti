@@ -9,7 +9,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#334155">
     <title>SAKTI - Admin Panel</title>
-    <meta name="description" content="Panel Administrator SAKTI UPPD SAMSAT Batu Licin">
+    <meta name="description" content="Panel Administrator SAKTI UPPD SAMSAT Batulicin">
     <link rel="icon" type="image/png" href="{{ asset('Logo Sakti.png') }}?v=2" sizes="32x32">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('Logo Sakti.png') }}?v=2">
     <link rel="manifest" href="{{ asset('manifest.json') }}">
@@ -39,14 +39,14 @@
             <div class="side-content">
                 <h2 class="side-title">SAKTI ADMIN</h2>
                 <p class="side-desc">
-                    Selamat datang di Panel Administrasi Sistem Absensi &amp; Rekap Penerimaan PKB UPPD SAMSAT Batu Licin.
+                    Selamat datang di Panel Administrasi Sistem Absensi &amp; Rekap Penerimaan PKB UPPD SAMSAT Batulicin.
                     Silakan masuk untuk mengelola data dan sistem.
                 </p>
             </div>
 
             <!-- Ilustrasi Layanan Mobil Samsat Keliling -->
             <div class="side-illustration">
-                <img src="{{ asset('assets/img/login_samsat_keliling.png') . '?v=' . time() }}" alt="Ilustrasi SAKTI UPPD SAMSAT Batu Licin"
+                <img src="{{ asset('assets/img/login_samsat_keliling.png') . '?v=' . time() }}" alt="Ilustrasi SAKTI UPPD SAMSAT Batulicin"
                     class="img-illustration">
             </div>
         </div>
@@ -122,7 +122,7 @@
                             <span>Ingat saya</span>
                         </label>
                         <a href="javascript:void(0)" class="forgot-link"
-                            onclick="alert('Silahkan hubungi Superadmin UPPD SAMSAT Batu Licin untuk reset akun administrator.')">Forgot
+                            onclick="alert('Silahkan hubungi Superadmin UPPD SAMSAT Batulicin untuk reset akun administrator.')">Forgot
                             Password?</a>
                     </div>
 
@@ -134,7 +134,7 @@
                 </form>
 
                 <div class="form-footer">
-                    UPPD SAMSAT Batu Licin
+                    UPPD SAMSAT Batulicin
                 </div>
 
             </div>
@@ -152,12 +152,12 @@
             <div class="mobile-info-wrap">
                 <h3 class="mobile-info-title">SAKTI ADMIN</h3>
                 <p class="mobile-info-desc">
-                    Panel Kontrol &amp; Pengelolaan Presensi Serta Penerimaan PKB UPPD SAMSAT Batu Licin
+                    Panel Kontrol &amp; Pengelolaan Presensi Serta Penerimaan PKB UPPD SAMSAT Batulicin
                 </p>
 
                 <!-- Mini Illustration for Mobile -->
                 <div class="mobile-illustration">
-                    <img src="{{ asset('assets/img/login_samsat_keliling.png') . '?v=' . time() }}" alt="Ilustrasi SAKTI UPPD SAMSAT Batu Licin"
+                    <img src="{{ asset('assets/img/login_samsat_keliling.png') . '?v=' . time() }}" alt="Ilustrasi SAKTI UPPD SAMSAT Batulicin"
                         class="img-illustration">
                 </div>
             </div>

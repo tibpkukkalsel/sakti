@@ -12,9 +12,9 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#2A8BF2">
-    <title>SAKTI UPPD SAMSAT Batu Licin</title>
-    <meta name="description" content="SAKTI UPPD SAMSAT Batu Licin">
-    <meta name="keywords" content="ABSENSI DAN PENERIMAAN PKB SAMSAT BATU LICIN" />
+    <title>SAKTI UPPD SAMSAT Batulicin</title>
+    <meta name="description" content="SAKTI UPPD SAMSAT Batulicin">
+    <meta name="keywords" content="ABSENSI DAN PENERIMAAN PKB SAMSAT BATULICIN" />
     <link rel="icon" type="image/png" href="{{ asset('Logo Sakti.png') }}?v=2" sizes="32x32"
         onerror="this.src='{{ asset('assets/img/favicon.png') }}'">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('Logo Sakti.png') }}?v=2">

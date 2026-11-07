@@ -9,7 +9,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#2A8BF2">
     <title>SAKTI - Sign In</title>
-    <meta name="description" content="Aplikasi Presensi &amp; Rekap Penerimaan PKB UPPD SAMSAT Batu Licin">
+    <meta name="description" content="Aplikasi Presensi &amp; Rekap Penerimaan PKB UPPD SAMSAT Batulicin">
     <link rel="icon" type="image/png" href="{{ asset('Logo Sakti.png') }}?v=2" sizes="32x32">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('Logo Sakti.png') }}?v=2">
     <link rel="manifest" href="{{ asset('manifest.json') }}">
@@ -39,14 +39,14 @@
             <div class="side-content">
                 <h2 class="side-title">SAKTI</h2>
                 <p class="side-desc">
-                    Selamat datang di Sistem Absensi &amp; Rekap Penerimaan PKB UPPD SAMSAT Batu Licin. Silakan masuk menggunakan Username Layanan Anda.
+                    Selamat datang di Sistem Absensi &amp; Rekap Penerimaan PKB UPPD SAMSAT Batulicin. Silakan masuk menggunakan Username Layanan Anda.
 
                 </p>
             </div>
 
             <!-- Ilustrasi Layanan Mobil Samsat Keliling -->
             <div class="side-illustration">
-                <img src="{{ asset('assets/img/login_samsat_keliling.png') . '?v=' . time() }}" alt="Ilustrasi SAKTI UPPD SAMSAT Batu Licin"
+                <img src="{{ asset('assets/img/login_samsat_keliling.png') . '?v=' . time() }}" alt="Ilustrasi SAKTI UPPD SAMSAT Batulicin"
                     class="img-illustration">
             </div>
         </div>
@@ -122,7 +122,7 @@
                             <span>Ingat saya</span>
                         </label>
                         <a href="javascript:void(0)" class="forgot-link"
-                            onclick="alert('Silahkan hubungi administrator UPPD SAMSAT Batu Licin untuk reset password.')">Forgot
+                            onclick="alert('Silahkan hubungi administrator UPPD SAMSAT Batulicin untuk reset password.')">Forgot
                             Password?</a>
                     </div>
 
@@ -134,7 +134,7 @@
                 </form>
 
                 <div class="form-footer">
-                    UPPD SAMSAT Batu Licin
+                    UPPD SAMSAT Batulicin
                 </div>
 
             </div>
@@ -152,13 +152,13 @@
             <div class="mobile-info-wrap">
                 <h3 class="mobile-info-title">SAKTI</h3>
                 <p class="mobile-info-desc">
-                    Aplikasi Presensi &amp; Rekap Penerimaan PKB<br> UPPD SAMSAT Batu Licin
+                    Aplikasi Presensi &amp; Rekap Penerimaan PKB<br> UPPD SAMSAT Batulicin
                 </p>
 
                 <!-- Ilustrasi Layanan Mobil Samsat Keliling Mobile -->
                 <div class="mobile-illustration">
                     <img src="{{ asset('assets/img/login_samsat_keliling.png') . '?v=' . time() }}"
-                        alt="Ilustrasi SAKTI UPPD SAMSAT Batu Licin" class="img-illustration">
+                        alt="Ilustrasi SAKTI UPPD SAMSAT Batulicin" class="img-illustration">
                 </div>
             </div>
         </div>

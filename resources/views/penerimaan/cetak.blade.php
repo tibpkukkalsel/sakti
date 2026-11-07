@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rekap Penerimaan PKB - UPPD SAMSAT Batu Licin</title>
+    <title>Rekap Penerimaan PKB - UPPD SAMSAT Batulicin</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -118,7 +118,7 @@
                 <td style="text-align: center; vertical-align: middle;">
                     <h3>PEMERINTAH PROVINSI KALIMANTAN SELATAN</h3>
                     <h3>BADAN PENDAPATAN DAERAH</h3>
-                    <h2>UPPD SAMSAT BATU LICIN</h2>
+                    <h2>UPPD SAMSAT BATULICIN</h2>
                 </td>
             </tr>
         </table>
@@ -191,8 +191,8 @@
     </table>
 
     <div class="ttd-box">
-        <p>Batu Licin, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</p>
-        <p style="margin-bottom: 60px;">KEPALA UPPD SAMSAT BATU LICIN</p>
+        <p>Batulicin, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</p>
+        <p style="margin-bottom: 60px;">KEPALA UPPD SAMSAT BATULICIN</p>
         <p class="fw-bold" style="text-decoration: underline; margin-bottom: 2px;">( .................................................... )</p>
         <p style="margin: 0;">NIP. ....................................................</p>
     </div>

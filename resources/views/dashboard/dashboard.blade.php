@@ -264,7 +264,7 @@
             <img src="{{ asset('assets/img/Logo Provinsi Kalimantan Selatan.png') }}" alt="Logo Provinsi Kalimantan Selatan"
                 class="instansi-logo" onerror="this.src='{{ asset('Logo Sakti.png') }}'">
             <div class="instansi-text">
-                UPPD SAMSAT Batu Licin
+                UPPD SAMSAT Batulicin
             </div>
         </div>
         <div id="user-detail">
@@ -287,7 +287,7 @@
                 </h3>
                 <span style="font-size: 11px; color: rgba(255, 255, 255, 0.95); display: block; margin-top: 2px;">
                     <ion-icon name="location" style="vertical-align: -1px; color: #fde047;"></ion-icon>
-                    {{ $cabang ? $cabang->nama_cabang : 'UPPD SAMSAT Batu Licin' }}
+                    {{ $cabang ? $cabang->nama_cabang : 'UPPD SAMSAT Batulicin' }}
                     @if ($jadwalHariIni && !empty($jadwalHariIni->nama_jam_kerja))
                         &bull; <ion-icon name="time-outline" style="vertical-align: -1px; color: #fde047;"></ion-icon> {{ substr($jadwalHariIni->jam_masuk, 0, 5) }} - {{ substr($jadwalHariIni->jam_pulang, 0, 5) }}
                     @endif
