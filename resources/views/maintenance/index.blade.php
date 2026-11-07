@@ -9,195 +9,164 @@
             </a>
         </div>
         <div class="pageTitle">Maintenance Layanan</div>
-        <div class="right">
-            <a href="/maintenance/create" class="headerButton text-light">
-                <ion-icon name="add-circle-outline" style="font-size: 26px;"></ion-icon>
-            </a>
-        </div>
+        <div class="right"></div>
     </div>
     <!-- * App Header -->
 @endsection
 
 @section('content')
-    <style>
-        body {
-            background-color: #f8fafc !important;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
-        }
-
-        #appCapsule {
-            padding-top: 65px !important;
-            padding-bottom: 95px !important;
-        }
-
-        .maintenance-card {
-            background: #ffffff;
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 12px;
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-            position: relative;
-        }
-
-        .maintenance-card.active-now {
-            border-left: 5px solid #f59e0b;
-        }
-
-        .maintenance-card.upcoming {
-            border-left: 5px solid #3b82f6;
-        }
-
-        .maintenance-card.finished {
-            border-left: 5px solid #94a3b8;
-        }
-    </style>
-
-    <div class="section pt-1 px-3">
+    <div style="padding-top: 65px; padding-bottom: 75px;">
         @if (Session::get('success'))
-            <div class="alert alert-success mt-2" style="border-radius: 12px;">
-                <div class="d-flex align-items-center gap-2">
-                    <ion-icon name="checkmark-circle-outline" style="font-size: 22px;"></ion-icon>
-                    <span>{{ Session::get('success') }}</span>
-                </div>
+            <div class="alert alert-success mx-3 my-2">
+                {{ Session::get('success') }}
             </div>
         @endif
 
         @if (Session::get('error'))
-            <div class="alert alert-danger mt-2" style="border-radius: 12px;">
-                <div class="d-flex align-items-center gap-2">
-                    <ion-icon name="alert-circle-outline" style="font-size: 22px;"></ion-icon>
-                    <span>{{ Session::get('error') }}</span>
-                </div>
+            <div class="alert alert-danger mx-3 my-2">
+                {{ Session::get('error') }}
             </div>
         @endif
 
         @if (Session::get('warning'))
-            <div class="alert alert-warning mt-2" style="border-radius: 12px;">
-                <div class="d-flex align-items-center gap-2">
-                    <ion-icon name="alert-circle-outline" style="font-size: 22px;"></ion-icon>
-                    <span>{{ Session::get('warning') }}</span>
-                </div>
+            <div class="alert alert-warning mx-3 my-2">
+                {{ Session::get('warning') }}
             </div>
         @endif
 
-        <!-- Card Status Hari Ini -->
-        @if ($maintenanceHariIni)
-            <div class="card mb-3" style="border-radius: 16px; border: 1.5px solid #f59e0b; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: #fff; box-shadow: 0 6px 18px rgba(217, 119, 6, 0.25);">
-                <div class="card-body p-3">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="badge bg-white text-warning fw-bold px-2 py-1" style="border-radius: 8px;">
-                            <ion-icon name="construct" class="me-1"></ion-icon> STATUS HARI INI: OFF / MAINTENANCE
-                        </span>
-                        <span style="font-size: 11px; opacity: 0.9;">{{ $user->nama_layanan }}</span>
-                    </div>
-                    <h4 style="font-size: 15px; font-weight: 700; margin-bottom: 4px; color: #fff;">
-                        {{ $maintenanceHariIni->keterangan ?: 'Pemeliharaan / Perbaikan Unit Layanan' }}
-                    </h4>
-                    <div style="font-size: 12px; opacity: 0.95;">
-                        <ion-icon name="calendar-outline" class="me-1"></ion-icon>
-                        {{ date('d M Y', strtotime($maintenanceHariIni->tgl_izin_dari)) }} s/d {{ date('d M Y', strtotime($maintenanceHariIni->tgl_izin_sampai)) }}
-                    </div>
-                </div>
+        <!-- 1. Status Maintenance Hari Ini (Pembatas Biasa) -->
+        <div class="bg-white border-bottom px-3 py-3 mb-2">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="text-muted small fw-bold text-uppercase">Status Hari Ini ({{ \Carbon\Carbon::now()->translatedFormat('l, d F Y') }})</span>
+                @if ($maintenanceHariIni)
+                    <span class="badge bg-warning text-dark" style="font-size: 11px;">Unit OFF (Maintenance)</span>
+                @else
+                    <span class="badge bg-success" style="font-size: 11px;">Operasional Normal</span>
+                @endif
             </div>
-        @else
-            <div class="card mb-3" style="border-radius: 16px; border: 1px solid #bbf7d0; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #fff; box-shadow: 0 6px 18px rgba(16, 185, 129, 0.2);">
-                <div class="card-body p-3">
-                    <div class="d-flex justify-content-between align-items-center mb-1">
-                        <span class="badge bg-white text-success fw-bold px-2 py-1" style="border-radius: 8px;">
-                            <ion-icon name="checkmark-circle" class="me-1"></ion-icon> OPERASIONAL NORMAL (ONLINE)
-                        </span>
-                        <span style="font-size: 11px; opacity: 0.9;">{{ $user->nama_layanan }}</span>
-                    </div>
-                    <div style="font-size: 13px; font-weight: 600; margin-top: 6px; color: #fff;">
-                        Unit layanan aktif bertugas dan siap melayani presensi hari ini.
-                    </div>
-                </div>
-            </div>
-        @endif
 
-        <!-- Tombol Tambah Maintenance -->
-        <div class="mb-3">
-            <a href="/maintenance/create" class="btn btn-warning btn-block text-dark fw-bold d-flex align-items-center justify-content-center" style="border-radius: 12px; padding: 12px; font-size: 14px; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);">
-                <ion-icon name="add-circle-outline" style="font-size: 20px; margin-right: 6px;"></ion-icon>
-                + Buat Jadwal Maintenance (Unit OFF)
-            </a>
-        </div>
-
-        <!-- Header Riwayat -->
-        <div class="d-flex justify-content-between align-items-center mb-2 px-1">
-            <h4 class="mb-0 fw-bold" style="font-size: 14px; color: #334155;">Riwayat Status Maintenance</h4>
-            <span class="badge bg-secondary text-white" style="border-radius: 6px; font-size: 11px;">{{ $riwayat->total() }} Catatan</span>
-        </div>
-
-        <!-- Daftar Riwayat -->
-        @forelse ($riwayat as $r)
-            @php
-                $tglDari = $r->tgl_izin_dari;
-                $tglSampai = $r->tgl_izin_sampai;
-                $jmlHari = \Carbon\Carbon::parse($tglDari)->diffInDays(\Carbon\Carbon::parse($tglSampai)) + 1;
-
-                if ($hariini >= $tglDari && $hariini <= $tglSampai) {
-                    $statusBadge = 'bg-warning text-dark';
-                    $statusLabel = 'Sedang Berjalan (OFF)';
-                    $cardClass = 'active-now';
-                } elseif ($hariini < $tglDari) {
-                    $statusBadge = 'bg-primary text-white';
-                    $statusLabel = 'Terjadwal (Akan Datang)';
-                    $cardClass = 'upcoming';
-                } else {
-                    $statusBadge = 'bg-secondary text-white';
-                    $statusLabel = 'Selesai';
-                    $cardClass = 'finished';
-                }
-            @endphp
-            <div class="maintenance-card {{ $cardClass }}">
-                <div class="d-flex justify-content-between align-items-start mb-2">
+            @if ($maintenanceHariIni)
+                <div class="d-flex justify-content-between align-items-center mt-2">
                     <div>
-                        <span class="badge {{ $statusBadge }} px-2 py-1 mb-1" style="border-radius: 6px; font-size: 11px; font-weight: 600;">
-                            {{ $statusLabel }}
-                        </span>
-                        <div style="font-size: 14px; font-weight: 700; color: #1e293b;">
-                            {{ date('d/m/Y', strtotime($tglDari)) }}
-                            @if ($tglDari != $tglSampai)
-                                - {{ date('d/m/Y', strtotime($tglSampai)) }}
+                        <div style="font-size: 17px; font-weight: 700; color: #1e293b;">
+                            {{ $maintenanceHariIni->keterangan ?: 'Pemeliharaan / Perbaikan Unit' }}
+                        </div>
+                        <div class="text-muted small mt-1">
+                            <ion-icon name="calendar-outline" style="vertical-align: -1px;"></ion-icon>
+                            {{ \Carbon\Carbon::parse($maintenanceHariIni->tgl_izin_dari)->translatedFormat('d F Y') }}
+                            @if ($maintenanceHariIni->tgl_izin_dari != $maintenanceHariIni->tgl_izin_sampai)
+                                s/d {{ \Carbon\Carbon::parse($maintenanceHariIni->tgl_izin_sampai)->translatedFormat('d F Y') }}
                             @endif
                         </div>
                     </div>
-                    <div class="d-flex align-items-center gap-1">
-                        <span class="badge bg-light text-muted border px-2 py-1" style="font-size: 11px;">
-                            {{ $jmlHari }} Hari
-                        </span>
-                        <form action="/maintenance/{{ $r->kode_izin }}/delete" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin membatalkan/menghapus jadwal maintenance ini?')" class="m-0 ms-1">
-                            @csrf
-                            <button type="submit" class="btn btn-sm btn-outline-danger py-1 px-2" style="border-radius: 8px;" title="Batalkan Maintenance">
-                                <ion-icon name="trash-outline"></ion-icon>
-                            </button>
-                        </form>
+                    <div class="dropdown">
+                        <a href="javascript:;" class="text-secondary d-inline-flex align-items-center justify-content-center" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width: 32px; height: 32px; text-decoration: none;">
+                            <ion-icon name="ellipsis-vertical" style="font-size: 20px;"></ion-icon>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right shadow-sm" style="min-width: 120px; border-radius: 8px; border: 1px solid #e2e8f0; padding: 4px 0; z-index: 1050;">
+                            <form action="/maintenance/{{ $maintenanceHariIni->kode_izin }}/delete" method="POST" onsubmit="return confirm('Hapus/batalkan jadwal maintenance ini?')" class="m-0">
+                                @csrf
+                                <button type="submit" class="dropdown-item text-danger" style="padding: 8px 16px; font-size: 13px; font-weight: 500; border: none; background: transparent; width: 100%; text-align: left; cursor: pointer;">
+                                    Hapus
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
-
-                <div class="text-secondary" style="font-size: 13px; line-height: 1.4;">
-                    <strong class="text-dark">Alasan/Kendala:</strong> {{ $r->keterangan }}
+                <div class="mt-3">
+                    <a href="/maintenance/create" class="btn btn-primary btn-sm btn-block">
+                        <ion-icon name="add-circle-outline"></ion-icon> Input Maintenance Layanan
+                    </a>
                 </div>
-                <div class="d-flex justify-content-between align-items-center mt-2 pt-2 border-top" style="font-size: 11px; color: #94a3b8;">
-                    <span>Kode: <strong>{{ $r->kode_izin }}</strong></span>
-                    <span>Status: Disetujui Otomatis</span>
+            @else
+                <div class="text-muted small mt-1 mb-2">
+                    Unit layanan siap beroperasi normal. Ajukan status maintenance jika unit sedang perbaikan atau servis teknis.
                 </div>
-            </div>
-        @empty
-            <div class="card text-center p-4 border-0 shadow-sm" style="border-radius: 16px; background: #ffffff;">
-                <div class="text-muted mb-2">
-                    <ion-icon name="construct-outline" style="font-size: 48px; color: #cbd5e1;"></ion-icon>
-                </div>
-                <h5 class="fw-bold text-dark mb-1" style="font-size: 15px;">Belum Ada Catatan Maintenance</h5>
-                <p class="text-muted small mb-0">Semua catatan status pemeliharaan / perbaikan unit layanan akan ditampilkan di sini.</p>
-            </div>
-        @endforelse
-
-        <div class="mt-3">
-            {{ $riwayat->links('vendor.pagination.bootstrap-5') }}
+                <a href="/maintenance/create" class="btn btn-primary btn-sm btn-block">
+                    <ion-icon name="add-circle-outline"></ion-icon> Input Maintenance Layanan
+                </a>
+            @endif
         </div>
+
+        <!-- 2. Header Riwayat -->
+        <div class="d-flex justify-content-between align-items-center px-3 mt-3 mb-2">
+            <span class="text-muted small fw-bold text-uppercase">Riwayat Status Maintenance</span>
+            <span class="text-muted small">{{ $riwayat->total() }} Catatan</span>
+        </div>
+
+        <!-- 3. Daftar Riwayat Dengan Pembatas Biasa (Tanpa Card) -->
+        <div class="bg-white border-top border-bottom">
+            @forelse ($riwayat as $r)
+                @php
+                    $tglDari = $r->tgl_izin_dari;
+                    $tglSampai = $r->tgl_izin_sampai;
+                    $jmlHari = \Carbon\Carbon::parse($tglDari)->diffInDays(\Carbon\Carbon::parse($tglSampai)) + 1;
+
+                    if ($hariini >= $tglDari && $hariini <= $tglSampai) {
+                        $badgeClass = 'bg-warning text-dark';
+                        $statusText = 'Sedang Berjalan';
+                    } elseif ($hariini < $tglDari) {
+                        $badgeClass = 'bg-primary';
+                        $statusText = 'Akan Datang';
+                    } else {
+                        $badgeClass = 'bg-secondary';
+                        $statusText = 'Selesai';
+                    }
+                @endphp
+                <div class="px-3 py-3 border-bottom">
+                    <div class="d-flex justify-content-between align-items-start mb-1">
+                        <div>
+                            <div class="d-flex align-items-center gap-1 mb-1">
+                                <span class="badge {{ $badgeClass }}" style="font-size: 11px;">
+                                    {{ $statusText }}
+                                </span>
+                                <span class="badge bg-light text-muted border" style="font-size: 11px;">
+                                    {{ $jmlHari }} Hari
+                                </span>
+                            </div>
+                            <strong class="text-dark" style="font-size: 14px;">
+                                {{ \Carbon\Carbon::parse($tglDari)->translatedFormat('d F Y') }}
+                                @if ($tglDari != $tglSampai)
+                                    - {{ \Carbon\Carbon::parse($tglSampai)->translatedFormat('d F Y') }}
+                                @endif
+                            </strong>
+                        </div>
+                        <div class="dropdown">
+                            <a href="javascript:;" class="text-secondary d-inline-flex align-items-center justify-content-center" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width: 32px; height: 32px; text-decoration: none;">
+                                <ion-icon name="ellipsis-vertical" style="font-size: 20px;"></ion-icon>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right shadow-sm" style="min-width: 120px; border-radius: 8px; border: 1px solid #e2e8f0; padding: 4px 0; z-index: 1050;">
+                                <form action="/maintenance/{{ $r->kode_izin }}/delete" method="POST" onsubmit="return confirm('Hapus/batalkan jadwal maintenance ini?')" class="m-0">
+                                    @csrf
+                                    <button type="submit" class="dropdown-item text-danger" style="padding: 8px 16px; font-size: 13px; font-weight: 500; border: none; background: transparent; width: 100%; text-align: left; cursor: pointer;">
+                                        Hapus
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-secondary small mt-1">
+                        <strong class="text-dark">Alasan:</strong> {{ $r->keterangan }}
+                    </div>
+
+                    <div class="d-flex justify-content-between text-muted small mt-2 pt-1 border-top" style="font-size: 11px;">
+                        <span>Kode: <strong>{{ $r->kode_izin }}</strong></span>
+                        <span>Unit: <strong>{{ $user->nama_layanan }}</strong></span>
+                    </div>
+                </div>
+            @empty
+                <div class="p-4 text-center text-muted small">
+                    <ion-icon name="construct-outline" style="font-size: 40px; color: #cbd5e1; display: block; margin: 0 auto 8px;"></ion-icon>
+                    Belum ada riwayat maintenance layanan.
+                </div>
+            @endforelse
+        </div>
+
+        @if ($riwayat->hasPages())
+            <div class="p-3">
+                {{ $riwayat->links('vendor.pagination.bootstrap-5') }}
+            </div>
+        @endif
     </div>
 @endsection
-

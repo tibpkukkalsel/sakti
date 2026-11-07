@@ -15,141 +15,101 @@
 @endsection
 
 @section('content')
-    <style>
-        body {
-            background-color: #f8fafc !important;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
-        }
-
-        #appCapsule {
-            padding-top: 65px !important;
-            padding-bottom: 95px !important;
-        }
-
-        .form-card {
-            background: #ffffff;
-            border-radius: 20px;
-            padding: 20px 16px;
-            margin: 14px;
-            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
-            border: 1px solid #f1f5f9;
-        }
-
-        .input-group-custom {
-            margin-bottom: 16px;
-        }
-
-        .input-group-custom label {
-            font-size: 13px;
-            font-weight: 600;
-            color: #334155;
-            margin-bottom: 6px;
-            display: block;
-        }
-
-        .form-control-custom {
-            height: 48px;
-            border-radius: 12px;
-            border: 1.5px solid #e2e8f0;
-            padding: 10px 14px;
-            font-size: 15px;
-            width: 100%;
-            transition: all 0.2s;
-            background-color: #fff;
-            color: #1e293b;
-        }
-
-        .form-control-custom:focus {
-            border-color: #f59e0b;
-            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
-            outline: none;
-        }
-
-        textarea.form-control-custom {
-            height: auto;
-            min-height: 90px;
-            resize: vertical;
-        }
-    </style>
-
-    <div class="section pt-1">
-        @if (Session::get('error'))
-            <div class="alert alert-danger mx-3 mt-2" style="border-radius: 12px;">
-                <div class="d-flex align-items-center gap-2">
-                    <ion-icon name="alert-circle-outline" style="font-size: 22px;"></ion-icon>
-                    <span>{{ Session::get('error') }}</span>
+    <div class="row" style="margin-top: 70px; margin-bottom: 70px;">
+        <div class="col">
+            @if (Session::get('success'))
+                <div class="alert alert-success mb-2">
+                    {{ Session::get('success') }}
                 </div>
-            </div>
-        @endif
+            @endif
 
-        @if ($errors->any())
-            <div class="alert alert-danger mx-3 mt-2" style="border-radius: 12px;">
-                <ul class="mb-0 ps-3">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-
-        <div class="form-card">
-            <!-- Informasi Panduan -->
-            <div class="p-3 mb-3" style="background: #fffbeb; border: 1px solid #fef3c7; border-left: 4px solid #f59e0b; border-radius: 12px;">
-                <div class="d-flex align-items-start gap-2">
-                    <ion-icon name="information-circle" style="font-size: 24px; color: #d97706; flex-shrink: 0; margin-top: 1px;"></ion-icon>
-                    <div style="font-size: 12px; color: #78350f; line-height: 1.4;">
-                        <strong>Catatan Unit OFF / Pemeliharaan:</strong><br>
-                        Gunakan form ini jika unit layanan sedang dalam perawatan/perbaikan teknis. Status presensi layanan otomatis tercatat sebagai <strong>Maintenance</strong> pada rentang tanggal yang dipilih.
-                    </div>
+            @if (Session::get('error'))
+                <div class="alert alert-danger mb-2">
+                    {{ Session::get('error') }}
                 </div>
-            </div>
+            @endif
 
-            <form action="/maintenance/store" method="POST" id="formMaintenance" autocomplete="off">
+            @if (isset($errors) && $errors->any())
+                <div class="alert alert-danger mb-2">
+                    <ul class="mb-0 ps-3">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            <form action="/maintenance/store" method="POST" id="formMaintenance">
                 @csrf
 
-                <!-- Akun Layanan (Readonly) -->
-                <div class="input-group-custom">
-                    <label>Akun Layanan</label>
-                    <div class="form-control-custom d-flex align-items-center" style="background-color: #f1f5f9; font-weight: 600; color: #334155;">
-                        <ion-icon name="car-sport-outline" class="me-2" style="font-size: 20px; color: #2563eb;"></ion-icon>
-                        {{ $user->nama_layanan }}
+                <!-- Informasi Panduan -->
+                <div class="p-3 my-2 bg-white border rounded">
+                    <div class="text-muted small fw-bold text-uppercase mb-1">
+                        <ion-icon name="information-circle-outline" style="vertical-align: -2px; font-size: 16px;"></ion-icon>
+                        Catatan Unit OFF / Pemeliharaan
+                    </div>
+                    <div class="text-muted small">
+                        Form ini digunakan jika unit layanan sedang dalam perawatan atau perbaikan teknis. Status presensi layanan otomatis tercatat sebagai <strong>Maintenance (Unit OFF)</strong> pada rentang tanggal yang dipilih.
+                    </div>
+                </div>
+
+                <!-- Akun Layanan -->
+                <div class="form-group boxed">
+                    <div class="input-wrapper">
+                        <label class="label">Akun Layanan</label>
+                        <input type="text" class="form-control" value="{{ $user->nama_layanan }}" readonly style="background-color: #f8fafc; font-weight: 600;">
+                        <i class="clear-input">
+                            <ion-icon name="close-circle"></ion-icon>
+                        </i>
                     </div>
                 </div>
 
                 <!-- Rentang Tanggal -->
                 <div class="row">
                     <div class="col-6">
-                        <div class="input-group-custom">
-                            <label>Tanggal Mulai <span class="text-danger">*</span></label>
-                            <input type="date" name="tgl_izin_dari" id="tgl_izin_dari" class="form-control-custom"
-                                value="{{ old('tgl_izin_dari', $hariini) }}" required>
+                        <div class="form-group boxed">
+                            <div class="input-wrapper">
+                                <label class="label">Tanggal Mulai</label>
+                                <input type="date" class="form-control" name="tgl_izin_dari" id="tgl_izin_dari"
+                                    value="{{ old('tgl_izin_dari', $hariini) }}" required>
+                                <i class="clear-input">
+                                    <ion-icon name="close-circle"></ion-icon>
+                                </i>
+                            </div>
                         </div>
                     </div>
                     <div class="col-6">
-                        <div class="input-group-custom">
-                            <label>Tanggal Selesai <span class="text-danger">*</span></label>
-                            <input type="date" name="tgl_izin_sampai" id="tgl_izin_sampai" class="form-control-custom"
-                                value="{{ old('tgl_izin_sampai', $hariini) }}" required>
+                        <div class="form-group boxed">
+                            <div class="input-wrapper">
+                                <label class="label">Tanggal Selesai</label>
+                                <input type="date" class="form-control" name="tgl_izin_sampai" id="tgl_izin_sampai"
+                                    value="{{ old('tgl_izin_sampai', $hariini) }}" required>
+                                <i class="clear-input">
+                                    <ion-icon name="close-circle"></ion-icon>
+                                </i>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Keterangan / Alasan -->
-                <div class="input-group-custom">
-                    <label>Keterangan / Alasan Kendala Unit <span class="text-danger">*</span></label>
-                    <textarea name="keterangan" id="keterangan" class="form-control-custom" rows="3" maxlength="255"
-                        placeholder="Contoh: Perbaikan genset keliling, servis armada berkala, kendala jaringan online, perbaikan AC unit, dll."
-                        required>{{ old('keterangan') }}</textarea>
+                <!-- Keterangan Kendala -->
+                <div class="form-group boxed">
+                    <div class="input-wrapper">
+                        <label class="label">Keterangan / Alasan Kendala Unit</label>
+                        <textarea name="keterangan" id="keterangan" rows="3" class="form-control" maxlength="255"
+                            placeholder="Contoh: Perbaikan genset keliling, servis armada berkala, kendala jaringan online, perbaikan AC unit, dll."
+                            required>{{ old('keterangan') }}</textarea>
+                    </div>
                 </div>
 
-                <!-- Tombol Aksi -->
-                <div class="mt-4">
-                    <button type="submit" class="btn btn-warning btn-block text-dark fw-bold" style="border-radius: 12px; padding: 13px; font-size: 15px; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);">
-                        <ion-icon name="construct" class="me-1"></ion-icon> Simpan Status Maintenance (Unit OFF)
-                    </button>
-                    <a href="/maintenance" class="btn btn-light btn-block mt-2 text-muted fw-semibold" style="border-radius: 12px; padding: 12px; font-size: 14px;">
-                        Batal
-                    </a>
+                <!-- Tombol Simpan -->
+                <div class="form-group boxed mt-3">
+                    <div class="input-wrapper">
+                        <button type="submit" class="btn btn-primary btn-block">
+                            <ion-icon name="save-outline"></ion-icon>
+                            Simpan Status Maintenance
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>
@@ -171,4 +131,3 @@
         });
     </script>
 @endsection
-

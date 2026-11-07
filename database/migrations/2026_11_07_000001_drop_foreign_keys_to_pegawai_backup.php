@@ -44,3 +44,4 @@ return new class extends Migration
         // Foreign keys to obsolete pegawai_backup table should not be restored.
     }
 };
+
