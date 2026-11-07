@@ -56,7 +56,7 @@ File ini mencatat pedoman, preferensi, dan kebiasaan arahan USER untuk aplikasi 
   - **Card Status Penerimaan**: Format card putih sudut melengkung 14px dengan ikon kasir hijau, rincian nominal tebal, dan tombol aksi.
   - **Rekap 3 Kolom**: Menggunakan `#rekappresensi` dengan badge angka di pojok kanan atas.
   - **Tab Navigasi**: Menggunakan `.presencetab` dengan class `.nav-tabs style1`.
-  - **Footer / Bottom Navigation**: Menggunakan class native `.appBottomMenu` dengan 5 menu, termasuk tombol tengah melayang besar (`.action-button large`) yang merupakan tombol **Home** (Layanan di sisi kiri).
+  - **Footer / Bottom Navigation**: Menggunakan class native `.appBottomMenu` dengan 5 menu, termasuk tombol tengah melayang besar (`.action-button large`) yang merupakan tombol **Home** (Layanan di sisi kiri). Ikon Home di tengah dipaksa selalu berwarna putih (`#ffffff !important`) agar tidak memudar/menghilang ke background biru saat berada di halaman Dashboard.
 
 ---
 
@@ -67,5 +67,15 @@ File ini mencatat pedoman, preferensi, dan kebiasaan arahan USER untuk aplikasi 
   - Modal tambah & edit user menyediakan input **Jabatan**.
 - Pada Header Dashboard Mobile Monitoring:
   - Menampilkan Nama User dan **Jabatan** (jika belum ada jabatan, tampilkan `UPPD SAMSAT Batulicin`), **TIDAK menampilkan teks role "Role: Monitoring"**.
+
+---
+
+## 7. Halaman Data Layanan (Akun Monitoring)
+- Judul header halaman atas adalah **Data Layanan** (bukan *Data Layanan Keliling*).
+- Pada kartu data layanan:
+  - **TIDAK menampilkan jabatan PIC**.
+  - **TIDAK menampilkan status scan** (*Scan: ON/OFF*).
+  - **TIDAK menggunakan icon pada badge "Siap Layanan"** (hanya teks polos ber-badge hijau *Siap Layanan*).
+  - **TIDAK menggunakan icon user/orang sebelum teks "PIC"**.
 
 

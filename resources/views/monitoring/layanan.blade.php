@@ -8,7 +8,7 @@
                 <ion-icon name="chevron-back-outline"></ion-icon>
             </a>
         </div>
-        <div class="pageTitle">Data Layanan Keliling</div>
+        <div class="pageTitle">Data Layanan</div>
         <div class="right">
             <span class="badge bg-light text-primary font-weight-bold" style="font-size: 11px;">
                 {{ $totalLayanan }} Unit
@@ -87,13 +87,10 @@
                             <span class="badge bg-light text-primary border" style="font-size: 10px;">ID: {{ $item->id }}</span>
                         </div>
                         <div class="text-muted small mt-1">
-                            <ion-icon name="person-circle-outline" style="vertical-align: -1px;"></ion-icon> PIC: <strong>{{ $item->nama_pic ?: '-' }}</strong>
-                            @if (!empty($item->jabatan_pic))
-                                <span class="text-muted">({{ $item->jabatan_pic }})</span>
-                            @endif
+                            PIC: <strong>{{ $item->nama_pic ?: '-' }}</strong>
                         </div>
-                        <div class="text-muted small">
-                            <ion-icon name="navigate-outline" style="vertical-align: -1px; color: #2A8BF2;"></ion-icon> Lokasi: {{ $item->lokasi_default ?: 'UPPD SAMSAT Batulicin' }}
+                        <div class="text-muted small" style="margin-top: 2px;">
+                            <ion-icon name="navigate-outline" style="vertical-align: -2px; color: #2A8BF2; margin-right: 4px;"></ion-icon> Lokasi: {{ $item->lokasi_default ?: 'UPPD SAMSAT Batulicin' }}
                         </div>
                     </div>
                 </div>
@@ -101,9 +98,8 @@
                 <div class="mt-3 pt-2 border-top d-flex align-items-center justify-content-between">
                     <div>
                         <span class="badge bg-success text-white" style="font-size: 10.5px;">
-                            <ion-icon name="checkmark-circle-outline" style="vertical-align: -1px;"></ion-icon> Siap Layanan
+                            Siap Layanan
                         </span>
-                        <span class="text-muted small ms-1">Scan: {{ $item->status_scan == 1 ? 'ON' : 'OFF' }}</span>
                     </div>
 
                     @if (!empty($item->no_hp))
