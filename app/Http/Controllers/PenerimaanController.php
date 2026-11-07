@@ -230,7 +230,7 @@ class PenerimaanController extends Controller
             $query->where('layanan_id', $layanan_id);
         }
 
-        $penerimaan = $query->paginate(20)->withQueryString();
+        $penerimaan = $query->paginate(10)->withQueryString();
 
         // Agregasi total
         $summaryQuery = RekapPenerimaanPkb::whereBetween('tgl_penerimaan', [$tgl_dari, $tgl_sampai]);

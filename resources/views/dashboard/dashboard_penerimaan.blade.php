@@ -236,40 +236,6 @@
         </div>
     </div>
 
-    <!-- Grafik 2: Peringkat Penerimaan Berdasarkan Layanan -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
-                    <div>
-                        <h4 class="card-title fw-bold text-dark mb-0">Peringkat Penerimaan Berdasarkan Layanan</h4><br>
-                        <small class="text-muted">{{ $periodeLabel }}</small>
-                    </div>
-                </div>
-                <div class="card-body">
-                    @if (count($chartTopLabels) > 0)
-                        <div id="chart-top-layanan" style="min-height: 320px;"></div>
-                    @else
-                        <div class="text-center py-5 text-muted">
-                            <svg xmlns="http://www.w3.org/2000/svg"
-                                class="icon icon-tabler icon-tabler-chart-bar-off mb-2 text-secondary" width="48"
-                                height="48" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                <path d="M3 12m0 1a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z">
-                                </path>
-                                <path d="M14 10v10"></path>
-                                <path d="M4 20l16 0"></path>
-                                <path d="M3 3l18 18"></path>
-                            </svg>
-                            <p class="mb-0">Belum ada data penerimaan pada periode yang dipilih.</p>
-                        </div>
-                    @endif
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Data Table (PIC TIDAK DITAMPILKAN sesuai instruksi user) -->
     <div class="row">
         <div class="col-12">
@@ -353,6 +319,82 @@
                 @if ($dataPenerimaan->hasPages())
                     <div class="card-footer bg-white py-2 border-top d-flex align-items-center">
                         {{ $dataPenerimaan->links('vendor.pagination.bootstrap-5') }}
+                    </div>
+                @endif
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabel Rekapitulasi Penerimaan Berdasarkan Lokasi (Urutan dari atas penerimaan terbanyak) -->
+    <div class="row mt-4 mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm border-0" id="cardTablePenerimaanLokasi">
+                <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
+                    <div>
+                        <h4 class="card-title fw-bold text-dark mb-0">Peringkat Penerimaan PKB Berdasarkan Lokasi</h4>
+                        <small class="text-muted">Diurutkan dari total penerimaan terbanyak ({{ $periodeLabel }})</small>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped table-hover align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th style="width: 50px;" class="text-center">No</th>
+                                    <th>Lokasi Pelayanan</th>
+                                    <th style="width: 120px;" class="text-center">Hari Operasi</th>
+                                    <th class="text-end">Realisasi R2</th>
+                                    <th class="text-end">Realisasi R4</th>
+                                    <th class="text-end">Total Penerimaan (Rp)</th>
+                                    <th class="text-center" style="width: 120px;">Total Unit</th>
+                                    <th class="text-center" style="width: 130px;">Notice Dicetak</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($rekapLokasiTabel as $lok)
+                                    <tr>
+                                        <td class="text-center text-muted fw-bold">
+                                            {{ $loop->iteration + $rekapLokasiTabel->firstItem() - 1 }}
+                                        </td>
+                                        <td>
+                                            <strong class="text-primary">{{ $lok->nama_cabang }}</strong>
+                                            <div class="small text-muted font-monospace">Kode: {{ $lok->kode_cabang }} @if($lok->titik_lokasi != '-') &bull; Radius {{ $lok->radius_cabang }}m @endif</div>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="badge bg-light text-dark border">{{ $lok->total_hari }} Hari</span>
+                                        </td>
+                                        <td class="text-end">
+                                            <div class="text-success font-weight-bold">Rp {{ number_format($lok->rp_r2, 0, ',', '.') }}</div>
+                                            <small class="text-muted">{{ number_format($lok->unit_r2, 0, ',', '.') }} unit</small>
+                                        </td>
+                                        <td class="text-end">
+                                            <div class="text-info font-weight-bold">Rp {{ number_format($lok->rp_r4, 0, ',', '.') }}</div>
+                                            <small class="text-muted">{{ number_format($lok->unit_r4, 0, ',', '.') }} unit</small>
+                                        </td>
+                                        <td class="text-end">
+                                            <strong class="text-dark fs-6">Rp {{ number_format($lok->total_rp, 0, ',', '.') }}</strong>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="badge bg-light text-dark border">{{ number_format($lok->total_unit, 0, ',', '.') }} Unit</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="badge bg-warning text-dark border">{{ number_format($lok->total_notice, 0, ',', '.') }} Lembar</span>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="8" class="text-center py-4 text-muted">
+                                            Tidak ada data penerimaan lokasi pada periode yang dipilih.
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                @if ($rekapLokasiTabel->hasPages())
+                    <div class="card-footer bg-white py-2 border-top d-flex align-items-center">
+                        {{ $rekapLokasiTabel->links('vendor.pagination.bootstrap-5') }}
                     </div>
                 @endif
             </div>
@@ -520,79 +562,6 @@
 
                 var chartLayananPerBulan = new ApexCharts(document.querySelector("#chart-layanan-perbulan"), optionsLayananPerBulan);
                 chartLayananPerBulan.render();
-            @endif
-
-            // 2. Inisialisasi Grafik Bar ke Samping (Peringkat Layanan)
-            @if (count($chartTopLabels) > 0)
-                var optionsTop = {
-                    series: [{
-                        name: 'Penerimaan PKB',
-                        data: @json($chartTopValues)
-                    }],
-                    chart: {
-                        type: 'bar',
-                        height: 320,
-                        toolbar: {
-                            show: false
-                        },
-                        fontFamily: 'inherit'
-                    },
-                    plotOptions: {
-                        bar: {
-                            borderRadius: 5,
-                            horizontal: true,
-                            barHeight: '50%',
-                            dataLabels: {
-                                position: 'bottom'
-                            }
-                        }
-                    },
-                    colors: ['#10b981'],
-                    dataLabels: {
-                        enabled: true,
-                        textAnchor: 'start',
-                        formatter: function(val, opt) {
-                            return formatRupiahChart(val);
-                        },
-                        offsetX: 0,
-                        style: {
-                            fontSize: '12px',
-                            fontWeight: 600,
-                            colors: ['#0f172a']
-                        }
-                    },
-                    xaxis: {
-                        categories: @json($chartTopLabels),
-                        labels: {
-                            formatter: function(val) {
-                                if (val >= 1000000000) {
-                                    return (val / 1000000000).toFixed(2) + ' Milyar';
-                                } else if (val >= 1000000) {
-                                    return (val / 1000000).toFixed(1) + ' Juta';
-                                }
-                                return Number(val).toLocaleString('id-ID');
-                            }
-                        }
-                    },
-                    yaxis: {
-                        labels: {
-                            style: {
-                                fontWeight: 600,
-                                fontSize: '13px'
-                            }
-                        }
-                    },
-                    tooltip: {
-                        y: {
-                            formatter: function(val) {
-                                return formatRupiahChart(val);
-                            }
-                        }
-                    }
-                };
-
-                var chartTop = new ApexCharts(document.querySelector("#chart-top-layanan"), optionsTop);
-                chartTop.render();
             @endif
 
             // AJAX Pagination untuk Tabel Rincian Data Penerimaan

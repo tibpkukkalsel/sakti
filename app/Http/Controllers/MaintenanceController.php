@@ -40,7 +40,7 @@ class MaintenanceController extends Controller
             $query->whereYear('tgl_izin_dari', $request->tahun);
         }
 
-        $riwayat = $query->paginate(15);
+        $riwayat = $query->paginate(10);
         $riwayat->appends($request->all());
 
         return view('maintenance.index', compact('user', 'maintenanceHariIni', 'riwayat', 'hariini'));

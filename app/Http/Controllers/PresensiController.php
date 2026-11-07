@@ -2403,7 +2403,7 @@ class PresensiController extends Controller
 
         $query->orderBy('presensi.tgl_presensi', 'desc');
         $query->orderBy('pegawai.nama_lengkap', 'asc');
-        $datapresensi = $query->paginate(15);
+        $datapresensi = $query->paginate(10);
         $datapresensi->appends($request->all());
 
         // Daftar pegawai untuk modal tambah status
@@ -2753,7 +2753,7 @@ class PresensiController extends Controller
         }
 
         $query->orderBy('pengajuan_izin.tgl_izin_dari', 'desc');
-        $maintenance = $query->paginate(15)->withQueryString();
+        $maintenance = $query->paginate(10)->withQueryString();
 
         $daftarLayanan = DB::table('layanan')->orderBy('nama_layanan')->get();
 

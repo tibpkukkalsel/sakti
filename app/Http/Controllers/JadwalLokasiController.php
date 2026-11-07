@@ -56,7 +56,7 @@ class JadwalLokasiController extends Controller
             ->orderBy('jadwal_lokasi_layanan.jenis_jadwal', 'asc') // 'khusus' then 'rutin'
             ->orderBy('jadwal_lokasi_layanan.tanggal', 'desc')
             ->orderByRaw("FIELD(jadwal_lokasi_layanan.hari, 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu')")
-            ->paginate(15);
+            ->paginate(10);
 
         $jadwal->appends($request->all());
 
