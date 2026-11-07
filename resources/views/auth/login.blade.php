@@ -26,6 +26,7 @@
         .role-switcher-wrapper {
             margin-bottom: 20px;
         }
+
         .role-switcher {
             display: flex;
             background: #f1f5f9;
@@ -33,6 +34,7 @@
             padding: 4px;
             border: 1px solid #e2e8f0;
         }
+
         .role-tab {
             flex: 1;
             display: flex;
@@ -48,37 +50,45 @@
             cursor: pointer;
             transition: all 0.25s ease;
         }
+
         .role-tab.active {
             background: #2563eb;
             color: #ffffff;
             box-shadow: 0 4px 12px rgba(37, 99, 235, 0.28);
         }
+
         .role-tab.active svg {
             stroke: #ffffff;
         }
+
         .role-tab#btnRoleMonitoring.active {
             background: linear-gradient(135deg, #1E6FD9 0%, #0c234b 100%) !important;
             color: #ffd700 !important;
             box-shadow: 0 4px 12px rgba(12, 35, 75, 0.35) !important;
         }
+
         .role-tab#btnRoleMonitoring.active svg {
             stroke: #ffd700 !important;
         }
+
         .btn-submit {
             text-transform: none !important;
             font-size: 15px;
             font-weight: 700;
         }
+
         .btn-submit.btn-monitoring {
             background: linear-gradient(135deg, #1E6FD9 0%, #15438C 50%, #0c234b 100%) !important;
             color: #ffd700 !important;
             box-shadow: 0 6px 18px rgba(12, 35, 75, 0.4) !important;
         }
+
         .btn-submit.btn-monitoring:hover {
             background: linear-gradient(135deg, #2563eb 0%, #15438C 50%, #081833 100%) !important;
             box-shadow: 0 8px 22px rgba(12, 35, 75, 0.55) !important;
             color: #ffe066 !important;
         }
+
         .role-badge-hint {
             font-size: 11.5px;
             color: #64748b;
@@ -105,15 +115,16 @@
             <div class="side-content">
                 <h2 class="side-title">SAKTI</h2>
                 <p class="side-desc">
-                    Selamat datang di Sistem Absensi &amp; Rekap Penerimaan PKB UPPD SAMSAT Batulicin. Silakan masuk menggunakan Username Layanan Anda.
+                    Selamat datang di Sistem Absensi &amp; Rekap Penerimaan PKB UPPD SAMSAT Batulicin. Silakan masuk
+                    menggunakan Username Layanan Anda.
 
                 </p>
             </div>
 
             <!-- Ilustrasi Layanan Mobil Samsat Keliling -->
             <div class="side-illustration">
-                <img src="{{ asset('assets/img/login_samsat_keliling.png') . '?v=' . time() }}" alt="Ilustrasi SAKTI UPPD SAMSAT Batulicin"
-                    class="img-illustration">
+                <img src="{{ asset('assets/img/login_samsat_keliling.png') . '?v=' . time() }}"
+                    alt="Ilustrasi SAKTI UPPD SAMSAT Batulicin" class="img-illustration">
             </div>
         </div>
 
@@ -150,19 +161,26 @@
                     <div class="role-switcher-wrapper">
                         <div class="role-switcher">
                             <button type="button" class="role-tab active" id="btnRoleLayanan" data-role="layanan">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" style="margin-right: 6px;">
                                     <path d="M8 6v6"></path>
                                     <path d="M15 6v6"></path>
                                     <path d="M2 12h19.6"></path>
-                                    <path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5c-.3-1-1.2-1.8-2.2-1.8H5.8c-1 0-1.9.7-2.2 1.8l-1.4 5c-.1.4-.2.8-.2 1.2 0 .4.1.8.2 1.2.3 1.1.8 2.8.8 2.8h3"></path>
+                                    <path
+                                        d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5c-.3-1-1.2-1.8-2.2-1.8H5.8c-1 0-1.9.7-2.2 1.8l-1.4 5c-.1.4-.2.8-.2 1.2 0 .4.1.8.2 1.2.3 1.1.8 2.8.8 2.8h3">
+                                    </path>
                                     <circle cx="7" cy="18" r="2"></circle>
                                     <circle cx="17" cy="18" r="2"></circle>
                                 </svg>
                                 <span>Layanan</span>
                             </button>
                             <button type="button" class="role-tab" id="btnRoleMonitoring" data-role="monitoring">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
-                                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" style="margin-right: 6px;">
+                                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2">
+                                    </rect>
                                     <line x1="8" y1="21" x2="16" y2="21"></line>
                                     <line x1="12" y1="17" x2="12" y2="21"></line>
                                     <path d="M7 10l3 3 7-7"></path>
@@ -177,21 +195,23 @@
                     <!-- Input 1: Username Layanan / Email Monitoring -->
                     <div class="input-pill">
                         <div class="input-icon">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                 <circle cx="12" cy="7" r="4"></circle>
                             </svg>
                         </div>
-                        <input type="text" name="username" id="username" class="input-field" placeholder="Username / No. HP"
-                            required autocomplete="username" autofocus>
+                        <input type="text" name="username" id="username" class="input-field"
+                            placeholder="Username / No. HP" required autocomplete="username" autofocus>
                     </div>
 
                     <!-- Input 2: Password -->
                     <div class="input-pill">
                         <div class="input-icon">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
                                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2">
                                 </rect>
                                 <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
@@ -246,7 +266,7 @@
             <div class="mobile-info-wrap">
                 <h3 class="mobile-info-title">SAKTI</h3>
                 <p class="mobile-info-desc">
-                    Aplikasi Presensi &amp; Rekap Penerimaan PKB<br> UPPD SAMSAT Batulicin
+                    Sistem Informasi Presensi <br> dan Rekap Penerimaan PKB<br> UPPD SAMSAT Batulicin
                 </p>
 
                 <!-- Ilustrasi Layanan Mobil Samsat Keliling Mobile -->
@@ -292,8 +312,12 @@
         }
 
         if (btnRoleLayanan && btnRoleMonitoring) {
-            btnRoleLayanan.addEventListener('click', function() { setRole('layanan'); });
-            btnRoleMonitoring.addEventListener('click', function() { setRole('monitoring'); });
+            btnRoleLayanan.addEventListener('click', function() {
+                setRole('layanan');
+            });
+            btnRoleMonitoring.addEventListener('click', function() {
+                setRole('monitoring');
+            });
 
             // Restore last selected role from localStorage if exists
             var lastRole = localStorage.getItem('sakti_selected_role');
@@ -352,8 +376,10 @@
                 });
         }
         // Jika kembali ke halaman login via tombol Back dari memori cache (bfcache)
-        window.addEventListener('pageshow', function (event) {
-            if (event.persisted || (window.performance && window.performance.getEntriesByType && window.performance.getEntriesByType('navigation')[0] && window.performance.getEntriesByType('navigation')[0].type === 'back_forward')) {
+        window.addEventListener('pageshow', function(event) {
+            if (event.persisted || (window.performance && window.performance.getEntriesByType && window.performance
+                    .getEntriesByType('navigation')[0] && window.performance.getEntriesByType('navigation')[0]
+                    .type === 'back_forward')) {
                 window.location.replace('/dashboard');
             }
         });

@@ -23,7 +23,7 @@
         @endif
 
         <div class="text-center mb-3">
-            <img src="{{ asset('assets/img/avatar_layanan.png') }}" alt="Avatar" class="imaged rounded-circle shadow-sm"
+            <img src="{{ asset('assets/img/avatar_monitoring.png') }}?v={{ time() }}" alt="Avatar" class="imaged rounded-circle shadow-sm"
                 style="width: 80px; height: 80px; object-fit: cover; border: 3px solid #e2e8f0; background: #fff;">
             <div class="mt-2 font-weight-bold" style="font-size: 15px; color: #1e293b;">
                 {{ $user->name }}

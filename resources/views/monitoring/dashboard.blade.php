@@ -299,7 +299,7 @@
 
         <div id="user-detail">
             <div class="avatar">
-                <img src="{{ asset('assets/img/avatar_layanan.png') }}" alt="avatar" class="imaged w64 rounded"
+                <img src="{{ asset('assets/img/avatar_monitoring.png') }}?v={{ time() }}" alt="avatar" class="imaged w64 rounded"
                     style="width:64px; height:64px; object-fit:cover;">
             </div>
             <div id="user-info">

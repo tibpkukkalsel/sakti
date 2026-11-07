@@ -23,7 +23,9 @@ File ini mencatat pedoman, preferensi, dan kebiasaan arahan USER untuk aplikasi 
   - **Maintenance**: Biru
   - **Tanpa Keterangan (TK)**: Merah
 - Icon / Logo Sidebar: Gunakan icon **mini bus / mobil pelayanan**.
-- Avatar/Foto Profil Default: Jika akun layanan tidak memiliki foto profil, tampilkan ilustrasi **mobil/bis pelayanan**.
+- Avatar/Foto Profil Default:
+  - **Akun Layanan**: Jika akun layanan tidak memiliki foto profil, tampilkan ilustrasi **mobil/bis pelayanan** (`assets/img/avatar_layanan.png`).
+  - **Akun Monitoring**: Tampilkan vektor user **berpakaian jas hitam** formal (`assets/img/avatar_monitoring.png`).
 
 ---
 
