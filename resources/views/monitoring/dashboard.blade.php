@@ -241,6 +241,39 @@
             text-overflow: ellipsis !important;
             display: block !important;
         }
+        /* Rekap Presensi 3 Kolom Seragam Otomatis */
+        #rekappresensi .row {
+            display: flex;
+            align-items: stretch;
+        }
+        #rekappresensi .col-4 {
+            display: flex;
+        }
+        #rekappresensi .card {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        }
+        #rekappresensi .card-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 12px 4px !important;
+            position: relative;
+        }
+        #rekappresensi .rekap-label {
+            min-height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
     </style>
 
     <!-- Header Section (Identik dengan Akun Layanan) -->
@@ -320,52 +353,55 @@
         </div>
     </div>
 
-    <!-- Rekap Status Armada Hari Ini (Card 3 Kolom di Bawah Menu) -->
+    <!-- Rekap Status Armada Hari Ini (Card 3 Kolom di Bawah Menu - Ukuran Seragam Otomatis) -->
     <div class="section mt-2">
         <div id="rekappresensi">
             <h3 style="font-size: 13.5px; font-weight: 700; color: #1e293b; margin-bottom: 8px;">
                 Rekap Armada Hari Ini (Total: {{ $totalLayanan }} Layanan)
             </h3>
-            <div class="row">
-                <div class="col-4">
-                    <div class="card">
-                        <div class="card-body text-center" style="padding: 14px 6px !important; line-height: 0.9rem;">
+            <div class="row align-items-stretch">
+                <div class="col-4 d-flex">
+                    <div class="card w-100">
+                        <div class="card-body text-center">
                             <span class="badge bg-success"
-                                style="position: absolute; top:4px; right:8px; font-size:0.65rem; z-index:999">
+                                style="position: absolute; top:4px; right:6px; font-size:0.65rem; z-index:999">
                                 {{ $jml_hadir }}
                             </span>
                             <ion-icon name="checkmark-circle-outline" style="font-size: 1.8rem;"
                                 class="text-success mb-1"></ion-icon>
-                            <br>
-                            <span style="font-size: 0.8rem; font-weight: 600;">Hadir</span>
+                            <div class="rekap-label">
+                                <span style="font-size: 0.75rem; font-weight: 600; color: #1e293b;">Hadir</span>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-4">
-                    <div class="card">
-                        <div class="card-body text-center" style="padding: 14px 6px !important; line-height: 0.9rem;">
+                <div class="col-4 d-flex">
+                    <div class="card w-100">
+                        <div class="card-body text-center">
                             <span class="badge bg-warning text-dark"
-                                style="position: absolute; top:4px; right:8px; font-size:0.65rem; z-index:999">
+                                style="position: absolute; top:4px; right:6px; font-size:0.65rem; z-index:999">
                                 {{ $jml_maintenance }}
                             </span>
                             <ion-icon name="construct-outline" style="font-size: 1.8rem;"
                                 class="text-warning mb-1"></ion-icon>
-                            <br>
-                            <span style="font-size: 0.8rem; font-weight: 600;">Maintenance</span>
+                            <div class="rekap-label">
+                                <span style="font-size: 0.75rem; font-weight: 600; color: #1e293b;">Maintenance</span>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-4">
-                    <div class="card">
-                        <div class="card-body text-center" style="padding: 14px 6px !important; line-height: 0.9rem;">
+                <div class="col-4 d-flex">
+                    <div class="card w-100">
+                        <div class="card-body text-center">
                             <span class="badge bg-danger"
-                                style="position: absolute; top:4px; right:8px; font-size:0.65rem; z-index:999">
+                                style="position: absolute; top:4px; right:6px; font-size:0.65rem; z-index:999">
                                 {{ $jml_belum_absen + $jml_libur }}
                             </span>
                             <ion-icon name="help-circle-outline" style="font-size: 1.8rem;"
                                 class="text-danger mb-1"></ion-icon>
-                            <br>
-                            <span style="font-size: 0.72rem; font-weight: 600; display: block; line-height: 1.15; color: #1e293b;">Tanpa Keterangan</span>
+                            <div class="rekap-label">
+                                <span style="font-size: 0.72rem; font-weight: 600; line-height: 1.15; color: #1e293b; text-align: center;">Tanpa Keterangan</span>
+                            </div>
                         </div>
                     </div>
                 </div>
