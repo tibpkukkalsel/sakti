@@ -2743,7 +2743,7 @@ class PresensiController extends Controller
             'layanan_id' => 'required',
             'tgl_izin_dari' => 'required|date',
             'tgl_izin_sampai' => 'required|date|after_or_equal:tgl_izin_dari',
-            'keterangan' => 'required|string',
+            'keterangan' => 'required|string|max:255',
         ]);
 
         $layananId = $request->layanan_id;

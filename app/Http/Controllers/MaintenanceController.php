@@ -68,12 +68,13 @@ class MaintenanceController extends Controller
         $request->validate([
             'tgl_izin_dari' => 'required|date',
             'tgl_izin_sampai' => 'required|date|after_or_equal:tgl_izin_dari',
-            'keterangan' => 'required|string|max:500',
+            'keterangan' => 'required|string|max:255',
         ], [
             'tgl_izin_dari.required' => 'Tanggal mulai maintenance wajib diisi.',
             'tgl_izin_sampai.required' => 'Tanggal selesai maintenance wajib diisi.',
             'tgl_izin_sampai.after_or_equal' => 'Tanggal selesai harus sama atau setelah tanggal mulai.',
             'keterangan.required' => 'Keterangan kendala / alasan maintenance wajib diisi.',
+            'keterangan.max' => 'Keterangan tidak boleh lebih dari 255 karakter.',
         ]);
 
         $tglDari = $request->tgl_izin_dari;

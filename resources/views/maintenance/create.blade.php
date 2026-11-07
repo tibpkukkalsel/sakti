@@ -137,7 +137,7 @@
                 <!-- Keterangan / Alasan -->
                 <div class="input-group-custom">
                     <label>Keterangan / Alasan Kendala Unit <span class="text-danger">*</span></label>
-                    <textarea name="keterangan" id="keterangan" class="form-control-custom" rows="3"
+                    <textarea name="keterangan" id="keterangan" class="form-control-custom" rows="3" maxlength="255"
                         placeholder="Contoh: Perbaikan genset keliling, servis armada berkala, kendala jaringan online, perbaikan AC unit, dll."
                         required>{{ old('keterangan') }}</textarea>
                 </div>
