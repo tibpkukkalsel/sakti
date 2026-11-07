@@ -197,24 +197,24 @@
 
                             if ($status == 'h' || $status == 'tl') {
                                 $jml_hadir += 1;
-                                $color = '#ffffff';
+                                $color = '#198754';
                             } elseif ($status == 'm' || $status == 'x') {
                                 $jml_maintenance += 1;
-                                $color = '#fd7e14';
+                                $color = '#0d6efd';
                             } elseif (!empty($ceklibur) || !$is_harikerja) {
                                 $jml_libur += 1;
-                                $color = '#198754';
+                                $color = '#fd7e14';
                             } else {
                                 $jml_tk += 1;
                                 $color = '#dc3545';
                             }
                     @endphp
-                        <td style="background-color: {{ $color }}; vertical-align: middle;">
+                        <td style="background-color: {{ $color }}; color: #ffffff; vertical-align: middle;">
                             @if ($status == 'h' || $status == 'tl')
-                                <b>{{ $nama_jam_kerja }}</b><br>
-                                <span style="color: green;">{{ $jam_masuk }}-{{ $jam_pulang }}</span><br>
-                                <span style="color: #b76e00;">{{ $jam_in }}-{{ $jam_out }}</span><br>
-                                <span style="color: blue;">Jam: {{ $total_jam_kerja }}</span>
+                                <b style="color: #ffffff;">{{ $nama_jam_kerja }}</b><br>
+                                <span style="color: #ffffff;">{{ $jam_masuk }}-{{ $jam_pulang }}</span><br>
+                                <span style="color: #ffffff;">{{ $jam_in }}-{{ $jam_out }}</span><br>
+                                <span style="color: #ffffff;">Jam: {{ $total_jam_kerja }}</span>
                             @elseif ($status == 'm' || $status == 'x')
                                 <span style="color: white; font-weight: bold;">X</span>
                             @elseif (!empty($ceklibur) || !$is_harikerja)
@@ -226,9 +226,9 @@
                     @php
                         }
                     @endphp
-                    <td class="text-bold" style="vertical-align: middle;">{{ !empty($jml_hadir) ? $jml_hadir : '-' }}</td>
-                    <td class="text-bold" style="vertical-align: middle; color: {{ !empty($jml_maintenance) ? '#fd7e14' : '#000' }};">{{ !empty($jml_maintenance) ? $jml_maintenance : '-' }}</td>
-                    <td class="text-bold" style="vertical-align: middle; color: {{ !empty($jml_libur) ? '#198754' : '#000' }};">{{ !empty($jml_libur) ? $jml_libur : '-' }}</td>
+                    <td class="text-bold" style="vertical-align: middle; color: {{ !empty($jml_hadir) ? '#198754' : '#000' }};">{{ !empty($jml_hadir) ? $jml_hadir : '-' }}</td>
+                    <td class="text-bold" style="vertical-align: middle; color: {{ !empty($jml_maintenance) ? '#0d6efd' : '#000' }};">{{ !empty($jml_maintenance) ? $jml_maintenance : '-' }}</td>
+                    <td class="text-bold" style="vertical-align: middle; color: {{ !empty($jml_libur) ? '#fd7e14' : '#000' }};">{{ !empty($jml_libur) ? $jml_libur : '-' }}</td>
                     <td class="text-bold" style="vertical-align: middle; color: {{ !empty($jml_tk) ? '#dc3545' : '#000' }};">{{ !empty($jml_tk) ? $jml_tk : '-' }}</td>
                 </tr>
             @endforeach

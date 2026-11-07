@@ -159,17 +159,17 @@
 
                             if ($status == 'h' || $status == 'tl') {
                                 $jml_hadir += 1;
-                                $color = '#ffffff';
-                                $text_color = '#000000';
+                                $color = '#198754';
+                                $text_color = '#ffffff';
                                 $text_display = 'H';
                             } elseif ($status == 'm' || $status == 'x') {
                                 $jml_maintenance += 1;
-                                $color = '#fd7e14';
+                                $color = '#0d6efd';
                                 $text_color = '#ffffff';
                                 $text_display = 'X';
                             } elseif (!empty($ceklibur) || !$is_harikerja) {
                                 $jml_libur += 1;
-                                $color = '#198754';
+                                $color = '#fd7e14';
                                 $text_color = '#ffffff';
                                 $text_display = 'L';
                             } else {
@@ -185,9 +185,9 @@
                     @php
                         }
                     @endphp
-                    <td class="text-bold">{{ !empty($jml_hadir) ? $jml_hadir : '-' }}</td>
-                    <td class="text-bold" style="color: {{ !empty($jml_maintenance) ? '#fd7e14' : '#000' }};">{{ !empty($jml_maintenance) ? $jml_maintenance : '-' }}</td>
-                    <td class="text-bold" style="color: {{ !empty($jml_libur) ? '#198754' : '#000' }};">{{ !empty($jml_libur) ? $jml_libur : '-' }}</td>
+                    <td class="text-bold" style="color: {{ !empty($jml_hadir) ? '#198754' : '#000' }};">{{ !empty($jml_hadir) ? $jml_hadir : '-' }}</td>
+                    <td class="text-bold" style="color: {{ !empty($jml_maintenance) ? '#0d6efd' : '#000' }};">{{ !empty($jml_maintenance) ? $jml_maintenance : '-' }}</td>
+                    <td class="text-bold" style="color: {{ !empty($jml_libur) ? '#fd7e14' : '#000' }};">{{ !empty($jml_libur) ? $jml_libur : '-' }}</td>
                     <td class="text-bold" style="color: {{ !empty($jml_tk) ? '#dc3545' : '#000' }};">{{ !empty($jml_tk) ? $jml_tk : '-' }}</td>
                 </tr>
             @empty
