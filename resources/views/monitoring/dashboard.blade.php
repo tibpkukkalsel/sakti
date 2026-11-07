@@ -756,11 +756,10 @@
                             </div>
 
                             <div id="detail-hari-wrapper" class="mt-2 pt-2 border-top" style="display: none;">
-                                <div class="d-flex justify-content-between align-items-center px-1 mb-2">
-                                    <span style="font-size: 12px; font-weight: 700; color: #1e293b;">
-                                        Rincian Hari <span id="label-selected-hari" class="badge" style="background-color: #0c234b; color: #ffd700; font-size: 11px; padding: 4px 8px;"></span>
+                                <div class="px-1 mb-2">
+                                    <span style="font-size: 13px; font-weight: 700; color: #1e293b;">
+                                        Rincian Hari <span id="label-selected-hari" style="color: #2A8BF2; font-weight: 700;"></span>
                                     </span>
-                                    <span style="font-size: 10px; color: #64748b; font-weight: 600;">Urutan Tertinggi</span>
                                 </div>
                                 <div id="detail-hari-list"></div>
                             </div>
@@ -1019,6 +1018,7 @@
                 },
                 legend: {
                     position: 'bottom',
+                    horizontalAlign: 'left',
                     fontSize: '11px',
                     formatter: function(seriesName, opts) {
                         var val = opts.w.globals.series[opts.seriesIndex];
@@ -1034,7 +1034,8 @@
                             height: 310
                         },
                         legend: {
-                            position: 'bottom'
+                            position: 'bottom',
+                            horizontalAlign: 'left'
                         }
                     }
                 }]
@@ -1209,6 +1210,7 @@
                 },
                 legend: {
                     position: 'bottom',
+                    horizontalAlign: 'left',
                     fontSize: '11px',
                     formatter: function(seriesName, opts) {
                         var val = opts.w.globals.series[opts.seriesIndex];
@@ -1224,7 +1226,8 @@
                             height: 310
                         },
                         legend: {
-                            position: 'bottom'
+                            position: 'bottom',
+                            horizontalAlign: 'left'
                         }
                     }
                 }]
