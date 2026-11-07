@@ -380,7 +380,7 @@
                         <div class="mb-3">
                             <label class="form-label required">Pegawai</label>
                             <select name="nik" id="nik" class="form-select" required>
-                                <option value="">-- Pilih Pegawai --</option>
+                                <option value="">Pilih Pegawai</option>
                                 @foreach ($listPegawai as $p)
                                     <option value="{{ $p->nik }}">
                                         {{ $p->nik }} - {{ $p->nama_lengkap }} ({{ $p->jabatan ?? '-' }})

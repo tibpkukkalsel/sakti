@@ -76,7 +76,7 @@
                                     <div class="col-12">
                                         <div class="form-group">
                                             <select name="layanan_id" id="layanan_id" class="form-select">
-                                                <option value="">-- Semua Layanan --</option>
+                                                <option value="">Semua Layanan</option>
                                                 @if (isset($listLayanan))
                                                     @foreach ($listLayanan as $l)
                                                         <option value="{{ $l->id }}">{{ $l->nama_layanan }}</option>

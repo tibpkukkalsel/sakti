@@ -76,8 +76,7 @@
                         <label class="form-label small text-muted mb-1">Filter Akun Layanan:</label>
                         <select name="layanan_id" class="form-select form-select-sm"
                             onchange="$('#formFilterPenerimaan').submit()">
-                            <option value="all" {{ empty($layanan_id) || $layanan_id == 'all' ? 'selected' : '' }}>--
-                                Semua Layanan --</option>
+                            <option value="all" {{ empty($layanan_id) || $layanan_id == 'all' ? 'selected' : '' }}>Semua Layanan</option>
                             @foreach ($daftarLayanan as $l)
                                 <option value="{{ $l->id }}" {{ $layanan_id == $l->id ? 'selected' : '' }}>
                                     {{ $l->nama_layanan }}

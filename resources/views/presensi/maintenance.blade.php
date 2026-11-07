@@ -228,7 +228,7 @@
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Pilih Layanan</label>
                             <select name="layanan_id" id="modal_layanan_id" class="form-select" required>
-                                <option value="">-- Pilih Akun Layanan --</option>
+                                <option value="">Pilih Akun Layanan</option>
                                 @foreach ($daftarLayanan as $l)
                                     <option value="{{ $l->id }}">{{ $l->nama_layanan }} </option>
                                 @endforeach

@@ -35,7 +35,7 @@
                             <div class="col-md-5 col-sm-6 col-12">
                                 <label class="form-label fw-bold small text-muted">Pilih Akun Layanan:</label>
                                 <select name="layanan_id" class="form-select">
-                                    <option value="all">-- Semua Layanan --</option>
+                                    <option value="all">Semua Layanan</option>
                                     @foreach ($allLayanan as $l)
                                         <option value="{{ $l->id }}" {{ $layanan_id == $l->id ? 'selected' : '' }}>
                                             {{ $l->nama_layanan }}
@@ -46,7 +46,7 @@
                             <div class="col-md-4 col-sm-6 col-12">
                                 <label class="form-label fw-bold small text-muted">Filter Hari:</label>
                                 <select name="hari" class="form-select">
-                                    <option value="all">-- Semua Hari (Senin - Minggu) --</option>
+                                    <option value="all">Semua Hari (Senin - Minggu)</option>
                                     @foreach ($listHari as $h)
                                         <option value="{{ $h }}" {{ $hari == $h ? 'selected' : '' }}>
                                             Hari {{ $h }}

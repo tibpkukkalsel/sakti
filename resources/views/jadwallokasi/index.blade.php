@@ -441,7 +441,7 @@
                                     <td class="text-center font-weight-bold">{{ $h }}</td>
                                     <td>
                                         <select name="jadwal[{{ $h }}][kode_cabang]" class="form-select">
-                                            <option value="">-- Lokasi Default / Libur --</option>
+                                            <option value="">Lokasi Default / Libur</option>
                                             @foreach ($listLokasi as $lok)
                                             <option value="{{ $lok->kode_cabang }}">{{ $lok->nama_cabang }}</option>
                                             @endforeach
@@ -449,7 +449,7 @@
                                     </td>
                                     <td>
                                         <select name="jadwal[{{ $h }}][kode_jam_kerja]" class="form-select">
-                                            <option value="">-- Jam Kerja Default --</option>
+                                            <option value="">Jam Kerja Default</option>
                                             @foreach ($listJamKerja as $jk)
                                             <option value="{{ $jk->kode_jam_kerja }}">{{ $jk->nama_jam_kerja }} ({{ substr($jk->jam_masuk, 0, 5) }} - {{ substr($jk->jam_pulang, 0, 5) }})</option>
                                             @endforeach
