@@ -96,17 +96,22 @@
 
     <table class="header-table">
         <tr>
-            <td style="width: 65px; text-align: center; vertical-align: middle;">
-                @if ($has_logo)
-                    <img src="{{ $logo_path }}" width="48" height="65" alt="Logo">
-                @endif
+            <td align="center" style="text-align: center; vertical-align: middle;">
+                <table align="center" style="margin: 0 auto;">
+                    <tr>
+                        <td style="vertical-align: middle; padding-right: 15px;">
+                            @if ($has_logo)
+                                <img src="{{ $logo_path }}" width="48" height="65" alt="Logo">
+                            @endif
+                        </td>
+                        <td class="header-title" style="text-align: center; vertical-align: middle;">
+                            <h2>REKAP PRESENSI UPPD SAMSAT BATU LICIN</h2>
+                            <h3>REKAPITULASI PRESENSI LAYANAN</h3>
+                            <p>BULAN {{ strtoupper($namabulan[(int)$bulan] ?? '') }} TAHUN {{ $tahun }}</p>
+                        </td>
+                    </tr>
+                </table>
             </td>
-            <td class="header-title">
-                <h2>REKAP PRESENSI UPPD SAMSAT BATU LICIN</h2>
-                <h3>REKAPITULASI PRESENSI LAYANAN</h3>
-                <p>BULAN {{ strtoupper($namabulan[(int)$bulan] ?? '') }} TAHUN {{ $tahun }}</p>
-            </td>
-            <td style="width: 65px;"></td>
         </tr>
     </table>
 

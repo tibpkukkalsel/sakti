@@ -102,11 +102,26 @@
         </button>
     </div>
 
+    @php
+        $logo_path = str_replace('\\', '/', public_path('assets/img/Logo Provinsi Kalimantan Selatan.png'));
+        $has_logo = file_exists($logo_path);
+    @endphp
+
     <div class="header-kop">
-        <h3>PEMERINTAH PROVINSI KALIMANTAN SELATAN</h3>
-        <h3>BADAN PENDAPATAN DAERAH</h3>
-        <h2>UPPD SAMSAT BATU LICIN</h2>
-        <p>Jl. Transmigrasi Km. 4,5 Batu Licin, Kabupaten Tanah Bumbu, Kalimantan Selatan</p>
+        <table align="center" style="margin: 0 auto;">
+            <tr>
+                <td style="vertical-align: middle; padding-right: 15px;">
+                    @if ($has_logo)
+                        <img src="{{ asset('assets/img/Logo Provinsi Kalimantan Selatan.png') }}" width="50" height="66" alt="Logo Kalsel">
+                    @endif
+                </td>
+                <td style="text-align: center; vertical-align: middle;">
+                    <h3>PEMERINTAH PROVINSI KALIMANTAN SELATAN</h3>
+                    <h3>BADAN PENDAPATAN DAERAH</h3>
+                    <h2>UPPD SAMSAT BATU LICIN</h2>
+                </td>
+            </tr>
+        </table>
     </div>
 
     <div class="title-doc">

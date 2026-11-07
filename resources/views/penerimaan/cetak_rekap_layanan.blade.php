@@ -154,18 +154,22 @@
     <!-- Kop Surat Resmi -->
     <table class="header-table">
         <tr>
-            <td style="width: 70px; text-align: center; vertical-align: middle;">
-                @if ($has_logo)
-                    <img src="{{ $logo_path }}" width="50" height="66" alt="Logo Kalsel">
-                @endif
+            <td align="center" style="text-align: center; vertical-align: middle;">
+                <table align="center" style="margin: 0 auto;">
+                    <tr>
+                        <td style="vertical-align: middle; padding-right: 15px;">
+                            @if ($has_logo)
+                                <img src="{{ $logo_path }}" width="50" height="66" alt="Logo Kalsel">
+                            @endif
+                        </td>
+                        <td class="header-title" style="text-align: center; vertical-align: middle;">
+                            <h4>Pemerintah Provinsi Kalimantan Selatan</h4>
+                            <h3>Badan Pendapatan Daerah</h3>
+                            <h2>UPPD SAMSAT BATU LICIN</h2>
+                        </td>
+                    </tr>
+                </table>
             </td>
-            <td class="header-title">
-                <h4>Pemerintah Provinsi Kalimantan Selatan</h4>
-                <h3>Badan Pendapatan Daerah</h3>
-                <h2>UPPD SAMSAT BATU LICIN</h2>
-                <p>Jl. Transmigrasi Km. 02, Simpang Empat, Kab. Tanah Bumbu, Kalimantan Selatan 72213</p>
-            </td>
-            <td style="width: 70px;"></td>
         </tr>
     </table>
 
