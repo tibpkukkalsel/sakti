@@ -1067,27 +1067,41 @@
 
             var html = '';
             items.forEach(function(item, idx) {
-                var rankBadge = (idx === 0)
-                    ? '<span style="display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:6px; background:#fef3c7; color:#d97706; font-size:11px; font-weight:700; flex-shrink:0;">' + (idx + 1) + '</span>'
-                    : '<span style="display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:6px; background:#f1f5f9; color:#64748b; font-size:11px; font-weight:700; flex-shrink:0;">' + (idx + 1) + '</span>';
+                var rankColor = (idx === 0) ? '#d97706' : '#64748b';
+                var rankBg = (idx === 0) ? '#fef3c7' : '#f1f5f9';
+                var rankBadge = '<span style="display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; border-radius:8px; background:' + rankBg + '; color:' + rankColor + '; font-size:12px; font-weight:800;">' + (idx + 1) + '</span>';
 
-                html += '<div class="card mb-2" style="border-radius: 10px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.03);">';
-                html += '  <div class="card-body p-2">';
-                html += '    <div class="d-flex justify-content-between align-items-center">';
-                html += '      <div class="d-flex align-items-center me-2" style="min-width: 0; flex: 1;">';
+                html += '<div class="card mb-2" style="border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.03); background: #ffffff;">';
+                html += '  <div class="card-body p-3">';
+                html += '    <div class="d-flex align-items-start">';
+                html += '      <div style="flex-shrink: 0; margin-right: 14px; margin-top: 1px;">';
                 html +=          rankBadge;
-                html += '        <div class="ms-2" style="min-width: 0;">';
-                html += '          <div class="fw-bold text-dark text-truncate" style="font-size: 13px; line-height: 1.3;">' + (item.nama_layanan || '-') + '</div>';
-                html += '          <div class="text-muted text-truncate" style="font-size: 11px; line-height: 1.4; margin-top: 2px;">';
-                html += '            <ion-icon name="location-outline" style="vertical-align: -1.5px; font-size: 12px; color: #2A8BF2;"></ion-icon> ' + (item.nama_lokasi || 'UPPD SAMSAT Batulicin');
+                html += '      </div>';
+                html += '      <div style="flex: 1; min-width: 0;">';
+                html += '        <div class="d-flex justify-content-between align-items-baseline">';
+                html += '          <div class="fw-bold text-dark text-truncate pe-2" style="font-size: 13.5px; line-height: 1.3;">' + (item.nama_layanan || '-') + '</div>';
+                html += '          <div class="fw-bold text-nowrap" style="font-size: 13.5px; color: #10b981; line-height: 1.3;">Rp ' + Number(item.total_rp).toLocaleString('id-ID') + '</div>';
+                html += '        </div>';
+                html += '        <div class="d-flex justify-content-between align-items-center mt-1">';
+                html += '          <div class="text-muted text-truncate pe-2" style="font-size: 11.5px; line-height: 1.4;">';
+                html += '            <ion-icon name="location-outline" style="vertical-align: -1.5px; font-size: 13px; color: #2A8BF2;"></ion-icon> ' + (item.nama_lokasi || 'UPPD SAMSAT Batulicin');
+                html += '          </div>';
+                html += '          <div class="text-muted text-nowrap" style="font-size: 11px; line-height: 1.4;">';
+                html += '            ' + Number(item.total_unit).toLocaleString('id-ID') + ' Unit';
                 html += '          </div>';
                 html += '        </div>';
-                html += '      </div>';
-                html += '      <div class="text-end" style="flex-shrink: 0;">';
-                html += '        <div class="fw-bold" style="font-size: 13px; color: #10b981; line-height: 1.3;">Rp ' + Number(item.total_rp).toLocaleString('id-ID') + '</div>';
-                if (item.total_unit) {
-                    html += '        <div class="text-muted" style="font-size: 11px; line-height: 1.4; margin-top: 2px;">' + Number(item.total_unit).toLocaleString('id-ID') + ' Unit</div>';
-                }
+                html += '        <div class="d-flex align-items-center mt-2 pt-2 border-top" style="border-color: #f1f5f9 !important;">';
+                html += '          <div class="d-flex align-items-center" style="font-size: 11px; background: rgba(37, 99, 235, 0.08); color: #1d4ed8; padding: 4px 9px; border-radius: 6px;">';
+                html += '            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-motorbike me-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="2" stroke="#2563eb" fill="none" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px;">';
+                html += '              <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>';
+                html += '              <path d="M5 16m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>';
+                html += '              <path d="M19 16m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>';
+                html += '              <path d="M7.5 14h5l4 -4H7.5m4 0h4l2 -3h-3"></path>';
+                html += '            </svg>';
+                html += '            <span class="fw-bold" style="color: #1e293b;">Rp ' + Number(item.rp_r2 || 0).toLocaleString('id-ID') + '</span>';
+                html += '            <span class="text-muted ms-1">(' + Number(item.unit_r2 || 0).toLocaleString('id-ID') + ' unit)</span>';
+                html += '          </div>';
+                html += '        </div>';
                 html += '      </div>';
                 html += '    </div>';
                 html += '  </div>';

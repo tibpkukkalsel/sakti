@@ -238,7 +238,11 @@ class MonitoringController extends Controller
                 layanan.nama_layanan,
                 COALESCE(c_lokasi.nama_cabang, 'UPPD SAMSAT Batulicin') as nama_lokasi,
                 COALESCE(SUM(rekap_penerimaan_pkb.total_rp), 0) as total_rp,
-                COALESCE(SUM(rekap_penerimaan_pkb.total_unit), 0) as total_unit
+                COALESCE(SUM(rekap_penerimaan_pkb.total_unit), 0) as total_unit,
+                COALESCE(SUM(rekap_penerimaan_pkb.jumlah_rp_r2), 0) as rp_r2,
+                COALESCE(SUM(rekap_penerimaan_pkb.jumlah_unit_r2), 0) as unit_r2,
+                COALESCE(SUM(rekap_penerimaan_pkb.jumlah_rp_r4), 0) as rp_r4,
+                COALESCE(SUM(rekap_penerimaan_pkb.jumlah_unit_r4), 0) as unit_r4
             ")
             ->groupBy(
                 DB::raw("CASE DAYOFWEEK(rekap_penerimaan_pkb.tgl_penerimaan)
