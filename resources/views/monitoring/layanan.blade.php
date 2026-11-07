@@ -9,11 +9,6 @@
             </a>
         </div>
         <div class="pageTitle">Data Layanan</div>
-        <div class="right">
-            <span class="badge bg-light text-primary font-weight-bold" style="font-size: 11px;">
-                {{ $totalLayanan }} Layanan
-            </span>
-        </div>
     </div>
     <!-- * App Header -->
 @endsection
@@ -83,7 +78,8 @@
                             <img src="{{ Storage::url('uploads/karyawan/' . $item->foto) }}" class="service-avatar"
                                 alt="Foto Layanan" onerror="this.src='{{ asset('assets/img/avatar_layanan.png') }}'">
                         @else
-                            <img src="{{ asset('assets/img/avatar_layanan.png') }}" class="service-avatar" alt="Avatar Layanan">
+                            <img src="{{ asset('assets/img/avatar_layanan.png') }}" class="service-avatar"
+                                alt="Avatar Layanan">
                         @endif
                     </div>
 
@@ -93,9 +89,6 @@
                             <h4 class="mb-0 font-weight-bold text-dark" style="font-size: 15px; letter-spacing: 0.2px;">
                                 {{ $item->nama_layanan }}
                             </h4>
-                            <span class="badge" style="background: #f1f5f9; color: #475569; font-weight: 600; font-size: 10.5px; padding: 2px 7px; border-radius: 6px; border: 1px solid #e2e8f0;">
-                                ID: {{ $item->id }}
-                            </span>
                         </div>
 
                         <!-- Baris PIC -->
@@ -108,7 +101,8 @@
 
                         <!-- Baris Lokasi -->
                         <div class="d-flex align-items-center" style="font-size: 12.5px; line-height: 1.35;">
-                            <ion-icon name="location" style="color: #ef4444; font-size: 14px; margin-right: 3px; flex-shrink: 0;"></ion-icon>
+                            <ion-icon name="location"
+                                style="color: #ef4444; font-size: 14px; margin-right: 3px; flex-shrink: 0;"></ion-icon>
                             <span style="color: #64748b; margin-right: 4px;">Lokasi:</span>
                             <strong style="color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                                 {{ $item->lokasi_hari_ini }}
@@ -118,9 +112,11 @@
                 </div>
 
                 <!-- Footer Kartu: Status Layanan & Tombol WA -->
-                <div class="mt-3 pt-2 d-flex align-items-center justify-content-between" style="border-top: 1px solid #f1f5f9;">
+                <div class="mt-3 pt-2 d-flex align-items-center justify-content-between"
+                    style="border-top: 1px solid #f1f5f9;">
                     <div>
-                        <span style="display: inline-flex; align-items: center; justify-content: center; height: 30px; background: rgba(34, 197, 94, 0.12); color: #15803d; font-size: 11.5px; font-weight: 600; padding: 0 12px; border-radius: 20px; border: 1px solid rgba(34, 197, 94, 0.25);">
+                        <span
+                            style="display: inline-flex; align-items: center; justify-content: center; height: 30px; background: rgba(34, 197, 94, 0.12); color: #15803d; font-size: 11.5px; font-weight: 600; padding: 0 12px; border-radius: 20px; border: 1px solid rgba(34, 197, 94, 0.25);">
                             Siap Layanan
                         </span>
                     </div>

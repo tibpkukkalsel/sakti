@@ -518,34 +518,141 @@ class MonitoringController extends Controller
     }
 
     /**
-     * Data Monitoring Presensi Real-Time
+     * Data Monitoring Presensi Real-Time & Riwayat Presensi
      */
     public function presensi(Request $request)
     {
-        $tanggal = $request->tanggal ?: date('Y-m-d');
+        $periode = $request->periode ?: 'hari_ini';
+        $layanan_id = $request->layanan_id;
+        $namabulan = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
         $namahari_array = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-        $hariNama = $namahari_array[date('w', strtotime($tanggal))];
 
-        $presensiList = DB::table('layanan')
-            ->leftJoin('jadwal_lokasi_layanan as j_khusus', function ($join) use ($tanggal) {
-                $join->on('j_khusus.layanan_id', '=', 'layanan.id')
-                    ->where('j_khusus.jenis_jadwal', '=', 'khusus')
-                    ->where('j_khusus.tanggal', '=', $tanggal)
-                    ->where('j_khusus.status', '=', 1);
-            })
-            ->leftJoin('jadwal_lokasi_layanan as j_rutin', function ($join) use ($hariNama) {
-                $join->on('j_rutin.layanan_id', '=', 'layanan.id')
-                    ->where('j_rutin.jenis_jadwal', '=', 'rutin')
-                    ->where('j_rutin.hari', '=', $hariNama)
-                    ->where('j_rutin.status', '=', 1);
-            })
-            ->leftJoin('cabang', DB::raw("COALESCE(j_khusus.kode_cabang, j_rutin.kode_cabang, layanan.kode_cabang)"), '=', 'cabang.kode_cabang')
-            ->leftJoin('jam_kerja', DB::raw("COALESCE(j_khusus.kode_jam_kerja, j_rutin.kode_jam_kerja)"), '=', 'jam_kerja.kode_jam_kerja')
-            ->leftJoin('presensi', function ($join) use ($tanggal) {
-                $join->on('layanan.id', '=', 'presensi.nik')
-                    ->where('presensi.tgl_presensi', '=', $tanggal);
-            })
-            ->select(
+        $hariini = date('Y-m-d');
+        if ($periode == 'minggu_ini') {
+            $dari_tanggal = Carbon::now()->startOfWeek()->toDateString();
+            $sampai_tanggal = Carbon::now()->endOfWeek()->toDateString();
+            $labelPeriode = 'Minggu Ini (' . date('d M', strtotime($dari_tanggal)) . ' - ' . date('d M Y', strtotime($sampai_tanggal)) . ')';
+        } elseif ($periode == 'bulan_ini') {
+            $dari_tanggal = date('Y-m-01');
+            $sampai_tanggal = date('Y-m-t');
+            $labelPeriode = 'Bulan Ini (' . $namabulan[(int)date('m')] . ' ' . date('Y') . ')';
+        } elseif ($periode == 'tahun_ini') {
+            $dari_tanggal = date('Y-01-01');
+            $sampai_tanggal = date('Y-12-31');
+            $labelPeriode = 'Tahun ' . date('Y');
+        } elseif ($periode == 'custom') {
+            $dari_tanggal = $request->dari_tanggal ?: $hariini;
+            $sampai_tanggal = $request->sampai_tanggal ?: $hariini;
+            if ($dari_tanggal == $sampai_tanggal) {
+                $labelPeriode = date('d/m/Y', strtotime($dari_tanggal));
+            } else {
+                $labelPeriode = date('d/m/Y', strtotime($dari_tanggal)) . ' - ' . date('d/m/Y', strtotime($sampai_tanggal));
+            }
+        } else {
+            // Default: hari_ini
+            $periode = 'hari_ini';
+            $dari_tanggal = $hariini;
+            $sampai_tanggal = $hariini;
+            $labelPeriode = 'Hari Ini (' . date('d M Y') . ')';
+        }
+
+        // Backward compatibility jika ada parameter tanggal
+        if (!$request->has('periode') && $request->has('tanggal')) {
+            $dari_tanggal = $request->tanggal;
+            $sampai_tanggal = $request->tanggal;
+            if ($dari_tanggal == $hariini) {
+                $periode = 'hari_ini';
+                $labelPeriode = 'Hari Ini (' . date('d M Y') . ')';
+            } else {
+                $periode = 'custom';
+                $labelPeriode = date('d/m/Y', strtotime($dari_tanggal));
+            }
+        }
+
+        $layananList = DB::table('layanan')->orderBy('nama_layanan')->get();
+
+        if ($dari_tanggal == $sampai_tanggal) {
+            // Tampilan per hari spesifik (menampilkan seluruh armada layanan)
+            $singleDate = $dari_tanggal;
+            $hariNama = $namahari_array[date('w', strtotime($singleDate))];
+
+            $query = DB::table('layanan')
+                ->leftJoin('jadwal_lokasi_layanan as j_khusus', function ($join) use ($singleDate) {
+                    $join->on('j_khusus.layanan_id', '=', 'layanan.id')
+                        ->where('j_khusus.jenis_jadwal', '=', 'khusus')
+                        ->where('j_khusus.tanggal', '=', $singleDate)
+                        ->where('j_khusus.status', '=', 1);
+                })
+                ->leftJoin('jadwal_lokasi_layanan as j_rutin', function ($join) use ($hariNama) {
+                    $join->on('j_rutin.layanan_id', '=', 'layanan.id')
+                        ->where('j_rutin.jenis_jadwal', '=', 'rutin')
+                        ->where('j_rutin.hari', '=', $hariNama)
+                        ->where('j_rutin.status', '=', 1);
+                })
+                ->leftJoin('cabang', DB::raw("COALESCE(j_khusus.kode_cabang, j_rutin.kode_cabang, layanan.kode_cabang)"), '=', 'cabang.kode_cabang')
+                ->leftJoin('jam_kerja', DB::raw("COALESCE(j_khusus.kode_jam_kerja, j_rutin.kode_jam_kerja)"), '=', 'jam_kerja.kode_jam_kerja')
+                ->leftJoin('presensi', function ($join) use ($singleDate) {
+                    $join->on('layanan.id', '=', 'presensi.nik')
+                        ->where('presensi.tgl_presensi', '=', $singleDate);
+                });
+
+            if (!empty($layanan_id) && $layanan_id != 'all') {
+                $query->where('layanan.id', $layanan_id);
+            }
+
+            $query->select(
+                'layanan.id as layanan_id',
+                'layanan.nama_layanan',
+                'layanan.foto as foto_avatar',
+                'layanan.nama_pic',
+                'layanan.no_hp',
+                DB::raw('COALESCE(cabang.nama_cabang, "UPPD SAMSAT Batulicin") as lokasi_tugas'),
+                'jam_kerja.nama_jam_kerja',
+                'jam_kerja.jam_masuk as jam_standar_masuk',
+                'jam_kerja.jam_pulang as jam_standar_pulang',
+                'presensi.id as presensi_id',
+                DB::raw("COALESCE(presensi.tgl_presensi, '{$singleDate}') as tgl_presensi"),
+                'presensi.jam_in',
+                'presensi.jam_out',
+                'presensi.foto_in',
+                'presensi.foto_out',
+                'presensi.lokasi_in',
+                'presensi.lokasi_out',
+                'presensi.status as status_presensi'
+            )->orderBy('layanan.nama_layanan', 'asc');
+        } else {
+            // Tampilan rentang tanggal (multi-hari: Minggu Ini, Bulan Ini, Tahun Ini, Custom Rentang)
+            $query = DB::table('presensi')
+                ->join('layanan', 'presensi.nik', '=', 'layanan.id')
+                ->whereBetween('presensi.tgl_presensi', [$dari_tanggal, $sampai_tanggal])
+                ->leftJoin('jadwal_lokasi_layanan as j_khusus', function ($join) {
+                    $join->on('j_khusus.layanan_id', '=', 'layanan.id')
+                        ->on('j_khusus.tanggal', '=', 'presensi.tgl_presensi')
+                        ->where('j_khusus.jenis_jadwal', '=', 'khusus')
+                        ->where('j_khusus.status', '=', 1);
+                })
+                ->leftJoin('jadwal_lokasi_layanan as j_rutin', function ($join) {
+                    $join->on('j_rutin.layanan_id', '=', 'layanan.id')
+                        ->whereRaw("j_rutin.hari = CASE DAYOFWEEK(presensi.tgl_presensi)
+                            WHEN 1 THEN 'Minggu'
+                            WHEN 2 THEN 'Senin'
+                            WHEN 3 THEN 'Selasa'
+                            WHEN 4 THEN 'Rabu'
+                            WHEN 5 THEN 'Kamis'
+                            WHEN 6 THEN 'Jumat'
+                            WHEN 7 THEN 'Sabtu'
+                        END")
+                        ->where('j_rutin.jenis_jadwal', '=', 'rutin')
+                        ->where('j_rutin.status', '=', 1);
+                })
+                ->leftJoin('cabang', DB::raw("COALESCE(j_khusus.kode_cabang, j_rutin.kode_cabang, layanan.kode_cabang)"), '=', 'cabang.kode_cabang')
+                ->leftJoin('jam_kerja', DB::raw("COALESCE(j_khusus.kode_jam_kerja, j_rutin.kode_jam_kerja)"), '=', 'jam_kerja.kode_jam_kerja');
+
+            if (!empty($layanan_id) && $layanan_id != 'all') {
+                $query->where('layanan.id', $layanan_id);
+            }
+
+            $query->select(
                 'layanan.id as layanan_id',
                 'layanan.nama_layanan',
                 'layanan.foto as foto_avatar',
@@ -565,16 +672,18 @@ class MonitoringController extends Controller
                 'presensi.lokasi_out',
                 'presensi.status as status_presensi'
             )
-            ->orderBy('layanan.nama_layanan', 'asc')
-            ->get();
+            ->orderBy('presensi.tgl_presensi', 'desc')
+            ->orderBy('presensi.id', 'desc');
+        }
 
-        // Hitung rekap status
+        // Hitung akumulasi status keseluruhan sebelum dipaginasi
+        $allRecords = (clone $query)->get();
         $statHadir = 0;
         $statMaintenance = 0;
         $statLibur = 0;
         $statTK = 0;
 
-        foreach ($presensiList as $item) {
+        foreach ($allRecords as $item) {
             $st = strtolower($item->status_presensi ?? '');
             if ($st == 'h' || $st == 'tl' || (!empty($item->jam_in) && $st != 'm' && $st != 'x' && $st != 'l')) {
                 $statHadir++;
@@ -587,10 +696,17 @@ class MonitoringController extends Controller
             }
         }
 
+        // Paginasi per 10 data
+        $presensiList = $query->paginate(10)->withQueryString();
+
         return view('monitoring.presensi', compact(
             'presensiList',
-            'tanggal',
-            'hariNama',
+            'layananList',
+            'periode',
+            'dari_tanggal',
+            'sampai_tanggal',
+            'labelPeriode',
+            'layanan_id',
             'statHadir',
             'statMaintenance',
             'statLibur',
