@@ -285,7 +285,7 @@
     <!-- Data Table (PIC TIDAK DITAMPILKAN sesuai instruksi user) -->
     <div class="row">
         <div class="col-12">
-            <div class="card shadow-sm border-0">
+            <div class="card shadow-sm border-0" id="cardTablePenerimaan">
                 <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
                     <div>
                         <h4 class="card-title fw-bold text-dark mb-0">Rincian Data Penerimaan Harian PKB</h4>
@@ -611,6 +611,61 @@
                 var chartTop = new ApexCharts(document.querySelector("#chart-top-layanan"), optionsTop);
                 chartTop.render();
             @endif
+
+            // AJAX Pagination untuk Tabel Rincian Data Penerimaan
+            function loadDashboardTable(url, pushState) {
+                if (pushState === undefined) pushState = true;
+                var card = document.getElementById('cardTablePenerimaan');
+                if (!card) return;
+
+                $('#cardTablePenerimaan .table-responsive, #cardTablePenerimaan .card-footer').css({
+                    'opacity': '0.35',
+                    'pointer-events': 'none',
+                    'transition': 'opacity 0.2s ease'
+                });
+
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    success: function(response) {
+                        try {
+                            var parser = new DOMParser();
+                            var doc = parser.parseFromString(response, 'text/html');
+                            var newCard = doc.getElementById('cardTablePenerimaan');
+
+                            if (newCard) {
+                                card.innerHTML = newCard.innerHTML;
+                                if (pushState && window.history && window.history.pushState) {
+                                    window.history.pushState({ path: url }, '', url);
+                                }
+                            } else {
+                                window.location.href = url;
+                            }
+                        } catch (err) {
+                            window.location.href = url;
+                        }
+                    },
+                    error: function() {
+                        window.location.href = url;
+                    }
+                });
+            }
+
+            $(document).on('click', '#cardTablePenerimaan .pagination a', function(e) {
+                e.preventDefault();
+                var url = $(this).attr('href');
+                if (!url || url === '#' || url.indexOf('javascript') === 0) return;
+                loadDashboardTable(url, true);
+            });
+
+            window.addEventListener('popstate', function() {
+                if (window.location.pathname.indexOf('dashboard-penerimaan') !== -1) {
+                    loadDashboardTable(window.location.href, false);
+                }
+            });
         });
     </script>
 @endpush

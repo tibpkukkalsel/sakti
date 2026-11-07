@@ -240,7 +240,7 @@
                                     </form>
                                 </div>
                             </div>
-                            <div class="row mt-2">
+                            <div class="row mt-2" id="containerTablePenerimaan">
                                 <div class="col-12">
                                     <div class="table-responsive">
                                         <table class="table table-bordered table-striped table-hover align-middle">
@@ -672,7 +672,8 @@
                 hitungTotalAdmin();
             });
 
-            $(".edit").click(function() {
+            $(document).on('click', '.edit', function(e) {
+                e.preventDefault();
                 var id = $(this).attr('id_penerimaan');
                 $.ajax({
                     type: 'POST',
@@ -689,7 +690,7 @@
                 });
             });
 
-            $(".delete-confirm").click(function(e) {
+            $(document).on('click', '.delete-confirm', function(e) {
                 var form = $(this).closest('form');
                 e.preventDefault();
                 Swal.fire({
@@ -705,6 +706,65 @@
                         form.submit();
                     }
                 });
+            });
+
+            // AJAX Pagination untuk Tabel Rekap Penerimaan Admin
+            function loadAdminTable(url, pushState) {
+                if (pushState === undefined) pushState = true;
+                var container = document.getElementById('containerTablePenerimaan');
+                if (!container) return;
+
+                $('#containerTablePenerimaan').css({
+                    'opacity': '0.35',
+                    'pointer-events': 'none',
+                    'transition': 'opacity 0.2s ease'
+                });
+
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    success: function(response) {
+                        try {
+                            var parser = new DOMParser();
+                            var doc = parser.parseFromString(response, 'text/html');
+                            var newElem = doc.getElementById('containerTablePenerimaan');
+
+                            if (newElem) {
+                                container.innerHTML = newElem.innerHTML;
+                                $('#containerTablePenerimaan').css({
+                                    'opacity': '1',
+                                    'pointer-events': 'auto'
+                                });
+                                if (pushState && window.history && window.history.pushState) {
+                                    window.history.pushState({ path: url }, '', url);
+                                }
+                            } else {
+                                window.location.href = url;
+                            }
+                        } catch (err) {
+                            window.location.href = url;
+                        }
+                    },
+                    error: function() {
+                        window.location.href = url;
+                    }
+                });
+            }
+
+            $(document).on('click', '#containerTablePenerimaan .pagination a', function(e) {
+                e.preventDefault();
+                var url = $(this).attr('href');
+                if (!url || url === '#' || url.indexOf('javascript') === 0) return;
+                loadAdminTable(url, true);
+            });
+
+            window.addEventListener('popstate', function() {
+                if (window.location.pathname.indexOf('/penerimaan') !== -1) {
+                    loadAdminTable(window.location.href, false);
+                }
             });
 
             $("#frmPenerimaan").submit(function() {
