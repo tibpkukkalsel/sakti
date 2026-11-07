@@ -16,14 +16,8 @@
 
 @section('content')
     <style>
-        .revenue-summary-card {
-            background: #2A8BF2;
-            background: linear-gradient(135deg, #2A8BF2 0%, #1A73E8 100%);
-            border-radius: 16px;
-            color: #ffffff;
-            padding: 16px;
-            margin-bottom: 14px;
-            box-shadow: 0 4px 14px rgba(42, 139, 242, 0.25);
+        .section, .card, .btn, .period-btn, .revenue-item-card, input, select, button, label, span, strong, div, small {
+            font-family: "Inter", sans-serif;
         }
 
         .revenue-item-card {
@@ -31,7 +25,7 @@
             border-radius: 14px;
             padding: 14px;
             margin-bottom: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
             border: 1px solid #e2e8f0;
         }
 
@@ -99,7 +93,7 @@
 
     <div class="section" style="padding-top: 70px; padding-bottom: 75px;">
         <!-- Card Filter Periode & Layanan -->
-        <div class="card mb-3" style="border-radius: 14px; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+        <div class="card mb-3" style="border-radius: 14px; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.04); background: #ffffff;">
             <div class="card-body p-3">
                 <form action="/monitoring/penerimaan" method="GET" id="formFilterPenerimaan">
                     <input type="hidden" name="periode" id="input_periode" value="{{ $periode }}">
@@ -154,50 +148,121 @@
                         </select>
                     </div>
 
-                    <!-- Tombol Filter Data -->
-                    <button type="submit" class="btn btn-primary w-100 font-weight-bold" style="border-radius: 10px; background: linear-gradient(135deg, #2A8BF2 0%, #1A73E8 100%); border: none; height: 42px; font-size: 14px; box-shadow: 0 4px 12px rgba(42, 139, 242, 0.3); display: flex; align-items: center; justify-content: center; gap: 6px;">
-                        <ion-icon name="filter-outline" style="font-size: 18px;"></ion-icon>
-                        <span>Filter Data</span>
+                    <!-- Tombol Filter Data (Tanpa Icon Sesuai Arahan) -->
+                    <button type="submit" class="btn btn-primary w-100 font-weight-bold" style="border-radius: 10px; background: linear-gradient(135deg, #2A8BF2 0%, #1A73E8 100%); border: none; height: 42px; font-size: 14px; box-shadow: 0 4px 12px rgba(42, 139, 242, 0.3);">
+                        Filter Data
                     </button>
                 </form>
             </div>
         </div>
 
-        <!-- Total Hero Card -->
-        <div class="revenue-summary-card">
-            <small style="opacity: 0.9; font-size: 11.5px; font-weight: 600;">Total Penerimaan ({{ $labelPeriode }})</small>
-            <div style="font-size: 22px; font-weight: 800; margin: 4px 0; white-space: nowrap;">
-                Rp {{ number_format($totalRp, 0, ',', '.') }}
-            </div>
-            <div class="d-flex justify-content-between pt-2 border-top border-white border-opacity-25" style="font-size: 11.5px;">
-                <span>Total Unit: <strong>{{ number_format($totalUnit, 0, ',', '.') }}</strong></span>
-                <span>Notice: <strong>{{ number_format($totalNotice, 0, ',', '.') }} Lbr</strong></span>
-            </div>
-        </div>
-
-        <!-- Breakdown Ringkasan R2 vs R4 -->
-        <div class="row g-2 mb-3">
-            <div class="col-6">
-                <div class="card p-2 text-center" style="border-radius: 12px; border: 1px solid #e2e8f0; background: #ffffff;">
-                    <small class="text-muted" style="font-size: 10.5px; font-weight: 600;">Total R2 (Motor)</small>
-                    <div style="font-weight: 800; font-size: 13.5px; color: #10b981; white-space: nowrap;">
-                        Rp {{ number_format($totalR2Rp, 0, ',', '.') }}
+        <!-- Card Total Penerimaan (Default White Card Sesuai Standar Tampilan Sistem) -->
+        <div class="card mb-3" style="border-radius: 14px; border: 1px solid #e2e8f0; box-shadow: 0 1px 4px rgba(0,0,0,0.03); background: #ffffff;">
+            <div class="card-body p-3">
+                <div class="mb-2">
+                    <div class="text-muted small fw-bold text-uppercase" style="font-size: 11px; letter-spacing: 0.5px;">
+                        Total Penerimaan ({{ $labelPeriode }})
                     </div>
-                    <small class="text-muted" style="font-size: 11px;">{{ number_format($totalUnitR2, 0, ',', '.') }} Unit</small>
+                    <div style="color: #2A8BF2; font-size: 19px; font-weight: 800; white-space: nowrap; margin-top: 2px;">
+                        Rp {{ number_format($totalRp, 0, ',', '.') }}
+                    </div>
                 </div>
-            </div>
-            <div class="col-6">
-                <div class="card p-2 text-center" style="border-radius: 12px; border: 1px solid #e2e8f0; background: #ffffff;">
-                    <small class="text-muted" style="font-size: 10.5px; font-weight: 600;">Total R4 (Mobil)</small>
-                    <div style="font-weight: 800; font-size: 13.5px; color: #0891b2; white-space: nowrap;">
-                        Rp {{ number_format($totalR4Rp, 0, ',', '.') }}
+
+                <!-- Baris R2 (Motor) -->
+                <div class="d-flex align-items-center justify-content-between p-2 mb-2"
+                    style="background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0;">
+                    <div class="d-flex align-items-center">
+                        <div
+                            style="width: 30px; height: 30px; border-radius: 8px; background: rgba(37, 99, 235, 0.1); display: flex; align-items: center; justify-content: center; margin-right: 10px; flex-shrink: 0;">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-motorbike"
+                                width="18" height="18" viewBox="0 0 24 24" stroke-width="2" stroke="#2563eb"
+                                fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                <path d="M5 16m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
+                                <path d="M19 16m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
+                                <path d="M7.5 14h5l4 -4H7.5m4 0h4l2 -3h-3"></path>
+                            </svg>
+                        </div>
+                        <div style="font-size: 14px; font-weight: 700; color: #1e293b; white-space: nowrap;">
+                            Rp {{ number_format($totalR2Rp, 0, ',', '.') }}
+                        </div>
                     </div>
-                    <small class="text-muted" style="font-size: 11px;">{{ number_format($totalUnitR4, 0, ',', '.') }} Unit</small>
+                    <div>
+                        <span class="badge"
+                            style="background: rgba(37, 99, 235, 0.1); color: #2563eb; font-size: 11.5px; font-weight: 700; padding: 4px 10px; border-radius: 6px;">
+                            <ion-icon name="speedometer-outline"
+                                style="font-size: 12px; vertical-align: -1px; margin-right: 3px;"></ion-icon>{{ number_format($totalUnitR2, 0, ',', '.') }}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Baris R4 (Mobil) -->
+                <div class="d-flex align-items-center justify-content-between p-2 mb-2"
+                    style="background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0;">
+                    <div class="d-flex align-items-center">
+                        <div
+                            style="width: 30px; height: 30px; border-radius: 8px; background: rgba(8, 145, 178, 0.1); display: flex; align-items: center; justify-content: center; margin-right: 10px; flex-shrink: 0;">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-car"
+                                width="18" height="18" viewBox="0 0 24 24" stroke-width="2" stroke="#0891b2"
+                                fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                <path d="M7 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
+                                <path d="M17 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
+                                <path d="M5 17h-2v-6l2 -5h9l4 5h1a2 2 0 0 1 2 2v4h-2m-4 0h-6"></path>
+                                <path d="M7 9l1 3h8l1 -3"></path>
+                            </svg>
+                        </div>
+                        <div style="font-size: 14px; font-weight: 700; color: #1e293b; white-space: nowrap;">
+                            Rp {{ number_format($totalR4Rp, 0, ',', '.') }}
+                        </div>
+                    </div>
+                    <div>
+                        <span class="badge"
+                            style="background: rgba(8, 145, 178, 0.1); color: #0891b2; font-size: 11.5px; font-weight: 700; padding: 4px 10px; border-radius: 6px;">
+                            <ion-icon name="speedometer-outline"
+                                style="font-size: 12px; vertical-align: -1px; margin-right: 3px;"></ion-icon>{{ number_format($totalUnitR4, 0, ',', '.') }}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Baris Total Unit & Notice Dicetak -->
+                <div class="row align-items-center" style="margin-left: -3px; margin-right: -3px;">
+                    <div class="col-6" style="padding-left: 3px; padding-right: 3px;">
+                        <div class="p-2 d-flex align-items-center justify-content-center"
+                            style="background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0; min-height: 38px;">
+                            <ion-icon name="speedometer-outline"
+                                style="font-size: 16px; color: #10b981; margin-right: 6px;"></ion-icon>
+                            <span class="text-muted me-1" style="font-size: 11px;">Unit:</span>
+                            <span style="font-size: 13.5px; font-weight: 800; color: #1e293b;">
+                                {{ number_format($totalUnit, 0, ',', '.') }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-6" style="padding-left: 3px; padding-right: 3px;">
+                        <div class="p-2 d-flex align-items-center justify-content-center"
+                            style="background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0; min-height: 38px;">
+                            <ion-icon name="print-outline"
+                                style="font-size: 16px; color: #f59e0b; margin-right: 6px;"></ion-icon>
+                            <span class="text-muted me-1" style="font-size: 11px;">Notice:</span>
+                            <span style="font-size: 13.5px; font-weight: 800; color: #1e293b;">
+                                {{ number_format($totalNotice, 0, ',', '.') }}
+                            </span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Rincian Data Penerimaan Harian -->
+        <div class="mb-2 d-flex justify-content-between align-items-center">
+            <span class="text-muted small fw-bold text-uppercase" style="font-size: 11px; letter-spacing: 0.5px;">
+                Rincian Penerimaan
+            </span>
+            <span class="badge" style="background: #e2e8f0; color: #475569; font-size: 10.5px; font-weight: 600; padding: 3px 8px; border-radius: 6px;">
+                {{ count($rekapList) }} Data
+            </span>
+        </div>
+
         @forelse ($rekapList as $row)
             <div class="revenue-item-card">
                 <div class="d-flex align-items-center justify-content-between mb-1">
