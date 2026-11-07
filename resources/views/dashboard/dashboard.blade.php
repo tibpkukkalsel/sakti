@@ -887,7 +887,7 @@
             <div class="text-center pt-2 pb-4"
                 style="color: #64748b; font-size: 11.5px; line-height: 1.5; margin-bottom: 75px;">
                 <div style="font-weight: 600; color: #475569;">
-                    Copyright &copy; {{ date('Y') }} Adimas Fitriandi
+                    Copyright &copy; {{ date('Y') }} Adimas Fitriandi - Bapenda Prov. Kalsel
                 </div>
             </div>
         </div>
