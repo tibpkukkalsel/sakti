@@ -90,18 +90,25 @@
             box-sizing: border-box !important;
         }
 
-        .stat-badge-h { background-color: #198754; color: #fff; }
-        .stat-badge-x { background-color: #0d6efd; color: #fff; }
-        .stat-badge-l { background-color: #fd7e14; color: #fff; }
-        .stat-badge-tk { background-color: #dc3545; color: #fff; }
+        .stat-badge-h { background-color: #10b981; color: #fff; }
+        .stat-badge-x { background-color: #3b82f6; color: #fff; }
+        .stat-badge-l { background-color: #f97316; color: #fff; }
+        .stat-badge-tk { background-color: #ef4444; color: #fff; }
 
         .thumb-selfie {
-            width: 44px;
-            height: 44px;
+            width: 40px;
+            height: 40px;
             border-radius: 8px;
             object-fit: cover;
             border: 1px solid #cbd5e1;
             cursor: pointer;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            transition: transform 0.15s ease;
+            flex-shrink: 0;
+            margin-left: 6px;
+        }
+        .thumb-selfie:active {
+            transform: scale(0.95);
         }
     </style>
 
@@ -213,80 +220,86 @@
                 $st = strtolower($item->status_presensi ?? '');
                 if ($st == 'h' || $st == 'tl' || (!empty($item->jam_in) && $st != 'm' && $st != 'x' && $st != 'l')) {
                     $badgeClass = 'stat-badge-h';
-                    $statusLabel = 'H (Hadir)';
+                    $statusLabel = 'Hadir';
                 } elseif ($st == 'm' || $st == 'x') {
                     $badgeClass = 'stat-badge-x';
-                    $statusLabel = 'X (Maintenance)';
+                    $statusLabel = 'Maintenance';
                 } elseif ($st == 'l') {
                     $badgeClass = 'stat-badge-l';
-                    $statusLabel = 'L (Libur)';
+                    $statusLabel = 'Libur';
                 } else {
                     $badgeClass = 'stat-badge-tk';
-                    $statusLabel = 'TK (Belum Absen)';
+                    $statusLabel = 'Belum Absen';
                 }
 
                 $fotoInUrl = !empty($item->foto_in) ? Storage::url('uploads/absensi/' . $item->foto_in) : null;
                 $fotoOutUrl = !empty($item->foto_out) ? Storage::url('uploads/absensi/' . $item->foto_out) : null;
             @endphp
             <div class="presensi-card">
-                <div class="d-flex align-items-center justify-content-between mb-2">
-                    <div class="d-flex align-items-center gap-2">
+                <div class="d-flex align-items-start justify-content-between mb-2">
+                    <div class="d-flex align-items-center" style="min-width: 0; flex: 1;">
                         @if (!empty($item->foto_avatar))
                             <img src="{{ Storage::url('uploads/karyawan/' . $item->foto_avatar) }}"
-                                style="width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 1px solid #e2e8f0;"
+                                style="width: 42px; height: 42px; min-width: 42px; border-radius: 50%; object-fit: cover; border: 1.5px solid #e2e8f0; margin-right: 10px; flex-shrink: 0;"
                                 onerror="this.src='{{ asset('assets/img/avatar_layanan.png') }}'">
                         @else
                             <img src="{{ asset('assets/img/avatar_layanan.png') }}"
-                                style="width: 38px; height: 38px; border-radius: 50%; object-fit: cover; background:#fff; border: 1px solid #e2e8f0;">
+                                style="width: 42px; height: 42px; min-width: 42px; border-radius: 50%; object-fit: cover; background:#fff; border: 1.5px solid #e2e8f0; margin-right: 10px; flex-shrink: 0;">
                         @endif
-                        <div>
-                            <strong class="text-dark" style="font-size: 14px;">{{ $item->nama_layanan }}</strong>
-                            <div class="text-muted small">
-                                <ion-icon name="location-outline" style="vertical-align:-1px; color:#2563eb;"></ion-icon> {{ $item->lokasi_tugas }}
+                        <div style="min-width: 0; flex: 1;">
+                            <strong class="text-dark d-block" style="font-size: 14.5px; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                {{ $item->nama_layanan }}
+                            </strong>
+                            @if (!empty($item->tgl_presensi))
+                                <div style="font-size: 11.5px; color: #2A8BF2; font-weight: 600; margin-top: 2px;">
+                                    <ion-icon name="calendar-outline" style="vertical-align: -1px; margin-right: 2px;"></ion-icon>
+                                    {{ date('d-m-Y', strtotime($item->tgl_presensi)) }}
+                                </div>
+                            @endif
+                            <div class="text-muted" style="font-size: 11.5px; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                <ion-icon name="location-outline" style="vertical-align: -1px; color: #ef4444; margin-right: 2px;"></ion-icon>
+                                <span>{{ $item->lokasi_tugas }}</span>
                             </div>
                         </div>
                     </div>
-                    <div class="text-end">
-                        <span class="badge {{ $badgeClass }} px-2 py-1 mb-1 d-inline-block" style="font-size: 11px; border-radius: 6px;">
+                    <div class="text-end" style="flex-shrink: 0; margin-left: 8px;">
+                        <span class="badge {{ $badgeClass }}" style="font-size: 11px; font-weight: 700; padding: 4px 9px; border-radius: 6px;">
                             {{ $statusLabel }}
                         </span>
-                        @if (!empty($item->tgl_presensi))
-                            <div style="font-size: 11px; color: #64748b; font-weight: 600;">
-                                {{ date('d-m-Y', strtotime($item->tgl_presensi)) }}
-                            </div>
-                        @endif
                     </div>
                 </div>
 
-                <div class="row g-2 mt-2 pt-2 border-top">
+                <div class="row mt-2 pt-2 border-top" style="margin-left: -4px; margin-right: -4px;">
                     <!-- Masuk -->
-                    <div class="col-6">
-                        <div style="background: #f8fafc; border-radius: 10px; padding: 8px; border: 1px solid #e2e8f0;">
-                            <small class="text-muted d-block" style="font-size: 10.5px;">Jam Masuk</small>
-                            <div style="font-weight: 700; font-size: 14px; color: {{ $item->jam_in ? '#10b981' : '#94a3b8' }};">
-                                {{ $item->jam_in ? substr($item->jam_in, 0, 5) : '--:--' }}
+                    <div class="col-6" style="padding-left: 4px; padding-right: 4px;">
+                        <div class="p-2 d-flex align-items-center justify-content-between" style="background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0; min-height: 52px;">
+                            <div>
+                                <small class="text-muted d-block" style="font-size: 10.5px; font-weight: 600;">Jam Masuk</small>
+                                <div style="font-weight: 800; font-size: 14.5px; color: {{ $item->jam_in ? '#10b981' : '#94a3b8' }}; line-height: 1.2; margin-top: 2px;">
+                                    {{ $item->jam_in ? substr($item->jam_in, 0, 5) : '--:--' }}
+                                </div>
                             </div>
                             @if ($fotoInUrl)
-                                <div class="mt-2">
-                                    <img src="{{ $fotoInUrl }}" class="thumb-selfie" alt="Foto Masuk"
-                                        onclick="showImageModal('{{ $fotoInUrl }}', 'Foto Masuk: {{ $item->nama_layanan }}')">
-                                </div>
+                                <img src="{{ $fotoInUrl }}" class="thumb-selfie" alt="Foto Masuk"
+                                    onclick="showImageModal('{{ $fotoInUrl }}', 'Foto Masuk: {{ $item->nama_layanan }}')"
+                                    title="Klik untuk memperbesar">
                             @endif
                         </div>
                     </div>
 
                     <!-- Pulang -->
-                    <div class="col-6">
-                        <div style="background: #f8fafc; border-radius: 10px; padding: 8px; border: 1px solid #e2e8f0;">
-                            <small class="text-muted d-block" style="font-size: 10.5px;">Jam Pulang</small>
-                            <div style="font-weight: 700; font-size: 14px; color: {{ $item->jam_out ? '#0284c7' : '#94a3b8' }};">
-                                {{ $item->jam_out ? substr($item->jam_out, 0, 5) : '--:--' }}
+                    <div class="col-6" style="padding-left: 4px; padding-right: 4px;">
+                        <div class="p-2 d-flex align-items-center justify-content-between" style="background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0; min-height: 52px;">
+                            <div>
+                                <small class="text-muted d-block" style="font-size: 10.5px; font-weight: 600;">Jam Pulang</small>
+                                <div style="font-weight: 800; font-size: 14.5px; color: {{ $item->jam_out ? '#0284c7' : '#94a3b8' }}; line-height: 1.2; margin-top: 2px;">
+                                    {{ $item->jam_out ? substr($item->jam_out, 0, 5) : '--:--' }}
+                                </div>
                             </div>
                             @if ($fotoOutUrl)
-                                <div class="mt-2">
-                                    <img src="{{ $fotoOutUrl }}" class="thumb-selfie" alt="Foto Pulang"
-                                        onclick="showImageModal('{{ $fotoOutUrl }}', 'Foto Pulang: {{ $item->nama_layanan }}')">
-                                </div>
+                                <img src="{{ $fotoOutUrl }}" class="thumb-selfie" alt="Foto Pulang"
+                                    onclick="showImageModal('{{ $fotoOutUrl }}', 'Foto Pulang: {{ $item->nama_layanan }}')"
+                                    title="Klik untuk memperbesar">
                             @endif
                         </div>
                     </div>
