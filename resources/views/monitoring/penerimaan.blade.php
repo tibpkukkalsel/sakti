@@ -259,7 +259,7 @@
                 Rincian Penerimaan
             </span>
             <span class="badge" style="background: #e2e8f0; color: #475569; font-size: 10.5px; font-weight: 600; padding: 3px 8px; border-radius: 6px;">
-                {{ count($rekapList) }} Data
+                {{ $rekapList->total() }} Data
             </span>
         </div>
 
@@ -298,6 +298,40 @@
                 </div>
             </div>
         @endforelse
+
+        @if ($rekapList->hasPages())
+            <div class="card p-2 mt-3 mb-4" style="border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.03); background: #ffffff;">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        @if ($rekapList->onFirstPage())
+                            <button class="btn btn-sm" style="border-radius: 8px; border: 1px solid #e2e8f0; background: #f8fafc; color: #94a3b8; font-size: 12px; font-weight: 600; padding: 6px 14px;" disabled>
+                                Kembali
+                            </button>
+                        @else
+                            <a href="{{ $rekapList->previousPageUrl() }}" class="btn btn-sm" style="border-radius: 8px; border: 1.5px solid #2A8BF2; background: #ffffff; color: #2A8BF2; font-size: 12px; font-weight: 700; padding: 6px 14px; text-decoration: none;">
+                                Kembali
+                            </a>
+                        @endif
+                    </div>
+
+                    <div style="font-size: 11.5px; font-weight: 600; color: #64748b;">
+                        Halaman {{ $rekapList->currentPage() }} dari {{ $rekapList->lastPage() }}
+                    </div>
+
+                    <div>
+                        @if ($rekapList->hasMorePages())
+                            <a href="{{ $rekapList->nextPageUrl() }}" class="btn btn-sm btn-primary" style="border-radius: 8px; background: linear-gradient(135deg, #2A8BF2 0%, #1A73E8 100%); border: none; color: #ffffff; font-size: 12px; font-weight: 700; padding: 6px 14px; text-decoration: none; box-shadow: 0 2px 6px rgba(42, 139, 242, 0.3);">
+                                Next Page
+                            </a>
+                        @else
+                            <button class="btn btn-sm" style="border-radius: 8px; border: 1px solid #e2e8f0; background: #f8fafc; color: #94a3b8; font-size: 12px; font-weight: 600; padding: 6px 14px;" disabled>
+                                Next Page
+                            </button>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        @endif
     </div>
 @endsection
 

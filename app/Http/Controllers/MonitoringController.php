@@ -638,21 +638,35 @@ class MonitoringController extends Controller
             $query->where('rekap_penerimaan_pkb.layanan_id', $layanan_id);
         }
 
+        // Hitung total akumulasi sesuai filter
+        $summary = (clone $query)->selectRaw('
+            COALESCE(SUM(rekap_penerimaan_pkb.total_rp), 0) as total_rp,
+            COALESCE(SUM(rekap_penerimaan_pkb.total_unit), 0) as total_unit,
+            COALESCE(SUM(rekap_penerimaan_pkb.jumlah_notice), 0) as total_notice,
+            COALESCE(SUM(rekap_penerimaan_pkb.jumlah_rp_r2), 0) as total_r2_rp,
+            COALESCE(SUM(rekap_penerimaan_pkb.jumlah_rp_r4), 0) as total_r4_rp,
+            COALESCE(SUM(rekap_penerimaan_pkb.jumlah_unit_r2), 0) as total_unit_r2,
+            COALESCE(SUM(rekap_penerimaan_pkb.jumlah_unit_r4), 0) as total_unit_r4
+        ')->first();
+
+        $totalRp = (float) ($summary->total_rp ?? 0);
+        $totalUnit = (int) ($summary->total_unit ?? 0);
+        $totalNotice = (int) ($summary->total_notice ?? 0);
+        $totalR2Rp = (float) ($summary->total_r2_rp ?? 0);
+        $totalR4Rp = (float) ($summary->total_r4_rp ?? 0);
+        $totalUnitR2 = (int) ($summary->total_unit_r2 ?? 0);
+        $totalUnitR4 = (int) ($summary->total_unit_r4 ?? 0);
+
+        // Ambil data 10 per halaman dengan pagination
         $rekapList = $query->select(
             'rekap_penerimaan_pkb.*',
             'layanan.nama_layanan',
             'layanan.foto as foto_layanan'
         )
             ->orderBy('rekap_penerimaan_pkb.tgl_penerimaan', 'desc')
-            ->get();
-
-        $totalRp = (float) $rekapList->sum('total_rp');
-        $totalUnit = (int) $rekapList->sum('total_unit');
-        $totalNotice = (int) $rekapList->sum('jumlah_notice');
-        $totalR2Rp = (float) $rekapList->sum('jumlah_rp_r2');
-        $totalR4Rp = (float) $rekapList->sum('jumlah_rp_r4');
-        $totalUnitR2 = (int) $rekapList->sum('jumlah_unit_r2');
-        $totalUnitR4 = (int) $rekapList->sum('jumlah_unit_r4');
+            ->orderBy('rekap_penerimaan_pkb.id', 'desc')
+            ->paginate(10)
+            ->withQueryString();
 
         return view('monitoring.penerimaan', compact(
             'rekapList',
