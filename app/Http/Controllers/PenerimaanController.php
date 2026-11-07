@@ -667,6 +667,282 @@ class PenerimaanController extends Controller
             "tgl_sampai"
         ));
     }
+
+    /**
+     * Cetak Laporan Rekap Penerimaan PKB Per Layanan (PDF via mPDF / Excel)
+     */
+    public function cetakRekapLayanan(Request $request)
+    {
+        $hariini = date("Y-m-d");
+        $bulanini = date("m");
+        $tahunini = date("Y");
+
+        $periode = $request->get("periode", "bulan_ini");
+        $layanan_id = $request->get("layanan_id", "all");
+
+        if ($periode == "hari_ini") {
+            $startDate = $hariini;
+            $endDate = $hariini;
+            $periodeLabel = "Hari Ini (" . date("d/m/Y", strtotime($hariini)) . ")";
+        } elseif ($periode == "tahun_ini") {
+            $startDate = $tahunini . "-01-01";
+            $endDate = $tahunini . "-12-31";
+            $periodeLabel = "Tahun Ini (" . $tahunini . ")";
+        } elseif ($periode == "custom") {
+            $startDate = $request->get("tgl_dari", date("Y-m-01"));
+            $endDate = $request->get("tgl_sampai", $hariini);
+            $periodeLabel = date("d/m/Y", strtotime($startDate)) . " s/d " . date("d/m/Y", strtotime($endDate));
+        } else {
+            $periode = "bulan_ini";
+            $startDate = date("Y-m-01");
+            $endDate = date("Y-m-t");
+            $namaBulan = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+            $periodeLabel = "Bulan " . $namaBulan[(int)$bulanini] . " " . $tahunini;
+        }
+
+        $query = DB::table("layanan")
+            ->leftJoin("rekap_penerimaan_pkb", function ($join) use ($startDate, $endDate) {
+                $join->on("layanan.id", "=", "rekap_penerimaan_pkb.layanan_id")
+                    ->whereBetween("rekap_penerimaan_pkb.tgl_penerimaan", [$startDate, $endDate]);
+            });
+
+        if (!empty($layanan_id) && $layanan_id != "all") {
+            $query->where("layanan.id", $layanan_id);
+        }
+
+        $rekapLayanan = $query->select(
+            "layanan.id as layanan_id",
+            "layanan.nama_layanan",
+            "layanan.nama_pic",
+            "layanan.nip_pic",
+            "layanan.jabatan_pic",
+            DB::raw("COALESCE(SUM(rekap_penerimaan_pkb.jumlah_rp_r2), 0) as rp_r2"),
+            DB::raw("COALESCE(SUM(rekap_penerimaan_pkb.jumlah_unit_r2), 0) as unit_r2"),
+            DB::raw("COALESCE(SUM(rekap_penerimaan_pkb.jumlah_rp_r4), 0) as rp_r4"),
+            DB::raw("COALESCE(SUM(rekap_penerimaan_pkb.jumlah_unit_r4), 0) as unit_r4"),
+            DB::raw("COALESCE(SUM(rekap_penerimaan_pkb.total_rp), 0) as total_rp"),
+            DB::raw("COALESCE(SUM(rekap_penerimaan_pkb.total_unit), 0) as total_unit"),
+            DB::raw("COALESCE(SUM(rekap_penerimaan_pkb.jumlah_notice), 0) as total_notice"),
+            DB::raw("COUNT(DISTINCT rekap_penerimaan_pkb.tgl_penerimaan) as total_hari_operasi")
+        )
+        ->groupBy("layanan.id", "layanan.nama_layanan", "layanan.nama_pic", "layanan.nip_pic", "layanan.jabatan_pic")
+        ->orderBy("total_rp", "desc")
+        ->get();
+
+        $grandTotal = (object) [
+            "rp_r2" => $rekapLayanan->sum("rp_r2"),
+            "unit_r2" => $rekapLayanan->sum("unit_r2"),
+            "rp_r4" => $rekapLayanan->sum("rp_r4"),
+            "unit_r4" => $rekapLayanan->sum("unit_r4"),
+            "total_rp" => $rekapLayanan->sum("total_rp"),
+            "total_unit" => $rekapLayanan->sum("total_unit"),
+            "total_notice" => $rekapLayanan->sum("total_notice"),
+            "total_hari_operasi" => $rekapLayanan->sum("total_hari_operasi"),
+        ];
+
+        $detailHarian = null;
+        $layananTerpilih = null;
+        if (!empty($layanan_id) && $layanan_id != "all") {
+            $layananTerpilih = DB::table("layanan")->where("id", $layanan_id)->first();
+            $detailHarian = DB::table("rekap_penerimaan_pkb")
+                ->where("layanan_id", $layanan_id)
+                ->whereBetween("tgl_penerimaan", [$startDate, $endDate])
+                ->orderBy("tgl_penerimaan", "asc")
+                ->get();
+        }
+
+        $konfigurasi_laporan = DB::table('konfigurasi_laporan')->where('id', 1)->first();
+
+        if ($request->has('exportexcel') || $request->input('export') == 'excel') {
+            $time = date("d-M-Y_His");
+            return response(view('penerimaan.cetak_rekap_layanan_excel', compact(
+                'rekapLayanan', 'grandTotal', 'detailHarian', 'layananTerpilih',
+                'periodeLabel', 'startDate', 'endDate', 'konfigurasi_laporan'
+            )), 200, [
+                'Content-Type' => 'application/vnd-ms-excel',
+                'Content-Disposition' => 'attachment; filename="Rekap_Penerimaan_Layanan_' . $time . '.xls"',
+            ]);
+        }
+
+        $tempDir = storage_path('app/mpdf');
+        if (!file_exists($tempDir)) {
+            mkdir($tempDir, 0777, true);
+        }
+
+        $mpdf = new \Mpdf\Mpdf([
+            'mode' => 'utf-8',
+            'format' => 'Legal',
+            'orientation' => 'L',
+            'margin_left' => 12,
+            'margin_right' => 12,
+            'margin_top' => 12,
+            'margin_bottom' => 12,
+            'tempDir' => $tempDir,
+        ]);
+
+        $html = view('penerimaan.cetak_rekap_layanan', compact(
+            'rekapLayanan', 'grandTotal', 'detailHarian', 'layananTerpilih',
+            'periodeLabel', 'startDate', 'endDate', 'konfigurasi_laporan'
+        ))->render();
+
+        $mpdf->WriteHTML($html);
+        $namaFile = 'Laporan_Rekap_Penerimaan_Layanan_' . date('Ymd_His') . '.pdf';
+
+        return response($mpdf->Output($namaFile, 'S'), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="' . $namaFile . '"',
+        ]);
+    }
+
+    /**
+     * Cetak Laporan Rekap Penerimaan PKB Per Lokasi (PDF via mPDF / Excel)
+     */
+    public function cetakRekapLokasi(Request $request)
+    {
+        $hariini = date("Y-m-d");
+        $bulanini = date("m");
+        $tahunini = date("Y");
+
+        $periode = $request->get("periode", "bulan_ini");
+        $kode_cabang = $request->get("kode_cabang", "all");
+
+        if ($periode == "hari_ini") {
+            $startDate = $hariini;
+            $endDate = $hariini;
+            $periodeLabel = "Hari Ini (" . date("d/m/Y", strtotime($hariini)) . ")";
+        } elseif ($periode == "tahun_ini") {
+            $startDate = $tahunini . "-01-01";
+            $endDate = $tahunini . "-12-31";
+            $periodeLabel = "Tahun Ini (" . $tahunini . ")";
+        } elseif ($periode == "custom") {
+            $startDate = $request->get("tgl_dari", date("Y-m-01"));
+            $endDate = $request->get("tgl_sampai", $hariini);
+            $periodeLabel = date("d/m/Y", strtotime($startDate)) . " s/d " . date("d/m/Y", strtotime($endDate));
+        } else {
+            $periode = "bulan_ini";
+            $startDate = date("Y-m-01");
+            $endDate = date("Y-m-t");
+            $namaBulan = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+            $periodeLabel = "Bulan " . $namaBulan[(int)$bulanini] . " " . $tahunini;
+        }
+
+        $query = DB::table("rekap_penerimaan_pkb")
+            ->join("layanan", "rekap_penerimaan_pkb.layanan_id", "=", "layanan.id")
+            ->leftJoin("jadwal_lokasi_layanan", function ($join) {
+                $join->on("jadwal_lokasi_layanan.layanan_id", "=", "rekap_penerimaan_pkb.layanan_id")
+                    ->where("jadwal_lokasi_layanan.status", 1)
+                    ->whereRaw("jadwal_lokasi_layanan.hari = CASE DAYOFWEEK(rekap_penerimaan_pkb.tgl_penerimaan)
+                        WHEN 1 THEN 'Minggu'
+                        WHEN 2 THEN 'Senin'
+                        WHEN 3 THEN 'Selasa'
+                        WHEN 4 THEN 'Rabu'
+                        WHEN 5 THEN 'Kamis'
+                        WHEN 6 THEN 'Jumat'
+                        WHEN 7 THEN 'Sabtu'
+                    END");
+            })
+            ->leftJoin("cabang as c_jadwal", "jadwal_lokasi_layanan.kode_cabang", "=", "c_jadwal.kode_cabang")
+            ->leftJoin("cabang as c_default", "layanan.kode_cabang", "=", "c_default.kode_cabang")
+            ->whereBetween("rekap_penerimaan_pkb.tgl_penerimaan", [$startDate, $endDate]);
+
+        if (!empty($kode_cabang) && $kode_cabang != "all") {
+            $query->whereRaw("COALESCE(c_jadwal.kode_cabang, c_default.kode_cabang) = ?", [$kode_cabang]);
+        }
+
+        $rekapLokasi = $query->select(
+            DB::raw("COALESCE(c_jadwal.kode_cabang, c_default.kode_cabang, 'LAIN') as kode_cabang"),
+            DB::raw("COALESCE(c_jadwal.nama_cabang, c_default.nama_cabang, 'Lokasi Lainnya') as nama_cabang"),
+            DB::raw("COALESCE(c_jadwal.lokasi_cabang, c_default.lokasi_cabang, '-') as lokasi_cabang"),
+            DB::raw("COALESCE(SUM(rekap_penerimaan_pkb.jumlah_rp_r2), 0) as rp_r2"),
+            DB::raw("COALESCE(SUM(rekap_penerimaan_pkb.jumlah_unit_r2), 0) as unit_r2"),
+            DB::raw("COALESCE(SUM(rekap_penerimaan_pkb.jumlah_rp_r4), 0) as rp_r4"),
+            DB::raw("COALESCE(SUM(rekap_penerimaan_pkb.jumlah_unit_r4), 0) as unit_r4"),
+            DB::raw("COALESCE(SUM(rekap_penerimaan_pkb.total_rp), 0) as total_rp"),
+            DB::raw("COALESCE(SUM(rekap_penerimaan_pkb.total_unit), 0) as total_unit"),
+            DB::raw("COALESCE(SUM(rekap_penerimaan_pkb.jumlah_notice), 0) as total_notice"),
+            DB::raw("COUNT(DISTINCT rekap_penerimaan_pkb.tgl_penerimaan) as total_hari_operasi")
+        )
+        ->groupBy(
+            DB::raw("COALESCE(c_jadwal.kode_cabang, c_default.kode_cabang, 'LAIN')"),
+            DB::raw("COALESCE(c_jadwal.nama_cabang, c_default.nama_cabang, 'Lokasi Lainnya')"),
+            DB::raw("COALESCE(c_jadwal.lokasi_cabang, c_default.lokasi_cabang, '-')")
+        )
+        ->orderBy("total_rp", "desc")
+        ->get();
+
+        $grandTotal = (object) [
+            "rp_r2" => $rekapLokasi->sum("rp_r2"),
+            "unit_r2" => $rekapLokasi->sum("unit_r2"),
+            "rp_r4" => $rekapLokasi->sum("rp_r4"),
+            "unit_r4" => $rekapLokasi->sum("unit_r4"),
+            "total_rp" => $rekapLokasi->sum("total_rp"),
+            "total_unit" => $rekapLokasi->sum("total_unit"),
+            "total_notice" => $rekapLokasi->sum("total_notice"),
+            "total_hari_operasi" => $rekapLokasi->sum("total_hari_operasi"),
+        ];
+
+        $detailHarian = null;
+        $lokasiTerpilih = null;
+        if (!empty($kode_cabang) && $kode_cabang != "all") {
+            $lokasiTerpilih = DB::table("cabang")->where("kode_cabang", $kode_cabang)->first();
+            $detailHarian = $query->clone()
+                ->select(
+                    "rekap_penerimaan_pkb.tgl_penerimaan",
+                    "layanan.nama_layanan",
+                    "rekap_penerimaan_pkb.jumlah_rp_r2",
+                    "rekap_penerimaan_pkb.jumlah_unit_r2",
+                    "rekap_penerimaan_pkb.jumlah_rp_r4",
+                    "rekap_penerimaan_pkb.jumlah_unit_r4",
+                    "rekap_penerimaan_pkb.total_rp",
+                    "rekap_penerimaan_pkb.total_unit",
+                    "rekap_penerimaan_pkb.jumlah_notice",
+                    "rekap_penerimaan_pkb.keterangan"
+                )
+                ->orderBy("rekap_penerimaan_pkb.tgl_penerimaan", "asc")
+                ->get();
+        }
+
+        $konfigurasi_laporan = DB::table('konfigurasi_laporan')->where('id', 1)->first();
+
+        if ($request->has('exportexcel') || $request->input('export') == 'excel') {
+            $time = date("d-M-Y_His");
+            return response(view('penerimaan.cetak_rekap_lokasi_excel', compact(
+                'rekapLokasi', 'grandTotal', 'detailHarian', 'lokasiTerpilih',
+                'periodeLabel', 'startDate', 'endDate', 'konfigurasi_laporan'
+            )), 200, [
+                'Content-Type' => 'application/vnd-ms-excel',
+                'Content-Disposition' => 'attachment; filename="Rekap_Penerimaan_Lokasi_' . $time . '.xls"',
+            ]);
+        }
+
+        $tempDir = storage_path('app/mpdf');
+        if (!file_exists($tempDir)) {
+            mkdir($tempDir, 0777, true);
+        }
+
+        $mpdf = new \Mpdf\Mpdf([
+            'mode' => 'utf-8',
+            'format' => 'Legal',
+            'orientation' => 'L',
+            'margin_left' => 12,
+            'margin_right' => 12,
+            'margin_top' => 12,
+            'margin_bottom' => 12,
+            'tempDir' => $tempDir,
+        ]);
+
+        $html = view('penerimaan.cetak_rekap_lokasi', compact(
+            'rekapLokasi', 'grandTotal', 'detailHarian', 'lokasiTerpilih',
+            'periodeLabel', 'startDate', 'endDate', 'konfigurasi_laporan'
+        ))->render();
+
+        $mpdf->WriteHTML($html);
+        $namaFile = 'Laporan_Rekap_Penerimaan_Lokasi_' . date('Ymd_His') . '.pdf';
+
+        return response($mpdf->Output($namaFile, 'S'), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="' . $namaFile . '"',
+        ]);
+    }
+
 }
-
-

@@ -165,6 +165,8 @@ Route::group(['prefix' => 'panel-adm14', 'middleware' => ['auth:user', 'role:adm
     Route::get('/penerimaan/cetak', [PenerimaanController::class, 'adminCetak']);
     Route::get('/penerimaan/rekap-layanan', [PenerimaanController::class, 'rekapLayanan']);
     Route::get('/penerimaan/rekap-lokasi', [PenerimaanController::class, 'rekapLokasi']);
+    Route::match(['get', 'post'], '/penerimaan/cetak-rekap-layanan', [PenerimaanController::class, 'cetakRekapLayanan']);
+    Route::match(['get', 'post'], '/penerimaan/cetak-rekap-lokasi', [PenerimaanController::class, 'cetakRekapLokasi']);
     Route::get('/rekap-layanan', fn() => redirect('/panel-adm14/penerimaan/rekap-layanan'));
     Route::get('/rekap-lokasi', fn() => redirect('/panel-adm14/penerimaan/rekap-lokasi'));
 
@@ -254,6 +256,8 @@ Route::group(['prefix' => 'panel-adm14', 'middleware' => ['auth:user', 'role:adm
     Route::get('/penerimaan/cetak', [PenerimaanController::class, 'adminCetak']);
     Route::get('/penerimaan/rekap-layanan', [PenerimaanController::class, 'rekapLayanan']);
     Route::get('/penerimaan/rekap-lokasi', [PenerimaanController::class, 'rekapLokasi']);
+    Route::match(['get', 'post'], '/penerimaan/cetak-rekap-layanan', [PenerimaanController::class, 'cetakRekapLayanan']);
+    Route::match(['get', 'post'], '/penerimaan/cetak-rekap-lokasi', [PenerimaanController::class, 'cetakRekapLokasi']);
     Route::get('/rekap-layanan', fn() => redirect('/panel-adm14/penerimaan/rekap-layanan'));
     Route::get('/rekap-lokasi', fn() => redirect('/panel-adm14/penerimaan/rekap-lokasi'));
 

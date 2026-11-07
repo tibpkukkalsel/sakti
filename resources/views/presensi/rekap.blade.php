@@ -16,10 +16,22 @@
     </div>
     <div class="page-body">
         <div class="container-xl">
-            <div class="row">
-                <div class="col-6">
-                    <div class="card">
-                        <div class="card-body">
+            <div class="row justify-content-center">
+                <div class="col-lg-6 col-md-8 col-12">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
+                            <div>
+                                <h4 class="card-title fw-bold text-dark mb-0">
+                                    <i class="bi bi-file-earmark-pdf-fill text-danger me-1"></i>
+                                    Cetak Rekapitulasi Presensi Pegawai
+                                </h4>
+                                <small class="text-muted">Pilih filter periode bulan & tahun untuk mencetak rekapitulasi presensi via mPDF.</small>
+                            </div>
+                            <span class="badge bg-danger-subtle text-danger border border-danger-subtle fw-semibold px-2 py-1">
+                                mPDF
+                            </span>
+                        </div>
+                        <div class="card-body p-4">
                             <form action="/panel-adm14/presensi/cetakrekap" target="_blank" method="POST">
                                 @csrf
                                 @role('administrator', 'user')
@@ -103,7 +115,7 @@
                                 <div class="row mt-2">
                                     <div class="col-6">
                                         <div class="form-group">
-                                            <button type="submit" name="cetak" class="btn btn-primary w-100">
+                                            <button type="submit" name="cetak" class="btn btn-danger w-100 d-inline-flex align-items-center justify-content-center gap-2 shadow-sm py-2">
                                                 <svg xmlns="http://www.w3.org/2000/svg"
                                                     class="icon icon-tabler icon-tabler-printer" width="24"
                                                     height="24" viewBox="0 0 24 24" stroke-width="2"
@@ -118,7 +130,7 @@
                                                         d="M7 13m0 2a2 2 0 0 1 2 -2h6a2 2 0 0 1 2 2v4a2 2 0 0 1 -2 2h-6a2 2 0 0 1 -2 -2z">
                                                     </path>
                                                 </svg>
-                                                Cetak
+                                                <strong>Cetak PDF (mPDF)</strong>
                                             </button>
                                         </div>
                                     </div>

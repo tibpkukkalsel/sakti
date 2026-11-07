@@ -27,13 +27,27 @@
 <div class="page-body">
     <div class="container-xl">
 
-        <!-- Filter Form -->
-        <div class="card card-outline card-success shadow-sm mb-3">
-            <div class="card-body">
+        <!-- Filter Form & Cetak Laporan mPDF -->
+        <div class="card shadow-sm border-0 mb-3">
+            <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
+                <div>
+                    <h4 class="card-title fw-bold text-dark mb-0">
+                        <i class="bi bi-file-earmark-pdf-fill text-danger me-1"></i>
+                        Laporan Rekap Penerimaan Per Lokasi
+                    </h4>
+                    <small class="text-muted">Pilih filter periode untuk mencetak laporan resmi via mPDF atau menampilkan data rekapitulasi.</small>
+                </div>
+                <span class="badge bg-danger-subtle text-danger border border-danger-subtle fw-semibold px-2 py-1">
+                    Cetak mPDF & Excel
+                </span>
+            </div>
+            <div class="card-body p-3">
                 <form action="/panel-adm14/penerimaan/rekap-lokasi" method="GET" id="formFilter" autocomplete="off">
-                    <div class="row g-2 align-items-end">
+                    <div class="row g-3 align-items-end">
                         <div class="col-md-4 col-sm-6 col-12">
-                            <label class="form-label fw-bold small text-muted">Pilih Lokasi Pelayanan:</label>
+                            <label class="form-label fw-bold small text-secondary">
+                                <i class="bi bi-geo-alt-fill me-1"></i>Pilih Lokasi Pelayanan:
+                            </label>
                             <select name="kode_cabang" class="form-select">
                                 <option value="all">-- Semua Lokasi Pelayanan --</option>
                                 @foreach ($daftarLokasi as $lok)
@@ -44,32 +58,59 @@
                             </select>
                         </div>
                         <div class="col-md-3 col-sm-6 col-12">
-                            <label class="form-label fw-bold small text-muted">Periode Waktu:</label>
+                            <label class="form-label fw-bold small text-secondary">
+                                <i class="bi bi-calendar3 me-1"></i>Filter Periode:
+                            </label>
                             <select name="periode" id="selectPeriode" class="form-select">
                                 <option value="bulan_ini" {{ $periode == 'bulan_ini' ? 'selected' : '' }}>Bulan Ini</option>
                                 <option value="hari_ini" {{ $periode == 'hari_ini' ? 'selected' : '' }}>Hari Ini</option>
                                 <option value="tahun_ini" {{ $periode == 'tahun_ini' ? 'selected' : '' }}>Tahun Ini</option>
-                                <option value="custom" {{ $periode == 'custom' ? 'selected' : '' }}>Kustom Tanggal</option>
+                                <option value="custom" {{ $periode == 'custom' ? 'selected' : '' }}>Kustom Rentang Tanggal</option>
                             </select>
                         </div>
-                        <div class="col-md-3 col-sm-8 col-12 custom-date-box" style="{{ $periode == 'custom' ? '' : 'display: none;' }}">
-                            <label class="form-label fw-bold small text-muted">Rentang Tanggal:</label>
+                        <div class="col-md-5 col-sm-12 col-12 custom-date-box" style="{{ $periode == 'custom' ? '' : 'display: none;' }}">
+                            <label class="form-label fw-bold small text-secondary">
+                                <i class="bi bi-calendar-range me-1"></i>Rentang Tanggal (Dari s/d Sampai):
+                            </label>
                             <div class="input-group">
                                 <input type="date" name="tgl_dari" class="form-control" value="{{ $tgl_dari }}">
-                                <span class="input-group-text">s/d</span>
+                                <span class="input-group-text bg-light text-muted">s/d</span>
                                 <input type="date" name="tgl_sampai" class="form-control" value="{{ $tgl_sampai }}">
                             </div>
                         </div>
-                        <div class="col-md-2 col-sm-4 col-12 ms-auto">
-                            <div class="d-flex gap-2">
-                                <button type="submit" class="btn btn-primary w-100">
-                                    <i class="bi bi-filter me-1"></i> Filter
-                                </button>
-                                <a href="/panel-adm14/penerimaan/rekap-lokasi" class="btn btn-outline-secondary" title="Reset Filter">
-                                    <i class="bi bi-arrow-clockwise"></i>
-                                </a>
-                            </div>
-                        </div>
+                    </div>
+
+                    <div class="d-flex flex-wrap align-items-center gap-2 mt-3 pt-3 border-top">
+                        <!-- Tombol Cetak PDF via mPDF -->
+                        <button type="submit" formaction="/panel-adm14/penerimaan/cetak-rekap-lokasi" formtarget="_blank" class="btn btn-danger d-inline-flex align-items-center gap-2 shadow-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-printer" width="20" height="20" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                <path d="M17 17h2a2 2 0 0 0 2 -2v-4a2 2 0 0 0 -2 -2h-14a2 2 0 0 0 -2 2v4a2 2 0 0 0 2 2h2"></path>
+                                <path d="M17 9v-4a2 2 0 0 0 -2 -2h-6a2 2 0 0 0 -2 2v4"></path>
+                                <path d="M7 13m0 2a2 2 0 0 1 2 -2h6a2 2 0 0 1 2 2v4a2 2 0 0 1 -2 2h-6a2 2 0 0 1 -2 -2z"></path>
+                            </svg>
+                            <strong>Cetak PDF (mPDF)</strong>
+                        </button>
+
+                        <!-- Tombol Export Excel -->
+                        <button type="submit" formaction="/panel-adm14/penerimaan/cetak-rekap-lokasi" name="exportexcel" value="1" class="btn btn-success d-inline-flex align-items-center gap-2 shadow-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-download" width="20" height="20" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2"></path>
+                                <path d="M7 11l5 5l5 -5"></path>
+                                <path d="M12 4l0 12"></path>
+                            </svg>
+                            Export to Excel
+                        </button>
+
+                        <!-- Tombol Tampilkan Data / Preview -->
+                        <button type="submit" formaction="/panel-adm14/penerimaan/rekap-lokasi" class="btn btn-primary d-inline-flex align-items-center gap-1">
+                            <i class="bi bi-eye me-1"></i> Tampilkan Data
+                        </button>
+
+                        <a href="/panel-adm14/penerimaan/rekap-lokasi" class="btn btn-outline-secondary ms-auto" title="Reset Filter">
+                            <i class="bi bi-arrow-clockwise me-1"></i> Reset
+                        </a>
                     </div>
                 </form>
             </div>

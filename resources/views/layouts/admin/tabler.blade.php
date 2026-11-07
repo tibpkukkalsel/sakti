@@ -125,6 +125,16 @@
             font-weight: 600;
         }
 
+        .sidebar-menu .nav-treeview .nav-treeview .nav-link {
+            padding-left: 2.25rem !important;
+            font-size: 0.875rem;
+        }
+
+        .sidebar-menu .nav-treeview .nav-treeview .nav-link.active {
+            background-color: rgba(13, 110, 253, 0.35) !important;
+            color: #ffffff !important;
+        }
+
         /* =========================================================
            Input Icon & Form Control Bridge (Side-by-side alignment)
            Applies to all forms across the Admin Panel
