@@ -213,6 +213,29 @@
         </div>
     </div>
 
+    <!-- Grafik 1b: Total Pendapatan Layanan Per Bulan -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
+                    <div>
+                        <h4 class="card-title fw-bold text-dark mb-0">Total Pendapatan Layanan Per Bulan</h4>
+                        <span class="badge bg-light text-dark border">Tahun {{ $tahunini }}</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    @if (count($chartLayananPerBulanSeries) > 0)
+                        <div id="chart-layanan-perbulan" style="min-height: 360px;"></div>
+                    @else
+                        <div class="text-center py-5 text-muted">
+                            <p class="mb-0">Belum ada data pendapatan layanan pada tahun ini.</p>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Grafik 2 (Baris 2): 5 Lokasi Terbanyak Penerimaan -->
     <div class="row mb-4">
         <div class="col-12">
@@ -465,6 +488,74 @@
 
             var chartBulanan = new ApexCharts(document.querySelector("#chart-tren-bulanan"), optionsBulanan);
             chartBulanan.render();
+
+            // Inisialisasi Grafik Total Pendapatan Layanan Per Bulan
+            @if (count($chartLayananPerBulanSeries) > 0)
+                var optionsLayananPerBulan = {
+                    series: @json($chartLayananPerBulanSeries),
+                    chart: {
+                        type: 'bar',
+                        height: 350,
+                        stacked: false,
+                        toolbar: {
+                            show: false
+                        },
+                        fontFamily: 'inherit'
+                    },
+                    plotOptions: {
+                        bar: {
+                            horizontal: false,
+                            columnWidth: '50%',
+                            borderRadius: 4
+                        }
+                    },
+                    dataLabels: {
+                        enabled: false
+                    },
+                    stroke: {
+                        show: true,
+                        width: 2,
+                        colors: ['transparent']
+                    },
+                    colors: ['#0d6efd', '#20c997', '#fd7e14', '#6f42c1', '#d63384', '#0dcaf0'],
+                    xaxis: {
+                        categories: @json($chartBulanLabels),
+                        labels: {
+                            style: {
+                                fontWeight: 500
+                            }
+                        }
+                    },
+                    yaxis: {
+                        labels: {
+                            formatter: function(val) {
+                                if (val >= 1000000000) {
+                                    return 'Rp ' + (val / 1000000000).toFixed(2) + ' M';
+                                } else if (val >= 1000000) {
+                                    return 'Rp ' + (val / 1000000).toFixed(1) + ' jt';
+                                }
+                                return 'Rp ' + Number(val).toLocaleString('id-ID');
+                            }
+                        }
+                    },
+                    tooltip: {
+                        shared: true,
+                        intersect: false,
+                        y: {
+                            formatter: function(val) {
+                                return formatRupiahChart(val);
+                            }
+                        }
+                    },
+                    legend: {
+                        position: 'top',
+                        horizontalAlign: 'right'
+                    }
+                };
+
+                var chartLayananPerBulan = new ApexCharts(document.querySelector("#chart-layanan-perbulan"), optionsLayananPerBulan);
+                chartLayananPerBulan.render();
+            @endif
 
             // 2. Inisialisasi Grafik Bar ke Samping (5 Lokasi Terbanyak Penerimaan)
             @if (count($chartLokasiLabels) > 0)

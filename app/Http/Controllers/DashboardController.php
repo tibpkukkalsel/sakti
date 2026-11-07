@@ -450,6 +450,45 @@ class DashboardController extends Controller
             $chartBulanValuesR4[] = (float) ($row ? $row->rp_r4 : 0);
         }
 
+        // 2b. Grafik Total Pendapatan Layanan Per Bulan (Tahun Berjalan)
+        $pendapatanLayananBulanQuery = DB::table('rekap_penerimaan_pkb')
+            ->join('layanan', 'rekap_penerimaan_pkb.layanan_id', '=', 'layanan.id')
+            ->whereYear('rekap_penerimaan_pkb.tgl_penerimaan', $tahunini);
+
+        if (!empty($layanan_id) && $layanan_id != 'all') {
+            $pendapatanLayananBulanQuery->where('rekap_penerimaan_pkb.layanan_id', $layanan_id);
+        }
+
+        $rawPendapatanLayananBulan = $pendapatanLayananBulanQuery->selectRaw('
+            rekap_penerimaan_pkb.layanan_id,
+            layanan.nama_layanan,
+            MONTH(rekap_penerimaan_pkb.tgl_penerimaan) as bulan,
+            COALESCE(SUM(rekap_penerimaan_pkb.total_rp), 0) as total_rp
+        ')
+        ->groupBy('rekap_penerimaan_pkb.layanan_id', 'layanan.nama_layanan', DB::raw('MONTH(rekap_penerimaan_pkb.tgl_penerimaan)'))
+        ->get();
+
+        $daftarLayananChartQuery = DB::table('layanan')->orderBy('nama_layanan', 'asc');
+        if (!empty($layanan_id) && $layanan_id != 'all') {
+            $daftarLayananChartQuery->where('id', $layanan_id);
+        }
+        $daftarLayananChart = $daftarLayananChartQuery->get();
+
+        $chartLayananPerBulanSeries = [];
+        foreach ($daftarLayananChart as $lay) {
+            $monthlyValues = [];
+            for ($m = 1; $m <= 12; $m++) {
+                $item = $rawPendapatanLayananBulan->first(function ($r) use ($lay, $m) {
+                    return $r->layanan_id == $lay->id && $r->bulan == $m;
+                });
+                $monthlyValues[] = (float) ($item ? $item->total_rp : 0);
+            }
+            $chartLayananPerBulanSeries[] = [
+                'name' => $lay->nama_layanan,
+                'data' => $monthlyValues
+            ];
+        }
+
         // 3. Grafik Bar ke Samping: 5 Lokasi yang paling banyak mendapatkan penerimaan (Top 5 Lokasi)
         $topLokasiQuery = DB::table('rekap_penerimaan_pkb')
             ->join('layanan', 'rekap_penerimaan_pkb.layanan_id', '=', 'layanan.id')
@@ -548,6 +587,7 @@ class DashboardController extends Controller
             'chartBulanValuesTotal',
             'chartBulanValuesR2',
             'chartBulanValuesR4',
+            'chartLayananPerBulanSeries',
             'chartTopLabels',
             'chartTopValues',
             'chartLokasiLabels',
