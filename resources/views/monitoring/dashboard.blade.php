@@ -1002,8 +1002,9 @@
                         return val.toFixed(1) + "%";
                     },
                     style: {
-                        fontSize: '11.5px',
-                        fontWeight: 700
+                        fontSize: '11px',
+                        fontWeight: 700,
+                        colors: ['#000000']
                     },
                     dropShadow: {
                         enabled: false
@@ -1066,25 +1067,28 @@
 
             var html = '';
             items.forEach(function(item, idx) {
-                var rankColor = (idx === 0) ? '#d97706' : '#64748b';
-                var rankBg = (idx === 0) ? '#fef3c7' : '#f1f5f9';
+                var rankBadge = (idx === 0)
+                    ? '<span style="display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:6px; background:#fef3c7; color:#d97706; font-size:11px; font-weight:700; flex-shrink:0;">' + (idx + 1) + '</span>'
+                    : '<span style="display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:6px; background:#f1f5f9; color:#64748b; font-size:11px; font-weight:700; flex-shrink:0;">' + (idx + 1) + '</span>';
 
-                html += '<div class="p-2 mb-2" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; box-shadow: 0 1px 2px rgba(0,0,0,0.03);">';
-                html += '  <div class="d-flex justify-content-between align-items-center">';
-                html += '    <div style="flex: 1; min-width: 0;" class="pe-2">';
-                html += '      <div class="d-flex align-items-center mb-1">';
-                html += '        <span class="badge me-1" style="background:' + rankBg + '; color:' + rankColor + '; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px;">#' + (idx + 1) + '</span>';
-                html += '        <span class="fw-bold text-dark text-truncate" style="font-size: 12.5px;">' + (item.nama_layanan || '-') + '</span>';
+                html += '<div class="card mb-2" style="border-radius: 10px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.03);">';
+                html += '  <div class="card-body p-2">';
+                html += '    <div class="d-flex justify-content-between align-items-center">';
+                html += '      <div class="d-flex align-items-center me-2" style="min-width: 0; flex: 1;">';
+                html +=          rankBadge;
+                html += '        <div class="ms-2" style="min-width: 0;">';
+                html += '          <div class="fw-bold text-dark text-truncate" style="font-size: 13px; line-height: 1.3;">' + (item.nama_layanan || '-') + '</div>';
+                html += '          <div class="text-muted text-truncate" style="font-size: 11px; line-height: 1.4; margin-top: 2px;">';
+                html += '            <ion-icon name="location-outline" style="vertical-align: -1.5px; font-size: 12px; color: #2A8BF2;"></ion-icon> ' + (item.nama_lokasi || 'UPPD SAMSAT Batulicin');
+                html += '          </div>';
+                html += '        </div>';
                 html += '      </div>';
-                html += '      <div class="text-muted text-truncate" style="font-size: 11px;">';
-                html += '        <ion-icon name="location-outline" style="vertical-align: -1px; font-size: 12px; color: #2A8BF2;"></ion-icon> ' + (item.nama_lokasi || 'UPPD SAMSAT Batulicin');
-                html += '      </div>';
-                html += '    </div>';
-                html += '    <div class="text-end text-nowrap">';
-                html += '      <div class="fw-bold" style="font-size: 12.5px; color: #10b981;">Rp ' + Number(item.total_rp).toLocaleString('id-ID') + '</div>';
+                html += '      <div class="text-end" style="flex-shrink: 0;">';
+                html += '        <div class="fw-bold" style="font-size: 13px; color: #10b981; line-height: 1.3;">Rp ' + Number(item.total_rp).toLocaleString('id-ID') + '</div>';
                 if (item.total_unit) {
-                    html += '      <div class="text-muted" style="font-size: 10.5px;">' + Number(item.total_unit).toLocaleString('id-ID') + ' Unit</div>';
+                    html += '        <div class="text-muted" style="font-size: 11px; line-height: 1.4; margin-top: 2px;">' + Number(item.total_unit).toLocaleString('id-ID') + ' Unit</div>';
                 }
+                html += '      </div>';
                 html += '    </div>';
                 html += '  </div>';
                 html += '</div>';
@@ -1134,8 +1138,9 @@
                         return val.toFixed(1) + "%";
                     },
                     style: {
-                        fontSize: '11.5px',
-                        fontWeight: 700
+                        fontSize: '11px',
+                        fontWeight: 700,
+                        colors: ['#000000']
                     },
                     dropShadow: {
                         enabled: false
