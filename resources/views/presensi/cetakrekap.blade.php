@@ -143,11 +143,9 @@
         <thead>
             <tr>
                 <th rowspan="2" style="width: 20px;">NO.</th>
-                <th rowspan="2" style="width: 140px;">NAMA PEGAWAI</th>
+                <th rowspan="2" style="width: 140px;">NAMA LAYANAN</th>
                 <th colspan="{{ $jmlhari }}">BULAN {{ strtoupper($namabulan[(int)$bulan] ?? '') }} {{ $tahun }}</th>
-                <th rowspan="2" style="width: 28px;">HADIR</th>
-                <th colspan="2">IZIN / SAKIT</th>
-                <th rowspan="2" style="width: 28px;">ALPA</th>
+                <th colspan="3">REKAP</th>
             </tr>
             <tr>
                 @foreach ($rangetanggal as $d)
@@ -155,8 +153,9 @@
                         <th style="width: 16px;">{{ date('d', strtotime($d)) }}</th>
                     @endif
                 @endforeach
-                <th style="width: 25px;">IZIN</th>
-                <th style="width: 25px;">SAKIT</th>
+                <th style="width: 25px;">H</th>
+                <th style="width: 25px;">X</th>
+                <th style="width: 25px;">L</th>
             </tr>
         </thead>
         <tbody>
@@ -167,10 +166,8 @@
 
                     @php
                         $jml_hadir = 0;
-                        $jml_izin = 0;
-                        $jml_sakit = 0;
-                        $jml_cuti = 0;
-                        $jml_alpa = 0;
+                        $jml_maintenance = 0;
+                        $jml_libur = 0;
 
                         for ($i = 1; $i <= $jmlhari; $i++) {
                             $tgl = 'tgl_' . $i;
@@ -182,87 +179,28 @@
                             $ceklibur = cekkaryawanlibur($datalibur, $search_items);
 
                             $datapresensi = explode('|', $r->$tgl ?? '');
-                            if (!empty($r->$tgl)) {
-                                $status = $datapresensi[2] ?? '';
-                            } else {
-                                $status = '';
-                            }
+                            $status = !empty($r->$tgl) ? ($datapresensi[2] ?? '') : '';
 
                             $cekhari = gethari(date('D', strtotime($tgl_presensi)));
                             $color = '#ffffff';
                             $text_color = '#000000';
                             $text_display = '';
 
-                            // Cek apakah hari ini merupakan hari kerja sesuai jadwal kantor/pegawai
-                            $is_harikerja = cekJadwalKerja(
-                                $r->nik, 
-                                $r->kode_cabang ?? null, 
-                                $r->kode_dept ?? null, 
-                                $tgl_presensi, 
-                                $cekhari, 
-                                $jadwal_by_date ?? null, 
-                                $jadwal_pegawai ?? null, 
-                                $jadwal_dept ?? null
-                            );
-
-                            if ($cekhari == 'Sabtu' || $cekhari == 'Minggu') {
-                                if ($status == 'h') {
-                                    $jml_hadir += 1;
-                                    $color = '#ffffff';
-                                    $text_color = '#000000';
-                                    $text_display = 'H';
-                                } else {
-                                    $color = '#fd7e14';
-                                    $text_color = '#ffffff';
-                                    $text_display = 'X';
-                                }
+                            if ($status == 'h' || $status == 'tl') {
+                                $jml_hadir += 1;
+                                $color = '#ffffff';
+                                $text_color = '#000000';
+                                $text_display = 'H';
+                            } elseif ($status == 'm' || $status == 'x') {
+                                $jml_maintenance += 1;
+                                $color = '#fd7e14';
+                                $text_color = '#ffffff';
+                                $text_display = 'X';
                             } else {
-                                if ($status == 'h') {
-                                    $jml_hadir += 1;
-                                    $color = '#ffffff';
-                                    $text_color = '#000000';
-                                    $text_display = 'H';
-                                } elseif ($status == 'tl') {
-                                    $jml_hadir += 1;
-                                    $color = '#20c997';
-                                    $text_color = '#ffffff';
-                                    $text_display = 'TL';
-                                } elseif ($status == 'i') {
-                                    $jml_izin += 1;
-                                    $color = '#ffc107';
-                                    $text_color = '#000000';
-                                    $text_display = 'I';
-                                } elseif ($status == 's') {
-                                    $jml_sakit += 1;
-                                    $color = '#0dcaf0';
-                                    $text_color = '#000000';
-                                    $text_display = 'S';
-                                } elseif ($status == 'c') {
-                                    $jml_cuti += 1;
-                                    $color = '#6f42c1';
-                                    $text_color = '#ffffff';
-                                    $text_display = 'C';
-                                }
-
-                                if (!empty($ceklibur)) {
-                                    $color = '#198754';
-                                    $text_color = '#ffffff';
-                                    if (empty($text_display)) {
-                                        $text_display = 'L';
-                                    }
-                                } elseif (!$is_harikerja) {
-                                    // Hari libur kantor / tidak ada jadwal kerja
-                                    $color = '#198754';
-                                    $text_color = '#ffffff';
-                                    if (empty($text_display)) {
-                                        $text_display = 'L';
-                                    }
-                                } elseif (empty($status) && empty($ceklibur) && $is_harikerja) {
-                                    $jml_alpa += 1;
-                                    $color = '#dc3545';
-                                    $text_color = '#ffffff';
-                                    $text_display = 'A';
-                                }
+                                $jml_libur += 1;
+                                $color = '#198754';
+                                $text_color = '#ffffff';
+                                $text_display = 'L';
                             }
                     @endphp
                         <td style="background-color: {{ $color }}; color: {{ $text_color }}; font-weight: bold;">
@@ -272,16 +210,13 @@
                         }
                     @endphp
                     <td style="font-weight: bold;">{{ !empty($jml_hadir) ? $jml_hadir : '-' }}</td>
-                    <td style="font-weight: bold;">{{ !empty($jml_izin) ? $jml_izin : '-' }}</td>
-                    <td style="font-weight: bold;">{{ !empty($jml_sakit) ? $jml_sakit : '-' }}</td>
-                    <td style="font-weight: bold; color: {{ !empty($jml_alpa) ? '#d9534f' : '#000' }};">
-                        {{ !empty($jml_alpa) ? $jml_alpa : '-' }}
-                    </td>
+                    <td style="font-weight: bold; color: {{ !empty($jml_maintenance) ? '#fd7e14' : '#000' }};">{{ !empty($jml_maintenance) ? $jml_maintenance : '-' }}</td>
+                    <td style="font-weight: bold; color: {{ !empty($jml_libur) ? '#198754' : '#000' }};">{{ !empty($jml_libur) ? $jml_libur : '-' }}</td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="{{ $jmlhari + 6 }}" style="padding: 15px; font-style: italic; color: #777;">
-                        Tidak ada data pegawai yang dapat ditampilkan.
+                    <td colspan="{{ $jmlhari + 5 }}" style="padding: 15px; font-style: italic; color: #777;">
+                        Tidak ada data layanan yang dapat ditampilkan.
                     </td>
                 </tr>
             @endforelse
@@ -292,14 +227,9 @@
         <tr>
             <td style="vertical-align: top;">
                 <b>Keterangan:</b> &nbsp;
-                <span class="legend-item"><span class="color-badge" style="background-color: #ffffff;"></span><b>H</b> = Hadir</span>
-                <span class="legend-item"><span class="color-badge" style="background-color: #20c997;"></span><b>TL</b> = Tugas Luar</span>
-                <span class="legend-item"><span class="color-badge" style="background-color: #ffc107;"></span><b>I</b> = Izin</span>
-                <span class="legend-item"><span class="color-badge" style="background-color: #0dcaf0;"></span><b>S</b> = Sakit</span>
-                <span class="legend-item"><span class="color-badge" style="background-color: #6f42c1;"></span><b>C</b> = Cuti</span>
+                <span class="legend-item"><span class="color-badge" style="background-color: #ffffff;"></span><b>H</b> = Hadir Layanan</span>
+                <span class="legend-item"><span class="color-badge" style="background-color: #fd7e14;"></span><b>X</b> = Maintance Layanan</span>
                 <span class="legend-item"><span class="color-badge" style="background-color: #198754;"></span><b>L</b> = Libur</span>
-                <span class="legend-item"><span class="color-badge" style="background-color: #fd7e14;"></span><b>X</b> = Sabtu & Minggu</span>
-                <span class="legend-item"><span class="color-badge" style="background-color: #dc3545;"></span><b>A</b> = Alpa</span>
             </td>
         </tr>
     </table>
