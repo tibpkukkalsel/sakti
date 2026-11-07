@@ -747,7 +747,7 @@
                             <div class="d-flex justify-content-between align-items-center px-2 pt-2 mb-1">
                                 <span class="fw-bold text-dark" style="font-size: 13px;">Persentase Pendapatan Berdasarkan Hari ({{ $tahunini }})</span>
                             </div>
-                            <div id="chart-pie-hari-monitoring" style="min-height: 280px;"></div>
+                            <div id="chart-pie-hari-monitoring" style="min-height: 380px;"></div>
 
                             <!-- Petunjuk atau Rincian saat Warna Pie Hari Diklik -->
                             <div id="detail-hari-hint" class="text-center py-2 px-1 text-muted" style="font-size: 11px; font-style: italic; border-top: 1px dashed #e2e8f0;">
@@ -1175,7 +1175,7 @@
                 labels: hariLabels,
                 chart: {
                     type: 'pie',
-                    height: 290,
+                    height: 380,
                     fontFamily: 'inherit',
                     events: {
                         dataPointSelection: function(event, chartContext, config) {
@@ -1183,6 +1183,14 @@
                             if (selectedIndex !== undefined && hariLabels[selectedIndex]) {
                                 showDetailHari(hariLabels[selectedIndex]);
                             }
+                        }
+                    }
+                },
+                plotOptions: {
+                    pie: {
+                        customScale: 1.02,
+                        dataLabels: {
+                            offset: -5
                         }
                     }
                 },
@@ -1223,7 +1231,7 @@
                     breakpoint: 480,
                     options: {
                         chart: {
-                            height: 310
+                            height: 400
                         },
                         legend: {
                             position: 'bottom',
