@@ -174,11 +174,15 @@
                                                         <td>{{ $d->no_hp }}</td>
                                                         <td class="text-center">
                                                             @if (empty($d->foto))
-                                                                <img src="{{ asset('assets/img/nophoto.png') }}"
-                                                                    class="avatar" alt="">
+                                                                <img src="{{ asset('assets/img/avatar_layanan.png') }}"
+                                                                    class="avatar rounded-circle border shadow-sm"
+                                                                    style="width: 38px; height: 38px; object-fit: cover; background: #fff;"
+                                                                    alt="Mobil Layanan">
                                                             @else
-                                                                <img src="{{ url($path) }}" class="avatar"
-                                                                    alt="">
+                                                                <img src="{{ url($path) }}" class="avatar rounded-circle border"
+                                                                    style="width: 38px; height: 38px; object-fit: cover;"
+                                                                    onerror="this.src='{{ asset('assets/img/avatar_layanan.png') }}'"
+                                                                    alt="Foto">
                                                             @endif
                                                         </td>
                                                         <td>{{ $d->nama_dept }}</td>

@@ -275,9 +275,9 @@
                     @endphp
                     <img src="{{ url($path) }}" alt="avatar" class="imaged w64 rounded"
                         style="width:64px; height:64px; object-fit:cover;"
-                        onerror="this.src='{{ asset('assets/img/sample/avatar/avatar1.jpg') }}'">
+                        onerror="this.src='{{ asset('assets/img/avatar_layanan.png') }}'">
                 @else
-                    <img src="{{ asset('assets/img/sample/avatar/avatar1.jpg') }}" alt="avatar" class="imaged w64 rounded"
+                    <img src="{{ asset('assets/img/avatar_layanan.png') }}" alt="avatar" class="imaged w64 rounded"
                         style="width:64px; height:64px; object-fit:cover;">
                 @endif
             </div>

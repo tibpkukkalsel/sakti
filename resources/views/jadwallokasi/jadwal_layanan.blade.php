@@ -100,10 +100,18 @@
                                     <td class="text-center fw-bold text-muted">{{ $loop->iteration }}</td>
                                     <td>
                                         <div class="d-flex align-items-center">
-                                            <span class="avatar rounded-circle bg-primary text-white fw-bold me-2"
-                                                style="width: 34px; height: 34px; font-size: 13px;">
-                                                {{ strtoupper(substr($l->nama_layanan, 0, 2)) }}
-                                            </span>
+                                            @if (!empty($l->foto))
+                                                <img src="{{ Storage::url('uploads/karyawan/' . $l->foto) }}"
+                                                    class="rounded-circle me-2 border"
+                                                    style="width: 34px; height: 34px; object-fit: cover;"
+                                                    alt="Foto Layanan"
+                                                    onerror="this.src='{{ asset('assets/img/avatar_layanan.png') }}'">
+                                            @else
+                                                <img src="{{ asset('assets/img/avatar_layanan.png') }}"
+                                                    class="rounded-circle me-2 border shadow-sm"
+                                                    style="width: 34px; height: 34px; object-fit: cover; background: #fff;"
+                                                    alt="Mobil Layanan">
+                                            @endif
                                             <strong class="text-dark">{{ $l->nama_layanan }}</strong>
                                         </div>
                                     </td>

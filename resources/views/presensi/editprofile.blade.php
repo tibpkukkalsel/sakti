@@ -38,6 +38,24 @@
             <p>{{ $message }}</p>
         </div>
         @enderror
+
+        <div class="text-center mb-3">
+            @if (!empty($karyawan->foto))
+                @php
+                    $path = Storage::url('uploads/karyawan/' . $karyawan->foto);
+                @endphp
+                <img src="{{ url($path) }}" alt="Foto Layanan" class="imaged rounded-circle shadow-sm"
+                    style="width: 80px; height: 80px; object-fit: cover; border: 3px solid #e2e8f0;"
+                    onerror="this.src='{{ asset('assets/img/avatar_layanan.png') }}'">
+            @else
+                <img src="{{ asset('assets/img/avatar_layanan.png') }}" alt="Avatar Bis Layanan" class="imaged rounded-circle shadow-sm"
+                    style="width: 80px; height: 80px; object-fit: cover; border: 3px solid #e2e8f0; background: #fff;">
+            @endif
+            <div class="mt-2 font-weight-bold" style="font-size: 15px; color: #1e293b;">
+                {{ $karyawan->nama_layanan ?? $karyawan->nama_lengkap }}
+            </div>
+            <div class="text-muted" style="font-size: 12px;">Akun Layanan SAKTI</div>
+        </div>
         <div class="form-group boxed">
             <div class="input-wrapper">
                 <label style="font-size: 11px; font-weight: 600; color: #64748b; margin-bottom: 2px;">Nama Layanan</label>

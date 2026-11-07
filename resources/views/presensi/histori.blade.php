@@ -663,7 +663,7 @@
                     </div>
                     <div class="detail-card-body">
                         ${(hasIn && fotoIn) 
-                            ? `<img src="${fotoIn}" class="detail-thumb" alt="Foto Masuk" onerror="this.src='/assets/img/sample/avatar/avatar1.jpg'">`
+                            ? `<img src="${fotoIn}" class="detail-thumb" alt="Foto Masuk" onerror="this.src='/assets/img/avatar_layanan.png'">`
                             : `<div class="detail-thumb-placeholder"><ion-icon name="person-outline"></ion-icon></div>`
                         }
                         <div class="flex-grow-1">
@@ -706,7 +706,7 @@
                     </div>
                     <div class="detail-card-body">
                         ${(hasOut && fotoOut) 
-                            ? `<img src="${fotoOut}" class="detail-thumb" alt="Foto Pulang" onerror="this.src='/assets/img/sample/avatar/avatar1.jpg'">`
+                            ? `<img src="${fotoOut}" class="detail-thumb" alt="Foto Pulang" onerror="this.src='/assets/img/avatar_layanan.png'">`
                             : `<div class="detail-thumb-placeholder"><ion-icon name="time-outline"></ion-icon></div>`
                         }
                         <div class="flex-grow-1">

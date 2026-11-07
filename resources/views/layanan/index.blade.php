@@ -105,9 +105,9 @@
                                                 <td>
                                                     <div class="d-flex align-items-center">
                                                         @if (!empty($d->foto))
-                                                        <img src="{{ Storage::url('uploads/karyawan/' . $d->foto) }}" class="rounded-circle me-2" style="width: 38px; height: 38px; object-fit: cover;" alt="">
+                                                            <img src="{{ Storage::url('uploads/karyawan/' . $d->foto) }}" class="rounded-circle me-2 border" style="width: 38px; height: 38px; object-fit: cover;" alt="Foto Layanan" onerror="this.src='{{ asset('assets/img/avatar_layanan.png') }}'">
                                                         @else
-                                                        <span class="avatar rounded-circle me-2 bg-primary text-white fw-bold">{{ strtoupper(substr($d->nama_layanan, 0, 2)) }}</span>
+                                                            <img src="{{ asset('assets/img/avatar_layanan.png') }}" class="rounded-circle me-2 border shadow-sm" style="width: 38px; height: 38px; object-fit: cover; background: #fff;" alt="Mobil Layanan">
                                                         @endif
                                                         <div>
                                                             <div class="fw-bold">{{ $d->nama_layanan }}</div>
