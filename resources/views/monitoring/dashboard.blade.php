@@ -730,6 +730,16 @@
                             <div id="chart-layanan-perbulan-monitoring" style="min-height: 250px;"></div>
                         </div>
                     </div>
+
+                    <!-- Card Chart Pie Total & Persentase Pendapatan Per Layanan (ApexCharts) -->
+                    <div class="card mt-2" style="border-radius: 12px; border: 1px solid #e2e8f0;">
+                        <div class="card-body p-2">
+                            <div class="d-flex justify-content-between align-items-center px-2 pt-2 mb-1">
+                                <span class="fw-bold text-dark" style="font-size: 13px;">Total & Persentase Pendapatan Per Layanan ({{ $tahunini }})</span>
+                            </div>
+                            <div id="chart-pie-layanan-monitoring" style="min-height: 280px;"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -934,9 +944,86 @@
             chartLayananPerBulanMonitoring.render();
         }
 
+        var chartPieLayananMonitoring = null;
+
+        function renderChartPieLayananMonitoring() {
+            var el = document.querySelector("#chart-pie-layanan-monitoring");
+            if (!el) return;
+
+            if (typeof ApexCharts === 'undefined') {
+                setTimeout(renderChartPieLayananMonitoring, 200);
+                return;
+            }
+
+            if (chartPieLayananMonitoring) {
+                try {
+                    chartPieLayananMonitoring.destroy();
+                } catch (e) {}
+            }
+
+            var optionsPie = {
+                series: @json($pieLayananValues),
+                labels: @json($pieLayananLabels),
+                chart: {
+                    type: 'pie',
+                    height: 290,
+                    fontFamily: 'inherit'
+                },
+                colors: ['#2A8BF2', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4'],
+                dataLabels: {
+                    enabled: true,
+                    formatter: function (val) {
+                        return val.toFixed(1) + "%";
+                    },
+                    style: {
+                        fontSize: '11.5px',
+                        fontWeight: 700
+                    },
+                    dropShadow: {
+                        enabled: false
+                    }
+                },
+                tooltip: {
+                    y: {
+                        formatter: function (val) {
+                            return 'Rp ' + Number(val).toLocaleString('id-ID');
+                        }
+                    }
+                },
+                legend: {
+                    position: 'bottom',
+                    fontSize: '11px',
+                    formatter: function(seriesName, opts) {
+                        var val = opts.w.globals.series[opts.seriesIndex];
+                        var total = opts.w.globals.series.reduce(function(a, b) { return a + b; }, 0);
+                        var percent = total > 0 ? (val / total * 100).toFixed(1) : 0;
+                        var formattedRp = val >= 1000000000 
+                            ? (val / 1000000000).toFixed(2) + ' M' 
+                            : (val / 1000000).toFixed(0) + ' Jt';
+                        return seriesName + ': Rp ' + formattedRp + ' (' + percent + '%)';
+                    }
+                },
+                responsive: [{
+                    breakpoint: 480,
+                    options: {
+                        chart: {
+                            height: 310
+                        },
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }]
+            };
+
+            chartPieLayananMonitoring = new ApexCharts(el, optionsPie);
+            chartPieLayananMonitoring.render();
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             renderChartPenerimaanMonitoring();
             renderChartLayananPerBulanMonitoring();
+            renderChartPieLayananMonitoring();
 
             // Re-render chart saat tab Grafik diklik
             $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
@@ -944,6 +1031,7 @@
                     setTimeout(function() {
                         renderChartPenerimaanMonitoring();
                         renderChartLayananPerBulanMonitoring();
+                        renderChartPieLayananMonitoring();
                     }, 150);
                 }
             });

@@ -163,6 +163,21 @@ class MonitoringController extends Controller
             ];
         }
 
+        // 3c. Data Pie Chart Total & Persentase Pendapatan Per Layanan (Tahun Berjalan)
+        $pendapatanPerLayananTahunIni = DB::table('rekap_penerimaan_pkb')
+            ->join('layanan', 'rekap_penerimaan_pkb.layanan_id', '=', 'layanan.id')
+            ->whereYear('rekap_penerimaan_pkb.tgl_penerimaan', $tahunini)
+            ->select(
+                'layanan.nama_layanan',
+                DB::raw('COALESCE(SUM(rekap_penerimaan_pkb.total_rp), 0) as total_rp')
+            )
+            ->groupBy('layanan.id', 'layanan.nama_layanan')
+            ->orderBy('layanan.nama_layanan', 'asc')
+            ->get();
+
+        $pieLayananLabels = $pendapatanPerLayananTahunIni->pluck('nama_layanan')->toArray();
+        $pieLayananValues = $pendapatanPerLayananTahunIni->pluck('total_rp')->map(fn($v) => (float) $v)->toArray();
+
         // 4. Data Status Real-time Layanan Hari Ini
         $monitoringLayanan = DB::table('layanan')
             ->leftJoin('jadwal_lokasi_layanan as j_khusus', function ($join) use ($hariini) {
@@ -237,6 +252,8 @@ class MonitoringController extends Controller
             'chartBulanValuesR2',
             'chartBulanValuesR4',
             'chartLayananPerBulanSeries',
+            'pieLayananLabels',
+            'pieLayananValues',
             'monitoringLayanan'
         ));
     }
