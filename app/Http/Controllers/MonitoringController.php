@@ -75,6 +75,18 @@ class MonitoringController extends Controller
             ->where('tgl_penerimaan', $hariini)
             ->sum('total_unit');
 
+        $r2HariIni = (int) DB::table('rekap_penerimaan_pkb')
+            ->where('tgl_penerimaan', $hariini)
+            ->sum('jumlah_unit_r2');
+
+        $r4HariIni = (int) DB::table('rekap_penerimaan_pkb')
+            ->where('tgl_penerimaan', $hariini)
+            ->sum('jumlah_unit_r4');
+
+        $noticeHariIni = (int) DB::table('rekap_penerimaan_pkb')
+            ->where('tgl_penerimaan', $hariini)
+            ->sum('jumlah_notice');
+
         $penerimaanBulanIni = (float) DB::table('rekap_penerimaan_pkb')
             ->whereYear('tgl_penerimaan', $tahunini)
             ->whereMonth('tgl_penerimaan', $bulanini)
@@ -170,6 +182,9 @@ class MonitoringController extends Controller
             'jml_belum_absen',
             'penerimaanHariIni',
             'objekHariIni',
+            'r2HariIni',
+            'r4HariIni',
+            'noticeHariIni',
             'penerimaanBulanIni',
             'objekBulanIni',
             'chartBulanLabels',
