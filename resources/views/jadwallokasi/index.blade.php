@@ -34,7 +34,7 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-12 d-flex">
+                            <div class="col-12 d-flex flex-wrap gap-2">
                                 <a href="#" class="btn btn-primary" id="btnTambahJadwal">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                         <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
@@ -43,7 +43,7 @@
                                     </svg>
                                     Tambah Data
                                 </a>
-                                <a href="#" class="btn btn-success" id="btnSetBulk" style="margin-left: 8px;">
+                                <a href="#" class="btn btn-success" id="btnSetBulk">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-event" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                         <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                                         <path d="M4 5m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z"></path>
@@ -53,6 +53,13 @@
                                         <path d="M8 15h2v2h-2z"></path>
                                     </svg>
                                     Set Jadwal Mingguan
+                                </a>
+                                <a href="#" class="btn btn-warning text-dark" id="btnTambahEvent">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-star" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                        <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z"></path>
+                                    </svg>
+                                    Set Event Khusus
                                 </a>
                             </div>
                         </div>
@@ -210,7 +217,7 @@
     </div>
 </div>
 
-{{-- Modal Input Jadwal Harian --}}
+{{-- Modal Input Jadwal Rutin --}}
 <div class="modal modal-blur fade" id="modal-inputjadwal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -221,6 +228,7 @@
             <div class="modal-body">
                 <form action="/panel-adm14/jadwallokasi/store" method="POST" id="frmJadwal">
                     @csrf
+                    <input type="hidden" name="jenis_jadwal" value="rutin">
                     <div class="row">
                         <div class="col-12">
                             <select name="layanan_id" id="layanan_id" class="form-select mb-3">
@@ -231,19 +239,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="row mb-3">
-                        <div class="col-12">
-                            <label class="form-label fw-bold">Tipe Jadwal</label>
-                            <div class="btn-group w-100" role="group">
-                                <input type="radio" class="btn-check" name="jenis_jadwal" id="tipe_rutin" value="rutin" checked autocomplete="off">
-                                <label class="btn btn-outline-primary" for="tipe_rutin">Rutin Mingguan</label>
-
-                                <input type="radio" class="btn-check" name="jenis_jadwal" id="tipe_khusus" value="khusus" autocomplete="off">
-                                <label class="btn btn-outline-warning" for="tipe_khusus">Event Khusus (Custom Tanggal)</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row" id="group_hari">
+                    <div class="row">
                         <div class="col-12">
                             <select name="hari" id="hari" class="form-select mb-3">
                                 <option value="">Pilih Hari</option>
@@ -251,13 +247,6 @@
                                 <option value="{{ $h }}">Hari {{ $h }}</option>
                                 @endforeach
                             </select>
-                        </div>
-                    </div>
-                    <div class="row d-none" id="group_tanggal">
-                        <div class="col-12">
-                            <label class="form-label small text-muted">Tanggal Event Khusus</label>
-                            <input type="date" name="tanggal" id="tanggal" class="form-control mb-1">
-                            <div id="info_hari_tanggal" class="small text-muted mb-3"></div>
                         </div>
                     </div>
                     <div class="row">
@@ -291,6 +280,98 @@
                             <div class="form-group">
                                 <button class="btn btn-primary w-100">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-send" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                        <path d="M10 14l11 -11"></path>
+                                        <path d="M21 3l-6.5 18a.55 .55 0 0 1 -1 0l-3.5 -7l-7 -3.5a.55 .55 0 0 1 0 -1l18 -6.5"></path>
+                                    </svg>
+                                    Simpan
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- Modal Set Event Khusus --}}
+<div class="modal modal-blur fade" id="modal-eventkhusus" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-star text-warning me-1" width="20" height="20" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="currentColor" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z"/></svg>
+                    Set Jadwal Event Khusus
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="/panel-adm14/jadwallokasi/store" method="POST" id="frmJadwalEvent">
+                    @csrf
+                    <input type="hidden" name="jenis_jadwal" value="khusus">
+                    <div class="row">
+                        <div class="col-12">
+                            <select name="layanan_id" id="layanan_id_event" class="form-select mb-3">
+                                <option value="">Pilih Layanan</option>
+                                @foreach ($listLayanan as $l)
+                                <option value="{{ $l->id }}">{{ $l->nama_layanan }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 mb-3">
+                            <label class="form-label small text-muted">Tanggal Event</label>
+                            <input type="date" name="tanggal" id="tanggal_event" class="form-control mb-1">
+                            <div id="info_hari_event" class="small text-muted"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <select name="kode_cabang" id="kode_cabang_event" class="form-select mb-3">
+                                <option value="">Pilih Lokasi Pelayanan</option>
+                                @foreach ($listLokasi as $lok)
+                                <option value="{{ $lok->kode_cabang }}">{{ $lok->nama_cabang }} (Radius {{ $lok->radius_cabang }}m)</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="input-icon mb-3">
+                                <span class="input-icon-addon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-notes" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                        <path d="M5 3m0 2a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2z"></path>
+                                        <path d="M9 7l6 0"></path>
+                                        <path d="M9 11l6 0"></path>
+                                        <path d="M9 15l4 0"></path>
+                                    </svg>
+                                </span>
+                                <input type="text" id="keterangan_event" class="form-control" name="keterangan" placeholder="Keterangan Event">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <button class="btn btn-warning text-dark w-100">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-send" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                        <path d="M10 14l11 -11"></path>
+                                        <path d="M21 3l-6.5 18a.55 .55 0 0 1 -1 0l-3.5 -7l-7 -3.5a.55 .55 0 0 1 0 -1l18 -6.5"></path>
+                                    </svg>
+                                    Simpan Jadwal Event
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
                                         <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                                         <path d="M10 14l11 -11"></path>
                                         <path d="M21 3l-6.5 18a.55 .55 0 0 1 -1 0l-3.5 -7l-7 -3.5a.55 .55 0 0 1 0 -1l18 -6.5"></path>
@@ -402,6 +483,22 @@
             $("#modal-bulk").modal("show");
         });
 
+        $("#btnTambahEvent").click(function() {
+            $("#modal-eventkhusus").modal("show");
+        });
+
+        const namaHariIndo = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+        $('#tanggal_event').on('input change', function() {
+            var val = $(this).val();
+            if (val) {
+                var d = new Date(val + 'T00:00:00');
+                var dayName = namaHariIndo[d.getDay()];
+                $('#info_hari_event').html('<span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle mt-1"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-event me-1" width="14" height="14" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 5m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z"/><path d="M16 3l0 4"/><path d="M8 3l0 4"/><path d="M4 11l16 0"/><path d="M8 15h2v2h-2z"/></svg>Hari ' + dayName + '</span>');
+            } else {
+                $('#info_hari_event').html('');
+            }
+        });
+
         $(".edit").click(function() {
             var id = $(this).attr('id_jadwal');
             $.ajax({
@@ -437,33 +534,9 @@
             });
         });
 
-        $('input[name="jenis_jadwal"]').change(function() {
-            if ($(this).val() == 'khusus') {
-                $('#group_hari').addClass('d-none');
-                $('#group_tanggal').removeClass('d-none');
-            } else {
-                $('#group_tanggal').addClass('d-none');
-                $('#group_hari').removeClass('d-none');
-            }
-        });
-
-        const namaHariIndo = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-        $('#tanggal').on('input change', function() {
-            var val = $(this).val();
-            if (val) {
-                var d = new Date(val + 'T00:00:00');
-                var dayName = namaHariIndo[d.getDay()];
-                $('#info_hari_tanggal').html('<span class="badge bg-light text-dark border">Hari ' + dayName + '</span>');
-            } else {
-                $('#info_hari_tanggal').html('');
-            }
-        });
-
         $("#frmJadwal").submit(function() {
             var layanan_id = $("#layanan_id").val();
-            var jenis_jadwal = $("input[name='jenis_jadwal']:checked").val();
             var hari = $("#hari").val();
-            var tanggal = $("#tanggal").val();
             var kode_cabang = $("#kode_cabang").val();
 
             if (layanan_id == "") {
@@ -476,7 +549,7 @@
                     $("#layanan_id").focus();
                 });
                 return false;
-            } else if (jenis_jadwal == "rutin" && hari == "") {
+            } else if (hari == "") {
                 Swal.fire({
                     title: 'Warning!',
                     text: 'Hari Harus Dipilih !',
@@ -484,16 +557,6 @@
                     confirmButtonText: 'Ok'
                 }).then((result) => {
                     $("#hari").focus();
-                });
-                return false;
-            } else if (jenis_jadwal == "khusus" && tanggal == "") {
-                Swal.fire({
-                    title: 'Warning!',
-                    text: 'Tanggal Event Harus Dipilih !',
-                    icon: 'warning',
-                    confirmButtonText: 'Ok'
-                }).then((result) => {
-                    $("#tanggal").focus();
                 });
                 return false;
             } else if (kode_cabang == "") {
@@ -504,6 +567,44 @@
                     confirmButtonText: 'Ok'
                 }).then((result) => {
                     $("#kode_cabang").focus();
+                });
+                return false;
+            }
+        });
+
+        $("#frmJadwalEvent").submit(function() {
+            var layanan_id = $("#layanan_id_event").val();
+            var tanggal = $("#tanggal_event").val();
+            var kode_cabang = $("#kode_cabang_event").val();
+
+            if (layanan_id == "") {
+                Swal.fire({
+                    title: 'Warning!',
+                    text: 'Layanan Harus Dipilih !',
+                    icon: 'warning',
+                    confirmButtonText: 'Ok'
+                }).then((result) => {
+                    $("#layanan_id_event").focus();
+                });
+                return false;
+            } else if (tanggal == "") {
+                Swal.fire({
+                    title: 'Warning!',
+                    text: 'Tanggal Event Harus Dipilih !',
+                    icon: 'warning',
+                    confirmButtonText: 'Ok'
+                }).then((result) => {
+                    $("#tanggal_event").focus();
+                });
+                return false;
+            } else if (kode_cabang == "") {
+                Swal.fire({
+                    title: 'Warning!',
+                    text: 'Lokasi Harus Dipilih !',
+                    icon: 'warning',
+                    confirmButtonText: 'Ok'
+                }).then((result) => {
+                    $("#kode_cabang_event").focus();
                 });
                 return false;
             }

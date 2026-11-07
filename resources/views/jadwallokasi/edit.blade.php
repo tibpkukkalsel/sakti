@@ -1,5 +1,26 @@
 <form action="/panel-adm14/jadwallokasi/{{ $jadwal->id }}/update" method="POST" id="frmJadwalEdit">
     @csrf
+    <input type="hidden" name="jenis_jadwal" value="{{ $jadwal->jenis_jadwal ?? 'rutin' }}">
+
+    <div class="row mb-3">
+        <div class="col-12">
+            @if (($jadwal->jenis_jadwal ?? 'rutin') == 'khusus')
+                <div class="d-flex align-items-center">
+                    <span class="badge bg-warning text-dark px-2 py-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-star me-1" width="14" height="14" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="currentColor" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z"/></svg>
+                        Jadwal Event Khusus
+                    </span>
+                </div>
+            @else
+                <div class="d-flex align-items-center">
+                    <span class="badge bg-primary text-white px-2 py-1">
+                        Jadwal Rutin Mingguan
+                    </span>
+                </div>
+            @endif
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-12">
             <select name="layanan_id" id="layanan_id_edit" class="form-select mb-3">
@@ -12,41 +33,34 @@
             </select>
         </div>
     </div>
-    <div class="row mb-3">
-        <div class="col-12">
-            <label class="form-label fw-bold">Tipe Jadwal</label>
-            <div class="btn-group w-100" role="group">
-                <input type="radio" class="btn-check" name="jenis_jadwal" id="tipe_rutin_edit" value="rutin" {{ ($jadwal->jenis_jadwal ?? 'rutin') == 'rutin' ? 'checked' : '' }} autocomplete="off">
-                <label class="btn btn-outline-primary" for="tipe_rutin_edit">Rutin Mingguan</label>
 
-                <input type="radio" class="btn-check" name="jenis_jadwal" id="tipe_khusus_edit" value="khusus" {{ ($jadwal->jenis_jadwal ?? '') == 'khusus' ? 'checked' : '' }} autocomplete="off">
-                <label class="btn btn-outline-warning" for="tipe_khusus_edit">Event Khusus (Custom Tanggal)</label>
+    @if (($jadwal->jenis_jadwal ?? 'rutin') == 'khusus')
+        <div class="row">
+            <div class="col-12 mb-3">
+                <label class="form-label small text-muted">Tanggal Event Khusus</label>
+                <input type="date" name="tanggal" id="tanggal_edit" value="{{ $jadwal->tanggal }}" class="form-control mb-1">
+                <div id="info_hari_tanggal_edit" class="small text-muted">
+                    @if (!empty($jadwal->tanggal))
+                        <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle mt-1">Hari {{ $jadwal->hari }}</span>
+                    @endif
+                </div>
             </div>
         </div>
-    </div>
-    <div class="row {{ ($jadwal->jenis_jadwal ?? 'rutin') == 'khusus' ? 'd-none' : '' }}" id="group_hari_edit">
-        <div class="col-12">
-            <select name="hari" id="hari_edit" class="form-select mb-3">
-                <option value="">Pilih Hari</option>
-                @foreach ($listHari as $h)
-                <option value="{{ $h }}" {{ $jadwal->hari == $h ? 'selected' : '' }}>
-                    Hari {{ $h }}
-                </option>
-                @endforeach
-            </select>
-        </div>
-    </div>
-    <div class="row {{ ($jadwal->jenis_jadwal ?? 'rutin') == 'khusus' ? '' : 'd-none' }}" id="group_tanggal_edit">
-        <div class="col-12">
-            <label class="form-label small text-muted">Tanggal Event Khusus</label>
-            <input type="date" name="tanggal" id="tanggal_edit" value="{{ $jadwal->tanggal }}" class="form-control mb-1">
-            <div id="info_hari_tanggal_edit" class="small text-muted mb-3">
-                @if (!empty($jadwal->tanggal))
-                    <span class="badge bg-light text-dark border">Hari {{ $jadwal->hari }}</span>
-                @endif
+    @else
+        <div class="row">
+            <div class="col-12">
+                <select name="hari" id="hari_edit" class="form-select mb-3">
+                    <option value="">Pilih Hari</option>
+                    @foreach ($listHari as $h)
+                    <option value="{{ $h }}" {{ $jadwal->hari == $h ? 'selected' : '' }}>
+                        Hari {{ $h }}
+                    </option>
+                    @endforeach
+                </select>
             </div>
         </div>
-    </div>
+    @endif
+
     <div class="row">
         <div class="col-12">
             <select name="kode_cabang" id="kode_cabang_edit" class="form-select mb-3">
@@ -59,6 +73,7 @@
             </select>
         </div>
     </div>
+
     <div class="row">
         <div class="col-12">
             <div class="input-icon mb-3">
@@ -75,6 +90,7 @@
             </div>
         </div>
     </div>
+
     <div class="row">
         <div class="col-12">
             <select name="status" id="status_edit" class="form-select mb-3">
@@ -83,6 +99,7 @@
             </select>
         </div>
     </div>
+
     <div class="row mt-2">
         <div class="col-12">
             <div class="form-group">
@@ -98,25 +115,16 @@
         </div>
     </div>
 </form>
+
 <script>
     $(function() {
-        $('#frmJadwalEdit input[name="jenis_jadwal"]').change(function() {
-            if ($(this).val() == 'khusus') {
-                $('#group_hari_edit').addClass('d-none');
-                $('#group_tanggal_edit').removeClass('d-none');
-            } else {
-                $('#group_tanggal_edit').addClass('d-none');
-                $('#group_hari_edit').removeClass('d-none');
-            }
-        });
-
         const namaHariIndoEdit = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
         $('#tanggal_edit').on('input change', function() {
             var val = $(this).val();
             if (val) {
                 var d = new Date(val + 'T00:00:00');
                 var dayName = namaHariIndoEdit[d.getDay()];
-                $('#info_hari_tanggal_edit').html('<span class="badge bg-light text-dark border">Hari ' + dayName + '</span>');
+                $('#info_hari_tanggal_edit').html('<span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle mt-1">Hari ' + dayName + '</span>');
             } else {
                 $('#info_hari_tanggal_edit').html('');
             }
@@ -125,7 +133,7 @@
         $("#frmJadwalEdit").submit(function() {
             var form = $(this);
             var layanan_id = form.find("#layanan_id_edit").val();
-            var jenis_jadwal = form.find("input[name='jenis_jadwal']:checked").val();
+            var jenis_jadwal = form.find("input[name='jenis_jadwal']").val();
             var hari = form.find("#hari_edit").val();
             var tanggal = form.find("#tanggal_edit").val();
             var kode_cabang = form.find("#kode_cabang_edit").val();
@@ -140,7 +148,7 @@
                     form.find("#layanan_id_edit").focus();
                 });
                 return false;
-            } else if (jenis_jadwal == "rutin" && hari == "") {
+            } else if (jenis_jadwal == "rutin" && (!hari || hari == "")) {
                 Swal.fire({
                     title: 'Warning!',
                     text: 'Hari Harus Dipilih !',
@@ -150,7 +158,7 @@
                     form.find("#hari_edit").focus();
                 });
                 return false;
-            } else if (jenis_jadwal == "khusus" && tanggal == "") {
+            } else if (jenis_jadwal == "khusus" && (!tanggal || tanggal == "")) {
                 Swal.fire({
                     title: 'Warning!',
                     text: 'Tanggal Event Harus Dipilih !',
