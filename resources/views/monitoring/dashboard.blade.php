@@ -65,8 +65,8 @@
             height: auto !important;
             padding: 24px 18px 55px 18px !important;
             position: relative;
-            background-color: #2A8BF2;
-            background: linear-gradient(135deg, #2A8BF2 0%, #1A73E8 100%);
+            background-color: #0c234b;
+            background: linear-gradient(135deg, #1E6FD9 0%, #15438C 50%, #0c234b 100%) !important;
         }
 
         #user-detail {
@@ -102,7 +102,8 @@
         #user-name {
             font-size: 15.5px !important;
             font-weight: 700 !important;
-            color: #ffffff !important;
+            color: #ffd700 !important;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.45) !important;
             margin-bottom: 3px !important;
             white-space: nowrap;
             overflow: hidden;
@@ -302,7 +303,7 @@
                     style="width:64px; height:64px; object-fit:cover;">
             </div>
             <div id="user-info">
-                <h3 id="user-name">
+                <h3 id="user-name" style="color: #ffd700 !important; text-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);">
                     {{ $user->name }}
                 </h3>
                 <span

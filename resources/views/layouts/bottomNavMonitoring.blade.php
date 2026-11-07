@@ -1,7 +1,20 @@
 <style>
+    /* Footer Menu Aktif Berwarna Navy Khas Akun Monitoring */
+    .appBottomMenu .item.active i.icon,
+    .appBottomMenu .item.active ion-icon,
+    .appBottomMenu .item.active strong {
+        color: #0c234b !important;
+        font-weight: 700 !important;
+    }
+
+    /* Tombol Tengah (Home) dengan Gradasi Navy */
     .appBottomMenu .item .action-button {
-        background: linear-gradient(135deg, #2A8BF2 0%, #1A73E8 100%) !important;
-        box-shadow: 0 4px 12px rgba(42, 139, 242, 0.4) !important;
+        background: linear-gradient(135deg, #1E6FD9 0%, #0c234b 100%) !important;
+        box-shadow: 0 4px 12px rgba(12, 35, 75, 0.4) !important;
+    }
+    .appBottomMenu .item.active .action-button {
+        background: linear-gradient(135deg, #15438C 0%, #08162d 100%) !important;
+        box-shadow: 0 4px 14px rgba(8, 22, 45, 0.55) !important;
     }
     .appBottomMenu .item .action-button ion-icon,
     .appBottomMenu .item.active .action-button ion-icon,

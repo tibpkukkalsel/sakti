@@ -11,7 +11,7 @@
         content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#2A8BF2">
+    <meta name="theme-color" content="#123d7a">
     <title>SAKTI UPPD SAMSAT Batulicin</title>
     <meta name="description" content="SAKTI UPPD SAMSAT Batulicin">
     <meta name="keywords" content="ABSENSI DAN PENERIMAAN PKB SAMSAT BATULICIN" />
@@ -106,6 +106,12 @@
         .appHeader.text-light .left .headerButton ion-icon,
         .appHeader.text-light .pageTitle {
             color: #ffffff !important;
+        }
+
+        /* Header Biru Gradasi Navy Khas Akun Monitoring */
+        .appHeader.bg-primary {
+            background: linear-gradient(135deg, #1E6FD9 0%, #15438C 50%, #0c234b 100%) !important;
+            border-bottom: 0 !important;
         }
     </style>
 
