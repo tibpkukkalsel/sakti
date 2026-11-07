@@ -18,7 +18,7 @@ class UserController extends Controller
         $role = DB::table('roles')->where('guard_name', 'user')->where('name', '!=', 'administrator')->orderBy('id')->get();
 
         $query = User::query();
-        $query->select('users.id', 'users.name', 'email', 'users.no_hp', 'roles.name as role', 'kode_cabang');
+        $query->select('users.id', 'users.name', 'email', 'users.no_hp', 'roles.name as role');
         $query->join('model_has_roles', 'users.id', '=', 'model_has_roles.model_id');
         $query->join('roles', 'model_has_roles.role_id', '=', 'roles.id');
 
@@ -33,8 +33,7 @@ class UserController extends Controller
         $users = $query->distinct()->paginate(10);
         $users->appends(request()->all());
 
-        $cabang = DB::table('cabang')->orderBy('kode_cabang')->get();
-        return view('users.index', compact('users', 'departemen', 'role', 'cabang'));
+        return view('users.index', compact('users', 'departemen', 'role'));
     }
 
 
@@ -43,10 +42,10 @@ class UserController extends Controller
         $nama_user = $request->nama_user;
         $email = $request->email;
         $no_hp = $request->no_hp;
-        $kode_dept = $request->kode_dept;
+        $kode_dept = null;
         $role = 'monitoring';
         $password = bcrypt($request->password);
-        $kode_cabang = $request->kode_cabang ?: 'SM1';
+        $kode_cabang = null;
 
         DB::beginTransaction();
         try {
@@ -82,11 +81,10 @@ class UserController extends Controller
 
         $departemen = collect([]);
         $role = DB::table('roles')->where('guard_name', 'user')->where('name', '!=', 'administrator')->orderBy('id')->get();
-        $cabang = DB::table('cabang')->orderBy('kode_cabang')->get();
         $user = DB::table('users')
             ->join('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
             ->where('id', $id_user)->first();
-        return view('users.edituser', compact('departemen', 'role', 'user', 'cabang'));
+        return view('users.edituser', compact('departemen', 'role', 'user'));
     }
 
     public function update(Request $request, $id_user)
@@ -99,9 +97,9 @@ class UserController extends Controller
         $nama_user = $request->nama_user;
         $email = $request->email;
         $no_hp = $request->no_hp;
-        $kode_dept = $request->kode_dept;
+        $kode_dept = null;
         $role = 'monitoring';
-        $kode_cabang = $request->kode_cabang ?: 'SM1';
+        $kode_cabang = null;
 
         $data = [
             'name' => $nama_user,

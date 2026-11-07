@@ -36,7 +36,7 @@ class UserSeeder extends Seeder
                 'email' => 'superadmin@presensigps.com',
                 'password' => '$2y$10$7h31EhLcEjr22YgTy6VBK.T/1uIAgjKIlVjmT.k91pWjoaS.CcFsy', // 12345
                 'kode_dept' => 'IT',
-                'kode_cabang' => 'SM1'
+                'kode_cabang' => null
             ]);
         }
 
@@ -54,7 +54,7 @@ class UserSeeder extends Seeder
             [
                 'name' => 'Petugas Monitoring',
                 'password' => bcrypt('monitoring123'),
-                'kode_cabang' => 'SM1'
+                'kode_cabang' => null
             ]
         );
         if (!$monitoringUser->hasRole('monitoring')) {

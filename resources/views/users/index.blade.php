@@ -92,7 +92,6 @@
                                                     <th>Email</th>
                                                     <th>No. HP</th>
                                                     <th>Role</th>
-                                                    <th>Lokasi</th>
                                                     <th style="width: 100px;" class="text-center">Aksi</th>
                                                 </tr>
                                             </thead>
@@ -118,7 +117,6 @@
                                                                 <span class="badge bg-secondary text-white">{{ ucwords($d->role) }}</span>
                                                             @endif
                                                         </td>
-                                                        <td><span class="badge bg-light text-dark border">{{ $d->kode_cabang }}</span></td>
                                                         <td class="text-center">
                                                             <div class="d-flex align-items-center justify-content-center gap-1">
                                                                 <a href="#" class="edit btn btn-info btn-sm btn-action"
@@ -250,19 +248,6 @@
                         <input type="hidden" name="role" id="role" value="monitoring">
                         <div class="row mt-1">
                             <div class="col-12">
-                                <div class="form-group">
-                                    <select name="kode_cabang" id="kode_cabang" class="form-select">
-                                        <option value="">Lokasi</option>
-                                        @foreach ($cabang as $d)
-                                            <option value="{{ $d->kode_cabang }}">{{ strtoupper($d->nama_cabang) }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mt-1">
-                            <div class="col-12">
                                 <div class="input-icon">
                                     <span class="input-icon-addon">
                                         <!-- Download SVG icon from http://tabler-icons.io/i/user -->
@@ -365,9 +350,6 @@
             $("#frmUser").submit(function() {
                 var nama_user = $("#nama_user").val();
                 var email = $("#email").val();
-                var kode_dept = $("#kode_dept").val();
-                var role = $("#role").val();
-                var kode_cabang = $("#kode_cabang").val();
                 if (nama_user == "") {
                     Swal.fire({
                         title: 'Warning!',
@@ -389,16 +371,6 @@
                         $("#email").focus();
                     });
 
-                    return false;
-                } else if (kode_cabang == "") {
-                    Swal.fire({
-                        title: 'Warning!',
-                        text: 'Lokasi Harus Diisi !',
-                        icon: 'warning',
-                        confirmButtonText: 'Ok'
-                    }).then((result) => {
-                        $("#kode_cabang").focus();
-                    });
                     return false;
                 }
             });
