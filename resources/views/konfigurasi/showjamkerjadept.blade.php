@@ -59,11 +59,10 @@
                     <table class="table table-bordered table-striped align-middle">
                         <thead>
                             <tr>
-                                <th colspan="6" class="text-center bg-light">Master Jam Kerja</th>
+                                <th colspan="5" class="text-center bg-light">Master Jam Kerja</th>
                             </tr>
                             <tr>
-                                <th>Kode</th>
-                                <th>Nama</th>
+                                <th>Nama Jam Kerja</th>
                                 <th>Awal Masuk</th>
                                 <th>Jam Masuk</th>
                                 <th>Akhir Masuk</th>
@@ -73,7 +72,6 @@
                         <tbody>
                             @foreach ($jamkerja as $d)
                             <tr>
-                                <td><span class="badge bg-light text-dark border">{{ $d->kode_jam_kerja }}</span></td>
                                 <td class="fw-semibold">{{ $d->nama_jam_kerja }}</td>
                                 <td class="font-monospace">{{ substr($d->awal_jam_masuk, 0, 5) }}</td>
                                 <td class="font-monospace fw-bold text-primary">{{ substr($d->jam_masuk, 0, 5) }}</td>

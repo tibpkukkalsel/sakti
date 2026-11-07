@@ -17,13 +17,26 @@ class CutiController extends Controller
 
     public function store(Request $request)
     {
-        $kode_cuti = $request->kode_cuti;
+        $kode_cuti = strtoupper(trim($request->kode_cuti));
+        if (empty($kode_cuti)) {
+            $allCodes = DB::table('master_cuti')->pluck('kode_cuti');
+            $maxNum = 0;
+            foreach ($allCodes as $c) {
+                if (preg_match('/^C(\d+)$/i', $c, $m)) {
+                    $num = (int)$m[1];
+                    if ($num > $maxNum) {
+                        $maxNum = $num;
+                    }
+                }
+            }
+            $kode_cuti = sprintf('C%02d', $maxNum + 1);
+        }
         $nama_cuti = $request->nama_cuti;
         $jml_hari = $request->jml_hari;
 
         $cekcuti = DB::table('master_cuti')->where('kode_cuti', $kode_cuti)->count();
         if ($cekcuti > 0) {
-            return Redirect::back()->with(['warning' => 'Data Kode Cuti Sudah  Ada']);
+            return Redirect::back()->with(['warning' => 'Data Cuti Sudah Ada']);
         }
 
         try {

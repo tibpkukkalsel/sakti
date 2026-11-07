@@ -17,6 +17,19 @@ class LokasiController extends Controller
     public function store(Request $request)
     {
         $kode_cabang = strtoupper(trim($request->kode_cabang));
+        if (empty($kode_cabang)) {
+            $allCodes = DB::table('cabang')->pluck('kode_cabang');
+            $maxNum = 0;
+            foreach ($allCodes as $c) {
+                if (preg_match('/^SM(\d+)$/i', $c, $m)) {
+                    $num = (int)$m[1];
+                    if ($num > $maxNum) {
+                        $maxNum = $num;
+                    }
+                }
+            }
+            $kode_cabang = 'SM' . ($maxNum + 1);
+        }
         $nama_cabang = trim($request->nama_cabang);
         $lokasi_cabang = trim($request->lokasi_cabang);
         $radius_cabang = $request->radius_cabang ?: 100;

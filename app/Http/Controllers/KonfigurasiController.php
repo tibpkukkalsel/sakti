@@ -42,7 +42,20 @@ class KonfigurasiController extends Controller
 
     public function storejamkerja(Request $request)
     {
-        $kode_jam_kerja = $request->kode_jam_kerja;
+        $kode_jam_kerja = strtoupper(trim($request->kode_jam_kerja));
+        if (empty($kode_jam_kerja)) {
+            $allCodes = DB::table('jam_kerja')->pluck('kode_jam_kerja');
+            $maxNum = 0;
+            foreach ($allCodes as $c) {
+                if (preg_match('/^JK(\d+)$/i', $c, $m)) {
+                    $num = (int)$m[1];
+                    if ($num > $maxNum) {
+                        $maxNum = $num;
+                    }
+                }
+            }
+            $kode_jam_kerja = sprintf('JK%02d', $maxNum + 1);
+        }
         $nama_jam_kerja = $request->nama_jam_kerja;
         $awal_jam_masuk = $request->awal_jam_masuk;
         $jam_masuk = $request->jam_masuk;

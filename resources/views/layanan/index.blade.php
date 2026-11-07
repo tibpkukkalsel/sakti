@@ -111,7 +111,6 @@
                                                         @endif
                                                         <div>
                                                             <div class="fw-bold">{{ $d->nama_layanan }}</div>
-                                                            <small class="text-muted">ID: {{ $d->id }}</small>
                                                         </div>
                                                     </div>
                                                 </td>

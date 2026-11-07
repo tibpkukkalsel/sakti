@@ -1,26 +1,6 @@
 <form action="/panel-adm14/cabang/update" method="POST" id="frmCabangEdit">
     @csrf
-    <div class="row">
-        <div class="col-12">
-            <div class="input-icon mb-3">
-                <span class="input-icon-addon">
-                    <!-- Download SVG icon from http://tabler-icons.io/i/user -->
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-barcode" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                        <path d="M4 7v-1a2 2 0 0 1 2 -2h2"></path>
-                        <path d="M4 17v1a2 2 0 0 0 2 2h2"></path>
-                        <path d="M16 4h2a2 2 0 0 1 2 2v1"></path>
-                        <path d="M16 20h2a2 2 0 0 0 2 -2v-1"></path>
-                        <path d="M5 11h1v2h-1z"></path>
-                        <path d="M10 11l0 2"></path>
-                        <path d="M14 11h1v2h-1z"></path>
-                        <path d="M19 11l0 2"></path>
-                    </svg>
-                </span>
-                <input type="text" value="{{ $cabang->kode_cabang }}" readonly id="kode_cabang" class="form-control" placeholder="Kode Cabang" name="kode_cabang">
-            </div>
-        </div>
-    </div>
+    <input type="hidden" value="{{ $cabang->kode_cabang }}" id="kode_cabang" name="kode_cabang">
     <div class="row">
         <div class="col-12">
             <div class="input-icon mb-3">
@@ -87,24 +67,11 @@
 <script>
     $(function() {
         $("#frmCabangEdit").submit(function() {
-            var kode_cabang = $("#frmCabangEdit").find("#kode_cabang").val();
             var nama_cabang = $("#frmCabangEdit").find("#nama_cabang").val();
             var lokasi_cabang = $("#frmCabangEdit").find("#lokasi_cabang").val();
             var radius_cabang = $("#frmCabangEdit").find("#radius_cabang").val();
 
-            if (kode_cabang == "") {
-                // alert('Nik Harus Diisi');
-                Swal.fire({
-                    title: 'Warning!'
-                    , text: 'Kode Cabang Harus Diisi !'
-                    , icon: 'warning'
-                    , confirmButtonText: 'Ok'
-                }).then((result) => {
-                    $("#kode_cabang").focus();
-                });
-
-                return false;
-            } else if (nama_cabang == "") {
+            if (nama_cabang == "") {
                 // alert('Nik Harus Diisi');
                 Swal.fire({
                     title: 'Warning!'

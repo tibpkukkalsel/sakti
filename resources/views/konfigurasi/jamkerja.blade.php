@@ -57,7 +57,6 @@
                                             <thead>
                                                 <tr>
                                                     <th class="text-center" style="width: 50px;">No</th>
-                                                    <th class="text-center" style="width: 90px;">Kode JK</th>
                                                     <th>Nama Jam Kerja</th>
                                                     <th class="text-center">Awal Masuk</th>
                                                     <th class="text-center">Jam Masuk</th>
@@ -74,7 +73,6 @@
                                                 @foreach ($jam_kerja as $d)
                                                     <tr>
                                                         <td class="text-center text-muted">{{ $loop->iteration }}</td>
-                                                        <td class="text-center"><span class="badge bg-light text-dark font-monospace border">{{ $d->kode_jam_kerja }}</span></td>
                                                         <td class="fw-semibold">{{ $d->nama_jam_kerja }}</td>
                                                         <td class="text-center font-monospace">{{ substr($d->awal_jam_masuk, 0, 5) }}</td>
                                                         <td class="text-center font-monospace fw-bold text-primary">{{ substr($d->jam_masuk, 0, 5) }}</td>
@@ -158,31 +156,6 @@
                 <div class="modal-body">
                     <form action="/panel-adm14/konfigurasi/storejamkerja" method="POST" id="frmJK">
                         @csrf
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="input-icon mb-3">
-                                    <span class="input-icon-addon">
-                                        <!-- Download SVG icon from http://tabler-icons.io/i/user -->
-                                        <svg xmlns="http://www.w3.org/2000/svg"
-                                            class="icon icon-tabler icon-tabler-barcode" width="24" height="24"
-                                            viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
-                                            stroke-linecap="round" stroke-linejoin="round">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                            <path d="M4 7v-1a2 2 0 0 1 2 -2h2"></path>
-                                            <path d="M4 17v1a2 2 0 0 0 2 2h2"></path>
-                                            <path d="M16 4h2a2 2 0 0 1 2 2v1"></path>
-                                            <path d="M16 20h2a2 2 0 0 0 2 -2v-1"></path>
-                                            <path d="M5 11h1v2h-1z"></path>
-                                            <path d="M10 11l0 2"></path>
-                                            <path d="M14 11h1v2h-1z"></path>
-                                            <path d="M19 11l0 2"></path>
-                                        </svg>
-                                    </span>
-                                    <input type="text" value="" id="kode_jam_kerja" class="form-control"
-                                        placeholder="Kode Jam Kerja" name="kode_jam_kerja">
-                                </div>
-                            </div>
-                        </div>
                         <div class="row">
                             <div class="col-12">
                                 <div class="input-icon mb-3">
@@ -473,7 +446,6 @@
             });
 
             $("#frmJK").submit(function() {
-                var kode_jam_kerja = $("#kode_jam_kerja").val();
                 var nama_jam_kerja = $("#nama_jam_kerja").val();
                 var awal_jam_masuk = $("#awal_jam_masuk").val();
                 var jam_masuk = $("#jam_masuk").val();
@@ -484,19 +456,7 @@
                 var total_jam = $("#total_jam").val();
                 var lintashari = $("#lintashari").val();
                 var status_istirahat = $("#status_istirahat").val();
-                if (kode_jam_kerja == "") {
-                    // alert('Nik Harus Diisi');
-                    Swal.fire({
-                        title: 'Warning!',
-                        text: 'Kode Jam Kerja Harus Diisi !',
-                        icon: 'warning',
-                        confirmButtonText: 'Ok'
-                    }).then((result) => {
-                        $("#kode_jam_kerja").focus();
-                    });
-
-                    return false;
-                } else if (nama_jam_kerja == "") {
+                if (nama_jam_kerja == "") {
                     // alert('Nik Harus Diisi');
                     Swal.fire({
                         title: 'Warning!',

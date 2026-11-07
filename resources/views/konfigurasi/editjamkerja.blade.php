@@ -1,29 +1,6 @@
 <form action="/panel-adm14/konfigurasi/updatejamkerja" method="POST" id="frmJK_edit">
     @csrf
-    <div class="row">
-        <div class="col-12">
-            <div class="input-icon mb-3">
-                <span class="input-icon-addon">
-                    <!-- Download SVG icon from http://tabler-icons.io/i/user -->
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-barcode" width="24"
-                        height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                        <path d="M4 7v-1a2 2 0 0 1 2 -2h2"></path>
-                        <path d="M4 17v1a2 2 0 0 0 2 2h2"></path>
-                        <path d="M16 4h2a2 2 0 0 1 2 2v1"></path>
-                        <path d="M16 20h2a2 2 0 0 0 2 -2v-1"></path>
-                        <path d="M5 11h1v2h-1z"></path>
-                        <path d="M10 11l0 2"></path>
-                        <path d="M14 11h1v2h-1z"></path>
-                        <path d="M19 11l0 2"></path>
-                    </svg>
-                </span>
-                <input type="text" id="kode_jam_kerja_edit" name="kode_jam_kerja" value="{{ $jamkerja->kode_jam_kerja }}"
-                    class="form-control" placeholder="Kode Jam Kerja" readonly>
-            </div>
-        </div>
-    </div>
+    <input type="hidden" id="kode_jam_kerja_edit" name="kode_jam_kerja" value="{{ $jamkerja->kode_jam_kerja }}">
     <div class="row">
         <div class="col-12">
             <div class="input-icon mb-3">
@@ -247,7 +224,6 @@
     $("#awal_jam_masuk_edit, #jam_masuk_edit, #akhir_jam_masuk_edit, #jam_pulang_edit,#awal_jam_istirahat_edit,#akhir_jam_istirahat_edit")
         .mask("00:00");
     $("#frmJK_edit").submit(function() {
-        var kode_jam_kerja = $("#kode_jam_kerja_edit").val();
         var nama_jam_kerja = $("#nama_jam_kerja_edit").val();
         var awal_jam_masuk = $("#awal_jam_masuk_edit").val();
         var jam_masuk = $("#jam_masuk_edit").val();
@@ -258,19 +234,7 @@
         var awal_jam_istirahat = $("#awal_jam_istirahat_edit").val();
         var akhir_jam_istirahat = $("#akhir_jam_istirahat_edit").val();
         var status_istirahat = $("#status_istirahat_edit").val();
-        if (kode_jam_kerja == "") {
-            // alert('Nik Harus Diisi');
-            Swal.fire({
-                title: 'Warning!',
-                text: 'Kode Jam Kerja Harus Diisi !',
-                icon: 'warning',
-                confirmButtonText: 'Ok'
-            }).then((result) => {
-                $("#kode_jam_kerja_edit").focus();
-            });
-
-            return false;
-        } else if (nama_jam_kerja == "") {
+        if (nama_jam_kerja == "") {
             // alert('Nik Harus Diisi');
             Swal.fire({
                 title: 'Warning!',

@@ -54,7 +54,6 @@
                                     <thead>
                                         <tr>
                                             <th>No</th>
-                                            <th>Kode CUti</th>
                                             <th>Nama Cuti</th>
                                             <th>Jumlah Hari</th>
                                             <th>Aksi</th>
@@ -64,7 +63,6 @@
                                         @foreach ($cuti as $d)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $d->kode_cuti }}</td>
                                             <td>{{ $d->nama_cuti }}</td>
                                             <td>{{ $d->jml_hari }}</td>
                                             <td>
@@ -115,27 +113,6 @@
             <div class="modal-body">
                 <form action="/cuti/store" method="POST" id="frmCuti">
                     @csrf
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="input-icon mb-3">
-                                <span class="input-icon-addon">
-                                    <!-- Download SVG icon from http://tabler-icons.io/i/user -->
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-barcode" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                        <path d="M4 7v-1a2 2 0 0 1 2 -2h2"></path>
-                                        <path d="M4 17v1a2 2 0 0 0 2 2h2"></path>
-                                        <path d="M16 4h2a2 2 0 0 1 2 2v1"></path>
-                                        <path d="M16 20h2a2 2 0 0 0 2 -2v-1"></path>
-                                        <path d="M5 11h1v2h-1z"></path>
-                                        <path d="M10 11l0 2"></path>
-                                        <path d="M14 11h1v2h-1z"></path>
-                                        <path d="M19 11l0 2"></path>
-                                    </svg>
-                                </span>
-                                <input type="text" value="" id="kode_cuti" class="form-control" placeholder="Kode Cuti" name="kode_cuti">
-                            </div>
-                        </div>
-                    </div>
                     <div class="row">
                         <div class="col-12">
                             <div class="input-icon mb-3">
@@ -268,23 +245,10 @@
         });
 
         $("#frmCuti").submit(function() {
-            var kode_cuti = $("#kode_cuti").val();
             var nama_cuti = $("#nama_cuti").val();
             var jml_hari = $("#jml_hari").val();
 
-            if (kode_cuti == "") {
-
-                Swal.fire({
-                    title: 'Warning!'
-                    , text: 'Kode Cuti Harus Diisi !'
-                    , icon: 'warning'
-                    , confirmButtonText: 'Ok'
-                }).then((result) => {
-                    $("#kode_cuti").focus();
-                });
-
-                return false;
-            } else if (nama_cuti == "") {
+            if (nama_cuti == "") {
                 Swal.fire({
                     title: 'Warning!'
                     , text: 'Nama Cuti Harus Diisi !'
