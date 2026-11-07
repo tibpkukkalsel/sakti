@@ -153,73 +153,59 @@
                     </a>
                 </li>
 
-                <li class="nav-header">Output</li>
-                <!-- 6. Laporan (Dropdown Khusus Cetak Data mPDF) -->
-                <li
-                    class="nav-item {{ request()->is(['panel-adm14/presensi/laporan*', 'panel-adm14/presensi/rekap*', 'panel-adm14/penerimaan/rekap*', 'panel-adm14/penerimaan/cetak-rekap*', 'panel-adm14/rekap*']) ? 'menu-open' : '' }}">
+                <li class="nav-header">Laporan</li>
+                <!-- 6. Laporan: Sub Menu Presensi -->
+                <li class="nav-item {{ request()->is(['panel-adm14/presensi/laporan*', 'panel-adm14/presensi/rekap*']) ? 'menu-open' : '' }}">
                     <a href="#"
-                        class="nav-link {{ request()->is(['panel-adm14/presensi/laporan*', 'panel-adm14/presensi/rekap*', 'panel-adm14/penerimaan/rekap*', 'panel-adm14/penerimaan/cetak-rekap*', 'panel-adm14/rekap*']) ? 'active' : '' }}">
-                        <i class="nav-icon bi bi-file-earmark-pdf-fill"></i>
+                        class="nav-link {{ request()->is(['panel-adm14/presensi/laporan*', 'panel-adm14/presensi/rekap*']) ? 'active' : '' }}">
+                        <i class="nav-icon bi bi-person-badge"></i>
                         <p>
-                            Laporan
+                            Presensi
                             <i class="nav-arrow bi bi-chevron-right"></i>
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
-                        <!-- Sub Menu 1: Presensi -->
-                        <li class="nav-item {{ request()->is(['panel-adm14/presensi/laporan*', 'panel-adm14/presensi/rekap*']) ? 'menu-open' : '' }}">
-                            <a href="#"
-                                class="nav-link {{ request()->is(['panel-adm14/presensi/laporan*', 'panel-adm14/presensi/rekap*']) ? 'active' : '' }}">
-                                <i class="nav-icon bi bi-person-badge"></i>
-                                <p>
-                                    Presensi
-                                    <i class="nav-arrow bi bi-chevron-right"></i>
-                                </p>
+                        <li class="nav-item">
+                            <a href="/panel-adm14/presensi/laporan"
+                                class="nav-link {{ request()->is('panel-adm14/presensi/laporan*') ? 'active' : '' }}">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Presensi</p>
                             </a>
-                            <ul class="nav nav-treeview ps-2">
-                                <li class="nav-item">
-                                    <a href="/panel-adm14/presensi/laporan"
-                                        class="nav-link {{ request()->is('panel-adm14/presensi/laporan*') ? 'active' : '' }}">
-                                        <i class="nav-icon bi bi-circle"></i>
-                                        <p>Presensi</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="/panel-adm14/presensi/rekap"
-                                        class="nav-link {{ request()->is('panel-adm14/presensi/rekap*') ? 'active' : '' }}">
-                                        <i class="nav-icon bi bi-circle"></i>
-                                        <p>Rekap Presensi</p>
-                                    </a>
-                                </li>
-                            </ul>
                         </li>
-
-                        <!-- Sub Menu 2: Penerimaan -->
-                        <li class="nav-item {{ request()->is(['panel-adm14/penerimaan/rekap-layanan*', 'panel-adm14/penerimaan/rekap-lokasi*', 'panel-adm14/penerimaan/cetak-rekap*', 'panel-adm14/rekap-layanan*', 'panel-adm14/rekap-lokasi*']) ? 'menu-open' : '' }}">
-                            <a href="#"
-                                class="nav-link {{ request()->is(['panel-adm14/penerimaan/rekap-layanan*', 'panel-adm14/penerimaan/rekap-lokasi*', 'panel-adm14/penerimaan/cetak-rekap*', 'panel-adm14/rekap-layanan*', 'panel-adm14/rekap-lokasi*']) ? 'active' : '' }}">
-                                <i class="nav-icon bi bi-cash-stack"></i>
-                                <p>
-                                    Penerimaan
-                                    <i class="nav-arrow bi bi-chevron-right"></i>
-                                </p>
+                        <li class="nav-item">
+                            <a href="/panel-adm14/presensi/rekap"
+                                class="nav-link {{ request()->is('panel-adm14/presensi/rekap*') ? 'active' : '' }}">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Rekap Presensi</p>
                             </a>
-                            <ul class="nav nav-treeview ps-2">
-                                <li class="nav-item">
-                                    <a href="/panel-adm14/penerimaan/rekap-layanan"
-                                        class="nav-link {{ request()->is(['panel-adm14/penerimaan/rekap-layanan*', 'panel-adm14/rekap-layanan*']) ? 'active' : '' }}">
-                                        <i class="nav-icon bi bi-circle"></i>
-                                        <p>Rekap Layanan</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="/panel-adm14/penerimaan/rekap-lokasi"
-                                        class="nav-link {{ request()->is(['panel-adm14/penerimaan/rekap-lokasi*', 'panel-adm14/rekap-lokasi*']) ? 'active' : '' }}">
-                                        <i class="nav-icon bi bi-circle"></i>
-                                        <p>Rekap Lokasi</p>
-                                    </a>
-                                </li>
-                            </ul>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- 7. Laporan: Sub Menu Penerimaan -->
+                <li class="nav-item {{ request()->is(['panel-adm14/penerimaan/rekap-layanan*', 'panel-adm14/penerimaan/rekap-lokasi*', 'panel-adm14/penerimaan/cetak-rekap*', 'panel-adm14/rekap-layanan*', 'panel-adm14/rekap-lokasi*']) ? 'menu-open' : '' }}">
+                    <a href="#"
+                        class="nav-link {{ request()->is(['panel-adm14/penerimaan/rekap-layanan*', 'panel-adm14/penerimaan/rekap-lokasi*', 'panel-adm14/penerimaan/cetak-rekap*', 'panel-adm14/rekap-layanan*', 'panel-adm14/rekap-lokasi*']) ? 'active' : '' }}">
+                        <i class="nav-icon bi bi-cash-stack"></i>
+                        <p>
+                            Penerimaan
+                            <i class="nav-arrow bi bi-chevron-right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="/panel-adm14/penerimaan/rekap-layanan"
+                                class="nav-link {{ request()->is(['panel-adm14/penerimaan/rekap-layanan*', 'panel-adm14/rekap-layanan*']) ? 'active' : '' }}">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Rekap Layanan</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/panel-adm14/penerimaan/rekap-lokasi"
+                                class="nav-link {{ request()->is(['panel-adm14/penerimaan/rekap-lokasi*', 'panel-adm14/rekap-lokasi*']) ? 'active' : '' }}">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Rekap Lokasi</p>
+                            </a>
                         </li>
                     </ul>
                 </li>
