@@ -14,15 +14,23 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $departemen = collect([]);
-        $role = DB::table('roles')->where('guard_name', 'user')->orderBy('id')->get();
+        // Hanya tampilkan role selain administrator (misal: monitoring) di form pembuatan user
+        $role = DB::table('roles')->where('guard_name', 'user')->where('name', '!=', 'administrator')->orderBy('id')->get();
+
         $query = User::query();
         $query->select('users.id', 'users.name', 'email', 'roles.name as role', 'kode_cabang');
         $query->join('model_has_roles', 'users.id', '=', 'model_has_roles.model_id');
         $query->join('roles', 'model_has_roles.role_id', '=', 'roles.id');
+
+        // Jangan tampilkan data akun yang berjenis Superadmin / Administrator
+        $query->where('roles.name', '!=', 'administrator')
+            ->where('users.email', '!=', 'superadmin@presensigps.com')
+            ->where('users.id', '!=', 13);
+
         if (!empty($request->name)) {
             $query->where('users.name', 'like', '%' . $request->name . '%');
         }
-        $users = $query->paginate(10);
+        $users = $query->distinct()->paginate(10);
         $users->appends(request()->all());
 
         $cabang = DB::table('cabang')->orderBy('kode_cabang')->get();
@@ -64,8 +72,14 @@ class UserController extends Controller
     public function edit(Request $request)
     {
         $id_user = $request->id_user;
+
+        // Lindungi akun Super Admin dari pengeditan
+        if ($id_user == 13) {
+            return '<div class="alert alert-warning mb-0"><i class="bi bi-shield-lock-fill me-2"></i> Akun Super Admin dilindungi dan tidak dapat diubah melalui menu ini.</div>';
+        }
+
         $departemen = collect([]);
-        $role = DB::table('roles')->where('guard_name', 'user')->orderBy('id')->get();
+        $role = DB::table('roles')->where('guard_name', 'user')->where('name', '!=', 'administrator')->orderBy('id')->get();
         $cabang = DB::table('cabang')->orderBy('kode_cabang')->get();
         $user = DB::table('users')
             ->join('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
@@ -75,6 +89,11 @@ class UserController extends Controller
 
     public function update(Request $request, $id_user)
     {
+        // Lindungi akun Super Admin dari pengeditan
+        if ($id_user == 13) {
+            return Redirect::back()->with(['warning' => 'Akun Super Admin dilindungi dan tidak dapat diubah!']);
+        }
+
         $nama_user = $request->nama_user;
         $email = $request->email;
         $kode_dept = $request->kode_dept;
@@ -98,7 +117,6 @@ class UserController extends Controller
 
             $user = User::find($id_user);
             if ($user) {
-                // Cari role
                 if (is_numeric($role)) {
                     $roleObj = DB::table('roles')->where('id', $role)->first();
                     $roleName = $roleObj ? $roleObj->name : 'monitoring';
@@ -120,11 +138,21 @@ class UserController extends Controller
 
     public function delete($id_user)
     {
+        // Lindungi akun Super Admin dari penghapusan
+        if ($id_user == 13 || $id_user == 1) {
+            return Redirect::back()->with(['warning' => 'Akun Super Admin dilindungi dan tidak dapat dihapus!']);
+        }
+
+        $user = User::find($id_user);
+        if ($user && ($user->hasRole('administrator') || $user->email == 'superadmin@presensigps.com')) {
+            return Redirect::back()->with(['warning' => 'Akun Administrator dilindungi dan tidak dapat dihapus!']);
+        }
+
         try {
             DB::table('users')->where('id', $id_user)->delete();
-            return Redirect::back()->with(['success' => ' Data Berhasil Dihapus']);
+            return Redirect::back()->with(['success' => 'Data User Berhasil Dihapus']);
         } catch (\Exception $e) {
-            return Redirect::back()->with(['warning' => ' Data Gagal Dihapus']);
+            return Redirect::back()->with(['warning' => 'Data Gagal Dihapus: ' . $e->getMessage()]);
         }
     }
 
