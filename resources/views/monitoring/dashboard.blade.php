@@ -431,19 +431,11 @@
                     </div>
                 </div>
 
-                <div class="d-flex align-items-center justify-content-between p-2 mt-1"
+                <div class="p-2 mt-1"
                     style="background: #f8fafc; border-radius: 10px; border: 1px solid #f1f5f9;">
-                    <div>
-                        <div style="font-size: 11px; color: #64748b;">Total Realisasi Hari Ini</div>
-                        <div style="font-size: 17px; font-weight: 800; color: #0f172a;">
-                            Rp {{ number_format($penerimaanHariIni, 0, ',', '.') }}
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <div style="font-size: 11px; color: #64748b;">Bulan Berjalan</div>
-                        <div style="font-size: 13px; font-weight: 700; color: #334155;">
-                            Rp {{ number_format($penerimaanBulanIni, 0, ',', '.') }}
-                        </div>
+                    <div style="font-size: 11px; color: #64748b;">Total Realisasi Hari Ini</div>
+                    <div style="font-size: 18px; font-weight: 800; color: #0f172a;">
+                        Rp {{ number_format($penerimaanHariIni, 0, ',', '.') }}
                     </div>
                 </div>
 
