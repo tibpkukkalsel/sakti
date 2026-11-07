@@ -78,4 +78,12 @@ File ini mencatat pedoman, preferensi, dan kebiasaan arahan USER untuk aplikasi 
   - **TIDAK menggunakan icon pada badge "Siap Layanan"** (hanya teks polos ber-badge hijau *Siap Layanan*).
   - **TIDAK menggunakan icon user/orang sebelum teks "PIC"**.
 
+---
+
+## 8. Ciri Khas Tampilan Akun Monitoring
+- **Header Atas**: Menggunakan **gradasi Biru ke Biru Navy** (`linear-gradient(135deg, #1E6FD9 0%, #15438C 50%, #0c234b 100%)`).
+- **Nama User Monitoring**: Berwarna **Gold** (`#ffd700`) dengan text-shadow halus agar terlihat eksklusif dan prestisius.
+- **Menu Footer Aktif**: Menu yang sedang aktif pada bottom navigation monitoring berwarna **Navy** (`#0c234b`), serta tombol Home tengah menggunakan gradasi Navy (`linear-gradient(135deg, #1E6FD9 0%, #0c234b 100%)`) dengan ikon tetap putih.
+
+
 
