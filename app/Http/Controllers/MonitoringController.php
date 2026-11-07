@@ -75,13 +75,24 @@ class MonitoringController extends Controller
             ->where('tgl_penerimaan', $hariini)
             ->sum('total_unit');
 
-        $r2HariIni = (int) DB::table('rekap_penerimaan_pkb')
+        $r2HariIniUnit = (int) DB::table('rekap_penerimaan_pkb')
             ->where('tgl_penerimaan', $hariini)
             ->sum('jumlah_unit_r2');
 
-        $r4HariIni = (int) DB::table('rekap_penerimaan_pkb')
+        $r2HariIniRp = (float) DB::table('rekap_penerimaan_pkb')
+            ->where('tgl_penerimaan', $hariini)
+            ->sum('jumlah_rp_r2');
+
+        $r4HariIniUnit = (int) DB::table('rekap_penerimaan_pkb')
             ->where('tgl_penerimaan', $hariini)
             ->sum('jumlah_unit_r4');
+
+        $r4HariIniRp = (float) DB::table('rekap_penerimaan_pkb')
+            ->where('tgl_penerimaan', $hariini)
+            ->sum('jumlah_rp_r4');
+
+        $r2HariIni = $r2HariIniUnit;
+        $r4HariIni = $r4HariIniUnit;
 
         $noticeHariIni = (int) DB::table('rekap_penerimaan_pkb')
             ->where('tgl_penerimaan', $hariini)
@@ -184,6 +195,10 @@ class MonitoringController extends Controller
             'objekHariIni',
             'r2HariIni',
             'r4HariIni',
+            'r2HariIniUnit',
+            'r2HariIniRp',
+            'r4HariIniUnit',
+            'r4HariIniRp',
             'noticeHariIni',
             'penerimaanBulanIni',
             'objekBulanIni',

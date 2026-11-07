@@ -447,65 +447,80 @@
                     </div>
                 </div>
 
-                <!-- Detail Penerimaan: R2 (Motor), R4 (Mobil), Unit, Notice Dicetak (Icon Saja Tanpa Keterangan) -->
-                <div class="row align-items-center mt-2" style="margin-left: -3px; margin-right: -3px;">
-                    <!-- R2 (Motor) -->
-                    <div class="col-3" style="padding-left: 3px; padding-right: 3px;">
-                        <div class="p-2 d-flex flex-column align-items-center justify-content-center"
-                            style="background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0; min-height: 56px;"
-                            title="R2">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-motorbike" width="22" height="22" viewBox="0 0 24 24"
-                                stroke-width="2" stroke="#2563eb" fill="none" stroke-linecap="round" stroke-linejoin="round"
-                                style="margin-bottom: 2px;">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                <path d="M5 16m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
-                                <path d="M19 16m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
-                                <path d="M7.5 14h5l4 -4H7.5m4 0h4l2 -3h-3"></path>
-                            </svg>
-                            <span style="font-size: 14px; font-weight: 800; color: #1e293b; line-height: 1;">
-                                {{ number_format($r2HariIni, 0, ',', '.') }}
+                <!-- Detail Penerimaan: R2 & R4 Satu Baris Satu Baris (Icon, Jumlah Penerimaan Rp, dan Jumlah Unit) -->
+                <div class="mt-2">
+                    <!-- Baris R2 (Motor) -->
+                    <div class="d-flex align-items-center justify-content-between p-2 mb-2"
+                        style="background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0;">
+                        <div class="d-flex align-items-center">
+                            <div style="width: 32px; height: 32px; border-radius: 8px; background: rgba(37, 99, 235, 0.1); display: flex; align-items: center; justify-content: center; margin-right: 10px;">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-motorbike" width="20" height="20" viewBox="0 0 24 24"
+                                    stroke-width="2" stroke="#2563eb" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                    <path d="M5 16m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
+                                    <path d="M19 16m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
+                                    <path d="M7.5 14h5l4 -4H7.5m4 0h4l2 -3h-3"></path>
+                                </svg>
+                            </div>
+                            <div style="font-size: 15px; font-weight: 800; color: #1e293b;">
+                                Rp {{ number_format($r2HariIniRp, 0, ',', '.') }}
+                            </div>
+                        </div>
+                        <div>
+                            <span class="badge"
+                                style="background: rgba(37, 99, 235, 0.1); color: #2563eb; font-size: 12.5px; font-weight: 700; padding: 5px 12px; border-radius: 6px;">
+                                <ion-icon name="speedometer-outline" style="font-size: 13px; vertical-align: -1px; margin-right: 3px;"></ion-icon>{{ number_format($r2HariIniUnit, 0, ',', '.') }}
                             </span>
                         </div>
                     </div>
-                    <!-- R4 (Mobil) -->
-                    <div class="col-3" style="padding-left: 3px; padding-right: 3px;">
-                        <div class="p-2 d-flex flex-column align-items-center justify-content-center"
-                            style="background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0; min-height: 56px;"
-                            title="R4">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-car" width="22" height="22" viewBox="0 0 24 24"
-                                stroke-width="2" stroke="#0891b2" fill="none" stroke-linecap="round" stroke-linejoin="round"
-                                style="margin-bottom: 2px;">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                <path d="M7 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
-                                <path d="M17 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
-                                <path d="M5 17h-2v-6l2 -5h9l4 5h1a2 2 0 0 1 2 2v4h-2m-4 0h-6"></path>
-                                <path d="M7 9l1 3h8l1 -3"></path>
-                            </svg>
-                            <span style="font-size: 14px; font-weight: 800; color: #1e293b; line-height: 1;">
-                                {{ number_format($r4HariIni, 0, ',', '.') }}
+
+                    <!-- Baris R4 (Mobil) -->
+                    <div class="d-flex align-items-center justify-content-between p-2 mb-2"
+                        style="background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0;">
+                        <div class="d-flex align-items-center">
+                            <div style="width: 32px; height: 32px; border-radius: 8px; background: rgba(8, 145, 178, 0.1); display: flex; align-items: center; justify-content: center; margin-right: 10px;">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-car" width="20" height="20" viewBox="0 0 24 24"
+                                    stroke-width="2" stroke="#0891b2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                    <path d="M7 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
+                                    <path d="M17 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
+                                    <path d="M5 17h-2v-6l2 -5h9l4 5h1a2 2 0 0 1 2 2v4h-2m-4 0h-6"></path>
+                                    <path d="M7 9l1 3h8l1 -3"></path>
+                                </svg>
+                            </div>
+                            <div style="font-size: 15px; font-weight: 800; color: #1e293b;">
+                                Rp {{ number_format($r4HariIniRp, 0, ',', '.') }}
+                            </div>
+                        </div>
+                        <div>
+                            <span class="badge"
+                                style="background: rgba(8, 145, 178, 0.1); color: #0891b2; font-size: 12.5px; font-weight: 700; padding: 5px 12px; border-radius: 6px;">
+                                <ion-icon name="speedometer-outline" style="font-size: 13px; vertical-align: -1px; margin-right: 3px;"></ion-icon>{{ number_format($r4HariIniUnit, 0, ',', '.') }}
                             </span>
                         </div>
                     </div>
-                    <!-- Unit (Total Kendaraan) -->
-                    <div class="col-3" style="padding-left: 3px; padding-right: 3px;">
-                        <div class="p-2 d-flex flex-column align-items-center justify-content-center"
-                            style="background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0; min-height: 56px;"
-                            title="Total Unit">
-                            <ion-icon name="speedometer-outline" style="font-size: 22px; color: #10b981; margin-bottom: 2px;"></ion-icon>
-                            <span style="font-size: 14px; font-weight: 800; color: #1e293b; line-height: 1;">
-                                {{ number_format($objekHariIni, 0, ',', '.') }}
-                            </span>
+
+                    <!-- Baris Total Unit & Notice Dicetak -->
+                    <div class="row align-items-center" style="margin-left: -3px; margin-right: -3px;">
+                        <div class="col-6" style="padding-left: 3px; padding-right: 3px;">
+                            <div class="p-2 d-flex align-items-center justify-content-center"
+                                style="background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0; min-height: 40px;"
+                                title="Total Unit">
+                                <ion-icon name="speedometer-outline" style="font-size: 18px; color: #10b981; margin-right: 6px;"></ion-icon>
+                                <span style="font-size: 14px; font-weight: 800; color: #1e293b;">
+                                    {{ number_format($objekHariIni, 0, ',', '.') }}
+                                </span>
+                            </div>
                         </div>
-                    </div>
-                    <!-- Notice Dicetak -->
-                    <div class="col-3" style="padding-left: 3px; padding-right: 3px;">
-                        <div class="p-2 d-flex flex-column align-items-center justify-content-center"
-                            style="background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0; min-height: 56px;"
-                            title="Notice Dicetak">
-                            <ion-icon name="print-outline" style="font-size: 22px; color: #f59e0b; margin-bottom: 2px;"></ion-icon>
-                            <span style="font-size: 14px; font-weight: 800; color: #1e293b; line-height: 1;">
-                                {{ number_format($noticeHariIni, 0, ',', '.') }}
-                            </span>
+                        <div class="col-6" style="padding-left: 3px; padding-right: 3px;">
+                            <div class="p-2 d-flex align-items-center justify-content-center"
+                                style="background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0; min-height: 40px;"
+                                title="Notice Dicetak">
+                                <ion-icon name="print-outline" style="font-size: 18px; color: #f59e0b; margin-right: 6px;"></ion-icon>
+                                <span style="font-size: 14px; font-weight: 800; color: #1e293b;">
+                                    {{ number_format($noticeHariIni, 0, ',', '.') }}
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>
