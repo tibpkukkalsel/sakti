@@ -140,6 +140,7 @@
                                                 <th>Nama Layanan</th>
                                                 <th style="min-width: 140px;" class="text-center">Jadwal / Waktu</th>
                                                 <th>Lokasi Pelayanan</th>
+                                                <th>Jam Kerja</th>
                                                 <th>Titik Koordinat & Radius</th>
                                                 <th>Keterangan</th>
                                                 <th style="width: 100px;" class="text-center">Aksi</th>
@@ -168,6 +169,14 @@
                                                 <td>
                                                     <strong>{{ $d->nama_cabang }}</strong>
                                                     <div class="small text-muted">Kode: {{ $d->kode_cabang }}</div>
+                                                </td>
+                                                <td>
+                                                    @if (!empty($d->nama_jam_kerja))
+                                                        <div class="fw-bold text-dark">{{ $d->nama_jam_kerja }}</div>
+                                                        <div class="small text-muted font-monospace">{{ substr($d->jam_masuk, 0, 5) }} - {{ substr($d->jam_pulang, 0, 5) }}</div>
+                                                    @else
+                                                        <span class="text-muted">-</span>
+                                                    @endif
                                                 </td>
                                                 <td>
                                                     <div class="small font-monospace">{{ $d->lokasi_cabang }}</div>
@@ -261,6 +270,16 @@
                     </div>
                     <div class="row">
                         <div class="col-12">
+                            <select name="kode_jam_kerja" id="kode_jam_kerja" class="form-select mb-3">
+                                <option value="">Pilih Jam Kerja</option>
+                                @foreach ($listJamKerja as $jk)
+                                <option value="{{ $jk->kode_jam_kerja }}">{{ $jk->nama_jam_kerja }} ({{ substr($jk->jam_masuk, 0, 5) }} - {{ substr($jk->jam_pulang, 0, 5) }})</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
                             <div class="input-icon mb-3">
                                 <span class="input-icon-addon">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-notes" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -339,6 +358,16 @@
                     </div>
                     <div class="row">
                         <div class="col-12">
+                            <select name="kode_jam_kerja" id="kode_jam_kerja_event" class="form-select mb-3">
+                                <option value="">Pilih Jam Kerja</option>
+                                @foreach ($listJamKerja as $jk)
+                                <option value="{{ $jk->kode_jam_kerja }}">{{ $jk->nama_jam_kerja }} ({{ substr($jk->jam_masuk, 0, 5) }} - {{ substr($jk->jam_pulang, 0, 5) }})</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
                             <div class="input-icon mb-3">
                                 <span class="input-icon-addon">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-notes" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -363,20 +392,6 @@
                                         <path d="M21 3l-6.5 18a.55 .55 0 0 1 -1 0l-3.5 -7l-7 -3.5a.55 .55 0 0 1 0 -1l18 -6.5"></path>
                                     </svg>
                                     Simpan Jadwal Event
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                        <path d="M10 14l11 -11"></path>
-                                        <path d="M21 3l-6.5 18a.55 .55 0 0 1 -1 0l-3.5 -7l-7 -3.5a.55 .55 0 0 1 0 -1l18 -6.5"></path>
-                                    </svg>
-                                    Simpan
                                 </button>
                             </div>
                         </div>
@@ -414,8 +429,9 @@
                         <table class="table table-bordered table-striped table-hover align-middle">
                             <thead>
                                 <tr>
-                                    <th style="width: 120px;" class="text-center">Hari</th>
+                                    <th style="width: 100px;" class="text-center">Hari</th>
                                     <th>Lokasi Pelayanan</th>
+                                    <th style="min-width: 170px;">Jam Kerja</th>
                                     <th>Keterangan / Posko</th>
                                 </tr>
                             </thead>
@@ -428,6 +444,14 @@
                                             <option value="">-- Lokasi Default / Libur --</option>
                                             @foreach ($listLokasi as $lok)
                                             <option value="{{ $lok->kode_cabang }}">{{ $lok->nama_cabang }}</option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <select name="jadwal[{{ $h }}][kode_jam_kerja]" class="form-select">
+                                            <option value="">-- Jam Kerja Default --</option>
+                                            @foreach ($listJamKerja as $jk)
+                                            <option value="{{ $jk->kode_jam_kerja }}">{{ $jk->nama_jam_kerja }} ({{ substr($jk->jam_masuk, 0, 5) }} - {{ substr($jk->jam_pulang, 0, 5) }})</option>
                                             @endforeach
                                         </select>
                                     </td>

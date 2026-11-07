@@ -120,6 +120,11 @@
                                                             <i class="bi bi-geo-alt-fill me-1"></i>
                                                             {{ $jadwalItem->nama_cabang }}
                                                         </strong>
+                                                        @if (!empty($jadwalItem->nama_jam_kerja))
+                                                            <span class="text-secondary small d-block font-monospace">
+                                                                <i class="bi bi-clock me-1"></i>{{ substr($jadwalItem->jam_masuk, 0, 5) }} - {{ substr($jadwalItem->jam_pulang, 0, 5) }}
+                                                            </span>
+                                                        @endif
                                                         @if (!empty($jadwalItem->keterangan))
                                                             <span class="text-muted small d-block">
                                                                 {{ $jadwalItem->keterangan }}
@@ -168,6 +173,7 @@
                                 <th>Hari</th>
                                 <th class="text-start">Akun Layanan</th>
                                 <th>Lokasi Pelayanan</th>
+                                <th>Jam Kerja</th>
                                 <th>Radius</th>
                                 <th>Keterangan</th>
                             </tr>
@@ -192,6 +198,14 @@
                                         <div class="small text-muted">Kode: {{ $ek->kode_cabang }}</div>
                                     </td>
                                     <td class="text-center">
+                                        @if (!empty($ek->nama_jam_kerja))
+                                            <div class="fw-semibold text-dark">{{ $ek->nama_jam_kerja }}</div>
+                                            <div class="small text-muted font-monospace">{{ substr($ek->jam_masuk, 0, 5) }} - {{ substr($ek->jam_pulang, 0, 5) }}</div>
+                                        @else
+                                            <span class="text-muted">-</span>
+                                        @endif
+                                    </td>
+                                    <td class="text-center">
                                         <span class="badge bg-info text-white">{{ $ek->radius_cabang }} Meter</span>
                                     </td>
                                     <td>
@@ -200,7 +214,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="7" class="text-center py-4 text-muted">
+                                    <td colspan="8" class="text-center py-4 text-muted">
                                         Tidak ada jadwal event khusus / tanggal khusus mendatang.
                                     </td>
                                 </tr>

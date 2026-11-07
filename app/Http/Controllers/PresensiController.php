@@ -94,7 +94,7 @@ class PresensiController extends Controller
             ->where('jadwal_lokasi_layanan.layanan_id', $nik)
             ->where('jadwal_lokasi_layanan.tanggal', $hariini)
             ->where('jadwal_lokasi_layanan.status', 1)
-            ->select('cabang.*', 'jadwal_lokasi_layanan.keterangan as ket_jadwal', 'jadwal_lokasi_layanan.jenis_jadwal')
+            ->select('cabang.*', 'jadwal_lokasi_layanan.keterangan as ket_jadwal', 'jadwal_lokasi_layanan.jenis_jadwal', 'jadwal_lokasi_layanan.kode_jam_kerja')
             ->first();
 
         // Jika tidak ada jadwal khusus hari ini, fallback ke jadwal rutin mingguan
@@ -105,7 +105,7 @@ class PresensiController extends Controller
                 ->where('jadwal_lokasi_layanan.hari', $namahari)
                 ->where('jadwal_lokasi_layanan.jenis_jadwal', 'rutin')
                 ->where('jadwal_lokasi_layanan.status', 1)
-                ->select('cabang.*', 'jadwal_lokasi_layanan.keterangan as ket_jadwal', 'jadwal_lokasi_layanan.jenis_jadwal')
+                ->select('cabang.*', 'jadwal_lokasi_layanan.keterangan as ket_jadwal', 'jadwal_lokasi_layanan.jenis_jadwal', 'jadwal_lokasi_layanan.kode_jam_kerja')
                 ->first();
         }
 
@@ -142,47 +142,38 @@ class PresensiController extends Controller
             return view('presensi.notiflibur', compact('datalibur'));
         }
 
+        $jamkerja = null;
         if ($kode_jam_kerja == "null") {
-            //Cek Jam Kerja By Date
-            $jamkerja = DB::table('konfigurasi_jamkerja_by_date')
-                ->join('jam_kerja', 'konfigurasi_jamkerja_by_date.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
-                ->where('nik', $nik)
-                ->where('tanggal', $hariini)
-                ->first();
+            // Prioritas 1: Ambil jam kerja dari Jadwal Lokasi Layanan (Event Khusus / Rutin)
+            if ($jadwalLokasi != null && !empty($jadwalLokasi->kode_jam_kerja)) {
+                $jamkerja = DB::table('jam_kerja')->where('kode_jam_kerja', $jadwalLokasi->kode_jam_kerja)->first();
+            }
 
-            //Jika Tidak Memiliki Jam Kerja By Date
+            // Prioritas 2: Cek Jam Kerja By Date jika ada
             if ($jamkerja == null) {
-                //Cek Jam Kerja harian / Jam Kerja Khusus / Jam Kerja Per Orangannya
+                $jamkerja = DB::table('konfigurasi_jamkerja_by_date')
+                    ->join('jam_kerja', 'konfigurasi_jamkerja_by_date.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
+                    ->where('nik', $nik)
+                    ->where('tanggal', $hariini)
+                    ->first();
+            }
+
+            // Prioritas 3: Cek Jam Kerja harian per user
+            if ($jamkerja == null) {
                 $jamkerja = DB::table('konfigurasi_jamkerja')
                     ->join('jam_kerja', 'konfigurasi_jamkerja.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
                     ->where('nik', $nik)->where('hari', $namahari)->first();
+            }
 
-                // Jika Jam Kerja Harian Kosong
-                if ($jamkerja == null) {
-                    $jamkerja = DB::table('konfigurasi_jk_dept_detail')
-                        ->join('konfigurasi_jk_dept', 'konfigurasi_jk_dept_detail.kode_jk_dept', '=', 'konfigurasi_jk_dept.kode_jk_dept')
-                        ->join('jam_kerja', 'konfigurasi_jk_dept_detail.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
-                        ->where('kode_dept', $kode_dept)
-                        ->where('kode_cabang', $kode_cabang)
-                        ->where('hari', $namahari)->first();
-
-                    // Fallback 1: Jika seksi belum ada jadwal khusus, cari jadwal dari seksi lain di kantor/cabang yang sama
-                    if ($jamkerja == null) {
-                        $jamkerja = DB::table('konfigurasi_jk_dept_detail')
-                            ->join('konfigurasi_jk_dept', 'konfigurasi_jk_dept_detail.kode_jk_dept', '=', 'konfigurasi_jk_dept.kode_jk_dept')
-                            ->join('jam_kerja', 'konfigurasi_jk_dept_detail.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
-                            ->where('kode_cabang', $kode_cabang)
-                            ->where('hari', $namahari)->first();
-                    }
-
-                    // Fallback 2: Jika masih kosong di hari kerja (Senin - Jumat), gunakan jam kerja kantor default
-                    if ($jamkerja == null && !in_array($namahari, ['Sabtu', 'Minggu'])) {
-                        $jamkerja = DB::table('jam_kerja')->where('kode_jam_kerja', 'JK01')->first() ?? DB::table('jam_kerja')->first();
-                    }
-                }
+            // Fallback default
+            if ($jamkerja == null) {
+                $jamkerja = DB::table('jam_kerja')->where('kode_jam_kerja', 'JK01')->first() ?? DB::table('jam_kerja')->first();
             }
         } else {
             $jamkerja = DB::table('jam_kerja')->where('kode_jam_kerja', $kode_jam_kerja)->first();
+            if ($jamkerja == null && $jadwalLokasi != null && !empty($jadwalLokasi->kode_jam_kerja)) {
+                $jamkerja = DB::table('jam_kerja')->where('kode_jam_kerja', $jadwalLokasi->kode_jam_kerja)->first();
+            }
         }
 
 
@@ -257,7 +248,7 @@ class PresensiController extends Controller
             ->where('jadwal_lokasi_layanan.layanan_id', $nik)
             ->where('jadwal_lokasi_layanan.tanggal', $tgl_presensi)
             ->where('jadwal_lokasi_layanan.status', 1)
-            ->select('cabang.*', 'jadwal_lokasi_layanan.keterangan as ket_jadwal', 'jadwal_lokasi_layanan.jenis_jadwal')
+            ->select('cabang.*', 'jadwal_lokasi_layanan.keterangan as ket_jadwal', 'jadwal_lokasi_layanan.jenis_jadwal', 'jadwal_lokasi_layanan.kode_jam_kerja')
             ->first();
 
         // Jika tidak ada jadwal khusus hari ini, fallback ke jadwal rutin mingguan
@@ -268,7 +259,7 @@ class PresensiController extends Controller
                 ->where('jadwal_lokasi_layanan.hari', $namahari)
                 ->where('jadwal_lokasi_layanan.jenis_jadwal', 'rutin')
                 ->where('jadwal_lokasi_layanan.status', 1)
-                ->select('cabang.*', 'jadwal_lokasi_layanan.keterangan as ket_jadwal', 'jadwal_lokasi_layanan.jenis_jadwal')
+                ->select('cabang.*', 'jadwal_lokasi_layanan.keterangan as ket_jadwal', 'jadwal_lokasi_layanan.jenis_jadwal', 'jadwal_lokasi_layanan.kode_jam_kerja')
                 ->first();
         }
 
@@ -314,47 +305,36 @@ class PresensiController extends Controller
         //Cek Jam Kerja Karyawan
         $namahari = $this->gethari(date('D', strtotime($tgl_presensi)));
 
-        if ($kode_jam_kerja == "null") {
-            //Cek Jam Kerja By Date
+        $jamkerja = null;
+        // Prioritas 1: Ambil jam kerja dari Jadwal Lokasi Layanan (Event Khusus / Rutin)
+        if ($jadwalLokasi != null && !empty($jadwalLokasi->kode_jam_kerja)) {
+            $jamkerja = DB::table('jam_kerja')->where('kode_jam_kerja', $jadwalLokasi->kode_jam_kerja)->first();
+        }
+
+        // Prioritas 2: Dari parameter kode_jam_kerja jika dikirim
+        if ($jamkerja == null && $kode_jam_kerja != "null" && !empty($kode_jam_kerja)) {
+            $jamkerja = DB::table('jam_kerja')->where('kode_jam_kerja', $kode_jam_kerja)->first();
+        }
+
+        // Prioritas 3: By Date
+        if ($jamkerja == null) {
             $jamkerja = DB::table('konfigurasi_jamkerja_by_date')
                 ->join('jam_kerja', 'konfigurasi_jamkerja_by_date.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
                 ->where('nik', $nik)
                 ->where('tanggal', $tgl_presensi)
                 ->first();
+        }
 
-            //Jika Tidak Memiliki Jam Kerja By Date
-            if ($jamkerja == null) {
-                //Cek Jam Kerja harian / Jam Kerja Khusus / Jam Kerja Per Orangannya
-                $jamkerja = DB::table('konfigurasi_jamkerja')
-                    ->join('jam_kerja', 'konfigurasi_jamkerja.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
-                    ->where('nik', $nik)->where('hari', $namahari)->first();
+        // Prioritas 4: Cek Jam Kerja harian per user
+        if ($jamkerja == null) {
+            $jamkerja = DB::table('konfigurasi_jamkerja')
+                ->join('jam_kerja', 'konfigurasi_jamkerja.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
+                ->where('nik', $nik)->where('hari', $namahari)->first();
+        }
 
-                // Jika Jam Kerja Harian Kosong
-                if ($jamkerja == null) {
-                    $jamkerja = DB::table('konfigurasi_jk_dept_detail')
-                        ->join('konfigurasi_jk_dept', 'konfigurasi_jk_dept_detail.kode_jk_dept', '=', 'konfigurasi_jk_dept.kode_jk_dept')
-                        ->join('jam_kerja', 'konfigurasi_jk_dept_detail.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
-                        ->where('kode_dept', $kode_dept)
-                        ->where('kode_cabang', $kode_cabang)
-                        ->where('hari', $namahari)->first();
-
-                    // Fallback 1: Jika seksi belum ada jadwal khusus, cari jadwal dari seksi lain di kantor/cabang yang sama
-                    if ($jamkerja == null) {
-                        $jamkerja = DB::table('konfigurasi_jk_dept_detail')
-                            ->join('konfigurasi_jk_dept', 'konfigurasi_jk_dept_detail.kode_jk_dept', '=', 'konfigurasi_jk_dept.kode_jk_dept')
-                            ->join('jam_kerja', 'konfigurasi_jk_dept_detail.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
-                            ->where('kode_cabang', $kode_cabang)
-                            ->where('hari', $namahari)->first();
-                    }
-
-                    // Fallback 2: Jika masih kosong di hari kerja (Senin - Jumat), gunakan jam kerja kantor default
-                    if ($jamkerja == null && !in_array($namahari, ['Sabtu', 'Minggu'])) {
-                        $jamkerja = DB::table('jam_kerja')->where('kode_jam_kerja', 'JK01')->first() ?? DB::table('jam_kerja')->first();
-                    }
-                }
-            }
-        } else {
-            $jamkerja = DB::table('jam_kerja')->where('kode_jam_kerja', $kode_jam_kerja)->first();
+        // Fallback default
+        if ($jamkerja == null) {
+            $jamkerja = DB::table('jam_kerja')->where('kode_jam_kerja', 'JK01')->first() ?? DB::table('jam_kerja')->first();
         }
 
         if ($jamkerja == null) {
@@ -1006,7 +986,6 @@ class PresensiController extends Controller
                     $join->on('layanan.id', '=', 'presensi.nik')
                         ->where('presensi.tgl_presensi', $tgl_dari);
                 })
-                ->leftJoin('jam_kerja', 'presensi.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
                 ->leftJoin('pengajuan_izin', 'presensi.kode_izin', '=', 'pengajuan_izin.kode_izin')
                 ->leftJoin('jadwal_lokasi_layanan as j_khusus', function ($join) use ($tgl_dari) {
                     $join->on('j_khusus.layanan_id', '=', 'layanan.id')
@@ -1027,6 +1006,7 @@ class PresensiController extends Controller
                             WHEN 7 THEN 'Sabtu'
                         END");
                 })
+                ->leftJoin('jam_kerja', DB::raw("COALESCE(presensi.kode_jam_kerja, j_khusus.kode_jam_kerja, j_rutin.kode_jam_kerja)"), '=', 'jam_kerja.kode_jam_kerja')
                 ->leftJoin('cabang as c_lokasi', DB::raw("COALESCE(j_khusus.kode_cabang, j_rutin.kode_cabang, layanan.kode_cabang)"), '=', 'c_lokasi.kode_cabang')
                 ->select(
                     DB::raw("'$tgl_dari' as tgl_presensi"),
@@ -1064,7 +1044,6 @@ class PresensiController extends Controller
         } else {
             $query = DB::table('presensi')
                 ->join('layanan', 'presensi.nik', '=', 'layanan.id')
-                ->leftJoin('jam_kerja', 'presensi.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
                 ->leftJoin('pengajuan_izin', 'presensi.kode_izin', '=', 'pengajuan_izin.kode_izin')
                 ->leftJoin('jadwal_lokasi_layanan as j_khusus', function ($join) {
                     $join->on('j_khusus.layanan_id', '=', 'presensi.nik')
@@ -1085,6 +1064,7 @@ class PresensiController extends Controller
                             WHEN 7 THEN 'Sabtu'
                         END");
                 })
+                ->leftJoin('jam_kerja', DB::raw("COALESCE(presensi.kode_jam_kerja, j_khusus.kode_jam_kerja, j_rutin.kode_jam_kerja)"), '=', 'jam_kerja.kode_jam_kerja')
                 ->leftJoin('cabang as c_lokasi', DB::raw("COALESCE(j_khusus.kode_cabang, j_rutin.kode_cabang, layanan.kode_cabang)"), '=', 'c_lokasi.kode_cabang')
                 ->whereBetween('presensi.tgl_presensi', [$tgl_dari, $tgl_sampai])
                 ->select(

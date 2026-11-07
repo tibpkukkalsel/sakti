@@ -100,13 +100,7 @@
                                     <p>Jam Kerja</p>
                                 </a>
                             </li>
-                            <li class="nav-item">
-                                <a href="/panel-adm14/konfigurasi/jamkerjadept"
-                                    class="nav-link {{ request()->is('panel-adm14/konfigurasi/jamkerjadept*') ? 'active' : '' }}">
-                                    <i class="nav-icon bi bi-circle"></i>
-                                    <p>Jam Kerja Kantor</p>
-                                </a>
-                            </li>
+
                             <li class="nav-item">
                                 <a href="/panel-adm14/konfigurasi/users"
                                     class="nav-link {{ request()->is('panel-adm14/konfigurasi/users*') ? 'active' : '' }}">

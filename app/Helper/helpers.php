@@ -269,6 +269,26 @@ function gethari($hari)
 
 function cekJadwalKerja($nik, $kode_cabang, $kode_dept, $tanggal, $hari, $jadwal_by_date = null, $jadwal_pegawai = null, $jadwal_dept = null)
 {
+    // 0. Cek Jadwal Lokasi Layanan (Event Khusus per Tanggal atau Rutin Mingguan)
+    $jadwalLokasiEvent = DB::table('jadwal_lokasi_layanan')
+        ->where('layanan_id', $nik)
+        ->where('tanggal', $tanggal)
+        ->where('status', 1)
+        ->first();
+    if ($jadwalLokasiEvent) {
+        return !empty($jadwalLokasiEvent->kode_jam_kerja);
+    }
+
+    $jadwalLokasiRutin = DB::table('jadwal_lokasi_layanan')
+        ->where('layanan_id', $nik)
+        ->where('hari', $hari)
+        ->where('jenis_jadwal', 'rutin')
+        ->where('status', 1)
+        ->first();
+    if ($jadwalLokasiRutin) {
+        return !empty($jadwalLokasiRutin->kode_jam_kerja);
+    }
+
     // 1. Cek Jadwal Khusus per Tanggal
     if ($jadwal_by_date && isset($jadwal_by_date[$nik])) {
         $byDate = $jadwal_by_date[$nik]->firstWhere('tanggal', $tanggal);

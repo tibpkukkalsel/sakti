@@ -148,20 +148,22 @@ class DashboardController extends Controller
         // Cek custom tanggal / event khusus dulu, lalu fallback ke rutin mingguan
         $jadwalHariIni = DB::table('jadwal_lokasi_layanan')
             ->join('cabang', 'jadwal_lokasi_layanan.kode_cabang', '=', 'cabang.kode_cabang')
+            ->leftJoin('jam_kerja', 'jadwal_lokasi_layanan.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
             ->where('jadwal_lokasi_layanan.layanan_id', Auth::guard('karyawan')->user()->id)
             ->where('jadwal_lokasi_layanan.tanggal', $hariini)
             ->where('jadwal_lokasi_layanan.status', 1)
-            ->select('cabang.*', 'jadwal_lokasi_layanan.keterangan as ket_jadwal', 'jadwal_lokasi_layanan.jenis_jadwal')
+            ->select('cabang.*', 'jadwal_lokasi_layanan.keterangan as ket_jadwal', 'jadwal_lokasi_layanan.jenis_jadwal', 'jadwal_lokasi_layanan.kode_jam_kerja', 'jam_kerja.nama_jam_kerja', 'jam_kerja.jam_masuk', 'jam_kerja.jam_pulang')
             ->first();
 
         if (!$jadwalHariIni) {
             $jadwalHariIni = DB::table('jadwal_lokasi_layanan')
                 ->join('cabang', 'jadwal_lokasi_layanan.kode_cabang', '=', 'cabang.kode_cabang')
+                ->leftJoin('jam_kerja', 'jadwal_lokasi_layanan.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
                 ->where('jadwal_lokasi_layanan.layanan_id', Auth::guard('karyawan')->user()->id)
                 ->where('jadwal_lokasi_layanan.hari', $namahari)
                 ->where('jadwal_lokasi_layanan.jenis_jadwal', 'rutin')
                 ->where('jadwal_lokasi_layanan.status', 1)
-                ->select('cabang.*', 'jadwal_lokasi_layanan.keterangan as ket_jadwal', 'jadwal_lokasi_layanan.jenis_jadwal')
+                ->select('cabang.*', 'jadwal_lokasi_layanan.keterangan as ket_jadwal', 'jadwal_lokasi_layanan.jenis_jadwal', 'jadwal_lokasi_layanan.kode_jam_kerja', 'jam_kerja.nama_jam_kerja', 'jam_kerja.jam_masuk', 'jam_kerja.jam_pulang')
                 ->first();
         }
 

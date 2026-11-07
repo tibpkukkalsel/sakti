@@ -51,6 +51,11 @@
                         <div style="font-size: 17px; font-weight: 700; color: #1e293b;">
                             {{ $jadwalHariIni->nama_cabang }}
                         </div>
+                        @if (!empty($jadwalHariIni->nama_jam_kerja))
+                            <div class="text-primary small fw-semibold mt-1">
+                                <ion-icon name="time-outline" style="vertical-align: -1px;"></ion-icon> {{ $jadwalHariIni->nama_jam_kerja }} ({{ substr($jadwalHariIni->jam_masuk, 0, 5) }} - {{ substr($jadwalHariIni->jam_pulang, 0, 5) }})
+                            </div>
+                        @endif
                         @if (!empty($jadwalHariIni->keterangan))
                             <div class="text-muted small mt-1">
                                 {{ $jadwalHariIni->keterangan }}
@@ -106,6 +111,11 @@
                                 </div>
                                 <div>
                                     <strong class="text-dark" style="font-size: 14px;">{{ $ev->nama_cabang }}</strong>
+                                    @if (!empty($ev->nama_jam_kerja))
+                                        <div class="small text-primary fw-semibold">
+                                            <ion-icon name="time-outline" style="vertical-align: -1px;"></ion-icon> {{ substr($ev->jam_masuk, 0, 5) }} - {{ substr($ev->jam_pulang, 0, 5) }}
+                                        </div>
+                                    @endif
                                     @if (!empty($ev->keterangan))
                                         <div class="small text-muted">{{ $ev->keterangan }}</div>
                                     @endif
@@ -161,6 +171,11 @@
                                 <strong class="text-dark" style="font-size: 14px;">
                                     {{ $j ? $j->nama_cabang : 'Libur' }}
                                 </strong>
+                                @if ($j && !empty($j->nama_jam_kerja))
+                                    <div class="small text-muted font-monospace">
+                                        {{ substr($j->jam_masuk, 0, 5) }} - {{ substr($j->jam_pulang, 0, 5) }}
+                                    </div>
+                                @endif
                             </div>
                         </div>
 

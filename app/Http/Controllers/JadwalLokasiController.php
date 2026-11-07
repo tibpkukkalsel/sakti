@@ -22,13 +22,17 @@ class JadwalLokasiController extends Controller
         $query = DB::table('jadwal_lokasi_layanan')
             ->join('layanan', 'jadwal_lokasi_layanan.layanan_id', '=', 'layanan.id')
             ->join('cabang', 'jadwal_lokasi_layanan.kode_cabang', '=', 'cabang.kode_cabang')
+            ->leftJoin('jam_kerja', 'jadwal_lokasi_layanan.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
             ->select(
                 'jadwal_lokasi_layanan.*',
                 'layanan.nama_layanan',
                 'layanan.nama_pic',
                 'cabang.nama_cabang',
                 'cabang.lokasi_cabang',
-                'cabang.radius_cabang'
+                'cabang.radius_cabang',
+                'jam_kerja.nama_jam_kerja',
+                'jam_kerja.jam_masuk',
+                'jam_kerja.jam_pulang'
             );
 
         if ($request->filled('layanan_id')) {
@@ -62,6 +66,7 @@ class JadwalLokasiController extends Controller
 
         $listLayanan = DB::table('layanan')->orderBy('nama_layanan', 'asc')->get();
         $listLokasi = DB::table('cabang')->orderBy('nama_cabang', 'asc')->get();
+        $listJamKerja = DB::table('jam_kerja')->orderBy('nama_jam_kerja', 'asc')->get();
         $listHari = $this->listHari;
 
         // Ambil data matriks jadwal mingguan untuk quick overview
@@ -83,7 +88,7 @@ class JadwalLokasiController extends Controller
             ->where('tanggal', '>=', date('Y-m-d'))
             ->count();
 
-        return view('jadwallokasi.index', compact('jadwal', 'listLayanan', 'listLokasi', 'listHari', 'matrix', 'totalEventKhusus'));
+        return view('jadwallokasi.index', compact('jadwal', 'listLayanan', 'listLokasi', 'listJamKerja', 'listHari', 'matrix', 'totalEventKhusus'));
     }
 
     /**
@@ -97,6 +102,7 @@ class JadwalLokasiController extends Controller
             'layanan_id' => 'required|exists:layanan,id',
             'jenis_jadwal' => 'required|in:rutin,khusus',
             'kode_cabang' => 'required|exists:cabang,kode_cabang',
+            'kode_jam_kerja' => 'nullable|exists:jam_kerja,kode_jam_kerja',
             'keterangan' => 'nullable|string|max:255',
         ];
 
@@ -107,6 +113,9 @@ class JadwalLokasiController extends Controller
         }
 
         $request->validate($rules);
+
+        $defaultJk = DB::table('jam_kerja')->value('kode_jam_kerja');
+        $kodeJamKerja = $request->filled('kode_jam_kerja') ? $request->kode_jam_kerja : $defaultJk;
 
         try {
             if ($jenisJadwal == 'khusus') {
@@ -123,6 +132,7 @@ class JadwalLokasiController extends Controller
                         'jenis_jadwal' => 'khusus',
                         'hari' => $hari,
                         'kode_cabang' => $request->kode_cabang,
+                        'kode_jam_kerja' => $kodeJamKerja,
                         'keterangan' => $request->keterangan,
                         'status' => $request->status ?? 1,
                         'updated_at' => now(),
@@ -143,6 +153,7 @@ class JadwalLokasiController extends Controller
                 if ($exist) {
                     DB::table('jadwal_lokasi_layanan')->where('id', $exist->id)->update([
                         'kode_cabang' => $request->kode_cabang,
+                        'kode_jam_kerja' => $kodeJamKerja,
                         'keterangan' => $request->keterangan,
                         'status' => $request->status ?? 1,
                         'updated_at' => now(),
@@ -154,6 +165,7 @@ class JadwalLokasiController extends Controller
                         'hari' => $request->hari,
                         'tanggal' => null,
                         'kode_cabang' => $request->kode_cabang,
+                        'kode_jam_kerja' => $kodeJamKerja,
                         'keterangan' => $request->keterangan,
                         'status' => $request->status ?? 1,
                         'created_at' => now(),
@@ -180,9 +192,10 @@ class JadwalLokasiController extends Controller
 
         $listLayanan = DB::table('layanan')->orderBy('nama_layanan', 'asc')->get();
         $listLokasi = DB::table('cabang')->orderBy('nama_cabang', 'asc')->get();
+        $listJamKerja = DB::table('jam_kerja')->orderBy('nama_jam_kerja', 'asc')->get();
         $listHari = $this->listHari;
 
-        return view('jadwallokasi.edit', compact('jadwal', 'listLayanan', 'listLokasi', 'listHari'));
+        return view('jadwallokasi.edit', compact('jadwal', 'listLayanan', 'listLokasi', 'listJamKerja', 'listHari'));
     }
 
     /**
@@ -196,6 +209,7 @@ class JadwalLokasiController extends Controller
             'layanan_id' => 'required|exists:layanan,id',
             'jenis_jadwal' => 'required|in:rutin,khusus',
             'kode_cabang' => 'required|exists:cabang,kode_cabang',
+            'kode_jam_kerja' => 'nullable|exists:jam_kerja,kode_jam_kerja',
             'keterangan' => 'nullable|string|max:255',
         ];
 
@@ -206,6 +220,9 @@ class JadwalLokasiController extends Controller
         }
 
         $request->validate($rules);
+
+        $defaultJk = DB::table('jam_kerja')->value('kode_jam_kerja');
+        $kodeJamKerja = $request->filled('kode_jam_kerja') ? $request->kode_jam_kerja : $defaultJk;
 
         try {
             if ($jenisJadwal == 'khusus') {
@@ -229,6 +246,7 @@ class JadwalLokasiController extends Controller
                     'hari' => $hari,
                     'tanggal' => $tanggal,
                     'kode_cabang' => $request->kode_cabang,
+                    'kode_jam_kerja' => $kodeJamKerja,
                     'keterangan' => $request->keterangan,
                     'status' => $request->status ?? 1,
                     'updated_at' => now(),
@@ -253,6 +271,7 @@ class JadwalLokasiController extends Controller
                     'hari' => $request->hari,
                     'tanggal' => null,
                     'kode_cabang' => $request->kode_cabang,
+                    'kode_jam_kerja' => $kodeJamKerja,
                     'keterangan' => $request->keterangan,
                     'status' => $request->status ?? 1,
                     'updated_at' => now(),
@@ -291,10 +310,13 @@ class JadwalLokasiController extends Controller
         $layananId = $request->layanan_id;
         $jadwalInput = $request->jadwal;
 
+        $defaultJk = DB::table('jam_kerja')->value('kode_jam_kerja');
+
         try {
             DB::beginTransaction();
             foreach ($jadwalInput as $hari => $data) {
                 if (!empty($data['kode_cabang'])) {
+                    $jkVal = !empty($data['kode_jam_kerja']) ? $data['kode_jam_kerja'] : $defaultJk;
                     $exist = DB::table('jadwal_lokasi_layanan')
                         ->where('layanan_id', $layananId)
                         ->where('hari', $hari)
@@ -304,6 +326,7 @@ class JadwalLokasiController extends Controller
                     if ($exist) {
                         DB::table('jadwal_lokasi_layanan')->where('id', $exist->id)->update([
                             'kode_cabang' => $data['kode_cabang'],
+                            'kode_jam_kerja' => $jkVal,
                             'keterangan' => $data['keterangan'] ?? null,
                             'status' => isset($data['status']) ? 1 : 0,
                             'updated_at' => now(),
@@ -315,6 +338,7 @@ class JadwalLokasiController extends Controller
                             'hari' => $hari,
                             'tanggal' => null,
                             'kode_cabang' => $data['kode_cabang'],
+                            'kode_jam_kerja' => $jkVal,
                             'keterangan' => $data['keterangan'] ?? null,
                             'status' => isset($data['status']) ? 1 : 0,
                             'created_at' => now(),
@@ -351,19 +375,21 @@ class JadwalLokasiController extends Controller
         // 1. Cek apakah ada jadwal khusus event HARI INI
         $jadwalKhususHariIni = DB::table('jadwal_lokasi_layanan')
             ->join('cabang', 'jadwal_lokasi_layanan.kode_cabang', '=', 'cabang.kode_cabang')
+            ->leftJoin('jam_kerja', 'jadwal_lokasi_layanan.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
             ->where('jadwal_lokasi_layanan.layanan_id', $user->id)
             ->where('jadwal_lokasi_layanan.tanggal', $hariini)
             ->where('jadwal_lokasi_layanan.status', 1)
-            ->select('jadwal_lokasi_layanan.*', 'cabang.nama_cabang', 'cabang.lokasi_cabang', 'cabang.radius_cabang')
+            ->select('jadwal_lokasi_layanan.*', 'cabang.nama_cabang', 'cabang.lokasi_cabang', 'cabang.radius_cabang', 'jam_kerja.nama_jam_kerja', 'jam_kerja.jam_masuk', 'jam_kerja.jam_pulang')
             ->first();
 
         // 2. Ambil jadwal mingguan rutin
         $jadwalMingguan = DB::table('jadwal_lokasi_layanan')
             ->join('cabang', 'jadwal_lokasi_layanan.kode_cabang', '=', 'cabang.kode_cabang')
+            ->leftJoin('jam_kerja', 'jadwal_lokasi_layanan.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
             ->where('jadwal_lokasi_layanan.layanan_id', $user->id)
             ->where('jadwal_lokasi_layanan.jenis_jadwal', 'rutin')
             ->where('jadwal_lokasi_layanan.status', 1)
-            ->select('jadwal_lokasi_layanan.*', 'cabang.nama_cabang', 'cabang.lokasi_cabang', 'cabang.radius_cabang')
+            ->select('jadwal_lokasi_layanan.*', 'cabang.nama_cabang', 'cabang.lokasi_cabang', 'cabang.radius_cabang', 'jam_kerja.nama_jam_kerja', 'jam_kerja.jam_masuk', 'jam_kerja.jam_pulang')
             ->orderByRaw("FIELD(jadwal_lokasi_layanan.hari, 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu')")
             ->get();
 
@@ -374,11 +400,12 @@ class JadwalLokasiController extends Controller
         // 3. Ambil daftar event khusus mendatang (mulai hari ini ke depan)
         $jadwalEventMendatang = DB::table('jadwal_lokasi_layanan')
             ->join('cabang', 'jadwal_lokasi_layanan.kode_cabang', '=', 'cabang.kode_cabang')
+            ->leftJoin('jam_kerja', 'jadwal_lokasi_layanan.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
             ->where('jadwal_lokasi_layanan.layanan_id', $user->id)
             ->where('jadwal_lokasi_layanan.jenis_jadwal', 'khusus')
             ->where('jadwal_lokasi_layanan.tanggal', '>=', $hariini)
             ->where('jadwal_lokasi_layanan.status', 1)
-            ->select('jadwal_lokasi_layanan.*', 'cabang.nama_cabang', 'cabang.lokasi_cabang', 'cabang.radius_cabang')
+            ->select('jadwal_lokasi_layanan.*', 'cabang.nama_cabang', 'cabang.lokasi_cabang', 'cabang.radius_cabang', 'jam_kerja.nama_jam_kerja', 'jam_kerja.jam_masuk', 'jam_kerja.jam_pulang')
             ->orderBy('jadwal_lokasi_layanan.tanggal', 'asc')
             ->get();
 
@@ -420,11 +447,15 @@ class JadwalLokasiController extends Controller
         // Ambil data jadwal lokasi rutin aktif
         $jadwalQuery = DB::table("jadwal_lokasi_layanan")
             ->join("cabang", "jadwal_lokasi_layanan.kode_cabang", "=", "cabang.kode_cabang")
+            ->leftJoin("jam_kerja", "jadwal_lokasi_layanan.kode_jam_kerja", "=", "jam_kerja.kode_jam_kerja")
             ->select(
                 "jadwal_lokasi_layanan.*",
                 "cabang.nama_cabang",
                 "cabang.lokasi_cabang",
-                "cabang.radius_cabang"
+                "cabang.radius_cabang",
+                "jam_kerja.nama_jam_kerja",
+                "jam_kerja.jam_masuk",
+                "jam_kerja.jam_pulang"
             )
             ->where("jadwal_lokasi_layanan.jenis_jadwal", "rutin")
             ->where("jadwal_lokasi_layanan.status", 1);
@@ -451,6 +482,7 @@ class JadwalLokasiController extends Controller
         $eventKhususQuery = DB::table("jadwal_lokasi_layanan")
             ->join("layanan", "jadwal_lokasi_layanan.layanan_id", "=", "layanan.id")
             ->join("cabang", "jadwal_lokasi_layanan.kode_cabang", "=", "cabang.kode_cabang")
+            ->leftJoin("jam_kerja", "jadwal_lokasi_layanan.kode_jam_kerja", "=", "jam_kerja.kode_jam_kerja")
             ->where("jadwal_lokasi_layanan.jenis_jadwal", "khusus")
             ->where("jadwal_lokasi_layanan.status", 1)
             ->where("jadwal_lokasi_layanan.tanggal", ">=", date("Y-m-d"))
@@ -459,7 +491,10 @@ class JadwalLokasiController extends Controller
                 "layanan.nama_layanan",
                 "cabang.nama_cabang",
                 "cabang.lokasi_cabang",
-                "cabang.radius_cabang"
+                "cabang.radius_cabang",
+                "jam_kerja.nama_jam_kerja",
+                "jam_kerja.jam_masuk",
+                "jam_kerja.jam_pulang"
             )
             ->orderBy("jadwal_lokasi_layanan.tanggal", "asc");
 
