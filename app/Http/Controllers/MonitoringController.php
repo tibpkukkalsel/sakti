@@ -133,6 +133,36 @@ class MonitoringController extends Controller
             $chartBulanValuesR4[] = $rowM ? (float) $rowM->rp_r4 : 0;
         }
 
+        // 3b. Data Grafik Bulanan Per Layanan (Tahun Berjalan)
+        $rawPendapatanLayananBulan = DB::table('rekap_penerimaan_pkb')
+            ->join('layanan', 'rekap_penerimaan_pkb.layanan_id', '=', 'layanan.id')
+            ->whereYear('rekap_penerimaan_pkb.tgl_penerimaan', $tahunini)
+            ->selectRaw('
+                rekap_penerimaan_pkb.layanan_id,
+                layanan.nama_layanan,
+                MONTH(rekap_penerimaan_pkb.tgl_penerimaan) as bulan,
+                COALESCE(SUM(rekap_penerimaan_pkb.total_rp), 0) as total_rp
+            ')
+            ->groupBy('rekap_penerimaan_pkb.layanan_id', 'layanan.nama_layanan', DB::raw('MONTH(rekap_penerimaan_pkb.tgl_penerimaan)'))
+            ->get();
+
+        $daftarLayananChart = DB::table('layanan')->orderBy('nama_layanan', 'asc')->get();
+
+        $chartLayananPerBulanSeries = [];
+        foreach ($daftarLayananChart as $lay) {
+            $monthlyValues = [];
+            for ($m = 1; $m <= 12; $m++) {
+                $item = $rawPendapatanLayananBulan->first(function ($r) use ($lay, $m) {
+                    return $r->layanan_id == $lay->id && $r->bulan == $m;
+                });
+                $monthlyValues[] = (float) ($item ? $item->total_rp : 0);
+            }
+            $chartLayananPerBulanSeries[] = [
+                'name' => $lay->nama_layanan,
+                'data' => $monthlyValues
+            ];
+        }
+
         // 4. Data Status Real-time Layanan Hari Ini
         $monitoringLayanan = DB::table('layanan')
             ->leftJoin('jadwal_lokasi_layanan as j_khusus', function ($join) use ($hariini) {
@@ -206,6 +236,7 @@ class MonitoringController extends Controller
             'chartBulanValuesTotal',
             'chartBulanValuesR2',
             'chartBulanValuesR4',
+            'chartLayananPerBulanSeries',
             'monitoringLayanan'
         ));
     }

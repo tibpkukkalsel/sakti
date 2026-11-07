@@ -332,7 +332,8 @@
                                 </span>
                             </div>
                             <div class="menu-name" style="margin-top: 3px;">
-                                <span style="font-size: 11px; font-weight: 600; color: #475569; display: block; line-height: 1.2;">Layanan</span>
+                                <span
+                                    style="font-size: 11px; font-weight: 600; color: #475569; display: block; line-height: 1.2;">Layanan</span>
                             </div>
                         </a>
                     </div>
@@ -345,7 +346,8 @@
                                 </span>
                             </div>
                             <div class="menu-name" style="margin-top: 3px;">
-                                <span style="font-size: 11px; font-weight: 600; color: #475569; display: block; line-height: 1.2;">Jadwal</span>
+                                <span
+                                    style="font-size: 11px; font-weight: 600; color: #475569; display: block; line-height: 1.2;">Jadwal</span>
                             </div>
                         </a>
                     </div>
@@ -353,12 +355,14 @@
                     <div class="item-menu text-center">
                         <a href="/monitoring/presensi" style="text-decoration: none; color: inherit; display: block;">
                             <div class="menu-icon">
-                                <span class="danger" style="font-size: 34px; color: #ef4444; display: inline-block; line-height: 1;">
+                                <span class="danger"
+                                    style="font-size: 34px; color: #ef4444; display: inline-block; line-height: 1;">
                                     <ion-icon name="finger-print"></ion-icon>
                                 </span>
                             </div>
                             <div class="menu-name" style="margin-top: 3px;">
-                                <span style="font-size: 11px; font-weight: 600; color: #475569; display: block; line-height: 1.2;">Presensi</span>
+                                <span
+                                    style="font-size: 11px; font-weight: 600; color: #475569; display: block; line-height: 1.2;">Presensi</span>
                             </div>
                         </a>
                     </div>
@@ -366,12 +370,14 @@
                     <div class="item-menu text-center">
                         <a href="/monitoring/penerimaan" style="text-decoration: none; color: inherit; display: block;">
                             <div class="menu-icon">
-                                <span class="success" style="font-size: 34px; color: #10b981; display: inline-block; line-height: 1;">
+                                <span class="success"
+                                    style="font-size: 34px; color: #10b981; display: inline-block; line-height: 1;">
                                     <ion-icon name="cash-outline"></ion-icon>
                                 </span>
                             </div>
                             <div class="menu-name" style="margin-top: 3px;">
-                                <span style="font-size: 11px; font-weight: 600; color: #475569; display: block; line-height: 1.2;">Penerimaan</span>
+                                <span
+                                    style="font-size: 11px; font-weight: 600; color: #475569; display: block; line-height: 1.2;">Penerimaan</span>
                             </div>
                         </a>
                     </div>
@@ -707,15 +713,21 @@
                     <div class="card" style="border-radius: 12px; border: 1px solid #e2e8f0;">
                         <div class="card-body p-2">
                             <div class="d-flex justify-content-between align-items-center px-2 pt-2 mb-1">
-                                <span class="fw-bold text-dark" style="font-size: 13px;">Grafik Tren Bulanan
+                                <span class="fw-bold text-dark" style="font-size: 13px;">Tren Perbulan
                                     ({{ $tahunini }})</span>
-                                <a href="/monitoring/penerimaan" class="text-primary small fw-semibold"
-                                    style="font-size: 11.5px; text-decoration: none;">
-                                    Detail <ion-icon name="chevron-forward-outline"
-                                        style="vertical-align: -1px;"></ion-icon>
-                                </a>
                             </div>
                             <div id="chart-penerimaan-monitoring" style="min-height: 250px;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Card Grafik Bulanan Per Layanan (ApexCharts) -->
+                    <div class="card mt-2" style="border-radius: 12px; border: 1px solid #e2e8f0;">
+                        <div class="card-body p-2">
+                            <div class="d-flex justify-content-between align-items-center px-2 pt-2 mb-1">
+                                <span class="fw-bold text-dark" style="font-size: 13px;">Bulanan Per Layanan
+                                    ({{ $tahunini }})</span>
+                            </div>
+                            <div id="chart-layanan-perbulan-monitoring" style="min-height: 250px;"></div>
                         </div>
                     </div>
                 </div>
@@ -836,13 +848,103 @@
             chartPenerimaanMonitoring.render();
         }
 
+        var chartLayananPerBulanMonitoring = null;
+
+        function renderChartLayananPerBulanMonitoring() {
+            var el = document.querySelector("#chart-layanan-perbulan-monitoring");
+            if (!el) return;
+
+            if (typeof ApexCharts === 'undefined') {
+                setTimeout(renderChartLayananPerBulanMonitoring, 200);
+                return;
+            }
+
+            if (chartLayananPerBulanMonitoring) {
+                try {
+                    chartLayananPerBulanMonitoring.destroy();
+                } catch (e) {}
+            }
+
+            var optionsLayanan = {
+                series: @json($chartLayananPerBulanSeries),
+                chart: {
+                    type: 'bar',
+                    height: 270,
+                    toolbar: {
+                        show: false
+                    },
+                    fontFamily: 'inherit'
+                },
+                plotOptions: {
+                    bar: {
+                        horizontal: false,
+                        columnWidth: '55%',
+                        borderRadius: 4
+                    }
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    show: true,
+                    width: 2,
+                    colors: ['transparent']
+                },
+                xaxis: {
+                    categories: @json($chartBulanLabels),
+                    labels: {
+                        style: {
+                            fontSize: '10px'
+                        }
+                    }
+                },
+                yaxis: {
+                    labels: {
+                        style: {
+                            fontSize: '10px'
+                        },
+                        formatter: function(val) {
+                            if (val >= 1000000000) return (val / 1000000000).toFixed(1) + 'M';
+                            if (val >= 1000000) return (val / 1000000).toFixed(0) + 'Jt';
+                            return val;
+                        }
+                    }
+                },
+                colors: ['#0284c7', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899'],
+                fill: {
+                    opacity: 1
+                },
+                tooltip: {
+                    y: {
+                        formatter: function(val) {
+                            return 'Rp ' + Number(val).toLocaleString('id-ID');
+                        }
+                    }
+                },
+                legend: {
+                    position: 'bottom',
+                    fontSize: '11px',
+                    markers: {
+                        radius: 12
+                    }
+                }
+            };
+
+            chartLayananPerBulanMonitoring = new ApexCharts(el, optionsLayanan);
+            chartLayananPerBulanMonitoring.render();
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             renderChartPenerimaanMonitoring();
+            renderChartLayananPerBulanMonitoring();
 
             // Re-render chart saat tab Grafik diklik
             $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
                 if ($(e.target).attr('href') === '#tab-grafik') {
-                    setTimeout(renderChartPenerimaanMonitoring, 150);
+                    setTimeout(function() {
+                        renderChartPenerimaanMonitoring();
+                        renderChartLayananPerBulanMonitoring();
+                    }, 150);
                 }
             });
         });
