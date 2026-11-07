@@ -114,9 +114,26 @@ class MonitoringController extends Controller
         $chartBulanValuesR2 = [];
         $chartBulanValuesR4 = [];
 
-        $totalTahunBerjalanRp = (float) DB::table('rekap_penerimaan_pkb')->whereYear('tgl_penerimaan', $tahunini)->sum('total_rp');
-        $totalTahunBerjalanUnit = (int) DB::table('rekap_penerimaan_pkb')->whereYear('tgl_penerimaan', $tahunini)->sum('total_unit');
-        $totalTahunBerjalanNotice = (int) DB::table('rekap_penerimaan_pkb')->whereYear('tgl_penerimaan', $tahunini)->sum('jumlah_notice');
+        $summaryTahunBerjalan = DB::table('rekap_penerimaan_pkb')
+            ->whereYear('tgl_penerimaan', $tahunini)
+            ->selectRaw('
+                COALESCE(SUM(total_rp), 0) as total_rp,
+                COALESCE(SUM(total_unit), 0) as total_unit,
+                COALESCE(SUM(jumlah_notice), 0) as total_notice,
+                COALESCE(SUM(jumlah_rp_r2), 0) as rp_r2,
+                COALESCE(SUM(jumlah_unit_r2), 0) as unit_r2,
+                COALESCE(SUM(jumlah_rp_r4), 0) as rp_r4,
+                COALESCE(SUM(jumlah_unit_r4), 0) as unit_r4
+            ')
+            ->first();
+
+        $totalTahunBerjalanRp = (float) ($summaryTahunBerjalan->total_rp ?? 0);
+        $totalTahunBerjalanUnit = (int) ($summaryTahunBerjalan->total_unit ?? 0);
+        $totalTahunBerjalanNotice = (int) ($summaryTahunBerjalan->total_notice ?? 0);
+        $totalTahunBerjalanR2Rp = (float) ($summaryTahunBerjalan->rp_r2 ?? 0);
+        $totalTahunBerjalanR2Unit = (int) ($summaryTahunBerjalan->unit_r2 ?? 0);
+        $totalTahunBerjalanR4Rp = (float) ($summaryTahunBerjalan->rp_r4 ?? 0);
+        $totalTahunBerjalanR4Unit = (int) ($summaryTahunBerjalan->unit_r4 ?? 0);
         $namabulan = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
 
         $monthlyData = DB::table('rekap_penerimaan_pkb')
@@ -317,6 +334,10 @@ class MonitoringController extends Controller
             'totalTahunBerjalanRp',
             'totalTahunBerjalanUnit',
             'totalTahunBerjalanNotice',
+            'totalTahunBerjalanR2Rp',
+            'totalTahunBerjalanR2Unit',
+            'totalTahunBerjalanR4Rp',
+            'totalTahunBerjalanR4Unit',
             'totalLayanan',
             'jml_hadir',
             'jml_maintenance',
