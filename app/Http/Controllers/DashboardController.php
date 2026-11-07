@@ -491,6 +491,122 @@ class DashboardController extends Controller
             ];
         }
 
+        // 2c. Data Pie Chart Total & Persentase Pendapatan Per Layanan (Tahun Berjalan)
+        $pendapatanPerLayananTahunIni = DB::table('rekap_penerimaan_pkb')
+            ->join('layanan', 'rekap_penerimaan_pkb.layanan_id', '=', 'layanan.id')
+            ->whereYear('rekap_penerimaan_pkb.tgl_penerimaan', $tahunini);
+
+        if (!empty($layanan_id) && $layanan_id != 'all') {
+            $pendapatanPerLayananTahunIni->where('rekap_penerimaan_pkb.layanan_id', $layanan_id);
+        }
+
+        $pendapatanPerLayananTahunIni = $pendapatanPerLayananTahunIni->select(
+                'layanan.nama_layanan',
+                DB::raw('COALESCE(SUM(rekap_penerimaan_pkb.total_rp), 0) as total_rp')
+            )
+            ->groupBy('layanan.id', 'layanan.nama_layanan')
+            ->orderBy('layanan.nama_layanan', 'asc')
+            ->get();
+
+        $pieLayananLabels = $pendapatanPerLayananTahunIni->pluck('nama_layanan')->toArray();
+        $pieLayananValues = $pendapatanPerLayananTahunIni->pluck('total_rp')->map(fn($v) => (float) $v)->toArray();
+
+        // 2d. Data Pie Chart Persentase Pendapatan Berdasarkan Hari (Tahun Berjalan)
+        $dayQuery = DB::table('rekap_penerimaan_pkb')
+            ->whereYear('tgl_penerimaan', $tahunini);
+
+        if (!empty($layanan_id) && $layanan_id != 'all') {
+            $dayQuery->where('rekap_penerimaan_pkb.layanan_id', $layanan_id);
+        }
+
+        $dayQuery = $dayQuery->selectRaw("
+                CASE DAYOFWEEK(tgl_penerimaan)
+                    WHEN 2 THEN 'Senin'
+                    WHEN 3 THEN 'Selasa'
+                    WHEN 4 THEN 'Rabu'
+                    WHEN 5 THEN 'Kamis'
+                    WHEN 6 THEN 'Jumat'
+                    WHEN 7 THEN 'Sabtu'
+                    ELSE 'Minggu'
+                END as nama_hari,
+                DAYOFWEEK(tgl_penerimaan) as day_num,
+                COALESCE(SUM(total_rp), 0) as total_rp
+            ")
+            ->groupBy('day_num', 'nama_hari')
+            ->orderByRaw("FIELD(day_num, 2, 3, 4, 5, 6, 7, 1)")
+            ->get();
+
+        $pieHariLabels = $dayQuery->pluck('nama_hari')->toArray();
+        $pieHariValues = $dayQuery->pluck('total_rp')->map(fn($v) => (float) $v)->toArray();
+
+        // 2e. Detail Penerimaan Per Hari: Nama Layanan, Nama Lokasi, Detail Rp (Urutan Tertinggi Diatas)
+        $detailHariQuery = DB::table('rekap_penerimaan_pkb')
+            ->join('layanan', 'rekap_penerimaan_pkb.layanan_id', '=', 'layanan.id')
+            ->leftJoin('jadwal_lokasi_layanan as j_khusus', function ($join) {
+                $join->on('j_khusus.layanan_id', '=', 'rekap_penerimaan_pkb.layanan_id')
+                    ->on('j_khusus.tanggal', '=', 'rekap_penerimaan_pkb.tgl_penerimaan')
+                    ->where('j_khusus.status', 1);
+            })
+            ->leftJoin('jadwal_lokasi_layanan as j_rutin', function ($join) {
+                $join->on('j_rutin.layanan_id', '=', 'rekap_penerimaan_pkb.layanan_id')
+                    ->where('j_rutin.jenis_jadwal', 'rutin')
+                    ->where('j_rutin.status', 1)
+                    ->whereRaw("j_rutin.hari = CASE DAYOFWEEK(rekap_penerimaan_pkb.tgl_penerimaan)
+                        WHEN 1 THEN 'Minggu'
+                        WHEN 2 THEN 'Senin'
+                        WHEN 3 THEN 'Selasa'
+                        WHEN 4 THEN 'Rabu'
+                        WHEN 5 THEN 'Kamis'
+                        WHEN 6 THEN 'Jumat'
+                        WHEN 7 THEN 'Sabtu'
+                    END");
+            })
+            ->leftJoin('cabang as c_lokasi', DB::raw("COALESCE(j_khusus.kode_cabang, j_rutin.kode_cabang, layanan.kode_cabang)"), '=', 'c_lokasi.kode_cabang')
+            ->whereYear('rekap_penerimaan_pkb.tgl_penerimaan', $tahunini);
+
+        if (!empty($layanan_id) && $layanan_id != 'all') {
+            $detailHariQuery->where('rekap_penerimaan_pkb.layanan_id', $layanan_id);
+        }
+
+        $detailHariQuery = $detailHariQuery->selectRaw("
+                CASE DAYOFWEEK(rekap_penerimaan_pkb.tgl_penerimaan)
+                    WHEN 2 THEN 'Senin'
+                    WHEN 3 THEN 'Selasa'
+                    WHEN 4 THEN 'Rabu'
+                    WHEN 5 THEN 'Kamis'
+                    WHEN 6 THEN 'Jumat'
+                    WHEN 7 THEN 'Sabtu'
+                    ELSE 'Minggu'
+                END as nama_hari,
+                layanan.nama_layanan,
+                COALESCE(c_lokasi.nama_cabang, 'UPPD SAMSAT Batulicin') as nama_lokasi,
+                COALESCE(SUM(rekap_penerimaan_pkb.total_rp), 0) as total_rp,
+                COALESCE(SUM(rekap_penerimaan_pkb.total_unit), 0) as total_unit,
+                COALESCE(SUM(rekap_penerimaan_pkb.jumlah_notice), 0) as total_notice,
+                COALESCE(SUM(rekap_penerimaan_pkb.jumlah_rp_r2), 0) as rp_r2,
+                COALESCE(SUM(rekap_penerimaan_pkb.jumlah_unit_r2), 0) as unit_r2,
+                COALESCE(SUM(rekap_penerimaan_pkb.jumlah_rp_r4), 0) as rp_r4,
+                COALESCE(SUM(rekap_penerimaan_pkb.jumlah_unit_r4), 0) as unit_r4
+            ")
+            ->groupBy(
+                DB::raw("CASE DAYOFWEEK(rekap_penerimaan_pkb.tgl_penerimaan)
+                    WHEN 2 THEN 'Senin'
+                    WHEN 3 THEN 'Selasa'
+                    WHEN 4 THEN 'Rabu'
+                    WHEN 5 THEN 'Kamis'
+                    WHEN 6 THEN 'Jumat'
+                    WHEN 7 THEN 'Sabtu'
+                    ELSE 'Minggu'
+                END"),
+                'layanan.id',
+                'layanan.nama_layanan',
+                DB::raw("COALESCE(c_lokasi.nama_cabang, 'UPPD SAMSAT Batulicin')")
+            )
+            ->orderBy('total_rp', 'desc')
+            ->get();
+
+        $detailPerHariJson = $detailHariQuery->groupBy('nama_hari')->toArray();
+
         // 3. Data Tabel Rekapitulasi Penerimaan Berdasarkan Layanan (Agregasi per Layanan, per 10 data)
         $queryTabel = DB::table('rekap_penerimaan_pkb')
             ->join('layanan', 'rekap_penerimaan_pkb.layanan_id', '=', 'layanan.id')
@@ -587,6 +703,11 @@ class DashboardController extends Controller
             'chartBulanValuesR2',
             'chartBulanValuesR4',
             'chartLayananPerBulanSeries',
+            'pieLayananLabels',
+            'pieLayananValues',
+            'pieHariLabels',
+            'pieHariValues',
+            'detailPerHariJson',
             'tahunini'
         ));
     }
