@@ -5,8 +5,8 @@
         <!--begin::Brand Link-->
         <a href="/panel-adm14/home" class="brand-link text-decoration-none d-flex align-items-center gap-2 px-3">
             <!--begin::Brand Image-->
-            <img src="{{ asset('Logo Sakti.png') }}" alt="SAKTI Logo" class="brand-image opacity-75 shadow-sm rounded"
-                style="max-height: 32px; width: auto;"
+            <img src="{{ asset('Logo Sakti.png') }}?v=2" alt="SAKTI Logo" class="brand-image shadow-sm rounded"
+                style="max-height: 34px; width: auto;"
                 onerror="this.src='{{ asset('assets/img/Logo Provinsi Kalimantan Selatan.png') }}'">
             <!--end::Brand Image-->
             <!--begin::Brand Text-->

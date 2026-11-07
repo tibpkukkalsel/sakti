@@ -15,9 +15,9 @@
     <title>SAKTI UPPD SAMSAT Batu Licin</title>
     <meta name="description" content="SAKTI UPPD SAMSAT Batu Licin">
     <meta name="keywords" content="ABSENSI DAN PENERIMAAN PKB SAMSAT BATU LICIN" />
-    <link rel="icon" type="image/png" href="{{ asset('Logo Sakti.png') }}" sizes="32x32"
+    <link rel="icon" type="image/png" href="{{ asset('Logo Sakti.png') }}?v=2" sizes="32x32"
         onerror="this.src='{{ asset('assets/img/favicon.png') }}'">
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('Logo Sakti.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('Logo Sakti.png') }}?v=2">
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
     <link rel="manifest" href="{{ asset('manifest.json') }}">
     <style>

@@ -10,8 +10,8 @@
     <meta name="theme-color" content="#334155">
     <title>SAKTI - Admin Panel</title>
     <meta name="description" content="Panel Administrator SAKTI UPPD SAMSAT Batu Licin">
-    <link rel="icon" type="image/png" href="{{ asset('Logo Sakti.png') }}" sizes="32x32">
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('Logo Sakti.png') }}">
+    <link rel="icon" type="image/png" href="{{ asset('Logo Sakti.png') }}?v=2" sizes="32x32">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('Logo Sakti.png') }}?v=2">
     <link rel="manifest" href="{{ asset('manifest.json') }}">
 
     <!-- Google Fonts Poppins -->

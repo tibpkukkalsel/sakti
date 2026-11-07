@@ -5,9 +5,9 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
     <title>SAKTI - Admin Panel</title>
-    <link rel="icon" type="image/png" href="{{ asset('Logo Sakti.png') }}" sizes="32x32"
+    <link rel="icon" type="image/png" href="{{ asset('Logo Sakti.png') }}?v=2" sizes="32x32"
         onerror="this.src='{{ asset('assets/img/favicon.png') }}'">
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('Logo Sakti.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('Logo Sakti.png') }}?v=2">
 
     <!--begin::Fonts-->
     <link rel="preconnect" href="https://fonts.googleapis.com">
