@@ -14,10 +14,8 @@ class UserSeeder extends Seeder
         // 1. Roles
         $roles = [
             ['name' => 'administrator', 'guard_name' => 'web'],
-            ['name' => 'admin departemen', 'guard_name' => 'web'],
             ['name' => 'monitoring', 'guard_name' => 'web'],
             ['name' => 'administrator', 'guard_name' => 'user'],
-            ['name' => 'admin departemen', 'guard_name' => 'user'],
             ['name' => 'monitoring', 'guard_name' => 'user'],
         ];
 
@@ -64,3 +62,4 @@ class UserSeeder extends Seeder
         }
     }
 }
+

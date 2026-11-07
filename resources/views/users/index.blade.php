@@ -7,9 +7,9 @@
                     <!-- Page pre-title -->
 
                     <h2 class="page-title">
-                        Data User / Akun Monitoring
+                        Data User Monitoring
                     </h2>
-                    <div class="text-muted small mt-1">Kelola akun dengan role Monitoring untuk pemantauan presensi & pendapatan via mobile, serta akun Administrator.</div>
+                    <div class="text-muted small mt-1">Kelola akun User Monitoring untuk pemantauan presensi &amp; pendapatan via mobile.</div>
                 </div>
 
             </div>
@@ -47,7 +47,7 @@
                                             <path d="M12 5l0 14"></path>
                                             <path d="M5 12l14 0"></path>
                                         </svg>
-                                        Tambah Data
+                                        Tambah User Monitoring
                                     </a>
                                 </div>
                             </div>
@@ -175,7 +175,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Tambah Data User</h5>
+                    <h5 class="modal-title">Tambah User Monitoring</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -220,20 +220,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row mt-1">
-                            <div class="col-12">
-                                <div class="form-group">
-                                    <select name="role" id="role" class="form-select">
-                                        <option value="">-- Pilih Role User --</option>
-                                        @foreach ($role as $d)
-                                            <option value="{{ $d->name }}" {{ $d->name == 'monitoring' ? 'selected' : '' }}>
-                                                {{ $d->name == 'monitoring' ? '⭐ Monitoring (Akun Mobile Pantau)' : ucwords($d->name) }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
+                        <!-- Role Otomatis Monitoring (Tanpa Pilihan Dropdown) -->
+                        <input type="hidden" name="role" id="role" value="monitoring">
                         <div class="row mt-1">
                             <div class="col-12">
                                 <div class="form-group">
@@ -296,7 +284,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Edit Data User</h5>
+                    <h5 class="modal-title">Edit User Monitoring</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" id="loadedituser">
@@ -375,16 +363,6 @@
                         $("#email").focus();
                     });
 
-                    return false;
-                } else if (role == "") {
-                    Swal.fire({
-                        title: 'Warning!',
-                        text: 'Role  Harus Diisi !',
-                        icon: 'warning',
-                        confirmButtonText: 'Ok'
-                    }).then((result) => {
-                        $("#role").focus();
-                    });
                     return false;
                 } else if (kode_cabang == "") {
                     Swal.fire({

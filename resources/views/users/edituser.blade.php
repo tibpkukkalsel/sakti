@@ -36,20 +36,8 @@
             </div>
         </div>
     </div>
-    <div class="row mt-1">
-        <div class="col-12">
-            <div class="form-group">
-                <select name="role" id="role" class="form-select">
-                    <option value="">Role</option>
-                    @foreach ($role as $d)
-                        <option {{ $user->role_id == $d->id ? 'selected' : '' }} value="{{ $d->id }}">
-                            {{ $d->name == 'monitoring' ? '⭐ Monitoring (Akun Mobile Pantau)' : ucwords($d->name) }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-        </div>
-    </div>
+    <!-- Role Otomatis Monitoring (Tanpa Dropdown) -->
+    <input type="hidden" name="role" id="role" value="monitoring">
     <div class="row mt-1">
         <div class="col-12">
             <div class="form-group">

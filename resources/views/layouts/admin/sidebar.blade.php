@@ -105,7 +105,7 @@
                                 <a href="/panel-adm14/konfigurasi/users"
                                     class="nav-link {{ request()->is('panel-adm14/konfigurasi/users*') ? 'active' : '' }}">
                                     <i class="nav-icon bi bi-circle"></i>
-                                    <p>Kelola User (Monitoring)</p>
+                                    <p>User Monitoring</p>
                                 </a>
                             </li>
                             <li class="nav-item">

@@ -43,7 +43,7 @@ class UserController extends Controller
         $nama_user = $request->nama_user;
         $email = $request->email;
         $kode_dept = $request->kode_dept;
-        $role = $request->role ?: 'monitoring';
+        $role = 'monitoring';
         $password = bcrypt($request->password);
         $kode_cabang = $request->kode_cabang ?: 'SM1';
 
@@ -97,7 +97,7 @@ class UserController extends Controller
         $nama_user = $request->nama_user;
         $email = $request->email;
         $kode_dept = $request->kode_dept;
-        $role = $request->role ?: 'monitoring';
+        $role = 'monitoring';
         $kode_cabang = $request->kode_cabang ?: 'SM1';
 
         $data = [
