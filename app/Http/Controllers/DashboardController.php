@@ -489,21 +489,30 @@ class DashboardController extends Controller
             ];
         }
 
-        // 3. Data Tabel Rekapitulasi Penerimaan Harian PKB (per 10 data)
+        // 3. Data Tabel Rekapitulasi Penerimaan Berdasarkan Layanan (Agregasi per Layanan, per 10 data)
         $queryTabel = DB::table('rekap_penerimaan_pkb')
             ->join('layanan', 'rekap_penerimaan_pkb.layanan_id', '=', 'layanan.id')
-            ->whereBetween('rekap_penerimaan_pkb.tgl_penerimaan', [$startDate, $endDate])
-            ->select(
-                'rekap_penerimaan_pkb.*',
-                'layanan.nama_layanan'
-            )
-            ->orderBy('rekap_penerimaan_pkb.tgl_penerimaan', 'desc');
+            ->whereBetween('rekap_penerimaan_pkb.tgl_penerimaan', [$startDate, $endDate]);
 
         if (!empty($layanan_id) && $layanan_id != 'all') {
             $queryTabel->where('rekap_penerimaan_pkb.layanan_id', $layanan_id);
         }
 
-        $dataPenerimaan = $queryTabel->paginate(10)->withQueryString();
+        $dataPenerimaan = $queryTabel->select(
+            'layanan.id as layanan_id',
+            'layanan.nama_layanan',
+            DB::raw("COALESCE(SUM(rekap_penerimaan_pkb.jumlah_rp_r2), 0) as jumlah_rp_r2"),
+            DB::raw("COALESCE(SUM(rekap_penerimaan_pkb.jumlah_unit_r2), 0) as jumlah_unit_r2"),
+            DB::raw("COALESCE(SUM(rekap_penerimaan_pkb.jumlah_rp_r4), 0) as jumlah_rp_r4"),
+            DB::raw("COALESCE(SUM(rekap_penerimaan_pkb.jumlah_unit_r4), 0) as jumlah_unit_r4"),
+            DB::raw("COALESCE(SUM(rekap_penerimaan_pkb.total_rp), 0) as total_rp"),
+            DB::raw("COALESCE(SUM(rekap_penerimaan_pkb.total_unit), 0) as total_unit"),
+            DB::raw("COALESCE(SUM(rekap_penerimaan_pkb.jumlah_notice), 0) as jumlah_notice")
+        )
+        ->groupBy('layanan.id', 'layanan.nama_layanan')
+        ->orderBy('total_rp', 'desc')
+        ->paginate(10)
+        ->withQueryString();
         $daftarLayanan = DB::table('layanan')->orderBy('nama_layanan', 'asc')->get();
 
         // 4. Data Tabel Rekapitulasi Penerimaan Per Lokasi (Urutan Penerimaan Terbanyak ke Terkecil, per 10 data)

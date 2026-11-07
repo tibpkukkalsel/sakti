@@ -236,13 +236,14 @@
         </div>
     </div>
 
-    <!-- Data Table (PIC TIDAK DITAMPILKAN sesuai instruksi user) -->
+    <!-- Data Table (Rekap Gabungan Berdasarkan Layanan) -->
     <div class="row">
         <div class="col-12">
             <div class="card shadow-sm border-0" id="cardTablePenerimaan">
                 <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
                     <div>
                         <h4 class="card-title fw-bold text-dark mb-0">Data Penerimaan PKB Berdasarkan Layanan</h4>
+                        <div class="small text-muted mt-1">{{ $periodeLabel }}</div>
                     </div>
                 </div>
                 <div class="card-body p-0">
@@ -251,24 +252,19 @@
                             <thead>
                                 <tr>
                                     <th style="width: 50px;" class="text-center">No</th>
-                                    <th style="width: 120px;">Tanggal Layanan</th>
                                     <th>Akun Layanan</th>
                                     <th class="text-end">Realisasi R2</th>
                                     <th class="text-end">Realisasi R4</th>
                                     <th class="text-end">Total Penerimaan (Rp)</th>
                                     <th class="text-center" style="width: 120px;">Total Unit</th>
                                     <th class="text-center" style="width: 130px;">Notice Dicetak</th>
-                                    <th>Keterangan</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse ($dataPenerimaan as $row)
                                     <tr>
                                         <td class="text-center text-muted fw-bold">
-                                            {{ $loop->iteration + $dataPenerimaan->firstItem() - 1 }}</td>
-                                        <td>
-                                            <strong
-                                                class="text-dark">{{ date('d-m-Y', strtotime($row->tgl_penerimaan)) }}</strong>
+                                            {{ $loop->iteration + $dataPenerimaan->firstItem() - 1 }}
                                         </td>
                                         <td>
                                             <span class="badge bg-light text-dark border fs-6 px-2 py-1">
@@ -294,20 +290,17 @@
                                                 {{ number_format($row->total_rp, 0, ',', '.') }}</strong>
                                         </td>
                                         <td class="text-center">
-                                            <span class="badge bg-light text-dark border">{{ $row->total_unit }}
+                                            <span class="badge bg-light text-dark border">{{ number_format($row->total_unit, 0, ',', '.') }}
                                                 Unit</span>
                                         </td>
                                         <td class="text-center">
-                                            <span class="badge bg-warning text-dark border">{{ $row->jumlah_notice }}
+                                            <span class="badge bg-warning text-dark border">{{ number_format($row->jumlah_notice, 0, ',', '.') }}
                                                 Lembar</span>
-                                        </td>
-                                        <td>
-                                            <span class="text-muted small">{{ $row->keterangan ?: '-' }}</span>
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="9" class="text-center py-4 text-muted">
+                                        <td colspan="7" class="text-center py-4 text-muted">
                                             Tidak ada data penerimaan pada periode atau filter layanan yang dipilih.
                                         </td>
                                     </tr>
@@ -332,7 +325,7 @@
                 <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
                     <div>
                         <h4 class="card-title fw-bold text-dark mb-0">Data Penerimaan PKB Berdasarkan Lokasi</h4>
-                        <small class="text-muted"><br>{{ $periodeLabel }}</small>
+                        <div class="small text-muted mt-1">{{ $periodeLabel }}</div>
                     </div>
                 </div>
                 <div class="card-body p-0">
