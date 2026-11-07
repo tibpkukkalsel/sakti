@@ -320,37 +320,52 @@
         </div>
     </div>
 
-    <!-- Ringkasan Operasional Hari Ini (Card Gradasi Hijau & Merah Identik) -->
-    <div class="section mt-2" id="presence-section">
-        <div class="todaypresence">
+    <!-- Rekap Status Armada Hari Ini (Card 3 Kolom di Bawah Menu) -->
+    <div class="section mt-2">
+        <div id="rekappresensi">
+            <h3 style="font-size: 13.5px; font-weight: 700; color: #1e293b; margin-bottom: 8px;">
+                Rekap Armada Hari Ini (Total: {{ $totalLayanan }} Layanan)
+            </h3>
             <div class="row">
-                <div class="col-6">
-                    <div class="card gradasigreen">
-                        <div class="card-body">
-                            <div class="presencecontent">
-                                <div class="iconpresence">
-                                    <ion-icon name="checkmark-circle"></ion-icon>
-                                </div>
-                                <div class="presencedetail">
-                                    <h4 class="presencetitle">Hadir</h4>
-                                    <span>{{ $jml_hadir }} Layanan</span>
-                                </div>
-                            </div>
+                <div class="col-4">
+                    <div class="card">
+                        <div class="card-body text-center" style="padding: 14px 6px !important; line-height: 0.9rem;">
+                            <span class="badge bg-success"
+                                style="position: absolute; top:4px; right:8px; font-size:0.65rem; z-index:999">
+                                {{ $jml_hadir }}
+                            </span>
+                            <ion-icon name="checkmark-circle-outline" style="font-size: 1.8rem;"
+                                class="text-success mb-1"></ion-icon>
+                            <br>
+                            <span style="font-size: 0.8rem; font-weight: 600;">Hadir</span>
                         </div>
                     </div>
                 </div>
-                <div class="col-6">
-                    <div class="card gradasired">
-                        <div class="card-body">
-                            <div class="presencecontent">
-                                <div class="iconpresence">
-                                    <ion-icon name="close-circle"></ion-icon>
-                                </div>
-                                <div class="presencedetail">
-                                    <h4 class="presencetitle">Belum Absen</h4>
-                                    <span>{{ $jml_belum_absen + $jml_libur }} Layanan</span>
-                                </div>
-                            </div>
+                <div class="col-4">
+                    <div class="card">
+                        <div class="card-body text-center" style="padding: 14px 6px !important; line-height: 0.9rem;">
+                            <span class="badge bg-warning text-dark"
+                                style="position: absolute; top:4px; right:8px; font-size:0.65rem; z-index:999">
+                                {{ $jml_maintenance }}
+                            </span>
+                            <ion-icon name="construct-outline" style="font-size: 1.8rem;"
+                                class="text-warning mb-1"></ion-icon>
+                            <br>
+                            <span style="font-size: 0.8rem; font-weight: 600;">Maintenance</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="card">
+                        <div class="card-body text-center" style="padding: 14px 6px !important; line-height: 0.9rem;">
+                            <span class="badge bg-danger"
+                                style="position: absolute; top:4px; right:8px; font-size:0.65rem; z-index:999">
+                                {{ $jml_belum_absen + $jml_libur }}
+                            </span>
+                            <ion-icon name="help-circle-outline" style="font-size: 1.8rem;"
+                                class="text-danger mb-1"></ion-icon>
+                            <br>
+                            <span style="font-size: 0.72rem; font-weight: 600; display: block; line-height: 1.15; color: #1e293b;">Tanpa Keterangan</span>
                         </div>
                     </div>
                 </div>
@@ -374,7 +389,7 @@
                                 style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">
                                 Penerimaan PKB Hari Ini</div>
                             <div style="font-size: 11px; color: #94a3b8;">
-                                {{ $namahari }}, {{ $tanggal_indo }}
+                                {{ $tanggal_indo }}
                             </div>
                         </div>
                     </div>
@@ -416,58 +431,9 @@
         </div>
     </div>
 
-    <!-- Rekap Status Armada Bulan Berjalan (Card 3 Kolom Identik) -->
+    <!-- Presencetab: Tab 1 (Armada Layanan) & Tab 2 (Grafik Penerimaan) Identik dengan Akun Layanan -->
     <div class="section mt-2">
-        <div id="rekappresensi">
-            <h3>Rekap Armada Hari Ini (Total: {{ $totalLayanan }} Unit)</h3>
-            <div class="row">
-                <div class="col-4">
-                    <div class="card">
-                        <div class="card-body text-center" style="padding: 14px 8px !important; line-height:0.9rem">
-                            <span class="badge bg-success"
-                                style="position: absolute; top:4px; right:10px; font-size:0.65rem; z-index:999">
-                                {{ $jml_hadir }}
-                            </span>
-                            <ion-icon name="checkmark-circle-outline" style="font-size: 1.8rem;"
-                                class="text-success mb-1"></ion-icon>
-                            <br>
-                            <span style="font-size: 0.8rem; font-weight:600">Hadir</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-4">
-                    <div class="card">
-                        <div class="card-body text-center" style="padding: 14px 8px !important; line-height:0.9rem">
-                            <span class="badge bg-warning text-dark"
-                                style="position: absolute; top:4px; right:10px; font-size:0.65rem; z-index:999">
-                                {{ $jml_maintenance }}
-                            </span>
-                            <ion-icon name="construct-outline" style="font-size: 1.8rem;"
-                                class="text-warning mb-1"></ion-icon>
-                            <br>
-                            <span style="font-size: 0.8rem; font-weight:600">Maintenance</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-4">
-                    <div class="card">
-                        <div class="card-body text-center" style="padding: 14px 8px !important; line-height:0.9rem">
-                            <span class="badge bg-danger"
-                                style="position: absolute; top:4px; right:10px; font-size:0.65rem; z-index:999">
-                                {{ $jml_belum_absen + $jml_libur }}
-                            </span>
-                            <ion-icon name="close-circle-outline" style="font-size: 1.8rem;"
-                                class="text-danger mb-1"></ion-icon>
-                            <br>
-                            <span style="font-size: 0.8rem; font-weight:600">Off / Belum</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Presencetab: Tab 1 (Armada Layanan) & Tab 2 (Grafik Penerimaan) Identik dengan Akun Layanan -->
-        <div class="presencetab mt-2">
+        <div class="presencetab">
             <div class="tab-pane fade show active" id="pilled" role="tabpanel">
                 <ul class="nav nav-tabs style1" role="tablist">
                     <li class="nav-item">
