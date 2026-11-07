@@ -66,7 +66,7 @@
                             <ion-icon name="close-circle" style="font-size: 18px;"></ion-icon>
                         </a>
                     @endif
-                    <button type="submit" class="btn btn-sm btn-primary" style="border-radius: 8px; padding: 4px 12px;">Cari</button>
+                    <button type="submit" class="btn btn-sm btn-primary" style="border-radius: 8px; padding: 4px 12px; background-color: #2A8BF2; border-color: #2A8BF2;">Cari</button>
                 </div>
             </form>
         </div>

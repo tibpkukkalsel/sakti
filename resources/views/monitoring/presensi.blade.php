@@ -47,7 +47,7 @@
                 <form action="/monitoring/presensi" method="GET" class="d-flex align-items-center gap-2">
                     <input type="date" name="tanggal" value="{{ $tanggal }}" class="form-control"
                         style="border-radius: 10px; font-size: 13.5px; height: 38px; border: 1px solid #cbd5e1;">
-                    <button type="submit" class="btn btn-primary btn-sm" style="border-radius: 10px; padding: 6px 16px; font-weight: 600;">
+                    <button type="submit" class="btn btn-primary btn-sm" style="border-radius: 10px; padding: 6px 16px; font-weight: 600; background-color: #2A8BF2; border-color: #2A8BF2;">
                         Tampilkan
                     </button>
                 </form>

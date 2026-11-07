@@ -42,3 +42,19 @@ File ini mencatat pedoman, preferensi, dan kebiasaan arahan USER untuk aplikasi 
 - Akun Monitoring dapat login menggunakan **Email**, **Nomor HP**, atau **Username**.
 - Normalisasi nomor HP secara otomatis (`08...`, `628...`, `+628...`, tanda pemisah strip/spasi).
 - Dilengkapi **smart fallback**: jika pengguna berada di tab Layanan namun menginput kredensial akun Monitoring, sistem tetap mengarahkannya ke Dashboard Monitoring.
+
+---
+
+## 5. Keselarasan Tampilan Akun Monitoring & Layanan (Wajib Senada & Identik)
+- Tampilan aplikasi mobile pada akun **Monitoring** WAJIB sama dan senada dengan akun **Layanan**:
+  - **Warna Biru Khas**: `#2A8BF2` (`linear-gradient(135deg, #2A8BF2 0%, #1A73E8 100%)`).
+  - **Background Layar**: `#e9ecef`.
+  - **Struktur Header**: Menggunakan `#user-section`, `.instansi-header` (Logo Kalsel + UPPD SAMSAT Batulicin), tombol keluar `.logout` di pojok kanan atas, serta avatar bulat berbingkai putih.
+  - **Floating Quick Menu**: `#menu-section` dengan `.list-menu` melayang menutupi batas header biru (`margin-top: -42px !important;`).
+  - **Ringkasan Kartu Operasional**: Menggunakan format `.todaypresence` dengan card gradasi (`.gradasigreen` & `.gradasired`).
+  - **Card Status Penerimaan**: Format card putih sudut melengkung 14px dengan ikon kasir hijau, rincian nominal tebal, dan tombol aksi.
+  - **Rekap 3 Kolom**: Menggunakan `#rekappresensi` dengan badge angka di pojok kanan atas.
+  - **Tab Navigasi**: Menggunakan `.presencetab` dengan class `.nav-tabs style1`.
+  - **Footer / Bottom Navigation**: Menggunakan class native `.appBottomMenu` dengan 5 menu, termasuk tombol tengah melayang besar (`.action-button large`).
+
+

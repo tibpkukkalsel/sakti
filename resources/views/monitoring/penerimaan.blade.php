@@ -17,12 +17,13 @@
 @section('content')
     <style>
         .revenue-summary-card {
-            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            background: #2A8BF2;
+            background: linear-gradient(135deg, #2A8BF2 0%, #1A73E8 100%);
             border-radius: 16px;
             color: #ffffff;
             padding: 16px;
             margin-bottom: 14px;
-            box-shadow: 0 4px 16px rgba(2, 132, 199, 0.25);
+            box-shadow: 0 4px 14px rgba(42, 139, 242, 0.25);
         }
 
         .revenue-item-card {
@@ -70,7 +71,7 @@
                             </select>
                         </div>
                         <div class="col-12 mt-2">
-                            <button type="submit" class="btn btn-primary btn-sm w-100 font-weight-bold" style="border-radius: 8px;">
+                            <button type="submit" class="btn btn-primary btn-sm w-100 font-weight-bold" style="border-radius: 8px; background-color: #2A8BF2; border-color: #2A8BF2;">
                                 Filter Data
                             </button>
                         </div>
@@ -121,7 +122,7 @@
                     </span>
                 </div>
                 <div class="d-flex align-items-center justify-content-between mt-2">
-                    <span style="font-size: 16px; font-weight: 800; color: #0284c7;">
+                    <span style="font-size: 16px; font-weight: 800; color: #2A8BF2;">
                         Rp {{ number_format($row->total_rp, 0, ',', '.') }}
                     </span>
                     <span class="badge bg-success text-white" style="font-size: 11px;">

@@ -43,10 +43,10 @@
         }
 
         .day-pill.active {
-            background: #2563eb;
+            background: #2A8BF2;
             color: #ffffff;
-            border-color: #2563eb;
-            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+            border-color: #2A8BF2;
+            box-shadow: 0 2px 8px rgba(42, 139, 242, 0.3);
         }
 
         .jadwal-card {

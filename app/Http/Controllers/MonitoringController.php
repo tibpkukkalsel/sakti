@@ -31,7 +31,7 @@ class MonitoringController extends Controller
     /**
      * Dashboard Akun Monitoring Mobile
      */
-    public function dashboard(Request $request)
+    public function dashboard(Request $request = null)
     {
         $user = Auth::guard('user')->user();
         $hariini = date('Y-m-d');
@@ -91,6 +91,11 @@ class MonitoringController extends Controller
         $chartBulanValuesR2 = [];
         $chartBulanValuesR4 = [];
 
+        $totalTahunBerjalanRp = (float) DB::table('rekap_penerimaan_pkb')->whereYear('tgl_penerimaan', $tahunini)->sum('total_rp');
+        $totalTahunBerjalanUnit = (int) DB::table('rekap_penerimaan_pkb')->whereYear('tgl_penerimaan', $tahunini)->sum('total_unit');
+        $totalTahunBerjalanNotice = (int) DB::table('rekap_penerimaan_pkb')->whereYear('tgl_penerimaan', $tahunini)->sum('jumlah_notice');
+        $namabulan = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+
         $monthlyData = DB::table('rekap_penerimaan_pkb')
             ->selectRaw('MONTH(tgl_penerimaan) as bulan, SUM(total_rp) as total_rp, SUM(jumlah_rp_r2) as rp_r2, SUM(jumlah_rp_r4) as rp_r4, SUM(total_unit) as total_unit')
             ->whereYear('tgl_penerimaan', $tahunini)
@@ -144,6 +149,12 @@ class MonitoringController extends Controller
             'user',
             'tanggal_indo',
             'namahari',
+            'bulanini',
+            'tahunini',
+            'namabulan',
+            'totalTahunBerjalanRp',
+            'totalTahunBerjalanUnit',
+            'totalTahunBerjalanNotice',
             'totalLayanan',
             'jml_hadir',
             'jml_maintenance',

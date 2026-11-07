@@ -10,7 +10,7 @@
             </span>
             <!--end::Brand Icon-->
             <!--begin::Brand Text-->
-            <span class="brand-text fw-semibold text-white fs-6">SAKTI BATULICIN</span>
+            <span class="brand-text fw-semibold text-white fs-6">SAKTI</span>
             <!--end::Brand Text-->
         </a>
         <!--end::Brand Link-->
@@ -62,13 +62,15 @@
                 @endrole
                 @role('administrator', 'user')
                     <li class="nav-item">
-                        <a href="/panel-adm14/lokasi" class="nav-link {{ request()->is(['panel-adm14/lokasi*', 'panel-adm14/cabang*']) ? 'active' : '' }}">
+                        <a href="/panel-adm14/lokasi"
+                            class="nav-link {{ request()->is(['panel-adm14/lokasi*', 'panel-adm14/cabang*']) ? 'active' : '' }}">
                             <i class="nav-icon bi bi-geo-alt-fill"></i>
                             <p>Lokasi</p>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="/panel-adm14/jadwallokasi" class="nav-link {{ request()->is(['panel-adm14/jadwallokasi*']) ? 'active' : '' }}">
+                        <a href="/panel-adm14/jadwallokasi"
+                            class="nav-link {{ request()->is(['panel-adm14/jadwallokasi*']) ? 'active' : '' }}">
                             <i class="nav-icon bi bi-calendar2-week-fill"></i>
                             <p>Jadwal Lokasi</p>
                         </a>
@@ -76,7 +78,8 @@
                 @endrole
                 <!-- 7. Konfigurasi (Dropdown - Administrator Only) -->
                 @role('administrator', 'user')
-                    <li class="nav-item {{ request()->is(['panel-adm14/konfigurasi', 'panel-adm14/konfigurasi/*']) ? 'menu-open' : '' }}">
+                    <li
+                        class="nav-item {{ request()->is(['panel-adm14/konfigurasi', 'panel-adm14/konfigurasi/*']) ? 'menu-open' : '' }}">
                         <a href="#"
                             class="nav-link {{ request()->is(['panel-adm14/konfigurasi', 'panel-adm14/konfigurasi/*']) ? 'active' : '' }}">
                             <i class="nav-icon bi bi-gear-fill"></i>
@@ -149,7 +152,8 @@
 
                 <li class="nav-header">Laporan</li>
                 <!-- 6. Laporan: Sub Menu Presensi -->
-                <li class="nav-item {{ request()->is(['panel-adm14/presensi/laporan*', 'panel-adm14/presensi/rekap*']) ? 'menu-open' : '' }}">
+                <li
+                    class="nav-item {{ request()->is(['panel-adm14/presensi/laporan*', 'panel-adm14/presensi/rekap*']) ? 'menu-open' : '' }}">
                     <a href="#"
                         class="nav-link {{ request()->is(['panel-adm14/presensi/laporan*', 'panel-adm14/presensi/rekap*']) ? 'active' : '' }}">
                         <i class="nav-icon bi bi-person-badge"></i>
@@ -177,7 +181,8 @@
                 </li>
 
                 <!-- 7. Laporan: Sub Menu Penerimaan -->
-                <li class="nav-item {{ request()->is(['panel-adm14/penerimaan/rekap-layanan*', 'panel-adm14/penerimaan/rekap-lokasi*', 'panel-adm14/penerimaan/cetak-rekap*', 'panel-adm14/rekap-layanan*', 'panel-adm14/rekap-lokasi*']) ? 'menu-open' : '' }}">
+                <li
+                    class="nav-item {{ request()->is(['panel-adm14/penerimaan/rekap-layanan*', 'panel-adm14/penerimaan/rekap-lokasi*', 'panel-adm14/penerimaan/cetak-rekap*', 'panel-adm14/rekap-layanan*', 'panel-adm14/rekap-lokasi*']) ? 'menu-open' : '' }}">
                     <a href="#"
                         class="nav-link {{ request()->is(['panel-adm14/penerimaan/rekap-layanan*', 'panel-adm14/penerimaan/rekap-lokasi*', 'panel-adm14/penerimaan/cetak-rekap*', 'panel-adm14/rekap-layanan*', 'panel-adm14/rekap-lokasi*']) ? 'active' : '' }}">
                         <i class="nav-icon bi bi-cash-stack"></i>
