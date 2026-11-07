@@ -97,7 +97,7 @@
                     <div class="input-wrapper">
                         <label class="label">Keterangan / Alasan Kendala Unit</label>
                         <textarea name="keterangan" id="keterangan" rows="3" class="form-control" maxlength="255"
-                            placeholder="Contoh: Perbaikan genset keliling, servis armada berkala, kendala jaringan online, perbaikan AC unit, dll."
+                            placeholder="Keterangan maintenance"
                             required>{{ old('keterangan') }}</textarea>
                     </div>
                 </div>

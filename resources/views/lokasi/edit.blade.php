@@ -61,7 +61,7 @@
                         <path d="M12 12v9"></path>
                     </svg>
                 </span>
-                <input type="text" id="radius_cabang" value="{{ $cabang->radius_cabang }}" class="form-control" name="radius_cabang" placeholder="Radius Lokasi (Meter)">
+                <input type="text" id="radius_cabang" value="{{ $cabang->radius_cabang }}" class="form-control" name="radius_cabang" placeholder="Radius Lokasi">
             </div>
         </div>
     </div>

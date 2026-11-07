@@ -58,19 +58,19 @@
                                 <label class="form-label fw-bold" for="pejabat1_jabatan">Jabatan</label>
                                 <input type="text" class="form-control" name="pejabat1_jabatan" id="pejabat1_jabatan"
                                     value="{{ old('pejabat1_jabatan', $konfigurasi->pejabat1_jabatan ?? 'KEPALA UPPD SAMSAT BATU LICIN') }}"
-                                    placeholder="Contoh: KEPALA UPPD SAMSAT BATU LICIN" required>
+                                    placeholder="Jabatan Pejabat" required>
                             </div>
                             <div class="form-group mb-3">
                                 <label class="form-label fw-bold" for="pejabat1_nama">Nama Lengkap &amp; Gelar</label>
                                 <input type="text" class="form-control" name="pejabat1_nama" id="pejabat1_nama"
                                     value="{{ old('pejabat1_nama', $konfigurasi->pejabat1_nama ?? 'FEBRY RAHARJO, S.IP, MM') }}"
-                                    placeholder="Contoh: FEBRY RAHARJO, S.IP, MM" required>
+                                    placeholder="Nama Pejabat" required>
                             </div>
                             <div class="form-group mb-2">
                                 <label class="form-label fw-bold" for="pejabat1_nip">NIP</label>
                                 <input type="text" class="form-control" name="pejabat1_nip" id="pejabat1_nip"
                                     value="{{ old('pejabat1_nip', $konfigurasi->pejabat1_nip ?? '19870222 200701 1 002') }}"
-                                    placeholder="Contoh: 19870222 200701 1 002" required>
+                                    placeholder="NIP Pejabat" required>
                             </div>
                         </div>
                     </div>
@@ -89,19 +89,19 @@
                                 <label class="form-label fw-bold" for="pejabat2_jabatan">Jabatan</label>
                                 <input type="text" class="form-control" name="pejabat2_jabatan" id="pejabat2_jabatan"
                                     value="{{ old('pejabat2_jabatan', $konfigurasi->pejabat2_jabatan ?? 'KASUBBAG TATA USAHA') }}"
-                                    placeholder="Contoh: KASUBBAG TATA USAHA" required>
+                                    placeholder="Jabatan Pejabat" required>
                             </div>
                             <div class="form-group mb-3">
                                 <label class="form-label fw-bold" for="pejabat2_nama">Nama Lengkap &amp; Gelar</label>
                                 <input type="text" class="form-control" name="pejabat2_nama" id="pejabat2_nama"
                                     value="{{ old('pejabat2_nama', $konfigurasi->pejabat2_nama ?? 'ADIMAS FITRIANDI, ST') }}"
-                                    placeholder="Contoh: ADIMAS FITRIANDI, ST" required>
+                                    placeholder="Nama Pejabat" required>
                             </div>
                             <div class="form-group mb-2">
                                 <label class="form-label fw-bold" for="pejabat2_nip">NIP</label>
                                 <input type="text" class="form-control" name="pejabat2_nip" id="pejabat2_nip"
                                     value="{{ old('pejabat2_nip', $konfigurasi->pejabat2_nip ?? '19800813 200712 1 001') }}"
-                                    placeholder="Contoh: 19800813 200712 1 001" required>
+                                    placeholder="NIP Pejabat" required>
                             </div>
                         </div>
                     </div>
@@ -119,7 +119,7 @@
                                         <label class="form-label fw-bold" for="kota_cetak">Kota / Tempat Penandatanganan</label>
                                         <input type="text" class="form-control" name="kota_cetak" id="kota_cetak"
                                             value="{{ old('kota_cetak', $konfigurasi->kota_cetak ?? 'Pelaihari') }}"
-                                            placeholder="Contoh: Pelaihari" required>
+                                            placeholder="Kota / Tempat" required>
                                     </div>
                                 </div>
                                 <div class="col-md-6 text-md-end">

@@ -246,7 +246,7 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Keterangan Kendala / Pemeliharaan</label>
-                            <textarea name="keterangan" id="modal_keterangan" class="form-control" rows="3" placeholder="Contoh: Servis rutin berkala, Perbaikan transmisi / mesin di bengkel, Kendala genset / jaringan armada mobil keliling, dll." required></textarea>
+                            <textarea name="keterangan" id="modal_keterangan" class="form-control" rows="3" placeholder="Keterangan maintenance" required></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">

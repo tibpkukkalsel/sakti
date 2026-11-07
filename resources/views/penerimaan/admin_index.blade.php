@@ -472,7 +472,7 @@
                                         </svg>
                                     </span>
                                     <input type="text" id="admin_rp_r2" class="form-control rupiah-admin"
-                                        name="jumlah_rp_r2" placeholder="Penerimaan R2 (Rp)" autocomplete="off">
+                                        name="jumlah_rp_r2" placeholder="Penerimaan R2" autocomplete="off">
                                 </div>
                             </div>
                             <div class="col-5">
@@ -511,7 +511,7 @@
                                         </svg>
                                     </span>
                                     <input type="text" id="admin_rp_r4" class="form-control rupiah-admin"
-                                        name="jumlah_rp_r4" placeholder="Penerimaan R4 (Rp)" autocomplete="off">
+                                        name="jumlah_rp_r4" placeholder="Penerimaan R4" autocomplete="off">
                                 </div>
                             </div>
                             <div class="col-5">
@@ -556,7 +556,7 @@
                                         </svg>
                                     </span>
                                     <input type="number" id="jumlah_notice" class="form-control" name="jumlah_notice"
-                                        placeholder="Jumlah Notice Dicetak" min="0">
+                                        placeholder="Jumlah Notice" min="0">
                                 </div>
                             </div>
                         </div>
@@ -578,7 +578,7 @@
                                         </svg>
                                     </span>
                                     <input type="text" id="keterangan" class="form-control" name="keterangan"
-                                        placeholder="Keterangan (Opsional)">
+                                        placeholder="Keterangan">
                                 </div>
                             </div>
                         </div>

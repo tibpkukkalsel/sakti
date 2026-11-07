@@ -40,7 +40,7 @@
                         <path d="M7.5 14h5l4 -4H7.5m4 0h4l2 -3h-3"></path>
                     </svg>
                 </span>
-                <input type="text" id="edit_rp_r2" class="form-control rupiah-edit" name="jumlah_rp_r2" value="{{ $data->jumlah_rp_r2 > 0 ? number_format($data->jumlah_rp_r2, 0, ',', '.') : '' }}" placeholder="Penerimaan R2 (Rp)" autocomplete="off">
+                <input type="text" id="edit_rp_r2" class="form-control rupiah-edit" name="jumlah_rp_r2" value="{{ $data->jumlah_rp_r2 > 0 ? number_format($data->jumlah_rp_r2, 0, ',', '.') : '' }}" placeholder="Penerimaan R2" autocomplete="off">
             </div>
         </div>
         <div class="col-5">
@@ -70,7 +70,7 @@
                         <path d="M7 9l1 3h8l1 -3"></path>
                     </svg>
                 </span>
-                <input type="text" id="edit_rp_r4" class="form-control rupiah-edit" name="jumlah_rp_r4" value="{{ $data->jumlah_rp_r4 > 0 ? number_format($data->jumlah_rp_r4, 0, ',', '.') : '' }}" placeholder="Penerimaan R4 (Rp)" autocomplete="off">
+                <input type="text" id="edit_rp_r4" class="form-control rupiah-edit" name="jumlah_rp_r4" value="{{ $data->jumlah_rp_r4 > 0 ? number_format($data->jumlah_rp_r4, 0, ',', '.') : '' }}" placeholder="Penerimaan R4" autocomplete="off">
             </div>
         </div>
         <div class="col-5">
@@ -105,7 +105,7 @@
                         <path d="M5 21v-16a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v16l-3 -2l-2 2l-2 -2l-2 2l-2 -2l-3 2m4 -14h6m-6 4h6m-2 4h2"></path>
                     </svg>
                 </span>
-                <input type="number" id="jumlah_notice_edit" class="form-control" name="jumlah_notice" value="{{ $data->jumlah_notice > 0 ? $data->jumlah_notice : '' }}" placeholder="Jumlah Notice Dicetak" min="0">
+                <input type="number" id="jumlah_notice_edit" class="form-control" name="jumlah_notice" value="{{ $data->jumlah_notice > 0 ? $data->jumlah_notice : '' }}" placeholder="Jumlah Notice" min="0">
             </div>
         </div>
     </div>
@@ -121,7 +121,7 @@
                         <path d="M9 15l4 0"></path>
                     </svg>
                 </span>
-                <input type="text" id="keterangan_edit" class="form-control" name="keterangan" value="{{ $data->keterangan }}" placeholder="Keterangan (Opsional)">
+                <input type="text" id="keterangan_edit" class="form-control" name="keterangan" value="{{ $data->keterangan }}" placeholder="Keterangan">
             </div>
         </div>
     </div>

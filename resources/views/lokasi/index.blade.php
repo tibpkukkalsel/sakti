@@ -186,7 +186,7 @@
                                         <path d="M15 19l2 2l4 -4"></path>
                                     </svg>
                                 </span>
-                                <input type="text" id="lokasi_cabang" class="form-control" name="lokasi_cabang" placeholder="Titik Koordinat (Latitude, Longitude)">
+                                <input type="text" id="lokasi_cabang" class="form-control" name="lokasi_cabang" placeholder="Titik Koordinat">
                             </div>
                         </div>
                     </div>
@@ -202,7 +202,7 @@
                                         <path d="M12 12v9"></path>
                                     </svg>
                                 </span>
-                                <input type="text" id="radius_cabang" class="form-control" name="radius_cabang" placeholder="Radius Presensi (Meter)">
+                                <input type="text" id="radius_cabang" class="form-control" name="radius_cabang" placeholder="Radius Presensi">
                             </div>
                         </div>
                     </div>

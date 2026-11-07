@@ -45,13 +45,13 @@
                     </svg>
                 </span>
                 <input type="text" id="jam_in" value="{{ $presensi != null ? $presensi->jam_in : '' }}"
-                    class="form-control" placeholder="Contoh: 07:30:00" name="jam_in">
+                    class="form-control" placeholder="Jam Masuk" name="jam_in">
             </div>
         </div>
     </div>
     <div class="row mb-3" id="frm_jam_out">
         <div class="col-12">
-            <label class="form-label">Jam Pulang (Format: HH:mm:ss)</label>
+            <label class="form-label">Jam Pulang</label>
             <div class="input-icon">
                 <span class="input-icon-addon">
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="20"
@@ -63,7 +63,7 @@
                     </svg>
                 </span>
                 <input type="text" id="jam_out" value="{{ $presensi != null ? $presensi->jam_out : '' }}"
-                    class="form-control" placeholder="Contoh: 16:00:00" name="jam_out">
+                    class="form-control" placeholder="Jam Pulang" name="jam_out">
             </div>
         </div>
     </div>

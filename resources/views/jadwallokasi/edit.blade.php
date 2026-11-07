@@ -48,7 +48,7 @@
                         <path d="M9 15l4 0"></path>
                     </svg>
                 </span>
-                <input type="text" id="keterangan_edit" value="{{ $jadwal->keterangan }}" class="form-control" name="keterangan" placeholder="Keterangan / Posko (Opsional)">
+                <input type="text" id="keterangan_edit" value="{{ $jadwal->keterangan }}" class="form-control" name="keterangan" placeholder="Keterangan">
             </div>
         </div>
     </div>

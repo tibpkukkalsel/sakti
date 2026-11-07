@@ -245,7 +245,7 @@
                                         <path d="M9 15l4 0"></path>
                                     </svg>
                                 </span>
-                                <input type="text" id="keterangan" class="form-control" name="keterangan" placeholder="Keterangan / Posko (Opsional)">
+                                <input type="text" id="keterangan" class="form-control" name="keterangan" placeholder="Keterangan">
                             </div>
                         </div>
                     </div>
@@ -314,7 +314,7 @@
                                         </select>
                                     </td>
                                     <td>
-                                        <input type="text" name="jadwal[{{ $h }}][keterangan]" class="form-control" placeholder="Keterangan opsional">
+                                        <input type="text" name="jadwal[{{ $h }}][keterangan]" class="form-control" placeholder="Keterangan">
                                     </td>
                                 </tr>
                                 @endforeach

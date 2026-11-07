@@ -266,7 +266,7 @@
                                         <path d="M8 12l3 -3l2 2l3 -3"></path>
                                     </svg>
                                 </span>
-                                <input type="text" id="nama_layanan" class="form-control" name="nama_layanan" placeholder="Nama Layanan (Contoh: SAMKEL 1)">
+                                <input type="text" id="nama_layanan" class="form-control" name="nama_layanan" placeholder="Nama Layanan">
                             </div>
                         </div>
                     </div>
@@ -281,7 +281,7 @@
                                         <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"></path>
                                     </svg>
                                 </span>
-                                <input type="text" id="username" class="form-control" name="username" placeholder="Username untuk Login">
+                                <input type="text" id="username" class="form-control" name="username" placeholder="Username">
                             </div>
                         </div>
                     </div>
@@ -296,7 +296,7 @@
                                         <path d="M15 9h.01"></path>
                                     </svg>
                                 </span>
-                                <input type="password" id="password" class="form-control" name="password" placeholder="Password Akun (Default: 12345)">
+                                <input type="password" id="password" class="form-control" name="password" placeholder="Password">
                             </div>
                         </div>
                     </div>
@@ -312,7 +312,7 @@
                                         <path d="M15 19l2 2l4 -4"></path>
                                     </svg>
                                 </span>
-                                <input type="text" id="nama_pic" class="form-control" name="nama_pic" placeholder="Nama Penanggung Jawab (PIC)">
+                                <input type="text" id="nama_pic" class="form-control" name="nama_pic" placeholder="Nama PIC">
                             </div>
                         </div>
                     </div>
@@ -330,7 +330,7 @@
                                         <path d="M7 16l10 0"></path>
                                     </svg>
                                 </span>
-                                <input type="text" id="nip_pic" class="form-control" name="nip_pic" placeholder="NIP PIC (Boleh Kosong)">
+                                <input type="text" id="nip_pic" class="form-control" name="nip_pic" placeholder="NIP PIC">
                             </div>
                         </div>
                     </div>
@@ -347,7 +347,7 @@
                                         <path d="M3 13a20 20 0 0 0 18 0"></path>
                                     </svg>
                                 </span>
-                                <input type="text" id="jabatan_pic" class="form-control" name="jabatan_pic" placeholder="Jabatan PIC (Contoh: Petugas Layanan)">
+                                <input type="text" id="jabatan_pic" class="form-control" name="jabatan_pic" placeholder="Jabatan PIC">
                             </div>
                         </div>
                     </div>
@@ -361,7 +361,7 @@
                                         <path d="M5 4h4l2 5l-2.5 1.5a11 11 0 0 0 5 5l1.5 -2.5l5 2v4a2 2 0 0 1 -2 2a16 16 0 0 1 -15 -15a2 2 0 0 1 2 -2"></path>
                                     </svg>
                                 </span>
-                                <input type="text" id="no_hp" class="form-control" name="no_hp" placeholder="No. WhatsApp / HP">
+                                <input type="text" id="no_hp" class="form-control" name="no_hp" placeholder="No. HP">
                             </div>
                         </div>
                     </div>

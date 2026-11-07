@@ -125,7 +125,7 @@
                     <div class="input-wrapper">
                         <label class="label">Notice Pajak Dicetak (Lembar)</label>
                         <input type="number" class="form-control" name="jumlah_notice" id="jumlah_notice"
-                            placeholder="Jumlah Lembar Notice" min="0" value="{{ old('jumlah_notice') }}">
+                            placeholder="Jumlah Notice" min="0" value="{{ old('jumlah_notice') }}">
                         <i class="clear-input">
                             <ion-icon name="close-circle"></ion-icon>
                         </i>
@@ -136,7 +136,7 @@
                     <div class="input-wrapper">
                         <label class="label">Keterangan / Catatan</label>
                         <textarea name="keterangan" id="keterangan" rows="3" class="form-control"
-                            placeholder="Keterangan opsional">{{ old('keterangan') }}</textarea>
+                            placeholder="Keterangan">{{ old('keterangan') }}</textarea>
                     </div>
                 </div>
 

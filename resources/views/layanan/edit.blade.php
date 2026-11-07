@@ -43,7 +43,7 @@
                         <path d="M15 9h.01"></path>
                     </svg>
                 </span>
-                <input type="password" id="password" class="form-control" name="password" placeholder="Password (Kosongkan jika tidak diubah)">
+                <input type="password" id="password" class="form-control" name="password" placeholder="Password">
             </div>
         </div>
     </div>
@@ -59,7 +59,7 @@
                         <path d="M15 19l2 2l4 -4"></path>
                     </svg>
                 </span>
-                <input type="text" id="nama_pic" value="{{ $layanan->nama_pic }}" class="form-control" name="nama_pic" placeholder="Nama Penanggung Jawab (PIC)">
+                <input type="text" id="nama_pic" value="{{ $layanan->nama_pic }}" class="form-control" name="nama_pic" placeholder="Nama PIC">
             </div>
         </div>
     </div>
@@ -108,7 +108,7 @@
                         <path d="M5 4h4l2 5l-2.5 1.5a11 11 0 0 0 5 5l1.5 -2.5l5 2v4a2 2 0 0 1 -2 2a16 16 0 0 1 -15 -15a2 2 0 0 1 2 -2"></path>
                     </svg>
                 </span>
-                <input type="text" id="no_hp" value="{{ $layanan->no_hp }}" class="form-control" name="no_hp" placeholder="No. WhatsApp / HP">
+                <input type="text" id="no_hp" value="{{ $layanan->no_hp }}" class="form-control" name="no_hp" placeholder="No. HP">
             </div>
         </div>
     </div>
