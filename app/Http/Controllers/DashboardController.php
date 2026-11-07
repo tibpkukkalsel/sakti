@@ -485,7 +485,7 @@ class DashboardController extends Controller
             DB::raw("COALESCE(SUM(rekap_penerimaan_pkb.total_unit), 0) as total_unit"),
             DB::raw("COALESCE(SUM(rekap_penerimaan_pkb.jumlah_notice), 0) as total_notice")
         )
-        ->groupBy(DB::raw("COALESCE(c_jadwal.nama_cabang, c_default.nama_cabang, 'Lainnya')"))
+        ->groupBy(DB::raw("COALESCE(c_lokasi.nama_cabang, 'Lainnya')"))
         ->orderBy('total_rp', 'desc')
         ->limit(5)
         ->get();
