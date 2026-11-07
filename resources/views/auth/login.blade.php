@@ -56,6 +56,29 @@
         .role-tab.active svg {
             stroke: #ffffff;
         }
+        .role-tab#btnRoleMonitoring.active {
+            background: linear-gradient(135deg, #1E6FD9 0%, #0c234b 100%) !important;
+            color: #ffd700 !important;
+            box-shadow: 0 4px 12px rgba(12, 35, 75, 0.35) !important;
+        }
+        .role-tab#btnRoleMonitoring.active svg {
+            stroke: #ffd700 !important;
+        }
+        .btn-submit {
+            text-transform: none !important;
+            font-size: 15px;
+            font-weight: 700;
+        }
+        .btn-submit.btn-monitoring {
+            background: linear-gradient(135deg, #1E6FD9 0%, #15438C 50%, #0c234b 100%) !important;
+            color: #ffd700 !important;
+            box-shadow: 0 6px 18px rgba(12, 35, 75, 0.4) !important;
+        }
+        .btn-submit.btn-monitoring:hover {
+            background: linear-gradient(135deg, #2563eb 0%, #15438C 50%, #081833 100%) !important;
+            box-shadow: 0 8px 22px rgba(12, 35, 75, 0.55) !important;
+            color: #ffe066 !important;
+        }
         .role-badge-hint {
             font-size: 11.5px;
             color: #64748b;
@@ -199,7 +222,7 @@
 
                     <!-- Submit Button -->
                     <button type="submit" class="btn-submit" id="btnSubmit">
-                        LOGIN
+                        Login
                     </button>
 
                 </form>
@@ -253,7 +276,8 @@
                 roleTypeInput.value = 'monitoring';
                 usernameInput.placeholder = 'Email / No. HP';
                 roleHint.textContent = 'Masuk sebagai akun Monitoring';
-                btnSubmit.textContent = 'LOGIN MONITORING';
+                btnSubmit.classList.add('btn-monitoring');
+                btnSubmit.textContent = 'Login';
                 localStorage.setItem('sakti_selected_role', 'monitoring');
             } else {
                 btnRoleLayanan.classList.add('active');
@@ -261,7 +285,8 @@
                 roleTypeInput.value = 'layanan';
                 usernameInput.placeholder = 'Username / No. HP';
                 roleHint.textContent = 'Masuk sebagai akun Layanan';
-                btnSubmit.textContent = 'LOGIN LAYANAN';
+                btnSubmit.classList.remove('btn-monitoring');
+                btnSubmit.textContent = 'Login';
                 localStorage.setItem('sakti_selected_role', 'layanan');
             }
         }
