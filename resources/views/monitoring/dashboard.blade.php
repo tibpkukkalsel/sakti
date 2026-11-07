@@ -241,14 +241,17 @@
             text-overflow: ellipsis !important;
             display: block !important;
         }
+
         /* Rekap Presensi 3 Kolom Seragam Otomatis */
         #rekappresensi .row {
             display: flex;
             align-items: stretch;
         }
+
         #rekappresensi .col-4 {
             display: flex;
         }
+
         #rekappresensi .card {
             width: 100%;
             height: 100%;
@@ -258,6 +261,7 @@
             border: 1px solid #e2e8f0;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
         }
+
         #rekappresensi .card-body {
             flex: 1;
             display: flex;
@@ -267,6 +271,7 @@
             padding: 12px 4px !important;
             position: relative;
         }
+
         #rekappresensi .rekap-label {
             min-height: 28px;
             display: flex;
@@ -300,7 +305,8 @@
                 <h3 id="user-name">
                     {{ $user->name }}
                 </h3>
-                <span style="font-size: 12px; color: rgba(255, 255, 255, 0.95); display: block; margin-top: 2px; font-weight: 500;">
+                <span
+                    style="font-size: 12px; color: rgba(255, 255, 255, 0.95); display: block; margin-top: 2px; font-weight: 500;">
                     @if (!empty($user->jabatan))
                         {{ $user->jabatan }}
                     @else
@@ -314,39 +320,59 @@
     <!-- Menu Section (Floating Menu Identik dengan Akun Layanan) -->
     <div class="section" id="menu-section">
         <div class="card">
-            <div class="card-body text-center" style="padding: 14px 10px !important;">
+            <div class="card-body text-center" style="padding: 12px 6px !important;">
                 <div class="list-menu">
                     <!-- 1. Layanan -->
                     <div class="item-menu text-center">
-                        <div class="menu-icon">
-                            <a href="/monitoring/layanan" class="orange" style="font-size: 40px;">
-                                <ion-icon name="bus-outline"></ion-icon>
-                            </a>
-                        </div>
+                        <a href="/monitoring/layanan" style="text-decoration: none; color: inherit; display: block;">
+                            <div class="menu-icon">
+                                <span class="orange" style="font-size: 34px; display: inline-block; line-height: 1;">
+                                    <ion-icon name="bus-outline"></ion-icon>
+                                </span>
+                            </div>
+                            <div class="menu-name" style="margin-top: 3px;">
+                                <span style="font-size: 11px; font-weight: 600; color: #475569; display: block; line-height: 1.2;">Layanan</span>
+                            </div>
+                        </a>
                     </div>
                     <!-- 2. Jadwal -->
                     <div class="item-menu text-center">
-                        <div class="menu-icon">
-                            <a href="/monitoring/jadwal" class="warning" style="font-size: 40px;">
-                                <ion-icon name="calendar-number"></ion-icon>
-                            </a>
-                        </div>
+                        <a href="/monitoring/jadwal" style="text-decoration: none; color: inherit; display: block;">
+                            <div class="menu-icon">
+                                <span class="warning" style="font-size: 34px; display: inline-block; line-height: 1;">
+                                    <ion-icon name="calendar-number"></ion-icon>
+                                </span>
+                            </div>
+                            <div class="menu-name" style="margin-top: 3px;">
+                                <span style="font-size: 11px; font-weight: 600; color: #475569; display: block; line-height: 1.2;">Jadwal</span>
+                            </div>
+                        </a>
                     </div>
                     <!-- 3. Presensi -->
                     <div class="item-menu text-center">
-                        <div class="menu-icon">
-                            <a href="/monitoring/presensi" class="danger" style="font-size: 40px; color: #ef4444;">
-                                <ion-icon name="finger-print"></ion-icon>
-                            </a>
-                        </div>
+                        <a href="/monitoring/presensi" style="text-decoration: none; color: inherit; display: block;">
+                            <div class="menu-icon">
+                                <span class="danger" style="font-size: 34px; color: #ef4444; display: inline-block; line-height: 1;">
+                                    <ion-icon name="finger-print"></ion-icon>
+                                </span>
+                            </div>
+                            <div class="menu-name" style="margin-top: 3px;">
+                                <span style="font-size: 11px; font-weight: 600; color: #475569; display: block; line-height: 1.2;">Presensi</span>
+                            </div>
+                        </a>
                     </div>
                     <!-- 4. Penerimaan -->
                     <div class="item-menu text-center">
-                        <div class="menu-icon">
-                            <a href="/monitoring/penerimaan" class="success" style="font-size: 40px; color: #10b981;">
-                                <ion-icon name="cash-outline"></ion-icon>
-                            </a>
-                        </div>
+                        <a href="/monitoring/penerimaan" style="text-decoration: none; color: inherit; display: block;">
+                            <div class="menu-icon">
+                                <span class="success" style="font-size: 34px; color: #10b981; display: inline-block; line-height: 1;">
+                                    <ion-icon name="cash-outline"></ion-icon>
+                                </span>
+                            </div>
+                            <div class="menu-name" style="margin-top: 3px;">
+                                <span style="font-size: 11px; font-weight: 600; color: #475569; display: block; line-height: 1.2;">Penerimaan</span>
+                            </div>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -357,7 +383,7 @@
     <div class="section mt-2">
         <div id="rekappresensi">
             <h3 style="font-size: 13.5px; font-weight: 700; color: #1e293b; margin-bottom: 8px;">
-                Rekap Armada Hari Ini (Total: {{ $totalLayanan }} Layanan)
+                Rekap Layanan Hari Ini (Total: {{ $totalLayanan }} Layanan)
             </h3>
             <div class="row align-items-stretch">
                 <div class="col-4 d-flex">
@@ -400,7 +426,9 @@
                             <ion-icon name="help-circle-outline" style="font-size: 1.8rem;"
                                 class="text-danger mb-1"></ion-icon>
                             <div class="rekap-label">
-                                <span style="font-size: 0.72rem; font-weight: 600; line-height: 1.15; color: #1e293b; text-align: center;">Tanpa Keterangan</span>
+                                <span
+                                    style="font-size: 0.72rem; font-weight: 600; line-height: 1.15; color: #1e293b; text-align: center;">Tanpa
+                                    Keterangan</span>
                             </div>
                         </div>
                     </div>
@@ -431,8 +459,7 @@
                     </div>
                 </div>
 
-                <div class="p-2 mt-1"
-                    style="background: #f8fafc; border-radius: 10px; border: 1px solid #f1f5f9;">
+                <div class="p-2 mt-1" style="background: #f8fafc; border-radius: 10px; border: 1px solid #f1f5f9;">
                     <div style="font-size: 11px; color: #64748b;">Total Realisasi Hari Ini</div>
                     <div style="font-size: 18px; font-weight: 800; color: #0f172a;">
                         Rp {{ number_format($penerimaanHariIni, 0, ',', '.') }}
@@ -445,9 +472,11 @@
                     <div class="d-flex align-items-center justify-content-between p-2 mb-2"
                         style="background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0;">
                         <div class="d-flex align-items-center">
-                            <div style="width: 32px; height: 32px; border-radius: 8px; background: rgba(37, 99, 235, 0.1); display: flex; align-items: center; justify-content: center; margin-right: 10px;">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-motorbike" width="20" height="20" viewBox="0 0 24 24"
-                                    stroke-width="2" stroke="#2563eb" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <div
+                                style="width: 32px; height: 32px; border-radius: 8px; background: rgba(37, 99, 235, 0.1); display: flex; align-items: center; justify-content: center; margin-right: 10px;">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-motorbike"
+                                    width="20" height="20" viewBox="0 0 24 24" stroke-width="2" stroke="#2563eb"
+                                    fill="none" stroke-linecap="round" stroke-linejoin="round">
                                     <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                                     <path d="M5 16m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
                                     <path d="M19 16m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
@@ -461,7 +490,8 @@
                         <div>
                             <span class="badge"
                                 style="background: rgba(37, 99, 235, 0.1); color: #2563eb; font-size: 12.5px; font-weight: 700; padding: 5px 12px; border-radius: 6px;">
-                                <ion-icon name="speedometer-outline" style="font-size: 13px; vertical-align: -1px; margin-right: 3px;"></ion-icon>{{ number_format($r2HariIniUnit, 0, ',', '.') }}
+                                <ion-icon name="speedometer-outline"
+                                    style="font-size: 13px; vertical-align: -1px; margin-right: 3px;"></ion-icon>{{ number_format($r2HariIniUnit, 0, ',', '.') }}
                             </span>
                         </div>
                     </div>
@@ -470,9 +500,11 @@
                     <div class="d-flex align-items-center justify-content-between p-2 mb-2"
                         style="background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0;">
                         <div class="d-flex align-items-center">
-                            <div style="width: 32px; height: 32px; border-radius: 8px; background: rgba(8, 145, 178, 0.1); display: flex; align-items: center; justify-content: center; margin-right: 10px;">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-car" width="20" height="20" viewBox="0 0 24 24"
-                                    stroke-width="2" stroke="#0891b2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <div
+                                style="width: 32px; height: 32px; border-radius: 8px; background: rgba(8, 145, 178, 0.1); display: flex; align-items: center; justify-content: center; margin-right: 10px;">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-car"
+                                    width="20" height="20" viewBox="0 0 24 24" stroke-width="2" stroke="#0891b2"
+                                    fill="none" stroke-linecap="round" stroke-linejoin="round">
                                     <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                                     <path d="M7 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
                                     <path d="M17 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
@@ -487,7 +519,8 @@
                         <div>
                             <span class="badge"
                                 style="background: rgba(8, 145, 178, 0.1); color: #0891b2; font-size: 12.5px; font-weight: 700; padding: 5px 12px; border-radius: 6px;">
-                                <ion-icon name="speedometer-outline" style="font-size: 13px; vertical-align: -1px; margin-right: 3px;"></ion-icon>{{ number_format($r4HariIniUnit, 0, ',', '.') }}
+                                <ion-icon name="speedometer-outline"
+                                    style="font-size: 13px; vertical-align: -1px; margin-right: 3px;"></ion-icon>{{ number_format($r4HariIniUnit, 0, ',', '.') }}
                             </span>
                         </div>
                     </div>
@@ -498,7 +531,8 @@
                             <div class="p-2 d-flex align-items-center justify-content-center"
                                 style="background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0; min-height: 40px;"
                                 title="Total Unit">
-                                <ion-icon name="speedometer-outline" style="font-size: 18px; color: #10b981; margin-right: 6px;"></ion-icon>
+                                <ion-icon name="speedometer-outline"
+                                    style="font-size: 18px; color: #10b981; margin-right: 6px;"></ion-icon>
                                 <span style="font-size: 14px; font-weight: 800; color: #1e293b;">
                                     {{ number_format($objekHariIni, 0, ',', '.') }}
                                 </span>
@@ -508,7 +542,8 @@
                             <div class="p-2 d-flex align-items-center justify-content-center"
                                 style="background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0; min-height: 40px;"
                                 title="Notice Dicetak">
-                                <ion-icon name="print-outline" style="font-size: 18px; color: #f59e0b; margin-right: 6px;"></ion-icon>
+                                <ion-icon name="print-outline"
+                                    style="font-size: 18px; color: #f59e0b; margin-right: 6px;"></ion-icon>
                                 <span style="font-size: 14px; font-weight: 800; color: #1e293b;">
                                     {{ number_format($noticeHariIni, 0, ',', '.') }}
                                 </span>
@@ -527,7 +562,7 @@
                 <ul class="nav nav-tabs style1" role="tablist">
                     <li class="nav-item">
                         <a class="nav-link active" data-toggle="tab" href="#tab-layanan" role="tab">
-                            Armada Layanan
+                            Presensi Layanan
                         </a>
                     </li>
                     <li class="nav-item">
@@ -544,16 +579,17 @@
                         <div class="card" style="border-radius: 12px; border: 1px dashed #cbd5e1;">
                             <div class="card-body text-center py-4">
                                 <ion-icon name="bus-outline" style="font-size: 36px; color: #94a3b8;"></ion-icon>
-                                <p class="text-muted mt-2 mb-0" style="font-size: 13px;">Belum ada armada layanan terdaftar.</p>
+                                <p class="text-muted mt-2 mb-0" style="font-size: 13px;">Belum ada armada layanan
+                                    terdaftar.</p>
                             </div>
                         </div>
                     @endif
 
                     @foreach ($monitoringLayanan as $row)
                         @php
-                            $isHadir = ($row->status_presensi == 'h' || !empty($row->jam_in));
-                            $isMaint = ($row->status_presensi == 'm');
-                            $isLibur = ($row->status_presensi == 'l');
+                            $isHadir = $row->status_presensi == 'h' || !empty($row->jam_in);
+                            $isMaint = $row->status_presensi == 'm';
+                            $isLibur = $row->status_presensi == 'l';
 
                             if ($isHadir) {
                                 $borderColor = '#bbf7d0';
@@ -590,20 +626,24 @@
                             <div class="card-body py-2 px-3">
                                 <div class="historicontent align-items-center">
                                     <div class="iconpresensi mr-2" style="min-width: 44px;">
-                                        <ion-icon name="{{ $iconName }}" style="font-size: 40px;" class="{{ $iconColor }}"></ion-icon>
+                                        <ion-icon name="{{ $iconName }}" style="font-size: 40px;"
+                                            class="{{ $iconColor }}"></ion-icon>
                                     </div>
                                     <div class="datapresensi flex-grow-1">
                                         <div class="d-flex justify-content-between align-items-center mb-1">
-                                            <h4 style="margin:0px !important; font-weight: 700; color: #1e293b; font-size: 14px;">
+                                            <h4
+                                                style="margin:0px !important; font-weight: 700; color: #1e293b; font-size: 14px;">
                                                 {{ $row->nama_layanan }}
                                             </h4>
-                                            <span class="badge" style="font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 6px; {{ $badgeStyle }}">
+                                            <span class="badge"
+                                                style="font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 6px; {{ $badgeStyle }}">
                                                 {{ $badgeText }}
                                             </span>
                                         </div>
                                         <div style="font-size: 12px; color: #64748b; margin-bottom: 3px;">
                                             <span style="font-weight: 600; color: #2A8BF2;">
-                                                <ion-icon name="location-outline" style="vertical-align: -1px;"></ion-icon> {{ $row->lokasi }}
+                                                <ion-icon name="location-outline"
+                                                    style="vertical-align: -1px;"></ion-icon> {{ $row->lokasi }}
                                             </span>
                                             <span class="mx-1">&bull;</span>
                                             <span>{{ $row->nama_jam_kerja ?? 'Reguler' }}</span>
@@ -611,13 +651,15 @@
                                         <div style="font-size: 13px; margin-bottom: 4px;">
                                             <span>Scan: </span>
                                             @if (!empty($row->jam_in))
-                                                <strong style="color:#0f172a;">{{ date('H:i', strtotime($row->jam_in)) }}</strong>
+                                                <strong
+                                                    style="color:#0f172a;">{{ date('H:i', strtotime($row->jam_in)) }}</strong>
                                             @else
                                                 <span class="text-danger font-weight-bold">Belum Scan</span>
                                             @endif
                                             <span> - </span>
                                             @if (!empty($row->jam_out))
-                                                <strong style="color:#0f172a;">{{ date('H:i', strtotime($row->jam_out)) }}</strong>
+                                                <strong
+                                                    style="color:#0f172a;">{{ date('H:i', strtotime($row->jam_out)) }}</strong>
                                             @else
                                                 <span class="text-muted">Belum Scan</span>
                                             @endif
@@ -626,7 +668,9 @@
                                             <span style="font-size: 12px; font-weight: 700; color: #10b981;">
                                                 <ion-icon name="cash-outline" style="vertical-align: -1px;"></ion-icon>
                                                 Rp {{ number_format($row->penerimaan_hari_ini ?? 0, 0, ',', '.') }}
-                                                <small class="text-muted font-weight-normal">({{ $row->unit_hari_ini ?? 0 }} Unit)</small>
+                                                <small
+                                                    class="text-muted font-weight-normal">({{ $row->unit_hari_ini ?? 0 }}
+                                                    Unit)</small>
                                             </span>
                                         </div>
                                     </div>
@@ -650,8 +694,10 @@
                                 </strong>
                             </div>
                             <div class="d-flex justify-content-between text-muted small" style="font-size: 12px;">
-                                <span>Total Unit: <strong>{{ number_format($totalTahunBerjalanUnit, 0, ',', '.') }}</strong></span>
-                                <span>Notice: <strong>{{ number_format($totalTahunBerjalanNotice, 0, ',', '.') }} Lbr</strong></span>
+                                <span>Total Unit:
+                                    <strong>{{ number_format($totalTahunBerjalanUnit, 0, ',', '.') }}</strong></span>
+                                <span>Notice: <strong>{{ number_format($totalTahunBerjalanNotice, 0, ',', '.') }}
+                                        Lbr</strong></span>
                             </div>
                         </div>
                     </div>
@@ -660,9 +706,12 @@
                     <div class="card" style="border-radius: 12px; border: 1px solid #e2e8f0;">
                         <div class="card-body p-2">
                             <div class="d-flex justify-content-between align-items-center px-2 pt-2 mb-1">
-                                <span class="fw-bold text-dark" style="font-size: 13px;">Grafik Tren Bulanan ({{ $tahunini }})</span>
-                                <a href="/monitoring/penerimaan" class="text-primary small fw-semibold" style="font-size: 11.5px; text-decoration: none;">
-                                    Detail <ion-icon name="chevron-forward-outline" style="vertical-align: -1px;"></ion-icon>
+                                <span class="fw-bold text-dark" style="font-size: 13px;">Grafik Tren Bulanan
+                                    ({{ $tahunini }})</span>
+                                <a href="/monitoring/penerimaan" class="text-primary small fw-semibold"
+                                    style="font-size: 11.5px; text-decoration: none;">
+                                    Detail <ion-icon name="chevron-forward-outline"
+                                        style="vertical-align: -1px;"></ion-icon>
                                 </a>
                             </div>
                             <div id="chart-penerimaan-monitoring" style="min-height: 250px;"></div>
@@ -705,7 +754,7 @@
             if (chartPenerimaanMonitoring) {
                 try {
                     chartPenerimaanMonitoring.destroy();
-                } catch(e) {}
+                } catch (e) {}
             }
 
             var optionsPenerimaan = {
@@ -722,7 +771,9 @@
                 chart: {
                     type: 'bar',
                     height: 270,
-                    toolbar: { show: false },
+                    toolbar: {
+                        show: false
+                    },
                     fontFamily: 'inherit'
                 },
                 plotOptions: {
@@ -732,7 +783,9 @@
                         borderRadius: 4
                     }
                 },
-                dataLabels: { enabled: false },
+                dataLabels: {
+                    enabled: false
+                },
                 stroke: {
                     show: true,
                     width: 2,
@@ -740,11 +793,17 @@
                 },
                 xaxis: {
                     categories: @json($chartBulanLabels),
-                    labels: { style: { fontSize: '10px' } }
+                    labels: {
+                        style: {
+                            fontSize: '10px'
+                        }
+                    }
                 },
                 yaxis: {
                     labels: {
-                        style: { fontSize: '10px' },
+                        style: {
+                            fontSize: '10px'
+                        },
                         formatter: function(val) {
                             if (val >= 1000000000) return (val / 1000000000).toFixed(1) + 'M';
                             if (val >= 1000000) return (val / 1000000).toFixed(0) + 'Jt';
@@ -753,7 +812,9 @@
                     }
                 },
                 colors: ['#2A8BF2', '#10b981', '#f59e0b'],
-                fill: { opacity: 1 },
+                fill: {
+                    opacity: 1
+                },
                 tooltip: {
                     y: {
                         formatter: function(val) {
@@ -764,7 +825,9 @@
                 legend: {
                     position: 'bottom',
                     fontSize: '11px',
-                    markers: { radius: 12 }
+                    markers: {
+                        radius: 12
+                    }
                 }
             };
 
