@@ -14,7 +14,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $departemen = collect([]);
-        $role = DB::table('roles')->orderBy('id')->get();
+        $role = DB::table('roles')->where('guard_name', 'user')->orderBy('id')->get();
         $query = User::query();
         $query->select('users.id', 'users.name', 'email', 'roles.name as role', 'kode_cabang');
         $query->join('model_has_roles', 'users.id', '=', 'model_has_roles.model_id');
@@ -35,12 +35,12 @@ class UserController extends Controller
         $nama_user = $request->nama_user;
         $email = $request->email;
         $kode_dept = $request->kode_dept;
-        $role = $request->role;
+        $role = $request->role ?: 'monitoring';
         $password = bcrypt($request->password);
-        $kode_cabang = $request->kode_cabang;
+        $kode_cabang = $request->kode_cabang ?: 'SM1';
+
         DB::beginTransaction();
         try {
-
             $user = User::create([
                 'name' => $nama_user,
                 'email' => $email,
@@ -53,12 +53,11 @@ class UserController extends Controller
 
             DB::commit();
 
-            return Redirect::back()->with(['success' => ' Data Berhasil Disimpan']);
+            return Redirect::back()->with(['success' => 'Data User Berhasil Disimpan']);
         } catch (\Exception $e) {
-
-            dd($e);
             DB::rollBack();
-            return Redirect::back()->with(['warning' => ' Data Gagal Disimpan']);
+            Log::error('Gagal tambah user: ' . $e->getMessage());
+            return Redirect::back()->with(['warning' => 'Data Gagal Disimpan: ' . $e->getMessage()]);
         }
     }
 
@@ -66,7 +65,7 @@ class UserController extends Controller
     {
         $id_user = $request->id_user;
         $departemen = collect([]);
-        $role = DB::table('roles')->orderBy('id')->get();
+        $role = DB::table('roles')->where('guard_name', 'user')->orderBy('id')->get();
         $cabang = DB::table('cabang')->orderBy('kode_cabang')->get();
         $user = DB::table('users')
             ->join('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
@@ -79,45 +78,42 @@ class UserController extends Controller
         $nama_user = $request->nama_user;
         $email = $request->email;
         $kode_dept = $request->kode_dept;
-        $role = $request->role;
-        $password = bcrypt($request->password);
-        $kode_cabang = $request->kode_cabang;
+        $role = $request->role ?: 'monitoring';
+        $kode_cabang = $request->kode_cabang ?: 'SM1';
 
-        if (isset($request->password)) {
-            $data = [
-                'name' => $nama_user,
-                'email' => $email,
-                'kode_dept' => $kode_dept,
-                'kode_cabang' => $kode_cabang,
-                'password' => $password
-            ];
-        } else {
-            $data = [
-                'name' => $nama_user,
-                'email' => $email,
-                'kode_dept' => $kode_dept,
-                'kode_cabang' => $kode_cabang
-            ];
+        $data = [
+            'name' => $nama_user,
+            'email' => $email,
+            'kode_dept' => $kode_dept,
+            'kode_cabang' => $kode_cabang
+        ];
+
+        if (!empty($request->password)) {
+            $data['password'] = bcrypt($request->password);
         }
 
         DB::beginTransaction();
         try {
-            //UPdate Data User
-            DB::table('users')->where('id', $id_user)
-                ->update($data);
+            DB::table('users')->where('id', $id_user)->update($data);
 
-            //UPdate Data Role
-            DB::table('model_has_roles')->where('model_id', $id_user)
-                ->update([
-                    'role_id' => $role
-                ]);
+            $user = User::find($id_user);
+            if ($user) {
+                // Cari role
+                if (is_numeric($role)) {
+                    $roleObj = DB::table('roles')->where('id', $role)->first();
+                    $roleName = $roleObj ? $roleObj->name : 'monitoring';
+                } else {
+                    $roleName = $role;
+                }
+                $user->syncRoles([$roleName]);
+            }
 
             DB::commit();
             return Redirect::back()->with(['success' => 'Data Berhasil Diupdate']);
         } catch (\Exception $e) {
-
-            dd($e);
-            return Redirect::back()->with(['warning' => 'Data Gagal Diupdate']);
+            DB::rollBack();
+            Log::error('Gagal update user: ' . $e->getMessage());
+            return Redirect::back()->with(['warning' => 'Data Gagal Diupdate: ' . $e->getMessage()]);
         }
     }
 

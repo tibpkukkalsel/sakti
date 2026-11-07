@@ -15,6 +15,7 @@ use App\Http\Controllers\LayananController;
 use App\Http\Controllers\JadwalLokasiController;
 use App\Http\Controllers\LokasiController;
 use App\Http\Controllers\MaintenanceController;
+use App\Http\Controllers\MonitoringController;
 use App\Http\Controllers\PenerimaanController;
 use App\Http\Controllers\PresensiController;
 use App\Http\Controllers\UserController;
@@ -40,14 +41,25 @@ use Spatie\Permission\Models\Role;
 
 
 
-Route::middleware(['guest:karyawan'])->group(function () {
-    Route::get('/', function () {
-        return view('auth.login');
-    })->name('login');
+Route::get('/', function () {
+    if (Auth::guard('karyawan')->check()) {
+        return redirect('/dashboard');
+    }
+    if (Auth::guard('user')->check()) {
+        $u = Auth::guard('user')->user();
+        if ($u->hasRole('monitoring')) {
+            return redirect('/monitoring/dashboard');
+        }
+        return redirect('/panel-adm14/home');
+    }
+    return view('auth.login');
+})->name('login');
 
-    // Rate limiting: maks 10 percobaan per menit untuk mencegah brute-force tebak password
-    Route::post('/proseslogin', [AuthController::class, 'proseslogin'])->middleware('throttle:10,1');
-});
+// Rate limiting: maks 10 percobaan per menit untuk mencegah brute-force tebak password
+Route::post('/proseslogin', [AuthController::class, 'proseslogin'])->middleware('throttle:10,1');
+
+// Logout berlaku untuk kedua guard (karyawan dan user/monitoring)
+Route::get('/proseslogout', [AuthController::class, 'proseslogout']);
 
 
 Route::middleware(['guest:user'])->group(function () {
@@ -64,9 +76,20 @@ Route::middleware(['guest:user'])->group(function () {
     });
 });
 
+// Group Khusus Akun Role Monitoring (Tampilan Mobile SAKTI)
+Route::middleware(['auth:user'])->prefix('monitoring')->group(function () {
+    Route::get('/dashboard', [MonitoringController::class, 'dashboard'])->name('monitoring.dashboard');
+    Route::get('/layanan', [MonitoringController::class, 'layanan'])->name('monitoring.layanan');
+    Route::get('/jadwal', [MonitoringController::class, 'jadwal'])->name('monitoring.jadwal');
+    Route::get('/maintenance', [MonitoringController::class, 'maintenance'])->name('monitoring.maintenance');
+    Route::get('/presensi', [MonitoringController::class, 'presensi'])->name('monitoring.presensi');
+    Route::get('/penerimaan', [MonitoringController::class, 'penerimaan'])->name('monitoring.penerimaan');
+    Route::get('/profile', [MonitoringController::class, 'profile'])->name('monitoring.profile');
+    Route::post('/profile/update', [MonitoringController::class, 'updateProfile'])->name('monitoring.profile.update');
+});
+
 Route::middleware(['auth:karyawan'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index']);
-    Route::get('/proseslogout', [AuthController::class, 'proseslogout']);
 
     // Status Maintenance Layanan (Unit OFF) Mobile Akun Layanan
     Route::get('/maintenance', [MaintenanceController::class, 'index']);

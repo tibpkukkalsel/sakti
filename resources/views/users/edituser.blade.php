@@ -43,7 +43,8 @@
                     <option value="">Role</option>
                     @foreach ($role as $d)
                         <option {{ $user->role_id == $d->id ? 'selected' : '' }} value="{{ $d->id }}">
-                            {{ ucwords($d->name) }}</option>
+                            {{ $d->name == 'monitoring' ? '⭐ Monitoring (Akun Mobile Pantau)' : ucwords($d->name) }}
+                        </option>
                     @endforeach
                 </select>
             </div>

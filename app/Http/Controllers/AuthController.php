@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Layanan;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -14,13 +15,36 @@ class AuthController extends Controller
     {
         // Otomatis aktifkan "Remember Me" agar pada device & browser yang sama otomatis login
         $remember = true;
-        $loginInput = trim($request->username ?? $request->nik ?? '');
+        $roleType = $request->input('role_type', 'layanan');
+        $loginInput = trim($request->username ?? $request->email ?? $request->nik ?? '');
         $password = $request->password;
 
         if (empty($loginInput) || empty($password)) {
-            return redirect('/')->with(['warning' => 'Username dan Password wajib diisi']);
+            return redirect('/')->with(['warning' => 'Username/Email dan Password wajib diisi']);
         }
 
+        // 1. Autentikasi untuk Akun Monitoring
+        if ($roleType === 'monitoring') {
+            $user = User::where('email', $loginInput)
+                ->orWhere('name', $loginInput)
+                ->first();
+
+            if ($user && Hash::check($password, $user->password)) {
+                if ($user->hasRole('monitoring') || $user->hasRole('administrator') || $user->hasRole('admin departemen')) {
+                    Auth::guard('user')->login($user, $remember);
+                    if ($request->hasSession()) {
+                        $request->session()->regenerate();
+                    }
+                    return redirect('/monitoring/dashboard');
+                } else {
+                    return redirect('/')->with(['warning' => 'Akun tidak memiliki hak akses Monitoring']);
+                }
+            } else {
+                return redirect('/')->with(['warning' => 'Email/Username atau Password Monitoring salah']);
+            }
+        }
+
+        // 2. Autentikasi untuk Akun Layanan
         // Variasi format no HP (misal: 0853..., +62853..., 62853..., 0853-4823-6515)
         $cleanPhone = preg_replace('/[^0-9]/', '', $loginInput);
         $phoneCandidates = array_values(array_unique(array_filter([
@@ -43,19 +67,32 @@ class AuthController extends Controller
                 $request->session()->regenerate();
             }
             return redirect('/dashboard');
-        } else {
-            return redirect('/')->with(['warning' => 'Username atau Password Salah']);
         }
+
+        // Fallback cerdas: jika pengguna berada di tab Layanan namun memasukkan akun Monitoring yang valid
+        $userAlt = User::where('email', $loginInput)->orWhere('name', $loginInput)->first();
+        if ($userAlt && Hash::check($password, $userAlt->password) && ($userAlt->hasRole('monitoring') || $userAlt->hasRole('administrator'))) {
+            Auth::guard('user')->login($userAlt, $remember);
+            if ($request->hasSession()) {
+                $request->session()->regenerate();
+            }
+            return redirect('/monitoring/dashboard');
+        }
+
+        return redirect('/')->with(['warning' => 'Username atau Password Salah']);
     }
 
     public function proseslogout()
     {
         if (Auth::guard('karyawan')->check()) {
             Auth::guard('karyawan')->logout();
-            if (request()->hasSession()) {
-                request()->session()->invalidate();
-                request()->session()->regenerateToken();
-            }
+        }
+        if (Auth::guard('user')->check()) {
+            Auth::guard('user')->logout();
+        }
+        if (request()->hasSession()) {
+            request()->session()->invalidate();
+            request()->session()->regenerateToken();
         }
         return redirect('/');
     }

@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#2A8BF2">
+    <title>Monitoring SAKTI - UPPD SAMSAT Batulicin</title>
+    <meta name="description" content="Dashboard Monitoring Presensi & Pendapatan UPPD SAMSAT Batulicin">
+    <meta name="keywords" content="MONITORING ABSENSI DAN PENERIMAAN PKB SAMSAT BATULICIN" />
+    <link rel="icon" type="image/png" href="{{ asset('Logo Sakti.png') }}?v=2" sizes="32x32"
+        onerror="this.src='{{ asset('assets/img/favicon.png') }}'">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('Logo Sakti.png') }}?v=2">
+    <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
+    <style>
+        .selectmaterialize {
+            display: block !important;
+            background-color: #ffffff !important;
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 8px !important;
+            outline: none !important;
+            height: 2.8rem !important;
+            width: 100% !important;
+            font-size: 14px !important;
+            font-family: inherit !important;
+            margin: 0 0 8px 0 !important;
+            padding: 0 28px 0 12px !important;
+            color: #1e293b !important;
+            box-shadow: none !important;
+            -webkit-appearance: none !important;
+            -moz-appearance: none !important;
+            appearance: none !important;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2364748b'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E") !important;
+            background-repeat: no-repeat !important;
+            background-position: right 8px center !important;
+            background-size: 20px 20px !important;
+            cursor: pointer;
+            box-sizing: border-box !important;
+            transition: all 0.2s ease;
+        }
+
+        .selectmaterialize:focus {
+            border-color: #2563eb !important;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15) !important;
+        }
+
+        /* Pastikan posisi tombol kembali di header tidak tertimpa oleh float Materialize CSS */
+        .appHeader .left {
+            position: absolute !important;
+            left: 10px !important;
+            top: 0 !important;
+            float: none !important;
+            height: 56px !important;
+            display: flex !important;
+            align-items: center !important;
+            z-index: 10 !important;
+        }
+
+        .appHeader .right {
+            position: absolute !important;
+            right: 10px !important;
+            top: 0 !important;
+            float: none !important;
+            height: 56px !important;
+            display: flex !important;
+            align-items: center !important;
+        }
+
+        .appHeader .left .headerButton {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            height: 56px !important;
+            min-width: 36px !important;
+        }
+
+        .appHeader.text-light .left .headerButton,
+        .appHeader.text-light .left .headerButton ion-icon,
+        .appHeader.text-light .pageTitle {
+            color: #ffffff !important;
+        }
+
+        .badge-monitoring {
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+    </style>
+    @stack('mycss')
+</head>
+
+<body style="background-color:#f1f5f9;">
+
+    <!-- loader -->
+    <div id="loader">
+        <div class="spinner-border text-primary" role="status"></div>
+    </div>
+    <!-- * loader -->
+
+    @yield('header')
+
+    <!-- App Capsule -->
+    <div id="appCapsule">
+        @yield('content')
+    </div>
+    <!-- * App Capsule -->
+
+    @include('layouts.bottomNavMonitoring')
+
+    @include('layouts.script')
+
+    @stack('myscript')
+</body>
+
+</html>

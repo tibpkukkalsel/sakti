@@ -7,8 +7,9 @@
                     <!-- Page pre-title -->
 
                     <h2 class="page-title">
-                        Data Users
+                        Data User / Akun Monitoring
                     </h2>
+                    <div class="text-muted small mt-1">Kelola akun dengan role Monitoring untuk pemantauan presensi & pendapatan via mobile, serta akun Administrator.</div>
                 </div>
 
             </div>
@@ -100,7 +101,15 @@
                                                         <td class="text-center">{{ $loop->iteration }}</td>
                                                         <td class="fw-bold">{{ $d->name }}</td>
                                                         <td>{{ $d->email }}</td>
-                                                        <td><span class="badge bg-primary text-white">{{ ucwords($d->role) }}</span></td>
+                                                        <td>
+                                                            @if ($d->role == 'monitoring')
+                                                                <span class="badge bg-info text-white"><i class="bi bi-eye me-1"></i>Monitoring</span>
+                                                            @elseif ($d->role == 'administrator')
+                                                                <span class="badge bg-primary text-white"><i class="bi bi-shield-lock me-1"></i>Administrator</span>
+                                                            @else
+                                                                <span class="badge bg-secondary text-white">{{ ucwords($d->role) }}</span>
+                                                            @endif
+                                                        </td>
                                                         <td><span class="badge bg-light text-dark border">{{ $d->kode_cabang }}</span></td>
                                                         <td class="text-center">
                                                             <div class="d-flex align-items-center justify-content-center gap-1">
@@ -215,9 +224,11 @@
                             <div class="col-12">
                                 <div class="form-group">
                                     <select name="role" id="role" class="form-select">
-                                        <option value="">Role</option>
+                                        <option value="">-- Pilih Role User --</option>
                                         @foreach ($role as $d)
-                                            <option value="{{ $d->name }}">{{ ucwords($d->name) }}</option>
+                                            <option value="{{ $d->name }}" {{ $d->name == 'monitoring' ? 'selected' : '' }}>
+                                                {{ $d->name == 'monitoring' ? '⭐ Monitoring (Akun Mobile Pantau)' : ucwords($d->name) }}
+                                            </option>
                                         @endforeach
                                     </select>
                                 </div>
