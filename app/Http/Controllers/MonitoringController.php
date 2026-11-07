@@ -180,7 +180,7 @@ class MonitoringController extends Controller
         $search = $request->q;
         $query = DB::table('layanan')
             ->leftJoin('cabang', 'layanan.kode_cabang', '=', 'cabang.kode_cabang')
-            ->select('layanan.*', 'cabang.nama_cabang as posko_default');
+            ->select('layanan.*', 'cabang.nama_cabang as lokasi_default');
 
         if (!empty($search)) {
             $query->where(function ($q) use ($search) {

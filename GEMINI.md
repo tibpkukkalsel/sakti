@@ -16,6 +16,7 @@ File ini mencatat pedoman, preferensi, dan kebiasaan arahan USER untuk aplikasi 
 
 ## 2. Standar Nama & Konvensi SAKTI
 - Penulisan nama kota yang baku dan benar adalah **Batulicin** (BUKAN *batu licin* atau *Batu Licin*).
+- **DILARANG menggunakan kata "Posko"**, gunakan istilah baku **"Lokasi"** (misal: *Lokasi Layanan*, bukan *Posko Layanan*).
 - Pewarnaan status presensi/layanan:
   - **Hadir (H)**: Hijau
   - **Libur (L)**: Oren
@@ -28,7 +29,7 @@ File ini mencatat pedoman, preferensi, dan kebiasaan arahan USER untuk aplikasi 
 
 ## 3. Struktur Role & Hak Akses
 - Role yang aktif di sistem:
-  1. **Layanan**: Akun armada/posko keliling.
+  1. **Layanan**: Akun armada/layanan keliling.
   2. **Monitoring**: Akun pimpinan/pengawas untuk melihat data layanan, jadwal lokasi, maintenance, presensi, dan rekap penerimaan (tampilan mobile khusus + grafik dashboard).
   3. **Super Admin**: Akun teknis utama (`superadmin@presensigps.com`).
 - **Role `admin departemen` sudah dihapus** dan tidak boleh dimunculkan kembali.

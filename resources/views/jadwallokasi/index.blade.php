@@ -432,7 +432,7 @@
                                     <th style="width: 100px;" class="text-center">Hari</th>
                                     <th>Lokasi Pelayanan</th>
                                     <th style="min-width: 170px;">Jam Kerja</th>
-                                    <th>Keterangan / Posko</th>
+                                    <th>Keterangan / Lokasi</th>
                                 </tr>
                             </thead>
                             <tbody>

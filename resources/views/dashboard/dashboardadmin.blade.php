@@ -25,7 +25,7 @@
     <div class="row mb-3 align-items-center">
         <div class="col-md-7">
             <h3 class="m-0 fw-bold text-dark">Dashboard Presensi Layanan</h3>
-            <small class="text-muted">Monitoring Status Kehadiran &amp; Posko Layanan UPPD SAMSAT Batulicin &bull; {{ $tanggal_indo }}</small>
+            <small class="text-muted">Monitoring Status Kehadiran &amp; Lokasi Layanan UPPD SAMSAT Batulicin &bull; {{ $tanggal_indo }}</small>
         </div>
         <div class="col-md-5 text-md-end mt-2 mt-md-0">
             <div class="btn-group" role="group">

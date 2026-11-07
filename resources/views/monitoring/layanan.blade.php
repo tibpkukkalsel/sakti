@@ -93,7 +93,7 @@
                             @endif
                         </div>
                         <div class="text-muted small">
-                            <ion-icon name="navigate-outline" style="vertical-align: -1px; color: #2563eb;"></ion-icon> Posko: {{ $item->posko_default ?: 'UPPD SAMSAT Batulicin' }}
+                            <ion-icon name="navigate-outline" style="vertical-align: -1px; color: #2A8BF2;"></ion-icon> Lokasi: {{ $item->lokasi_default ?: 'UPPD SAMSAT Batulicin' }}
                         </div>
                     </div>
                 </div>
