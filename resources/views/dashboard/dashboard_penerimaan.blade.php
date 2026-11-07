@@ -236,42 +236,7 @@
         </div>
     </div>
 
-    <!-- Grafik 2 (Baris 2): 5 Lokasi Terbanyak Penerimaan -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
-                    <div>
-                        <h4 class="card-title fw-bold text-dark mb-0">Peringkat Penerimaan Berdasarkan Lokasi</h4><br>
-                        <small class="text-muted">
-                            {{ $periodeLabel }}</small>
-                    </div>
-                </div>
-                <div class="card-body">
-                    @if (count($chartLokasiLabels) > 0)
-                        <div id="chart-top-lokasi" style="min-height: 320px;"></div>
-                    @else
-                        <div class="text-center py-5 text-muted">
-                            <svg xmlns="http://www.w3.org/2000/svg"
-                                class="icon icon-tabler icon-tabler-map-pin-off mb-2 text-secondary" width="48"
-                                height="48" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                <path d="M9.442 9.432a3 3 0 0 0 4.113 4.134m1.445 -2.566a3 3 0 0 0 -3 -3"></path>
-                                <path
-                                    d="M17.152 17.162l-3.728 5.408a2 2 0 0 1 -3.324 0l-4.827 -7.002a10 10 0 0 1 .8 -12.2m3.919 -.62a10 10 0 0 1 11.208 8.42">
-                                </path>
-                                <path d="M3 3l18 18"></path>
-                            </svg>
-                            <p class="mb-0">Belum ada data penerimaan lokasi pada periode yang dipilih.</p>
-                        </div>
-                    @endif
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Grafik 3 (Baris 3): Peringkat Penerimaan Berdasarkan Layanan -->
+    <!-- Grafik 2: Peringkat Penerimaan Berdasarkan Layanan -->
     <div class="row mb-4">
         <div class="col-12">
             <div class="card shadow-sm border-0">
@@ -557,80 +522,7 @@
                 chartLayananPerBulan.render();
             @endif
 
-            // 2. Inisialisasi Grafik Bar ke Samping (5 Lokasi Terbanyak Penerimaan)
-            @if (count($chartLokasiLabels) > 0)
-                var optionsLokasi = {
-                    series: [{
-                        name: 'Penerimaan PKB',
-                        data: @json($chartLokasiValues)
-                    }],
-                    chart: {
-                        type: 'bar',
-                        height: 320,
-                        toolbar: {
-                            show: false
-                        },
-                        fontFamily: 'inherit'
-                    },
-                    plotOptions: {
-                        bar: {
-                            borderRadius: 5,
-                            horizontal: true,
-                            barHeight: '50%',
-                            dataLabels: {
-                                position: 'bottom'
-                            }
-                        }
-                    },
-                    colors: ['#0284c7'],
-                    dataLabels: {
-                        enabled: true,
-                        textAnchor: 'start',
-                        formatter: function(val, opt) {
-                            return formatRupiahChart(val);
-                        },
-                        offsetX: 0,
-                        style: {
-                            fontSize: '12px',
-                            fontWeight: 600,
-                            colors: ['#0f172a']
-                        }
-                    },
-                    xaxis: {
-                        categories: @json($chartLokasiLabels),
-                        labels: {
-                            formatter: function(val) {
-                                if (val >= 1000000000) {
-                                    return (val / 1000000000).toFixed(2) + ' Milyar';
-                                } else if (val >= 1000000) {
-                                    return (val / 1000000).toFixed(1) + ' Juta';
-                                }
-                                return Number(val).toLocaleString('id-ID');
-                            }
-                        }
-                    },
-                    yaxis: {
-                        labels: {
-                            style: {
-                                fontWeight: 600,
-                                fontSize: '13px'
-                            }
-                        }
-                    },
-                    tooltip: {
-                        y: {
-                            formatter: function(val) {
-                                return formatRupiahChart(val);
-                            }
-                        }
-                    }
-                };
-
-                var chartLokasi = new ApexCharts(document.querySelector("#chart-top-lokasi"), optionsLokasi);
-                chartLokasi.render();
-            @endif
-
-            // 3. Inisialisasi Grafik Bar ke Samping (Peringkat Layanan)
+            // 2. Inisialisasi Grafik Bar ke Samping (Peringkat Layanan)
             @if (count($chartTopLabels) > 0)
                 var optionsTop = {
                     series: [{

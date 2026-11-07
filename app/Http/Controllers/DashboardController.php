@@ -489,50 +489,7 @@ class DashboardController extends Controller
             ];
         }
 
-        // 3. Grafik Bar ke Samping: 5 Lokasi yang paling banyak mendapatkan penerimaan (Top 5 Lokasi)
-        $topLokasiQuery = DB::table('rekap_penerimaan_pkb')
-            ->join('layanan', 'rekap_penerimaan_pkb.layanan_id', '=', 'layanan.id')
-            ->leftJoin('jadwal_lokasi_layanan as j_khusus', function ($join) {
-                $join->on('j_khusus.layanan_id', '=', 'rekap_penerimaan_pkb.layanan_id')
-                    ->on('j_khusus.tanggal', '=', 'rekap_penerimaan_pkb.tgl_penerimaan')
-                    ->where('j_khusus.status', 1);
-            })
-            ->leftJoin('jadwal_lokasi_layanan as j_rutin', function ($join) {
-                $join->on('j_rutin.layanan_id', '=', 'rekap_penerimaan_pkb.layanan_id')
-                    ->where('j_rutin.jenis_jadwal', 'rutin')
-                    ->where('j_rutin.status', 1)
-                    ->whereRaw("j_rutin.hari = CASE DAYOFWEEK(rekap_penerimaan_pkb.tgl_penerimaan)
-                        WHEN 1 THEN 'Minggu'
-                        WHEN 2 THEN 'Senin'
-                        WHEN 3 THEN 'Selasa'
-                        WHEN 4 THEN 'Rabu'
-                        WHEN 5 THEN 'Kamis'
-                        WHEN 6 THEN 'Jumat'
-                        WHEN 7 THEN 'Sabtu'
-                    END");
-            })
-            ->leftJoin('cabang as c_lokasi', DB::raw("COALESCE(j_khusus.kode_cabang, j_rutin.kode_cabang, layanan.kode_cabang)"), '=', 'c_lokasi.kode_cabang')
-            ->whereBetween('rekap_penerimaan_pkb.tgl_penerimaan', [$startDate, $endDate]);
-
-        if (!empty($layanan_id) && $layanan_id != 'all') {
-            $topLokasiQuery->where('rekap_penerimaan_pkb.layanan_id', $layanan_id);
-        }
-
-        $topLokasi = $topLokasiQuery->select(
-            DB::raw("COALESCE(c_lokasi.nama_cabang, 'Lainnya') as nama_lokasi"),
-            DB::raw("COALESCE(SUM(rekap_penerimaan_pkb.total_rp), 0) as total_rp"),
-            DB::raw("COALESCE(SUM(rekap_penerimaan_pkb.total_unit), 0) as total_unit"),
-            DB::raw("COALESCE(SUM(rekap_penerimaan_pkb.jumlah_notice), 0) as total_notice")
-        )
-        ->groupBy(DB::raw("COALESCE(c_lokasi.nama_cabang, 'Lainnya')"))
-        ->orderBy('total_rp', 'desc')
-        ->limit(5)
-        ->get();
-
-        $chartLokasiLabels = $topLokasi->pluck('nama_lokasi')->toArray();
-        $chartLokasiValues = $topLokasi->pluck('total_rp')->map(fn($v) => (float)$v)->toArray();
-
-        // 4. Grafik Bar ke Samping: Layanan yang paling banyak mendapatkan penerimaan
+        // 3. Grafik Bar ke Samping: Layanan yang paling banyak mendapatkan penerimaan
         $topLayananQuery = DB::table('rekap_penerimaan_pkb')
             ->join('layanan', 'rekap_penerimaan_pkb.layanan_id', '=', 'layanan.id')
             ->whereBetween('rekap_penerimaan_pkb.tgl_penerimaan', [$startDate, $endDate]);
@@ -590,8 +547,6 @@ class DashboardController extends Controller
             'chartLayananPerBulanSeries',
             'chartTopLabels',
             'chartTopValues',
-            'chartLokasiLabels',
-            'chartLokasiValues',
             'tahunini'
         ));
     }
