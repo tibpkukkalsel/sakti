@@ -197,7 +197,7 @@ class MonitoringController extends Controller
     }
 
     /**
-     * Jadwal Lokasi Seluruh Layanan (Dikelompokkan per Hari)
+     * Jadwal Lokasi Seluruh Layanan (Dikelompokkan per Hari & Filter Mingguan vs Event)
      */
     public function jadwal(Request $request)
     {
@@ -205,10 +205,12 @@ class MonitoringController extends Controller
         $hariini = $namahari_array[date('w')];
         $listHari = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
 
-        $jadwalRaw = DB::table('jadwal_lokasi_layanan')
+        // 1. Jadwal Rutin Mingguan
+        $jadwalRutin = DB::table('jadwal_lokasi_layanan')
             ->join('layanan', 'jadwal_lokasi_layanan.layanan_id', '=', 'layanan.id')
             ->join('cabang', 'jadwal_lokasi_layanan.kode_cabang', '=', 'cabang.kode_cabang')
             ->leftJoin('jam_kerja', 'jadwal_lokasi_layanan.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
+            ->where('jadwal_lokasi_layanan.jenis_jadwal', 'rutin')
             ->select(
                 'jadwal_lokasi_layanan.*',
                 'layanan.nama_layanan',
@@ -222,9 +224,32 @@ class MonitoringController extends Controller
             ->orderBy('layanan.nama_layanan', 'asc')
             ->get();
 
-        $jadwalByHari = $jadwalRaw->groupBy('hari');
+        $jadwalByHari = $jadwalRutin->groupBy('hari');
 
-        return view('monitoring.jadwal', compact('jadwalByHari', 'listHari', 'hariini'));
+        // 2. Jadwal Event Khusus Mendatang
+        $eventKhusus = DB::table('jadwal_lokasi_layanan')
+            ->join('layanan', 'jadwal_lokasi_layanan.layanan_id', '=', 'layanan.id')
+            ->join('cabang', 'jadwal_lokasi_layanan.kode_cabang', '=', 'cabang.kode_cabang')
+            ->leftJoin('jam_kerja', 'jadwal_lokasi_layanan.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
+            ->where('jadwal_lokasi_layanan.jenis_jadwal', 'khusus')
+            ->where('jadwal_lokasi_layanan.status', 1)
+            ->where('jadwal_lokasi_layanan.tanggal', '>=', date('Y-m-d'))
+            ->select(
+                'jadwal_lokasi_layanan.*',
+                'layanan.nama_layanan',
+                'layanan.foto as foto_layanan',
+                'cabang.nama_cabang',
+                'jam_kerja.nama_jam_kerja',
+                'jam_kerja.jam_masuk',
+                'jam_kerja.jam_pulang'
+            )
+            ->orderBy('jadwal_lokasi_layanan.tanggal', 'asc')
+            ->orderBy('layanan.nama_layanan', 'asc')
+            ->get();
+
+        $eventByTanggal = $eventKhusus->groupBy('tanggal');
+
+        return view('monitoring.jadwal', compact('jadwalByHari', 'listHari', 'hariini', 'eventKhusus', 'eventByTanggal'));
     }
 
     /**
