@@ -149,7 +149,7 @@
                         </div>
                         <input type="hidden" name="role_type" id="role_type" value="layanan">
                     </div>
-                    <span class="role-badge-hint" id="roleHint">Masuk sebagai kru/posko armada layanan keliling</span>
+                    <span class="role-badge-hint" id="roleHint">Masuk sebagai akun Layanan</span>
 
                     <!-- Input 1: Username Layanan / Email Monitoring -->
                     <div class="input-pill">
@@ -160,7 +160,7 @@
                                 <circle cx="12" cy="7" r="4"></circle>
                             </svg>
                         </div>
-                        <input type="text" name="username" id="username" class="input-field" placeholder="Username Layanan"
+                        <input type="text" name="username" id="username" class="input-field" placeholder="Username / No. HP"
                             required autocomplete="username" autofocus>
                     </div>
 
@@ -251,16 +251,16 @@
                 btnRoleMonitoring.classList.add('active');
                 btnRoleLayanan.classList.remove('active');
                 roleTypeInput.value = 'monitoring';
-                usernameInput.placeholder = 'Email / No. HP / Username Monitoring';
-                roleHint.textContent = 'Masuk dengan Email, No. HP, atau Nama User Monitoring';
+                usernameInput.placeholder = 'Email / No. HP';
+                roleHint.textContent = 'Masuk sebagai akun Monitoring';
                 btnSubmit.textContent = 'LOGIN MONITORING';
                 localStorage.setItem('sakti_selected_role', 'monitoring');
             } else {
                 btnRoleLayanan.classList.add('active');
                 btnRoleMonitoring.classList.remove('active');
                 roleTypeInput.value = 'layanan';
-                usernameInput.placeholder = 'Username / No. HP Layanan';
-                roleHint.textContent = 'Masuk sebagai kru/posko armada layanan keliling';
+                usernameInput.placeholder = 'Username / No. HP';
+                roleHint.textContent = 'Masuk sebagai akun Layanan';
                 btnSubmit.textContent = 'LOGIN LAYANAN';
                 localStorage.setItem('sakti_selected_role', 'layanan');
             }

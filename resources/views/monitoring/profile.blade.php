@@ -50,12 +50,12 @@
                         <input type="text" value="{{ $user->email }}" class="form-control" disabled style="border-radius: 8px; background: #f8fafc;">
                     </div>
                     <div class="form-group boxed mb-2">
-                        <label class="small text-muted font-weight-bold">No. WhatsApp / HP (Bisa untuk Login)</label>
-                        <input type="text" name="no_hp" value="{{ $user->no_hp }}" placeholder="Contoh: 081234567890" class="form-control" style="border-radius: 8px;">
+                        <label class="small text-muted font-weight-bold">No. HP</label>
+                        <input type="text" name="no_hp" value="{{ $user->no_hp }}" placeholder="No. HP" class="form-control" style="border-radius: 8px;">
                     </div>
                     <div class="form-group boxed mb-3">
-                        <label class="small text-muted font-weight-bold">Password Baru (Kosongkan bila tidak diubah)</label>
-                        <input type="password" name="password" placeholder="Minimal 6 karakter" class="form-control" style="border-radius: 8px;">
+                        <label class="small text-muted font-weight-bold">Password Baru</label>
+                        <input type="password" name="password" placeholder="Password Baru" class="form-control" style="border-radius: 8px;">
                     </div>
                     <button type="submit" class="btn btn-primary btn-block w-100 font-weight-bold" style="border-radius: 10px;">
                         Simpan Perubahan

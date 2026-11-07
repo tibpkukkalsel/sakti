@@ -1,0 +1,44 @@
+# Panduan & Kebiasaan Arahan Pengembangan SAKTI
+
+File ini mencatat pedoman, preferensi, dan kebiasaan arahan USER untuk aplikasi SAKTI (Sistem Absensi & Rekap Penerimaan PKB UPPD SAMSAT Batulicin). Semua agen/assistant WAJIB mematuhi panduan ini.
+
+---
+
+## 1. Gaya Penulisan Form & Tampilan UI (Ringkas, Padat, Langsung)
+- **DILARANG memberikan penjelasan panjang** atau catatan bertele-tele pada form, baik pada `label`, `placeholder`, maupun `hint`.
+- **DILARANG menggunakan keterangan dalam kurung**, seperti `(Bisa untuk Login)`, `(Kosongkan bila tidak diubah)`, dsb.
+- Gunakan teks singkat dan lugas:
+  - Contoh benar: `No. HP`, `Email`, `Nama User`, `Password Baru`
+  - Contoh salah: `No. WhatsApp / HP (Bisa untuk Login)`, `Password Baru (Kosongkan bila tidak diubah)`
+- **Jangan menggunakan icon bintang (`⭐`)** atau dekorasi tambahan yang tidak diminta pada input form.
+
+---
+
+## 2. Standar Nama & Konvensi SAKTI
+- Penulisan nama kota yang baku dan benar adalah **Batulicin** (BUKAN *batu licin* atau *Batu Licin*).
+- Pewarnaan status presensi/layanan:
+  - **Hadir (H)**: Hijau
+  - **Libur (L)**: Oren
+  - **Maintenance**: Biru
+  - **Tanpa Keterangan (TK)**: Merah
+- Icon / Logo Sidebar: Gunakan icon **mini bus / mobil pelayanan**.
+- Avatar/Foto Profil Default: Jika akun layanan tidak memiliki foto profil, tampilkan ilustrasi **mobil/bis pelayanan**.
+
+---
+
+## 3. Struktur Role & Hak Akses
+- Role yang aktif di sistem:
+  1. **Layanan**: Akun armada/posko keliling.
+  2. **Monitoring**: Akun pimpinan/pengawas untuk melihat data layanan, jadwal lokasi, maintenance, presensi, dan rekap penerimaan (tampilan mobile khusus + grafik dashboard).
+  3. **Super Admin**: Akun teknis utama (`superadmin@presensigps.com`).
+- **Role `admin departemen` sudah dihapus** dan tidak boleh dimunculkan kembali.
+- Pada form tambah/edit user monitoring, **TIDAK ADA pilihan role** (otomatis terkunci ke role `monitoring`).
+- Akun **Super Admin dilindungi penuh** (tidak bisa diedit atau dihapus) dan **tidak ditampilkan** pada tabel kelola user.
+- **Akun Monitoring dan Super Admin TIDAK memerlukan Lokasi (`kode_cabang`)**; nilai `kode_cabang` diset `null` dan dropdown/kolom lokasi tidak ditampilkan.
+
+---
+
+## 4. Mekanisme Login
+- Akun Monitoring dapat login menggunakan **Email**, **Nomor HP**, atau **Username**.
+- Normalisasi nomor HP secara otomatis (`08...`, `628...`, `+628...`, tanda pemisah strip/spasi).
+- Dilengkapi **smart fallback**: jika pengguna berada di tab Layanan namun menginput kredensial akun Monitoring, sistem tetap mengarahkannya ke Dashboard Monitoring.

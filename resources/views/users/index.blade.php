@@ -240,7 +240,7 @@
                                         </svg>
                                     </span>
                                     <input type="text" id="no_hp" value="" class="form-control"
-                                        name="no_hp" placeholder="No. WhatsApp / HP (Bisa untuk Login)">
+                                        name="no_hp" placeholder="No. HP">
                                 </div>
                             </div>
                         </div>

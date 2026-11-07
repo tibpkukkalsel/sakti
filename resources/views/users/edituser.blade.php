@@ -49,7 +49,7 @@
                     </svg>
                 </span>
                 <input type="text" id="no_hp" value="{{ $user->no_hp ?? '' }}" class="form-control" name="no_hp"
-                    placeholder="No. WhatsApp / HP (Bisa untuk Login)">
+                    placeholder="No. HP">
             </div>
         </div>
     </div>
