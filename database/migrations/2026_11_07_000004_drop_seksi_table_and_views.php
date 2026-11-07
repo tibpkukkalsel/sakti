@@ -44,3 +44,4 @@ return new class extends Migration
         // Table seksi is no longer needed
     }
 };
+

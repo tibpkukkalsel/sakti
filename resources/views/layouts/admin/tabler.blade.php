@@ -442,6 +442,43 @@
             gap: 0.25rem;
         }
 
+        .table .badge.bg-light,
+        .table .badge-light {
+            background-color: #f1f5f9 !important;
+            color: #0f172a !important;
+            border: 1px solid #cbd5e1 !important;
+        }
+
+        .table .badge.bg-warning,
+        .table .badge-warning {
+            background-color: #f59e0b !important;
+            color: #000000 !important;
+        }
+
+        .table .badge.bg-info,
+        .table .badge-info {
+            background-color: #0284c7 !important;
+            color: #ffffff !important;
+        }
+
+        .table .badge.bg-success,
+        .table .badge-success {
+            background-color: #16a34a !important;
+            color: #ffffff !important;
+        }
+
+        .table .badge.bg-danger,
+        .table .badge-danger {
+            background-color: #dc2626 !important;
+            color: #ffffff !important;
+        }
+
+        .table .badge.bg-secondary,
+        .table .badge-secondary {
+            background-color: #64748b !important;
+            color: #ffffff !important;
+        }
+
         .table .badge svg,
         .table .badge .icon {
             width: 14px !important;

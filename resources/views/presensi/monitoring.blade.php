@@ -120,18 +120,18 @@
                                                             <strong class="text-dark">{{ date('d-m-Y', strtotime($d->tgl_presensi)) }}</strong>
                                                         </td>
                                                         <td>
-                                                            <span class="badge bg-light text-dark border fs-6 px-2 py-1">
+                                                            <span class="badge bg-light text-dark border fs-6 px-2 py-1" style="color: #0f172a !important; background-color: #f1f5f9 !important;">
                                                                 {{ $d->nama_layanan }}
                                                             </span>
                                                         </td>
                                                         <td>
-                                                            <span class="badge bg-light text-dark border">
+                                                            <span class="badge bg-light text-dark border" style="color: #0f172a !important; background-color: #f1f5f9 !important;">
                                                                 {{ $d->lokasi ?: 'Kantor Pusat' }}
                                                             </span>
                                                         </td>
                                                         <td>
                                                             @if (!empty($d->nama_jam_kerja))
-                                                                <span class="fw-semibold">{{ $d->nama_jam_kerja }}</span>
+                                                                <div class="fw-semibold text-dark">{{ $d->nama_jam_kerja }}</div>
                                                                 <div class="small text-muted font-monospace">
                                                                     {{ substr($d->jam_masuk, 0, 5) }} - {{ substr($d->jam_pulang, 0, 5) }}
                                                                 </div>
@@ -141,14 +141,14 @@
                                                         </td>
                                                         <td class="text-center">
                                                             @if ($d->jam_in != null)
-                                                                <span class="badge bg-success fs-6">{{ substr($d->jam_in, 0, 5) }}</span>
+                                                                <span class="badge bg-success text-white fs-6">{{ substr($d->jam_in, 0, 5) }}</span>
                                                                 @if ($d->status_in == 'izin_terlambat')
-                                                                    <br><span class="badge bg-warning text-dark mt-1">Izin Terlambat</span>
+                                                                    <br><span class="badge bg-warning text-dark mt-1" style="color: #000000 !important;">Izin Terlambat</span>
                                                                 @elseif ($d->status_in == 'terlambat' || (!empty($d->jam_masuk) && $d->jam_in > $d->jam_masuk))
-                                                                    <br><span class="badge bg-danger mt-1">Terlambat {{ hitungSelisihAdmin($d->jam_masuk, $d->jam_in) }}</span>
+                                                                    <br><span class="badge bg-danger text-white mt-1">Terlambat {{ hitungSelisihAdmin($d->jam_masuk, $d->jam_in) }}</span>
                                                                 @endif
                                                             @else
-                                                                <span class="badge bg-danger">Belum Absen</span>
+                                                                <span class="badge bg-danger text-white">Belum Absen</span>
                                                             @endif
                                                         </td>
                                                         <td class="text-center">
@@ -160,14 +160,14 @@
                                                         </td>
                                                         <td class="text-center">
                                                             @if ($d->jam_out != null)
-                                                                <span class="badge bg-info fs-6">{{ substr($d->jam_out, 0, 5) }}</span>
+                                                                <span class="badge bg-info text-white fs-6" style="background-color: #0284c7 !important; color: #ffffff !important;">{{ substr($d->jam_out, 0, 5) }}</span>
                                                                 @if ($d->status_out == 'izin_pulang_cepat')
-                                                                    <br><span class="badge bg-warning text-dark mt-1">Izin Pulang Cepat</span>
+                                                                    <br><span class="badge bg-warning text-dark mt-1" style="color: #000000 !important;">Izin Pulang Cepat</span>
                                                                 @elseif ($d->status_out == 'pulang_duluan' || (!empty($d->jam_pulang) && $d->jam_out < $d->jam_pulang))
-                                                                    <br><span class="badge bg-danger mt-1">Pulang Duluan {{ hitungSelisihAdmin($d->jam_out, $d->jam_pulang) }}</span>
+                                                                    <br><span class="badge bg-danger text-white mt-1">Pulang Duluan {{ hitungSelisihAdmin($d->jam_out, $d->jam_pulang) }}</span>
                                                                 @endif
                                                             @else
-                                                                <span class="badge bg-danger">Belum Absen</span>
+                                                                <span class="badge bg-danger text-white">Belum Absen</span>
                                                             @endif
                                                         </td>
                                                         <td class="text-center">
@@ -179,17 +179,17 @@
                                                         </td>
                                                         <td class="text-center">
                                                             @if ($d->presensi_status == 'h')
-                                                                <span class="badge bg-success">Hadir</span>
+                                                                <span class="badge bg-success text-white">Hadir</span>
                                                             @elseif ($d->presensi_status == 'i')
-                                                                <span class="badge bg-warning text-dark">Izin</span>
+                                                                <span class="badge bg-warning text-dark" style="color: #000000 !important;">Izin</span>
                                                             @elseif ($d->presensi_status == 's')
-                                                                <span class="badge bg-info">Sakit</span>
+                                                                <span class="badge bg-info text-white" style="background-color: #0284c7 !important; color: #ffffff !important;">Sakit</span>
                                                             @elseif ($d->presensi_status == 'c')
-                                                                <span class="badge bg-secondary">Cuti</span>
+                                                                <span class="badge bg-secondary text-white">Cuti</span>
                                                             @elseif (empty($d->jam_in) && empty($d->jam_out))
-                                                                <span class="badge bg-outline-danger">Belum Absen</span>
+                                                                <span class="badge bg-danger text-white">Belum Absen</span>
                                                             @else
-                                                                <span class="badge bg-primary">{{ strtoupper($d->presensi_status) }}</span>
+                                                                <span class="badge bg-primary text-white">{{ strtoupper($d->presensi_status) }}</span>
                                                             @endif
                                                         </td>
                                                         <td class="text-center">
