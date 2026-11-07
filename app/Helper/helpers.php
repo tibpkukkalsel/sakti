@@ -358,3 +358,23 @@ function cekJadwalKerja($nik, $kode_cabang, $kode_dept, $tanggal, $hari, $jadwal
 
     return true;
 }
+
+if (!function_exists('hitungSelisihAdmin')) {
+    function hitungSelisihAdmin($jam_jadwal, $jam_presensi) {
+        if (empty($jam_jadwal) || empty($jam_presensi)) return '0 m';
+        $pAwal = explode(':', $jam_jadwal);
+        $pAkhir = explode(':', $jam_presensi);
+        if (count($pAwal) < 2 || count($pAkhir) < 2) return '0 m';
+        $tAwal = mktime((int)$pAwal[0], (int)$pAwal[1], (int)($pAwal[2] ?? 0), 1, 1, 1);
+        $tAkhir = mktime((int)$pAkhir[0], (int)$pAkhir[1], (int)($pAkhir[2] ?? 0), 1, 1, 1);
+        $diffSec = $tAkhir - $tAwal;
+        if ($diffSec <= 0) return '0 m';
+        $totalMenit = floor($diffSec / 60);
+        $jam = floor($totalMenit / 60);
+        $menit = $totalMenit % 60;
+        if ($jam > 0) {
+            return $jam . ' jam ' . $menit . ' mnt';
+        }
+        return $menit . ' mnt';
+    }
+}

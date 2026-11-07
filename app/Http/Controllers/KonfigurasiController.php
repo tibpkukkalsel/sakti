@@ -205,8 +205,7 @@ class KonfigurasiController extends Controller
     {
         $jamkerjadept = DB::table('konfigurasi_jk_dept')
             ->join('cabang', 'konfigurasi_jk_dept.kode_cabang', '=', 'cabang.kode_cabang')
-            ->leftJoin('seksi', 'konfigurasi_jk_dept.kode_dept', '=', 'seksi.kode_dept')
-            ->select('konfigurasi_jk_dept.*', 'cabang.nama_cabang', 'seksi.nama_dept')
+            ->select('konfigurasi_jk_dept.*', 'cabang.nama_cabang')
             ->get();
         return view('konfigurasi.jamkerjadept', compact('jamkerjadept'));
     }
@@ -216,7 +215,7 @@ class KonfigurasiController extends Controller
     {
         $jamkerja = DB::table('jam_kerja')->orderBy('nama_jam_kerja')->get();
         $cabang = DB::table('cabang')->get();
-        $departemen = DB::table('seksi')->get();
+        $departemen = collect([]);
         return view('konfigurasi.createjamkerjadept', compact('jamkerja', 'cabang', 'departemen'));
     }
 
@@ -266,7 +265,7 @@ class KonfigurasiController extends Controller
 
         $jamkerja = DB::table('jam_kerja')->orderBy('nama_jam_kerja')->get();
         $cabang = DB::table('cabang')->get();
-        $departemen = DB::table('seksi')->get();
+        $departemen = collect([]);
         $jamkerjadept = DB::table('konfigurasi_jk_dept')->where('kode_jk_dept', $kode_jk_dept)->first();
         $jamkerjadept_detail = DB::table('konfigurasi_jk_dept_detail')->where('kode_jk_dept', $kode_jk_dept)->get();
         return view('konfigurasi.editjamkerjadept', compact('jamkerja', 'cabang', 'departemen', 'jamkerjadept', 'jamkerjadept_detail'));
@@ -306,7 +305,7 @@ class KonfigurasiController extends Controller
     {
         $jamkerja = DB::table('jam_kerja')->orderBy('nama_jam_kerja')->get();
         $cabang = DB::table('cabang')->get();
-        $departemen = DB::table('seksi')->get();
+        $departemen = collect([]);
         $jamkerjadept = DB::table('konfigurasi_jk_dept')->where('kode_jk_dept', $kode_jk_dept)->first();
         $jamkerjadept_detail = DB::table('konfigurasi_jk_dept_detail')
             ->join('jam_kerja', 'konfigurasi_jk_dept_detail.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
@@ -445,8 +444,6 @@ class KonfigurasiController extends Controller
         }
 
         $pegawai = DB::table('pegawai')
-            ->leftJoin('seksi', 'pegawai.kode_dept', '=', 'seksi.kode_dept')
-            ->select('pegawai.*', 'seksi.nama_dept')
             ->orderBy('pegawai.nama_lengkap', 'asc')
             ->get();
 

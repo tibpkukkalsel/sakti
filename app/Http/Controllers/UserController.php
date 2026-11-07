@@ -13,11 +13,10 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-        $departemen = DB::table('seksi')->orderBy('kode_dept')->get();
+        $departemen = collect([]);
         $role = DB::table('roles')->orderBy('id')->get();
         $query = User::query();
-        $query->select('users.id', 'users.name', 'email', 'nama_dept', 'roles.name as role', 'kode_cabang');
-        $query->leftJoin('seksi', 'users.kode_dept', '=', 'seksi.kode_dept');
+        $query->select('users.id', 'users.name', 'email', 'roles.name as role', 'kode_cabang');
         $query->join('model_has_roles', 'users.id', '=', 'model_has_roles.model_id');
         $query->join('roles', 'model_has_roles.role_id', '=', 'roles.id');
         if (!empty($request->name)) {
@@ -66,7 +65,7 @@ class UserController extends Controller
     public function edit(Request $request)
     {
         $id_user = $request->id_user;
-        $departemen = DB::table('seksi')->orderBy('kode_dept')->get();
+        $departemen = collect([]);
         $role = DB::table('roles')->orderBy('id')->get();
         $cabang = DB::table('cabang')->orderBy('kode_cabang')->get();
         $user = DB::table('users')
@@ -137,12 +136,11 @@ class UserController extends Controller
     {
         $id = Auth::guard('user')->user()->id;
         $user = DB::table('users')
-            ->leftJoin('seksi', 'users.kode_dept', '=', 'seksi.kode_dept')
             ->leftJoin('cabang', 'users.kode_cabang', '=', 'cabang.kode_cabang')
             ->leftJoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
             ->leftJoin('roles', 'model_has_roles.role_id', '=', 'roles.id')
             ->where('users.id', $id)
-            ->select('users.*', 'seksi.nama_dept', 'cabang.nama_cabang', 'roles.name as role_name')
+            ->select('users.*', 'cabang.nama_cabang', 'roles.name as role_name')
             ->first();
 
         return view('users.profile', compact('user'));

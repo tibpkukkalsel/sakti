@@ -11,14 +11,7 @@ class DepartemenController extends Controller
 {
     public function index(Request $request)
     {
-        $nama_dept = $request->nama_dept;
-        $query = Departemen::query();
-        $query->select('*');
-        if (!empty($nama_dept)) {
-            $query->where('nama_dept', 'like', '%' . $nama_dept . '%');
-        }
-        $departemen = $query->get();
-        return view('departemen.index', compact('departemen'));
+        return redirect('/dashboard');
     }
 
     public function store(Request $request)

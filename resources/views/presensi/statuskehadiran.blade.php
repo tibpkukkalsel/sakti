@@ -70,24 +70,13 @@
                                                 <input type="date" name="sampai" id="sampai" class="form-control"
                                                     value="{{ $sampai }}">
                                             </div>
-                                            <div class="col-md-2">
-                                                <label class="form-label mb-1">Nama / NIK Pegawai</label>
+                                            <div class="col-md-3">
+                                                <label class="form-label mb-1">Nama / Akun Layanan</label>
                                                 <input type="text" name="nama_pegawai" id="nama_pegawai"
-                                                    class="form-control" placeholder="Cari Pegawai..."
+                                                    class="form-control" placeholder="Cari Pegawai / Layanan..."
                                                     value="{{ Request('nama_pegawai') }}">
                                             </div>
-                                            <div class="col-md-2">
-                                                <label class="form-label mb-1">Seksi</label>
-                                                <select name="kode_dept" id="filter_kode_dept" class="form-select">
-                                                    <option value="">Semua Seksi</option>
-                                                    @foreach ($departemen as $d)
-                                                        <option value="{{ $d->kode_dept }}"
-                                                            {{ Request('kode_dept') == $d->kode_dept ? 'selected' : '' }}>
-                                                            {{ $d->nama_dept }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                            <div class="col-md-2">
+                                            <div class="col-md-3">
                                                 <label class="form-label mb-1">Status Kehadiran</label>
                                                 <select name="status_filter" id="status_filter" class="form-select">
                                                     <option value="">Semua Status</option>
@@ -152,7 +141,6 @@
                                                     <th style="width: 40px;" class="text-center">No</th>
                                                     <th style="width: 95px;" class="text-center">Tanggal</th>
                                                     <th>Pegawai</th>
-                                                    <th>Seksi</th>
                                                     <th>Jadwal Kerja</th>
                                                     <th style="width: 130px;" class="text-center">Jam Masuk</th>
                                                     <th style="width: 130px;" class="text-center">Jam Pulang</th>
@@ -225,7 +213,6 @@
                                                                 </div>
                                                             </div>
                                                         </td>
-                                                        <td>{{ $d->nama_dept ?? '-' }}</td>
                                                         <td>
                                                             @if (!empty($d->nama_jam_kerja))
                                                                 <span class="badge bg-light text-dark border">
@@ -357,7 +344,7 @@
                                                     </tr>
                                                 @empty
                                                     <tr>
-                                                        <td colspan="10" class="text-center py-3 text-muted">
+                                                        <td colspan="9" class="text-center py-3 text-muted">
                                                             Data presensi tidak ditemukan pada rentang tanggal ini.
                                                         </td>
                                                     </tr>

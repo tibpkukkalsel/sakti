@@ -22,28 +22,19 @@ class KaryawanController extends Controller
         $user = User::find(Auth::guard('user')->user()->id);
 
         $query = Karyawan::query();
-        $query->select('pegawai.*', 'nama_dept');
-        $query->join('seksi', 'pegawai.kode_dept', '=', 'seksi.kode_dept');
+        $query->select('pegawai.*');
         $query->orderBy('nama_lengkap');
         if (!empty($request->nama_karyawan)) {
             $query->where('nama_lengkap', 'like', '%' . $request->nama_karyawan . '%');
-        }
-
-        if (!empty($request->kode_dept)) {
-            $query->where('pegawai.kode_dept', $request->kode_dept);
         }
 
         if (!empty($request->kode_cabang)) {
             $query->where('pegawai.kode_cabang', $request->kode_cabang);
         }
 
-        if ($user->hasRole('admin departemen')) {
-            $query->where('pegawai.kode_dept', $kode_dept);
-            $query->where('pegawai.kode_cabang', $kode_cabang);
-        }
         $karyawan = $query->paginate(10);
 
-        $departemen = DB::table('seksi')->get();
+        $departemen = collect([]);
         $cabang = DB::table('cabang')->orderBy('kode_cabang')->get();
         return view('karyawan.index', compact('karyawan', 'departemen', 'cabang'));
     }
@@ -97,7 +88,7 @@ class KaryawanController extends Controller
     public function edit(Request $request)
     {
         $nik = $request->nik;
-        $departemen = DB::table('seksi')->get();
+        $departemen = collect([]);
         $cabang = DB::table('cabang')->orderBy('kode_cabang')->get();
         $karyawan = DB::table('pegawai')->where('nik', $nik)->first();
         return view('karyawan.edit', compact('departemen', 'karyawan', 'cabang'));

@@ -170,7 +170,7 @@ class DashboardController extends Controller
         } else {
             $cabang = DB::table('cabang')->where('kode_cabang', $kode_cabang)->first();
         }
-        $departemen = DB::table('seksi')->where('kode_dept', $kode_dept)->first();
+        $departemen = null;
 
         // Penerimaan PKB hari ini untuk akun layanan ini
         $layananId = Auth::guard('karyawan')->user()->id;

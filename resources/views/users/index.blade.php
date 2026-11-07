@@ -89,7 +89,6 @@
                                                     <th style="width: 50px;" class="text-center">No</th>
                                                     <th>Nama</th>
                                                     <th>Email</th>
-                                                    <th>Seksi</th>
                                                     <th>Role</th>
                                                     <th>Lokasi</th>
                                                     <th style="width: 100px;" class="text-center">Aksi</th>
@@ -101,7 +100,6 @@
                                                         <td class="text-center">{{ $loop->iteration }}</td>
                                                         <td class="fw-bold">{{ $d->name }}</td>
                                                         <td>{{ $d->email }}</td>
-                                                        <td>{{ $d->nama_dept }}</td>
                                                         <td><span class="badge bg-primary text-white">{{ ucwords($d->role) }}</span></td>
                                                         <td><span class="badge bg-light text-dark border">{{ $d->kode_cabang }}</span></td>
                                                         <td class="text-center">
@@ -210,18 +208,6 @@
                                     </span>
                                     <input type="text" id="email" value="" class="form-control"
                                         name="email" placeholder="Email">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mt-1">
-                            <div class="col-12">
-                                <div class="form-group">
-                                    <select name="kode_dept" id="kode_dept" class="form-select">
-                                        <option value="">Departemen</option>
-                                        @foreach ($departemen as $d)
-                                            <option value="{{ $d->kode_dept }}">{{ $d->nama_dept }}</option>
-                                        @endforeach
-                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -376,17 +362,6 @@
                         confirmButtonText: 'Ok'
                     }).then((result) => {
                         $("#email").focus();
-                    });
-
-                    return false;
-                } else if (kode_dept == "") {
-                    Swal.fire({
-                        title: 'Warning!',
-                        text: 'Departemen Harus Diisi !',
-                        icon: 'warning',
-                        confirmButtonText: 'Ok'
-                    }).then((result) => {
-                        $("#kode_dept").focus();
                     });
 
                     return false;

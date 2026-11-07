@@ -994,68 +994,147 @@ class PresensiController extends Controller
 
 
 
-    public function monitoring()
+    public function monitoring(Request $request)
     {
-        $cabang = DB::table('cabang')->orderBy('kode_cabang')->get();
-        $departemen = DB::table('seksi')->orderBy('kode_dept')->get();
-        return view('presensi.monitoring', compact('cabang', 'departemen'));
-    }
+        $tgl_dari = $request->tgl_dari ?: date('Y-m-d');
+        $tgl_sampai = $request->tgl_sampai ?: date('Y-m-d');
+        $layanan_id = $request->layanan_id;
 
-    public function getpresensi(Request $request)
-    {
-        $kode_dept = Auth::guard('user')->user()->kode_dept;
-        $kode_cabang = Auth::guard('user')->user()->kode_cabang;
-        $user = User::find(Auth::guard('user')->user()->id);
+        if ($tgl_dari == $tgl_sampai) {
+            $query = DB::table('layanan')
+                ->leftJoin('presensi', function ($join) use ($tgl_dari) {
+                    $join->on('layanan.id', '=', 'presensi.nik')
+                        ->where('presensi.tgl_presensi', $tgl_dari);
+                })
+                ->leftJoin('jam_kerja', 'presensi.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
+                ->leftJoin('pengajuan_izin', 'presensi.kode_izin', '=', 'pengajuan_izin.kode_izin')
+                ->leftJoin('jadwal_lokasi_layanan as j_khusus', function ($join) use ($tgl_dari) {
+                    $join->on('j_khusus.layanan_id', '=', 'layanan.id')
+                        ->on('j_khusus.tanggal', '=', DB::raw("'$tgl_dari'"))
+                        ->where('j_khusus.status', 1);
+                })
+                ->leftJoin('jadwal_lokasi_layanan as j_rutin', function ($join) use ($tgl_dari) {
+                    $join->on('j_rutin.layanan_id', '=', 'layanan.id')
+                        ->where('j_rutin.jenis_jadwal', 'rutin')
+                        ->where('j_rutin.status', 1)
+                        ->whereRaw("j_rutin.hari = CASE DAYOFWEEK('$tgl_dari')
+                            WHEN 1 THEN 'Minggu'
+                            WHEN 2 THEN 'Senin'
+                            WHEN 3 THEN 'Selasa'
+                            WHEN 4 THEN 'Rabu'
+                            WHEN 5 THEN 'Kamis'
+                            WHEN 6 THEN 'Jumat'
+                            WHEN 7 THEN 'Sabtu'
+                        END");
+                })
+                ->leftJoin('cabang as c_lokasi', DB::raw("COALESCE(j_khusus.kode_cabang, j_rutin.kode_cabang, layanan.kode_cabang)"), '=', 'c_lokasi.kode_cabang')
+                ->select(
+                    DB::raw("'$tgl_dari' as tgl_presensi"),
+                    'layanan.id as layanan_id',
+                    'layanan.nama_layanan',
+                    'layanan.nama_pic',
+                    'layanan.jabatan_pic',
+                    'layanan.foto as foto_layanan',
+                    'presensi.id as presensi_id',
+                    'presensi.jam_in',
+                    'presensi.jam_out',
+                    'presensi.foto_in',
+                    'presensi.foto_out',
+                    'presensi.lokasi_in',
+                    'presensi.lokasi_out',
+                    'presensi.status as presensi_status',
+                    'presensi.status_in',
+                    'presensi.status_out',
+                    'presensi.selisih_in',
+                    'presensi.selisih_out',
+                    'presensi.kode_izin',
+                    'jam_kerja.nama_jam_kerja',
+                    'jam_kerja.jam_masuk',
+                    'jam_kerja.jam_pulang',
+                    'c_lokasi.nama_cabang as lokasi',
+                    'pengajuan_izin.keterangan as keterangan_izin'
+                );
 
-        $tanggal = $request->tanggal;
-        $datalibur = getkaryawanlibur($tanggal, $tanggal);
-
-        $query = DB::table('pegawai as karyawan');
-        $query->selectRaw(
-            'karyawan.nik, nama_lengkap, karyawan.foto as foto_pegawai, karyawan.jabatan, karyawan.kode_dept, seksi.nama_dept, karyawan.kode_cabang, cabang.nama_cabang as lokasi,
-        datapresensi.id,jam_in,jam_out,foto_in,foto_out,lokasi_in,lokasi_out,
-        datapresensi.status,status_in,status_out,selisih_in,selisih_out,jam_masuk, nama_jam_kerja, jam_pulang, keterangan'
-        );
-        $query->leftJoin('cabang', 'karyawan.kode_cabang', '=', 'cabang.kode_cabang');
-        $query->leftJoin('seksi', 'karyawan.kode_dept', '=', 'seksi.kode_dept');
-        $query->leftJoin(
-            DB::raw("(
-                SELECT
-                presensi.nik,presensi.id,jam_in,jam_out,foto_in,foto_out,lokasi_in,lokasi_out,presensi.status,presensi.status_in,presensi.status_out,presensi.selisih_in,presensi.selisih_out,jam_masuk, nama_jam_kerja, jam_pulang, keterangan
-                FROM presensi
-                LEFT JOIN  jam_kerja ON presensi.kode_jam_kerja = jam_kerja.kode_jam_kerja
-                LEFT JOIN pengajuan_izin ON presensi.kode_izin = pengajuan_izin.kode_izin
-                WHERE tgl_presensi = '$tanggal'
-            ) datapresensi"),
-            function ($join) {
-                $join->on('karyawan.nik', '=', 'datapresensi.nik');
+            if (!empty($layanan_id)) {
+                $query->where('layanan.id', $layanan_id);
             }
-        );
 
-        if (!empty($request->kode_cabang)) {
-            $query->where('karyawan.kode_cabang', $request->kode_cabang);
+            $query->orderBy('layanan.nama_layanan', 'asc');
+            $presensi = $query->paginate(10)->withQueryString();
+        } else {
+            $query = DB::table('presensi')
+                ->join('layanan', 'presensi.nik', '=', 'layanan.id')
+                ->leftJoin('jam_kerja', 'presensi.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
+                ->leftJoin('pengajuan_izin', 'presensi.kode_izin', '=', 'pengajuan_izin.kode_izin')
+                ->leftJoin('jadwal_lokasi_layanan as j_khusus', function ($join) {
+                    $join->on('j_khusus.layanan_id', '=', 'presensi.nik')
+                        ->on('j_khusus.tanggal', '=', 'presensi.tgl_presensi')
+                        ->where('j_khusus.status', 1);
+                })
+                ->leftJoin('jadwal_lokasi_layanan as j_rutin', function ($join) {
+                    $join->on('j_rutin.layanan_id', '=', 'presensi.nik')
+                        ->where('j_rutin.jenis_jadwal', 'rutin')
+                        ->where('j_rutin.status', 1)
+                        ->whereRaw("j_rutin.hari = CASE DAYOFWEEK(presensi.tgl_presensi)
+                            WHEN 1 THEN 'Minggu'
+                            WHEN 2 THEN 'Senin'
+                            WHEN 3 THEN 'Selasa'
+                            WHEN 4 THEN 'Rabu'
+                            WHEN 5 THEN 'Kamis'
+                            WHEN 6 THEN 'Jumat'
+                            WHEN 7 THEN 'Sabtu'
+                        END");
+                })
+                ->leftJoin('cabang as c_lokasi', DB::raw("COALESCE(j_khusus.kode_cabang, j_rutin.kode_cabang, layanan.kode_cabang)"), '=', 'c_lokasi.kode_cabang')
+                ->whereBetween('presensi.tgl_presensi', [$tgl_dari, $tgl_sampai])
+                ->select(
+                    'presensi.tgl_presensi',
+                    'layanan.id as layanan_id',
+                    'layanan.nama_layanan',
+                    'layanan.nama_pic',
+                    'layanan.jabatan_pic',
+                    'layanan.foto as foto_layanan',
+                    'presensi.id as presensi_id',
+                    'presensi.jam_in',
+                    'presensi.jam_out',
+                    'presensi.foto_in',
+                    'presensi.foto_out',
+                    'presensi.lokasi_in',
+                    'presensi.lokasi_out',
+                    'presensi.status as presensi_status',
+                    'presensi.status_in',
+                    'presensi.status_out',
+                    'presensi.selisih_in',
+                    'presensi.selisih_out',
+                    'presensi.kode_izin',
+                    'jam_kerja.nama_jam_kerja',
+                    'jam_kerja.jam_masuk',
+                    'jam_kerja.jam_pulang',
+                    'c_lokasi.nama_cabang as lokasi',
+                    'pengajuan_izin.keterangan as keterangan_izin'
+                );
+
+            if (!empty($layanan_id)) {
+                $query->where('layanan.id', $layanan_id);
+            }
+
+            $query->orderBy('presensi.tgl_presensi', 'desc')
+                  ->orderBy('presensi.jam_in', 'desc');
+            $presensi = $query->paginate(10)->withQueryString();
         }
 
-        if (!empty($request->kode_dept)) {
-            $query->where('karyawan.kode_dept', $request->kode_dept);
-        }
+        $daftarLayanan = DB::table('layanan')->orderBy('nama_layanan', 'asc')->get();
 
-        if ($user->hasRole('admin departemen')) {
-            $query->where('karyawan.kode_cabang', $kode_cabang);
-            $query->where('karyawan.kode_dept', $kode_dept);
-        }
-        $query->orderBy('nama_lengkap');
-        $presensi = $query->get();
-
-        return view('presensi.getpresensi', compact('presensi', 'tanggal', 'datalibur'));
+        return view('presensi.monitoring', compact('presensi', 'daftarLayanan', 'tgl_dari', 'tgl_sampai', 'layanan_id'));
     }
 
     public function tampilkanpeta(Request $request)
     {
         $id = $request->id;
         $presensi = DB::table('presensi')->where('presensi.id', $id)
-            ->join('pegawai as karyawan', 'presensi.nik', '=', 'karyawan.nik')
-            ->leftJoin('cabang', 'karyawan.kode_cabang', '=', 'cabang.kode_cabang')
+            ->join('layanan', 'presensi.nik', '=', 'layanan.id')
+            ->leftJoin('cabang', 'layanan.kode_cabang', '=', 'cabang.kode_cabang')
+            ->select('presensi.*', 'layanan.nama_layanan as nama_lengkap', 'cabang.nama_cabang')
             ->first();
         return view('presensi.showmap', compact('presensi'));
     }
@@ -2344,7 +2423,6 @@ class PresensiController extends Controller
                 'pegawai.nama_lengkap',
                 'pegawai.jabatan',
                 'pegawai.foto as foto_pegawai',
-                'seksi.nama_dept',
                 'cabang.nama_cabang',
                 'jam_kerja.nama_jam_kerja',
                 'jam_kerja.jam_masuk as jam_masuk_jadwal',
@@ -2352,7 +2430,6 @@ class PresensiController extends Controller
                 'pengajuan_izin.keterangan as keterangan_izin'
             )
             ->join('pegawai', 'presensi.nik', '=', 'pegawai.nik')
-            ->leftJoin('seksi', 'pegawai.kode_dept', '=', 'seksi.kode_dept')
             ->leftJoin('cabang', 'pegawai.kode_cabang', '=', 'cabang.kode_cabang')
             ->leftJoin('jam_kerja', 'presensi.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
             ->leftJoin('pengajuan_izin', 'presensi.kode_izin', '=', 'pengajuan_izin.kode_izin')
@@ -2413,7 +2490,7 @@ class PresensiController extends Controller
         }
         $listPegawai = $queryPegawai->get();
 
-        $departemen = DB::table('seksi')->orderBy('nama_dept', 'asc')->get();
+        $departemen = collect([]);
         $cabang = DB::table('cabang')->orderBy('nama_cabang', 'asc')->get();
 
         return view('presensi.statuskehadiran', compact('datapresensi', 'listPegawai', 'departemen', 'cabang', 'dari', 'sampai'));
