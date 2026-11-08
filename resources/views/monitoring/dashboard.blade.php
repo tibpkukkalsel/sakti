@@ -399,7 +399,7 @@
     <div class="section mt-2">
         <div id="rekappresensi">
             <h3 style="font-size: 13.5px; font-weight: 700; color: #1e293b; margin-bottom: 8px;">
-                Rekap Layanan Hari Ini (Total: {{ $totalLayanan }} Layanan)
+                Rekap Layanan Hari Ini (Total: {{ $totalLayanan }} Layanan @if($jml_libur > 0)&bull; {{ $jml_libur }} Libur @endif)
             </h3>
             <div class="row align-items-stretch">
                 <div class="col-4 d-flex">
@@ -437,7 +437,7 @@
                         <div class="card-body text-center">
                             <span class="badge bg-danger"
                                 style="position: absolute; top:4px; right:6px; font-size:0.65rem; z-index:999">
-                                {{ $jml_belum_absen + $jml_libur }}
+                                {{ $jml_belum_absen }}
                             </span>
                             <ion-icon name="help-circle-outline" style="font-size: 1.8rem;"
                                 class="text-danger mb-1"></ion-icon>
@@ -603,9 +603,11 @@
 
                     @foreach ($monitoringLayanan as $row)
                         @php
-                            $isHadir = $row->status_presensi == 'h' || !empty($row->jam_in);
-                            $isMaint = $row->status_presensi == 'm';
-                            $isLibur = $row->status_presensi == 'l';
+                            $hasJadwal = !empty($row->jadwal_id);
+                            $isHadir = $row->status_presensi == 'h' || $row->status_presensi == 'tl' || !empty($row->jam_in);
+                            $isMaint = $row->status_presensi == 'm' || $row->status_presensi == 'x';
+                            // Jika belum ditentukan jadwalnya, maka dianggap libur
+                            $isLibur = $row->status_presensi == 'l' || (!$hasJadwal && !$isHadir && !$isMaint);
 
                             if ($isHadir) {
                                 $borderColor = '#bbf7d0';
@@ -657,27 +659,39 @@
                                             </span>
                                         </div>
                                         <div style="font-size: 12px; color: #64748b; margin-bottom: 3px;">
-                                            <span style="font-weight: 600; color: #2A8BF2;">
-                                                <ion-icon name="location-outline"
-                                                    style="vertical-align: -1px;"></ion-icon> {{ $row->lokasi }}
-                                            </span>
-                                            <span class="mx-1">&bull;</span>
-                                            <span>{{ $row->nama_jam_kerja ?? 'Reguler' }}</span>
+                                            @if ($isLibur)
+                                                <span style="font-weight: 600; color: #f97316;">
+                                                    <ion-icon name="calendar-outline" style="vertical-align: -1px;"></ion-icon> Libur Operasional
+                                                </span>
+                                            @else
+                                                <span style="font-weight: 600; color: #2A8BF2;">
+                                                    <ion-icon name="location-outline"
+                                                        style="vertical-align: -1px;"></ion-icon> {{ $row->lokasi ?? 'UPPD SAMSAT Batulicin' }}
+                                                </span>
+                                                @if (!empty($row->nama_jam_kerja))
+                                                    <span class="mx-1">&bull;</span>
+                                                    <span>{{ $row->nama_jam_kerja }}</span>
+                                                @endif
+                                            @endif
                                         </div>
                                         <div style="font-size: 13px;">
                                             <span>Scan: </span>
-                                            @if (!empty($row->jam_in))
+                                            @if ($isHadir)
                                                 <strong
                                                     style="color:#0f172a;">{{ date('H:i', strtotime($row->jam_in)) }}</strong>
+                                                <span> - </span>
+                                                @if (!empty($row->jam_out))
+                                                    <strong
+                                                        style="color:#0f172a;">{{ date('H:i', strtotime($row->jam_out)) }}</strong>
+                                                @else
+                                                    <span class="text-muted">Belum Scan</span>
+                                                @endif
+                                            @elseif ($isMaint)
+                                                <span class="text-primary font-weight-bold">Maintenance</span>
+                                            @elseif ($isLibur)
+                                                <span class="text-warning font-weight-bold">Libur</span>
                                             @else
                                                 <span class="text-danger font-weight-bold">Belum Scan</span>
-                                            @endif
-                                            <span> - </span>
-                                            @if (!empty($row->jam_out))
-                                                <strong
-                                                    style="color:#0f172a;">{{ date('H:i', strtotime($row->jam_out)) }}</strong>
-                                            @else
-                                                <span class="text-muted">Belum Scan</span>
                                             @endif
                                         </div>
                                     </div>

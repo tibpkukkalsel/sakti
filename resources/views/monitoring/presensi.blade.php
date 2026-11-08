@@ -218,13 +218,16 @@
         @forelse ($presensiList as $item)
             @php
                 $st = strtolower($item->status_presensi ?? '');
+                $hasJadwal = !empty($item->jadwal_id);
+                $isSingleDay = ($dari_tanggal == $sampai_tanggal);
+
                 if ($st == 'h' || $st == 'tl' || (!empty($item->jam_in) && $st != 'm' && $st != 'x' && $st != 'l')) {
                     $badgeClass = 'stat-badge-h';
                     $statusLabel = 'Hadir';
                 } elseif ($st == 'm' || $st == 'x') {
                     $badgeClass = 'stat-badge-x';
                     $statusLabel = 'Maintenance';
-                } elseif ($st == 'l') {
+                } elseif ($st == 'l' || ($isSingleDay && !$hasJadwal)) {
                     $badgeClass = 'stat-badge-l';
                     $statusLabel = 'Libur';
                 } else {
@@ -257,8 +260,13 @@
                                 </div>
                             @endif
                             <div class="text-muted" style="font-size: 11.5px; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                <ion-icon name="location-outline" style="vertical-align: -1px; color: #ef4444; margin-right: 2px;"></ion-icon>
-                                <span>{{ $item->lokasi_tugas }}</span>
+                                @if ($statusLabel == 'Libur')
+                                    <ion-icon name="calendar-outline" style="vertical-align: -1px; color: #f97316; margin-right: 2px;"></ion-icon>
+                                    <span style="color: #f97316; font-weight: 600;">Libur Operasional</span>
+                                @else
+                                    <ion-icon name="location-outline" style="vertical-align: -1px; color: #ef4444; margin-right: 2px;"></ion-icon>
+                                    <span>{{ $item->lokasi_tugas }}</span>
+                                @endif
                             </div>
                         </div>
                     </div>

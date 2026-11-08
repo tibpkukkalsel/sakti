@@ -47,25 +47,72 @@ class MonitoringController extends Controller
         // 1. Data Ringkasan Layanan & Kehadiran Hari Ini
         $totalLayanan = DB::table('layanan')->count();
 
-        $presensiHariIni = DB::table('presensi')
-            ->where('tgl_presensi', $hariini)
+        // Data Status Real-time Layanan Hari Ini
+        $monitoringLayanan = DB::table('layanan')
+            ->leftJoin('jadwal_lokasi_layanan as j_khusus', function ($join) use ($hariini) {
+                $join->on('j_khusus.layanan_id', '=', 'layanan.id')
+                    ->where('j_khusus.jenis_jadwal', '=', 'khusus')
+                    ->where('j_khusus.tanggal', '=', $hariini)
+                    ->where('j_khusus.status', '=', 1);
+            })
+            ->leftJoin('jadwal_lokasi_layanan as j_rutin', function ($join) use ($namahari) {
+                $join->on('j_rutin.layanan_id', '=', 'layanan.id')
+                    ->where('j_rutin.jenis_jadwal', '=', 'rutin')
+                    ->where('j_rutin.hari', '=', $namahari)
+                    ->where('j_rutin.status', '=', 1);
+            })
+            ->leftJoin('cabang', DB::raw("COALESCE(j_khusus.kode_cabang, j_rutin.kode_cabang, layanan.kode_cabang)"), '=', 'cabang.kode_cabang')
+            ->leftJoin('jam_kerja', DB::raw("COALESCE(j_khusus.kode_jam_kerja, j_rutin.kode_jam_kerja)"), '=', 'jam_kerja.kode_jam_kerja')
+            ->leftJoin('presensi', function ($join) use ($hariini) {
+                $join->on('layanan.id', '=', 'presensi.nik')
+                    ->where('presensi.tgl_presensi', '=', $hariini);
+            })
+            ->leftJoin('rekap_penerimaan_pkb', function ($join) use ($hariini) {
+                $join->on('layanan.id', '=', 'rekap_penerimaan_pkb.layanan_id')
+                    ->where('rekap_penerimaan_pkb.tgl_penerimaan', '=', $hariini);
+            })
+            ->select(
+                'layanan.id',
+                'layanan.nama_layanan',
+                'layanan.foto',
+                'layanan.no_hp',
+                'layanan.nama_pic',
+                'cabang.nama_cabang as lokasi',
+                'jam_kerja.nama_jam_kerja',
+                'presensi.jam_in',
+                'presensi.jam_out',
+                'presensi.foto_in',
+                'presensi.foto_out',
+                'presensi.status as status_presensi',
+                'rekap_penerimaan_pkb.total_rp as penerimaan_hari_ini',
+                'rekap_penerimaan_pkb.total_unit as unit_hari_ini',
+                'rekap_penerimaan_pkb.jumlah_notice as notice_hari_ini',
+                DB::raw('COALESCE(j_khusus.id, j_rutin.id) as jadwal_id')
+            )
+            ->orderBy('layanan.nama_layanan', 'asc')
             ->get();
 
         $jml_hadir = 0;
         $jml_maintenance = 0;
         $jml_libur = 0;
+        $jml_belum_absen = 0;
 
-        foreach ($presensiHariIni as $p) {
-            $st = strtolower($p->status ?? '');
-            if ($st == 'h' || $st == 'tl' || (!empty($p->jam_in) && $st != 'm' && $st != 'x' && $st != 'l')) {
+        foreach ($monitoringLayanan as $row) {
+            $isHadir = $row->status_presensi == 'h' || $row->status_presensi == 'tl' || !empty($row->jam_in);
+            $isMaint = $row->status_presensi == 'm' || $row->status_presensi == 'x';
+            $hasJadwal = !empty($row->jadwal_id);
+
+            if ($isHadir) {
                 $jml_hadir++;
-            } elseif ($st == 'm' || $st == 'x') {
+            } elseif ($isMaint) {
                 $jml_maintenance++;
-            } elseif ($st == 'l') {
+            } elseif ($row->status_presensi == 'l' || !$hasJadwal) {
+                // Jika belum ditentukan jadwalnya, maka dianggap libur
                 $jml_libur++;
+            } else {
+                $jml_belum_absen++;
             }
         }
-        $jml_belum_absen = max(0, $totalLayanan - ($jml_hadir + $jml_maintenance + $jml_libur));
 
         // 2. Data Ringkasan Penerimaan PKB
         $penerimaanHariIni = (float) DB::table('rekap_penerimaan_pkb')
@@ -281,50 +328,6 @@ class MonitoringController extends Controller
             ->get();
 
         $detailPerHariJson = $detailHariQuery->groupBy('nama_hari')->toArray();
-
-        // 4. Data Status Real-time Layanan Hari Ini
-        $monitoringLayanan = DB::table('layanan')
-            ->leftJoin('jadwal_lokasi_layanan as j_khusus', function ($join) use ($hariini) {
-                $join->on('j_khusus.layanan_id', '=', 'layanan.id')
-                    ->where('j_khusus.jenis_jadwal', '=', 'khusus')
-                    ->where('j_khusus.tanggal', '=', $hariini)
-                    ->where('j_khusus.status', '=', 1);
-            })
-            ->leftJoin('jadwal_lokasi_layanan as j_rutin', function ($join) use ($namahari) {
-                $join->on('j_rutin.layanan_id', '=', 'layanan.id')
-                    ->where('j_rutin.jenis_jadwal', '=', 'rutin')
-                    ->where('j_rutin.hari', '=', $namahari)
-                    ->where('j_rutin.status', '=', 1);
-            })
-            ->leftJoin('cabang', DB::raw("COALESCE(j_khusus.kode_cabang, j_rutin.kode_cabang, layanan.kode_cabang)"), '=', 'cabang.kode_cabang')
-            ->leftJoin('jam_kerja', DB::raw("COALESCE(j_khusus.kode_jam_kerja, j_rutin.kode_jam_kerja)"), '=', 'jam_kerja.kode_jam_kerja')
-            ->leftJoin('presensi', function ($join) use ($hariini) {
-                $join->on('layanan.id', '=', 'presensi.nik')
-                    ->where('presensi.tgl_presensi', '=', $hariini);
-            })
-            ->leftJoin('rekap_penerimaan_pkb', function ($join) use ($hariini) {
-                $join->on('layanan.id', '=', 'rekap_penerimaan_pkb.layanan_id')
-                    ->where('rekap_penerimaan_pkb.tgl_penerimaan', '=', $hariini);
-            })
-            ->select(
-                'layanan.id',
-                'layanan.nama_layanan',
-                'layanan.foto',
-                'layanan.no_hp',
-                'layanan.nama_pic',
-                DB::raw('COALESCE(cabang.nama_cabang, "UPPD SAMSAT Batulicin") as lokasi'),
-                'jam_kerja.nama_jam_kerja',
-                'presensi.jam_in',
-                'presensi.jam_out',
-                'presensi.foto_in',
-                'presensi.foto_out',
-                'presensi.status as status_presensi',
-                'rekap_penerimaan_pkb.total_rp as penerimaan_hari_ini',
-                'rekap_penerimaan_pkb.total_unit as unit_hari_ini',
-                'rekap_penerimaan_pkb.jumlah_notice as notice_hari_ini'
-            )
-            ->orderBy('layanan.nama_layanan', 'asc')
-            ->get();
 
         return view('monitoring.dashboard', compact(
             'user',
@@ -619,7 +622,8 @@ class MonitoringController extends Controller
                 'presensi.foto_out',
                 'presensi.lokasi_in',
                 'presensi.lokasi_out',
-                'presensi.status as status_presensi'
+                'presensi.status as status_presensi',
+                DB::raw('COALESCE(j_khusus.id, j_rutin.id) as jadwal_id')
             )->orderBy('layanan.nama_layanan', 'asc');
         } else {
             // Tampilan rentang tanggal (multi-hari: Minggu Ini, Bulan Ini, Tahun Ini, Custom Rentang)
@@ -686,11 +690,12 @@ class MonitoringController extends Controller
 
         foreach ($allRecords as $item) {
             $st = strtolower($item->status_presensi ?? '');
+            $hasJadwal = !empty($item->jadwal_id);
             if ($st == 'h' || $st == 'tl' || (!empty($item->jam_in) && $st != 'm' && $st != 'x' && $st != 'l')) {
                 $statHadir++;
             } elseif ($st == 'm' || $st == 'x') {
                 $statMaintenance++;
-            } elseif ($st == 'l') {
+            } elseif ($st == 'l' || ($dari_tanggal == $sampai_tanggal && !$hasJadwal)) {
                 $statLibur++;
             } else {
                 $statTK++;
