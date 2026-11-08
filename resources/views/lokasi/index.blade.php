@@ -50,7 +50,7 @@
                                     <div class="row">
                                         <div class="col-10">
                                             <div class="form-group">
-                                                <input type="text" name="nama_cabang" id="nama_cabang" class="form-control" placeholder="Nama Lokasi" value="{{ Request('nama_cabang') }}">
+                                                <input type="text" name="nama_cabang" id="cari_nama_cabang" class="form-control" placeholder="Nama Lokasi" value="{{ Request('nama_cabang') }}">
                                             </div>
                                         </div>
                                         <div class="col-2">
@@ -262,9 +262,9 @@
         });
 
         $("#frmLokasi").submit(function() {
-            var nama_cabang = $("#nama_cabang").val();
-            var lokasi_cabang = $("#lokasi_cabang").val();
-            var radius_cabang = $("#radius_cabang").val();
+            var nama_cabang = $("#frmLokasi").find("#nama_cabang").val();
+            var lokasi_cabang = $("#frmLokasi").find("#lokasi_cabang").val();
+            var radius_cabang = $("#frmLokasi").find("#radius_cabang").val();
 
             if (nama_cabang == "") {
                 Swal.fire({
@@ -273,7 +273,7 @@
                     icon: 'warning',
                     confirmButtonText: 'Ok'
                 }).then((result) => {
-                    $("#nama_cabang").focus();
+                    $("#frmLokasi").find("#nama_cabang").focus();
                 });
                 return false;
             } else if (lokasi_cabang == "") {
@@ -283,7 +283,7 @@
                     icon: 'warning',
                     confirmButtonText: 'Ok'
                 }).then((result) => {
-                    $("#lokasi_cabang").focus();
+                    $("#frmLokasi").find("#lokasi_cabang").focus();
                 });
                 return false;
             } else if (radius_cabang == "") {
@@ -293,7 +293,7 @@
                     icon: 'warning',
                     confirmButtonText: 'Ok'
                 }).then((result) => {
-                    $("#radius_cabang").focus();
+                    $("#frmLokasi").find("#radius_cabang").focus();
                 });
                 return false;
             }

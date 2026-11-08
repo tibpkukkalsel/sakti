@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Presentasi SAKTI - UPPD SAMSAT Batulicin</title>
+  <!-- Tailwind CSS via allowlisted CDN -->
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: #0b132b;
+      color: #f1f5f9;
+      user-select: none;
+      overflow-x: hidden;
+    }
+    .font-heading {
+      font-family: 'Space Grotesk', 'Plus Jakarta Sans', sans-serif;
+    }
+    .slide-aspect {
+      aspect-ratio: 16 / 9;
+      max-height: 86vh;
+    }
+    .gold-gradient {
+      background: linear-gradient(135deg, #ffd700 0%, #ffb703 50%, #fb8500 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .blue-navy-gradient {
+      background: linear-gradient(135deg, #1E6FD9 0%, #15438C 50%, #0c234b 100%);
+    }
+    .card-glass {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .card-glass-hover:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 215, 0, 0.4);
+      transform: translateY(-2px);
+      transition: all 0.25s ease;
+    }
+    .speaker-drawer {
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    /* Hide scrollbar */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between p-2 sm:p-4 md:p-6 bg-[#070d1e] text-slate-100">
+
+  <!-- TOP BAR: Brand, Slide Title & Actions -->
+  <header class="w-full max-w-7xl mx-auto flex items-center justify-between pb-3 border-b border-slate-800 text-xs sm:text-sm">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-700 flex items-center justify-center font-bold text-white shadow-md shadow-blue-500/20">
+        ⚡
+      </div>
+      <div>
+        <span class="font-heading font-bold text-white tracking-wide text-sm sm:text-base">SAKTI</span>
+        <span class="text-slate-400 hidden sm:inline"> | UPPD SAMSAT Batulicin</span>
+      </div>
+      <span class="px-2 py-0.5 rounded-full text-[11px] bg-blue-900/60 text-blue-300 border border-blue-700/50 hidden md:inline-block">
+        Slide Deck Referensi PPT
+      </span>
+    </div>
+
+    <!-- Controls -->
+    <div class="flex items-center gap-2">
+      <button onclick="toggleGrid()" title="Lihat Semua Slide (Grid)" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center gap-1.5 transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+        <span class="hidden sm:inline text-xs font-medium">Semua Slide</span>
+      </button>
+
+      <button onclick="toggleSpeakerNotes()" title="Buka Catatan Pembicara" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 flex items-center gap-1.5 transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+        <span class="hidden sm:inline text-xs font-medium">Catatan Pembicara</span>
+      </button>
+
+      <button onclick="copySlideContent()" title="Salin Teks Slide untuk Ditempel ke PPT" class="px-3 py-1.5 rounded-lg bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/40 flex items-center gap-1.5 transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+        <span class="hidden md:inline text-xs font-semibold">Salin ke PPT</span>
+      </button>
+
+      <button onclick="toggleFullscreen()" title="Layar Penuh (F11)" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- PROGRESS BAR -->
+  <div class="w-full max-w-7xl mx-auto my-2 bg-slate-800 h-1 rounded-full overflow-hidden">
+    <div id="progressBar" class="bg-gradient-to-r from-blue-500 via-amber-400 to-emerald-400 h-full transition-all duration-300" style="width: 8.33%;"></div>
+  </div>
+
+  <!-- MAIN SLIDE CONTAINER (16:9 Aspect Ratio on Desktop) -->
+  <main class="w-full max-w-7xl mx-auto my-auto flex items-center justify-center relative">
+    <div id="slideViewport" class="w-full slide-aspect rounded-2xl bg-gradient-to-br from-slate-900 via-[#0d1730] to-[#080d1d] border border-slate-800 shadow-2xl p-5 sm:p-8 md:p-12 flex flex-col justify-between overflow-y-auto no-scrollbar relative transition-all duration-300">
+      <!-- Slide Content Injected by JavaScript -->
+      <div id="slideContent" class="h-full flex flex-col justify-between"></div>
+    </div>
+  </main>
+
+  <!-- BOTTOM BAR: Navigation & Indicator -->
+  <footer class="w-full max-w-7xl mx-auto flex items-center justify-between pt-3 border-t border-slate-800 text-xs sm:text-sm">
+    <div class="flex items-center gap-2">
+      <span class="text-slate-400 text-xs hidden sm:inline">Navigasi: <strong>Panah Kiri/Kanan</strong> atau <strong>Spasi</strong></span>
+      <span class="text-slate-500 text-xs hidden md:inline">| Tekan <strong>N</strong> untuk Catatan</span>
+    </div>
+
+    <!-- Slide Indicators & Arrows -->
+    <div class="flex items-center gap-3">
+      <button onclick="prevSlide()" id="btnPrev" class="px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed border border-slate-700 text-white font-medium flex items-center gap-1 transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+        <span class="hidden sm:inline">Sebelumnya</span>
+      </button>
+
+      <div class="px-3 py-1 rounded-lg bg-slate-900/80 border border-slate-800 text-slate-300 font-mono text-xs sm:text-sm">
+        Slide <span id="currentSlideNum" class="font-bold text-amber-400">1</span> / <span id="totalSlideNum" class="text-slate-400">12</span>
+      </div>
+
+      <button onclick="nextSlide()" id="btnNext" class="px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 disabled:opacity-30 disabled:cursor-not-allowed text-white font-medium flex items-center gap-1 transition shadow-lg shadow-blue-600/30">
+        <span class="hidden sm:inline">Selanjutnya</span>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+      </button>
+    </div>
+  </footer>
+
+  <!-- SPEAKER NOTES DRAWER (SLIDE-OVER MODAL) -->
+  <div id="speakerDrawer" class="speaker-drawer fixed inset-y-0 right-0 w-full sm:w-96 bg-slate-900/95 backdrop-blur-xl border-l border-slate-700 shadow-2xl p-6 z-50 transform translate-x-full flex flex-col justify-between">
+    <div>
+      <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+        <div class="flex items-center gap-2">
+          <span class="text-amber-400">🎙️</span>
+          <h3 class="font-bold text-white text-base">Catatan Pembicara</h3>
+        </div>
+        <button onclick="toggleSpeakerNotes()" class="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+      </div>
+
+      <div class="mt-4">
+        <span id="speakerSlideTitle" class="text-xs uppercase tracking-wider font-semibold text-blue-400">Slide 1: Cover</span>
+        <h4 id="speakerHeadline" class="text-sm font-bold text-slate-200 mt-1 mb-3">Panduan Paparan & Poin Kunci:</h4>
+        <div id="speakerNotesBody" class="text-xs sm:text-sm text-slate-300 leading-relaxed space-y-2.5 max-h-[65vh] overflow-y-auto pr-1">
+          <!-- Injected via JS -->
+        </div>
+      </div>
+    </div>
+
+    <div class="pt-4 border-t border-slate-800 flex items-center justify-between">
+      <span class="text-[11px] text-slate-500">Gunakan sebagai naskah saat presentasi</span>
+      <button onclick="copySpeakerNotes()" class="text-xs text-amber-400 hover:text-amber-300 underline font-medium">Salin Naskah</button>
+    </div>
+  </div>
+
+  <!-- SLIDE GRID DRAWER (OVERVIEW) -->
+  <div id="gridDrawer" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex flex-col p-4 sm:p-8">
+    <div class="flex items-center justify-between pb-4 border-b border-slate-800 max-w-6xl w-full mx-auto">
+      <h3 class="font-heading font-bold text-lg text-white">Daftar Seluruh Slide Presentasi</h3>
+      <button onclick="toggleGrid()" class="px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm">Tutup (Esc)</button>
+    </div>
+    <div id="gridContainer" class="max-w-6xl w-full mx-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mt-6 overflow-y-auto flex-1 p-2">
+      <!-- Grid items generated by JS -->
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="fixed bottom-16 right-6 bg-emerald-600 text-white text-xs sm:text-sm px-4 py-2.5 rounded-xl shadow-xl flex items-center gap-2 transform translate-y-10 opacity-0 pointer-events-none transition-all duration-300 z-50">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+    <span id="toastMsg">Teks slide berhasil disalin!</span>
+  </div>
+
+  <!-- SLIDES DATA & SCRIPT LOGIC -->
+  <script>
+    const slides = [
+      {
+        id: 1,
+        tag: "COVER / PEMBUKA",
+        title: "SAKTI",
+        subtitle: "Sistem Absensi & Rekap Penerimaan PKB UPPD SAMSAT Batulicin",
+        headline: "Inovasi Digital Pemantauan Presensi Geofencing Armada & Transparansi Penerimaan Pajak Daerah Real-Time",
+        contentHtml: `
+          <div class="flex-1 flex flex-col justify-center items-center text-center my-auto py-4">
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-400/30 text-blue-300 text-xs mb-4">
+              <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
+              Badan Pendapatan Daerah Provinsi Kalimantan Selatan
+            </div>
+            
+            <h1 class="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight font-heading mb-3">
+              <span class="text-white">PROYEK </span><span class="gold-gradient">SAKTI</span>
+            </h1>
+            
+            <p class="text-base sm:text-xl md:text-2xl text-blue-200 font-semibold max-w-3xl mb-2">
+              Sistem Absensi & Rekap Penerimaan PKB
+            </p>
+            <p class="text-xs sm:text-sm md:text-base text-slate-400 max-w-2xl">
+              Unit Pelayanan Pendapatan Daerah (UPPD) SAMSAT Batulicin
+            </p>
+
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-8 w-full max-w-4xl text-left">
+              <div class="card-glass rounded-xl p-3 border-l-4 border-l-blue-500">
+                <span class="text-[11px] text-slate-400 uppercase tracking-wider block">Armada</span>
+                <span class="text-sm font-bold text-white">Layanan Keliling</span>
+              </div>
+              <div class="card-glass rounded-xl p-3 border-l-4 border-l-amber-500">
+                <span class="text-[11px] text-slate-400 uppercase tracking-wider block">Penerimaan</span>
+                <span class="text-sm font-bold text-white">PKB R2, R4 & Notice</span>
+              </div>
+              <div class="card-glass rounded-xl p-3 border-l-4 border-l-emerald-500">
+                <span class="text-[11px] text-slate-400 uppercase tracking-wider block">Validasi</span>
+                <span class="text-sm font-bold text-white">Geofencing & Anti-Fake</span>
+              </div>
+              <div class="card-glass rounded-xl p-3 border-l-4 border-l-indigo-500">
+                <span class="text-[11px] text-slate-400 uppercase tracking-wider block">Monitoring</span>
+                <span class="text-sm font-bold text-white">Mobile Eksekutif</span>
+              </div>
+            </div>
+          </div>
+        `,
+        speakerNotes: `
+          <p><strong>Salam & Pembuka:</strong> Selamat pagi/siang Bapak/Ibu pimpinan dan hadirin sekalian. Hari ini saya mempresentasikan sistem inovasi digital operasional yang kami bangun untuk UPPD SAMSAT Batulicin, yaitu aplikasi <strong>SAKTI</strong> (Sistem Absensi & Rekap Penerimaan PKB).</p>
+          <p><strong>Urgensi Singkat:</strong> SAKTI lahir sebagai solusi komprehensif untuk menyatukan operasional petugas armada keliling di lapangan, rekonsiliasi data penerimaan kas pajak harian, dan dasbor pengawasan pimpinan yang dapat diakses secara langsung dari smartphone.</p>
+        `,
+        copyText: `SAKTI - SISTEM ABSENSI & REKAP PENERIMAAN PKB UPPD SAMSAT BATULICIN
+Badan Pendapatan Daerah (Bapenda) Provinsi Kalimantan Selatan
+
+Fokus Utama Sistem:
+1. Pemantauan Presensi Geofencing Armada Layanan Keliling secara Real-Time.
+2. Rekapitulasi Penerimaan PKB Harian (Roda 2, Roda 4, Nominal Rupiah & Notice).
+3. Validasi Disiplin Petugas dengan Anti-Fake GPS dan Foto Selfie Wajah.
+4. Dashboard Mobile Monitoring Eksekutif bagi Pimpinan UPPD SAMSAT Batulicin.`
+      },
+
+      {
+        id: 2,
+        tag: "LATAR BELAKANG",
+        title: "Latar Belakang & Masalah",
+        subtitle: "Tantangan Operasional Armada Layanan Keliling Sebelum SAKTI",
+        headline: "Tantangan Pengawasan Wilayah Luas, Selisih Pencatatan Kas, dan Manipulasi Presensi",
+        contentHtml: `
+          <div class="flex-1 flex flex-col justify-center my-auto py-2">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="card-glass rounded-xl p-4 sm:p-5 border-l-4 border-l-rose-500">
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="text-xl">📍</span>
+                  <h3 class="font-bold text-white text-base">1. Wilayah Operasional Tersebar & Jauh</h3>
+                </div>
+                <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                  Armada layanan keliling melayani titik-titik kecamatan dan desa yang jauh dari kantor induk Batulicin. Pimpinan dan pengawas kesulitan memvalidasi apakah unit benar-benar sudah tiba dan membuka loket di titik penugasan resmi.
+                </p>
+              </div>
+
+              <div class="card-glass rounded-xl p-4 sm:p-5 border-l-4 border-l-amber-500">
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="text-xl">💵</span>
+                  <h3 class="font-bold text-white text-base">2. Rekap Penerimaan PKB Masih Terpisah</h3>
+                </div>
+                <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                  Pencatatan unit R2, R4, cetak lembar notice, dan total nominal rupiah sebelumnya dicatat manual atau via pesan singkat. Rentan terjadi selisih hitung antara laporan petugas lapangan dengan bukti fisik setoran kasir.
+                </p>
+              </div>
+
+              <div class="card-glass rounded-xl p-4 sm:p-5 border-l-4 border-l-red-500">
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="text-xl">📱</span>
+                  <h3 class="font-bold text-white text-base">3. Risiko Presensi Palsu (Fake GPS)</h3>
+                </div>
+                <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                  Absensi berbasis smartphone konvensional sangat mudah diakali dengan aplikasi manipulasi GPS (Fake GPS). Tanpa perlindungan khusus dan verifikasi selfie wajah, integritas jam kerja petugas tidak dapat dijamin.
+                </p>
+              </div>
+
+              <div class="card-glass rounded-xl p-4 sm:p-5 border-l-4 border-l-blue-500">
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="text-xl">📊</span>
+                  <h3 class="font-bold text-white text-base">4. Ketiadaan Dashboard Eksekutif Cepat</h3>
+                </div>
+                <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                  Pimpinan UPPD harus menunggu rekapitulasi akhir bulan untuk mengevaluasi kinerja armada keliling dan perolehan PAD. Tidak ada sarana ringkas di smartphone untuk melihat performa hari ini secara live.
+                </p>
+              </div>
+            </div>
+          </div>
+        `,
+        speakerNotes: `
+          <p><strong>Poin Penjelasan:</strong> Bapak/Ibu, ada 4 problem utama yang menjadi latar belakang lahirnya SAKTI:</p>
+          <p>1. Geografis Kabupaten Tanah Bumbu sangat luas. Armada kita bergerak ke berbagai pelosok, sehingga verifikasi lokasi secara fisik membutuhkan teknologi geofencing otomatis.</p>
+          <p>2. Penerimaan PKB harus transparan dan akuntabel setiap harinya. Kita butuh angka pasti berapa R2, berapa R4, nominal uang, serta berapa lembar notice yang dicetak.</p>
+          <p>3. Celah fake GPS harus ditutup rapat dengan deteksi mock location bawaan Android.</p>
+          <p>4. Pimpinan butuh data real-time dalam genggaman, bukan sekadar laporan kertas di akhir bulan.</p>
+        `,
+        copyText: `LATAR BELAKANG & TANTANGAN SEBELUM SAKTI:
+1. Wilayah Operasional Tersebar: Titik layanan di pelosok desa/kecamatan menyulitkan pengawasan kehadiran fisik secara langsung.
+2. Rekapitulasi Manual & Terpisah: Penerimaan R2, R4, nominal uang, dan notice rentan selisih hitung sebelum disetor ke kasda.
+3. Potensi Manipulasi GPS: Absensi online biasa rentan dipalsukan menggunakan aplikasi Fake GPS pihak ketiga.
+4. Ketiadaan Dashboard Eksekutif: Pimpinan tidak memiliki akses instan berbasis smartphone untuk melihat capaian PAD harian.`
+      },
+
+      {
+        id: 3,
+        tag: "TUJUAN & VISI",
+        title: "Tujuan & Nilai Strategis",
+        subtitle: "Transformasi Digital Layanan SAMSAT yang Akuntabel & Disiplin",
+        headline: "Menyatukan 3 Elemen: Petugas Lapangan, Pengelola Kantor Induk, dan Pimpinan Pengawas",
+        contentHtml: `
+          <div class="flex-1 flex flex-col justify-center my-auto py-2">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+              <div class="card-glass rounded-2xl p-5 border-t-4 border-t-emerald-500 flex flex-col justify-between">
+                <div>
+                  <div class="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-2xl font-bold mb-3">
+                    💎
+                  </div>
+                  <h3 class="font-bold text-white text-base mb-2">Transparansi Finansial</h3>
+                  <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                    Setiap rupiah penerimaan PKB harian langsung terekam bersama rincian unit R2, R4, dan notice yang dicetak, serta dapat dikunci (lock) oleh verifikator agar tidak bisa diubah kembali.
+                  </p>
+                </div>
+                <div class="mt-4 pt-3 border-t border-slate-700/60 text-[11px] text-emerald-300 font-semibold">
+                  Mencegah kebocoran pendapatan asli daerah
+                </div>
+              </div>
+
+              <div class="card-glass rounded-2xl p-5 border-t-4 border-t-blue-500 flex flex-col justify-between">
+                <div>
+                  <div class="w-12 h-12 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center text-2xl font-bold mb-3">
+                    🎯
+                  </div>
+                  <h3 class="font-bold text-white text-base mb-2">Disiplin & Integritas Lokasi</h3>
+                  <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                    Petugas hanya bisa melakukan presensi jika fisik armada berada di dalam radius resmi titik layanan yang telah dijadwalkan, diverifikasi dengan foto selfie wajah langsung.
+                  </p>
+                </div>
+                <div class="mt-4 pt-3 border-t border-slate-700/60 text-[11px] text-blue-300 font-semibold">
+                  Geofencing radius 100m + Anti-Fake GPS
+                </div>
+              </div>
+
+              <div class="card-glass rounded-2xl p-5 border-t-4 border-t-amber-500 flex flex-col justify-between">
+                <div>
+                  <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-2xl font-bold mb-3">
+                    📈
+                  </div>
+                  <h3 class="font-bold text-white text-base mb-2">Keputusan Berbasis Data</h3>
+                  <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                    Pimpinan memiliki dashboard mobile prestisius dengan grafik batang dan garis tren per bulan untuk mengevaluasi produktivitas titik layanan dan menetapkan strategi jemput bola.
+                  </p>
+                </div>
+                <div class="mt-4 pt-3 border-t border-slate-700/60 text-[11px] text-amber-300 font-semibold">
+                  Visualisasi grafik tren & perbandingan armada
+                </div>
+              </div>
+            </div>
+          </div>
+        `,
+        speakerNotes: `
+          <p><strong>Poin Kunci Slide 3:</strong> Visi utama SAKTI berfokus pada 3 pilar:</p>
+          <p>1. <em>Transparansi Finansial</em>: Menjamin setiap lembar notice dan rupiah dari wajib pajak terekam dan tervalidasi.</p>
+          <p>2. <em>Disiplin Lokasi</em>: Armada dipastikan hadir melayani masyarakat di titik yang dijanjikan, bukan mangkir atau parkir di tempat lain.</p>
+          <p>3. <em>Data-Driven Management</em>: Pimpinan dapat melihat lokasi mana yang sepi atau ramai penerimaan sehingga penentuan jadwal bulan berikutnya jauh lebih tepat sasaran.</p>
+        `,
+        copyText: `TUJUAN & NILAI STRATEGIS SAKTI:
+1. Transparansi Finansial: Menjamin akurasi penerimaan kas daerah melalui pencatatan unit R2, R4, nominal rupiah, dan lembar notice dengan fitur penguncian (lock) verifikasi.
+2. Disiplin & Integritas Kehadiran: Memastikan armada benar-benar beroperasi di titik layanan sesuai jadwal menggunakan Geofencing Radius dan Anti-Fake GPS.
+3. Pengambilan Keputusan Berbasis Data: Memberikan pimpinan UPPD instrumen visual grafik tren pendapatan untuk evaluasi performa operasional.`
+      },
+
+      {
+        id: 4,
+        tag: "AKTOR & HAK AKSES",
+        title: "Matriks Aktor Pengguna & Hak Akses (CRD)",
+        subtitle: "Pembagian Peran Jelas untuk Menjaga Integritas dan Tata Kelola Sistem",
+        headline: "Struktur Role SAKTI: Administrator, Pimpinan Monitoring, dan Petugas Armada Layanan",
+        contentHtml: `
+          <div class="flex-1 flex flex-col justify-center my-auto py-1">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr class="bg-slate-800/80 text-slate-300 border-b border-slate-700">
+                    <th class="p-2.5 font-bold">Aktor Pengguna</th>
+                    <th class="p-2.5 font-bold text-center">Create (Tambah)</th>
+                    <th class="p-2.5 font-bold text-center">Read (Lihat)</th>
+                    <th class="p-2.5 font-bold text-center">Update (Ubah)</th>
+                    <th class="p-2.5 font-bold text-center">Delete (Hapus)</th>
+                    <th class="p-2.5 font-bold">Fokus & Ruang Lingkup</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-800 text-slate-300">
+                  <tr class="card-glass-hover">
+                    <td class="p-2.5 font-semibold text-white">
+                      <div class="flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span>
+                        <div>
+                          <div>Administrator</div>
+                          <span class="text-[10px] text-slate-400 font-normal">Panel Web (/panel-adm14)</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="p-2.5 text-center text-emerald-400 font-bold">✓ (Penuh)</td>
+                    <td class="p-2.5 text-center text-emerald-400 font-bold">✓ (Penuh)</td>
+                    <td class="p-2.5 text-center text-emerald-400 font-bold">✓ (Penuh)</td>
+                    <td class="p-2.5 text-center text-emerald-400 font-bold">✓ (Penuh)</td>
+                    <td class="p-2.5 text-slate-300">
+                      Kelola jadwal lokasi, master data lokasi, akun user, koreksi presensi, serta verifikasi & <strong>Kunci Rekap</strong>.
+                    </td>
+                  </tr>
+
+                  <tr class="card-glass-hover bg-slate-900/40">
+                    <td class="p-2.5 font-semibold text-amber-300">
+                      <div class="flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+                        <div>
+                          <div>Pimpinan (Monitoring)</div>
+                          <span class="text-[10px] text-slate-400 font-normal">Mobile Web & APK</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="p-2.5 text-center text-slate-500 font-semibold">✕</td>
+                    <td class="p-2.5 text-center text-emerald-400 font-bold">✓ (Khusus)</td>
+                    <td class="p-2.5 text-center text-blue-400 font-semibold">Profil Pribadi</td>
+                    <td class="p-2.5 text-center text-slate-500 font-semibold">✕</td>
+                    <td class="p-2.5 text-slate-300">
+                      <strong>Read-only eksekutif:</strong> Pantau live armada beroperasi/libur, grafik tren bulanan, rincian notice, tanpa hak ubah data operasional.
+                    </td>
+                  </tr>
+
+                  <tr class="card-glass-hover">
+                    <td class="p-2.5 font-semibold text-blue-300">
+                      <div class="flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-blue-400"></span>
+                        <div>
+                          <div>Petugas Armada (Layanan)</div>
+                          <span class="text-[10px] text-slate-400 font-normal">Mobile Web & APK</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="p-2.5 text-center text-emerald-400 font-bold">Presensi & Rekap</td>
+                    <td class="p-2.5 text-center text-emerald-400 font-bold">Jadwal & Riwayat</td>
+                    <td class="p-2.5 text-center text-amber-400 font-semibold">Sebelum di-Lock</td>
+                    <td class="p-2.5 text-center text-rose-400 font-semibold">Batal Ajuan</td>
+                    <td class="p-2.5 text-slate-300">
+                      Input presensi selfie di lokasi, input rincian penerimaan PKB harian, pengajuan izin sakit/kendala unit maintenance.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="mt-3 p-3 rounded-xl bg-blue-950/40 border border-blue-800/40 text-[11px] text-blue-200 flex items-center gap-2">
+              <span class="text-base">🔒</span>
+              <span><strong>Prinsip Integritas Pemisahan Tugas (Segregation of Duties):</strong> Akun pimpinan murni memantau (read-only) untuk menjamin transparansi, sedangkan rekap keuangan petugas lapangan tidak bisa diubah lagi setelah diverifikasi & dikunci oleh Administrator.</span>
+            </div>
+          </div>
+        `,
+        speakerNotes: `
+          <p><strong>Poin Matriks CRD:</strong></p>
+          <p>Di SAKTI, kita membagi 3 aktor utama:</p>
+          <p>1. <strong>Administrator:</strong> Memiliki wewenang CRUD penuh di back office untuk mengatur jadwal rute armada dan memvalidasi setoran (mengunci rekap harian).</p>
+          <p>2. <strong>Pimpinan / Monitoring:</strong> Akun ini khusus dirancang read-only untuk memantau performa dan tren, menjaga objektivitas hasil rekap.</p>
+          <p>3. <strong>Petugas Layanan:</strong> Berada di garda depan untuk input kehadiran dan penerimaan. Namun jika sudah diverifikasi admin, petugas tidak bisa lagi mengubah nominal.</p>
+        `,
+        copyText: `MATRIKS AKTOR PENGGUNA & HAK AKSES (CRD / CRUD):
+1. Administrator (Back-Office / Web Panel):
+   - Create: Tambah jadwal lokasi, master titik lokasi, akun user pimpinan & armada.
+   - Read: Pantau seluruh data absensi, data setoran, ekspor rekap PDF & Excel.
+   - Update: Koreksi presensi, verifikasi setoran, Kunci (Lock) rekap penerimaan.
+   - Delete: Hapus data yang tidak valid.
+
+2. Pimpinan / Monitoring (Mobile Khusus Pimpinan):
+   - Read-Only Eksekutif: Memantau status armada (Hadir/Libur/Maintenance/TK), grafik tren bulanan, rincian notice dicetak.
+   - Update: Profil dan foto pribadi pimpinan.
+   - Tidak memiliki hak ubah data operasional demi menjaga objektivitas pengawasan.
+
+3. Petugas Armada Layanan (Mobile App):
+   - Create: Absensi selfie GPS, input penerimaan PKB (R2, R4, unit, rupiah, notice), lapor maintenance.
+   - Read: Jadwal tugas hari ini dan riwayat input pribadi.
+   - Update: Edit rekap hanya sebelum diverifikasi dan dikunci oleh Admin.`
+      },
+
+      {
+        id: 5,
+        tag: "FITUR 1: PRESENSI GEOFENCING",
+        title: "Presensi Geofencing & Anti-Fake GPS",
+        subtitle: "Validasi Fisik Kehadiran Petugas di Titik Lokasi Resmi Layanan",
+        headline: "Menjamin Kehadiran Nyata di Titik Penugasan dengan Standar Presensi Ketat",
+        contentHtml: `
+          <div class="flex-1 flex flex-col justify-center my-auto py-2">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div class="card-glass rounded-xl p-4 border-l-4 border-l-emerald-500">
+                <div class="w-10 h-10 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl font-bold mb-3">
+                  📍
+                </div>
+                <h4 class="font-bold text-white text-sm mb-1">Geofencing Radius Cerdas</h4>
+                <p class="text-xs text-slate-300 leading-relaxed">
+                  Sistem menghitung jarak koordinat petugas ke titik lokasi layanan (contoh: Kantor Kecamatan, Pasar, atau Desa). Tombol presensi otomatis terkunci jika berada di luar batas radius aman (default 100 meter).
+                </p>
+              </div>
+
+              <div class="card-glass rounded-xl p-4 border-l-4 border-l-blue-500">
+                <div class="w-10 h-10 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center text-xl font-bold mb-3">
+                  🛡️
+                </div>
+                <h4 class="font-bold text-white text-sm mb-1">Proteksi Anti-Fake GPS</h4>
+                <p class="text-xs text-slate-300 leading-relaxed">
+                  Aplikasi Android SAKTI dilengkapi native bridge yang mendeteksi penggunaan <em>Mock Location</em> atau aplikasi manipulasi titik koordinat. Jika terdeteksi, absensi langsung ditolak seketika.
+                </p>
+              </div>
+
+              <div class="card-glass rounded-xl p-4 border-l-4 border-l-amber-500">
+                <div class="w-10 h-10 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center text-xl font-bold mb-3">
+                  📸
+                </div>
+                <h4 class="font-bold text-white text-sm mb-1">Selfie Face Verification</h4>
+                <p class="text-xs text-slate-300 leading-relaxed">
+                  Petugas wajib mengambil foto wajah di lokasi. Sistem otomatis melakukan center-crop proporsional 1:1 dan re-encoding aman untuk memastikan foto asli dan bebas dari skrip tersembunyi.
+                </p>
+              </div>
+            </div>
+
+            <div class="mt-4 p-3 rounded-xl bg-slate-800/80 border border-slate-700 flex flex-wrap items-center justify-between gap-3 text-xs">
+              <span class="font-semibold text-slate-200">Standar Pewarnaan Status Presensi SAKTI:</span>
+              <div class="flex items-center gap-3">
+                <span class="inline-flex items-center gap-1.5 text-emerald-400 font-semibold"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Hadir (H)</span>
+                <span class="inline-flex items-center gap-1.5 text-amber-400 font-semibold"><span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Libur (L)</span>
+                <span class="inline-flex items-center gap-1.5 text-blue-400 font-semibold"><span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span> Maintenance</span>
+                <span class="inline-flex items-center gap-1.5 text-rose-400 font-semibold"><span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span> Tanpa Keterangan (TK)</span>
+              </div>
+            </div>
+          </div>
+        `,
+        speakerNotes: `
+          <p><strong>Poin Presentasi:</strong> Fitur presensi di SAKTI bukan sekadar pencatat jam kerja biasa:</p>
+          <p>1. Geofencing radius: Petugas tidak bisa absen saat masih di rumah atau di jalan. Harus sudah sampai di titik lokasi layanan.</p>
+          <p>2. Anti-Fake GPS: Banyak aplikasi absensi gagal karena dibobol aplikasi Fake GPS dari Play Store. Di APK SAKTI, kita pasang pendeteksi mock location bawaan sistem Android.</p>
+          <p>3. Wajah petugas terekam saat membuka dan menutup loket pelayanan.</p>
+        `,
+        copyText: `FITUR 1: PRESENSI CERDAS GEOFENCING & ANTI-FAKE GPS
+- Geofencing Radius: Mengunci absensi jika posisi koordinat petugas berada di luar radius resmi titik penugasan (100 meter).
+- Proteksi Anti-Fake GPS: Native bridge pada aplikasi Android mendeteksi dan memblokir aplikasi pemalsu koordinat (Mock Location).
+- Selfie Face Verification: Pengambilan foto wajah selfie real-time dengan auto center-crop bujur sangkar 1:1.
+- Standar Status Presensi:
+  * Hadir (H): Hijau
+  * Libur (L): Oren
+  * Maintenance: Biru
+  * Tanpa Keterangan (TK): Merah`
+      },
+
+      {
+        id: 6,
+        tag: "FITUR 2: PENJADWALAN LOKASI",
+        title: "Penjadwalan Lokasi Dinamis",
+        subtitle: "Manajemen Jadwal Rutin Mingguan & Penugasan Khusus Insidental",
+        headline: "Fleksibilitas Rute Armada Layanan dengan Otomatisasi Status Libur",
+        contentHtml: `
+          <div class="flex-1 flex flex-col justify-center my-auto py-2">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="card-glass rounded-xl p-5 border-l-4 border-l-blue-500">
+                <div class="flex items-center justify-between mb-2">
+                  <h4 class="font-bold text-white text-base">Jadwal Rutin (Template Mingguan)</h4>
+                  <span class="px-2 py-0.5 rounded text-[10px] bg-blue-500/20 text-blue-300 font-bold uppercase">Rutin</span>
+                </div>
+                <p class="text-xs sm:text-sm text-slate-300 leading-relaxed mb-3">
+                  Penugasan berkala hari Senin sampai Sabtu yang berulang otomatis setiap minggu untuk tiap armada keliling.
+                </p>
+                <div class="p-2.5 rounded-lg bg-slate-800/80 text-xs text-slate-300 space-y-1">
+                  <div>• Contoh: <em>Senin: Pasar Batulicin | Selasa: Kec. Simpang Empat</em></div>
+                  <div>• Petugas otomatis melihat jadwal tetap di aplikasi setiap hari.</div>
+                </div>
+              </div>
+
+              <div class="card-glass rounded-xl p-5 border-l-4 border-l-purple-500">
+                <div class="flex items-center justify-between mb-2">
+                  <h4 class="font-bold text-white text-base">Jadwal Khusus (Override Insidental)</h4>
+                  <span class="px-2 py-0.5 rounded text-[10px] bg-purple-500/20 text-purple-300 font-bold uppercase">Prioritas</span>
+                </div>
+                <p class="text-xs sm:text-sm text-slate-300 leading-relaxed mb-3">
+                  Penugasan khusus pada tanggal spesifik untuk event daerah, pameran, atau perpindahan rute darurat.
+                </p>
+                <div class="p-2.5 rounded-lg bg-slate-800/80 text-xs text-slate-300 space-y-1">
+                  <div>• Menimpa (override) jadwal rutin pada tanggal bersangkutan.</div>
+                  <div>• Memungkinkan respons cepat terhadap arahan pimpinan.</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Aturan Cerdas Otomatisasi -->
+            <div class="mt-4 card-glass rounded-xl p-4 border border-amber-500/30 bg-amber-500/5">
+              <div class="flex items-start gap-3">
+                <span class="text-2xl">💡</span>
+                <div>
+                  <h4 class="font-bold text-amber-300 text-sm">Logika Otomatisasi: "Jika Belum Ditentukan Maka Dianggap Libur"</h4>
+                  <p class="text-xs text-slate-300 mt-1 leading-relaxed">
+                    Sistem secara cerdas mendeteksi apakah armada memiliki penugasan hari ini. Jika tidak ada jadwal rutin maupun khusus, status armada otomatis berstatus <strong>Libur (Badge Oren)</strong> tanpa memunculkan keterangan rancu "Reguler", sehingga tampilan monitoring pimpinan tetap bersih dan akurat.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        `,
+        speakerNotes: `
+          <p><strong>Poin Penjadwalan:</strong></p>
+          <p>1. Jadwal Rutin memudahkan admin agar tidak perlu menginput lokasi setiap hari dari nol.</p>
+          <p>2. Jadwal Khusus memberikan fleksibilitas jika ada instruksi mendadak, misalnya SAMSAT Keliling diminta hadir di bazar atau acara pameran kecamatan.</p>
+          <p>3. Aturan Cerdas: Jika pada hari tertentu armada memang tidak ditugaskan, sistem langsung menampilkan status 'Libur' dengan badge oranye rapi. Tidak ada lagi kebingungan status.</p>
+        `,
+        copyText: `FITUR 2: PENJADWALAN LOKASI DINAMIS & OTOMATISASI LIBUR
+1. Jadwal Rutin: Penugasan mingguan berulang (Senin-Sabtu) untuk setiap armada keliling.
+2. Jadwal Khusus: Penugasan insidental pada tanggal spesifik yang secara otomatis menimpa (override) jadwal rutin.
+3. Aturan Cerdas SAKTI: Jika suatu armada belum ditentukan jadwalnya pada hari ini, sistem otomatis menetapkan status "Libur" (Badge Oren) secara rapi tanpa teks perulangan yang membingungkan.`
+      },
+
+      {
+        id: 7,
+        tag: "FITUR 3: REKAP PENERIMAAN",
+        title: "Rekap Penerimaan PKB & Fitur Kunci",
+        subtitle: "Pencatatan Rinci R2, R4, Notice, dan Proteksi Integritas Kas",
+        headline: "Transparansi Penuh Penerimaan Pajak Kendaraan Bermotor Setiap Hari",
+        contentHtml: `
+          <div class="flex-1 flex flex-col justify-center my-auto py-2">
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+              <div class="card-glass rounded-xl p-3.5 border-t-4 border-t-emerald-400">
+                <span class="text-[11px] text-slate-400 block mb-1">Roda 2 (R2)</span>
+                <span class="text-xs text-slate-300 block">Unit & Nominal Rp</span>
+                <span class="text-sm font-bold text-emerald-400 mt-2 block">Pemisahan Jelas</span>
+              </div>
+              <div class="card-glass rounded-xl p-3.5 border-t-4 border-t-blue-400">
+                <span class="text-[11px] text-slate-400 block mb-1">Roda 4 (R4)</span>
+                <span class="text-xs text-slate-300 block">Unit & Nominal Rp</span>
+                <span class="text-sm font-bold text-blue-400 mt-2 block">Pemisahan Jelas</span>
+              </div>
+              <div class="card-glass rounded-xl p-3.5 border-t-4 border-t-amber-400">
+                <span class="text-[11px] text-slate-400 block mb-1">Notice Dicetak</span>
+                <span class="text-xs text-slate-300 block">Lembar Fisik SKPD</span>
+                <span class="text-sm font-bold text-amber-400 mt-2 block">Pencocokan Kasir</span>
+              </div>
+              <div class="card-glass rounded-xl p-3.5 border-t-4 border-t-purple-400">
+                <span class="text-[11px] text-slate-400 block mb-1">Validasi Sistem</span>
+                <span class="text-xs text-slate-300 block">Status Kunci / Lock</span>
+                <span class="text-sm font-bold text-purple-400 mt-2 block">Anti-Manipulasi</span>
+              </div>
+            </div>
+
+            <div class="card-glass rounded-xl p-4 border border-slate-700">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="text-lg">🔐</span>
+                <h4 class="font-bold text-white text-sm">Mekanisme Kontrol Kunci Rekap (Lock / Unlock System)</h4>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs text-slate-300">
+                <div class="p-3 rounded-lg bg-slate-900/60 border border-slate-800">
+                  <span class="font-semibold text-amber-400 block mb-1">Sebelum Dikunci (Draft / Terbuka):</span>
+                  Petugas armada dapat menginput dan mengoreksi data perolehan hariannya saat loket pelayanan masih berlangsung.
+                </div>
+                <div class="p-3 rounded-lg bg-slate-900/60 border border-slate-800">
+                  <span class="font-semibold text-emerald-400 block mb-1">Setelah Dikunci (Locked by Admin):</span>
+                  Setelah bukti fisik kasir dicocokkan di kantor induk, Administrator mengunci data tersebut. Petugas lapangan tidak lagi bisa mengubah nominal atau jumlah unit.
+                </div>
+              </div>
+            </div>
+          </div>
+        `,
+        speakerNotes: `
+          <p><strong>Poin Kunci Rekap:</strong></p>
+          <p>1. Data penerimaan tidak digabung gelondongan, tapi dipecah detail: Berapa R2 (sepeda motor), berapa R4 (mobil), berapa rupiah masing-masing, dan berapa lembar notice yang tercetak.</p>
+          <p>2. Ini sangat penting untuk mencocokkan stok kertas notice dengan uang yang masuk ke kas daerah.</p>
+          <p>3. Mekanisme Kunci Rekap menjamin integritas. Tidak ada risiko angka 'berubah sendiri' setelah uang disetor ke bank/kasda.</p>
+        `,
+        copyText: `FITUR 3: REKAP PENERIMAAN PKB & FITUR KUNCI (LOCK):
+- Pencatatan Terstruktur:
+  * Roda 2 (R2): Rincian jumlah unit dan nominal rupiah.
+  * Roda 4 (R4): Rincian jumlah unit dan nominal rupiah.
+  * Notice PKB: Jumlah lembar fisik SKPD yang berhasil dicetak.
+  * Total Akumulasi: Nilai total harian otomatis dihitung sistem.
+- Proteksi Lock / Unlock Rekap:
+  * Setelah diverifikasi oleh Administrator kantor induk, data dikunci (Locked).
+  * Menutup risiko perubahan nominal setelah uang disetor ke kas daerah.`
+      },
+
+      {
+        id: 8,
+        tag: "FITUR 4: DASHBOARD EKSEKUTIF",
+        title: "Dashboard Monitoring Eksekutif Pimpinan",
+        subtitle: "Tampilan Eksklusif Biru-Navy & Aksen Gold yang Responsif di Smartphone",
+        headline: "Pengawasan Real-Time Kapan Pun dan Di Mana Pun Berbasis Smartphone",
+        contentHtml: `
+          <div class="flex-1 flex flex-col justify-center my-auto py-2">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+              <div class="card-glass rounded-xl p-4 border-l-4 border-l-amber-400">
+                <span class="text-xs text-amber-300 font-semibold uppercase block mb-1">Desain Eksklusif</span>
+                <h4 class="font-bold text-white text-sm mb-1">Gradasi Biru-Navy & Gold</h4>
+                <p class="text-xs text-slate-300">
+                  Header berwibawa khusus pimpinan dengan nama bertuliskan Gold, layout modern yang senada dan harmonis dengan aplikasi petugas.
+                </p>
+              </div>
+
+              <div class="card-glass rounded-xl p-4 border-l-4 border-l-blue-400">
+                <span class="text-xs text-blue-300 font-semibold uppercase block mb-1">Status Langsung</span>
+                <h4 class="font-bold text-white text-sm mb-1">Kartu Operasional Live</h4>
+                <p class="text-xs text-slate-300">
+                  Melihat dalam satu kedipan mata: Berapa armada yang sedang Hadir di lapangan, Libur terencana, atau sedang Maintenance.
+                </p>
+              </div>
+
+              <div class="card-glass rounded-xl p-4 border-l-4 border-l-emerald-400">
+                <span class="text-xs text-emerald-300 font-semibold uppercase block mb-1">Analisis Visual</span>
+                <h4 class="font-bold text-white text-sm mb-1">Grafik Batang & Garis Tren</h4>
+                <p class="text-xs text-slate-300">
+                  Disediakan 2 visualisasi grafik: Perbandingan penerimaan antar armada (Bar Chart) dan grafik tren naik-turun per bulan (Line Chart).
+                </p>
+              </div>
+            </div>
+
+            <div class="card-glass rounded-xl p-3.5 bg-gradient-to-r from-blue-950/60 to-slate-900 border border-slate-700 flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-amber-400/20 text-amber-400 flex items-center justify-center font-bold text-lg">
+                  👑
+                </div>
+                <div>
+                  <h4 class="font-bold text-white text-xs sm:text-sm">Kemudahan Akses Pimpinan SAMSAT Batulicin</h4>
+                  <p class="text-[11px] text-slate-300">Bisa dibuka dari browser smartphone maupun melalui aplikasi APK Android tanpa perlu laptop/PC.</p>
+                </div>
+              </div>
+              <span class="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 hidden sm:inline-block">
+                Akses 24/7 Real-Time
+              </span>
+            </div>
+          </div>
+        `,
+        speakerNotes: `
+          <p><strong>Poin Dashboard Pimpinan:</strong></p>
+          <p>Bapak/Ibu Pimpinan sering memiliki mobilitas tinggi. Melalui modul Monitoring Mobile SAKTI ini:</p>
+          <p>1. Pimpinan cukup membuka HP untuk mengetahui armada keliling mana saja yang sudah standby di lokasi.</p>
+          <p>2. Sudah disiapkan grafik tren garis naik-turun per bulan sehingga pimpinan dapat langsung mengamati grafik capaian target pajak.</p>
+          <p>3. Tampilan disesuaikan dengan identitas resmi instansi: biru navy berwibawa dengan teks nama pimpinan bernuansa emas (gold).</p>
+        `,
+        copyText: `FITUR 4: DASHBOARD MONITORING EKSEKUTIF PIMPINAN:
+- Desain Mobile Eksklusif: Tema gradasi Biru ke Biru-Navy dengan aksen nama pimpinan Gold (Emas) yang prestisius.
+- Ringkasan Cepat Operasional: Kartu live status armada (Hadir, Libur, Maintenance, Tanpa Keterangan).
+- Visualisasi Ganda Data Penerimaan:
+  1. Grafik Batang (Bar Chart): Membandingkan kontribusi pendapatan antar unit armada keliling.
+  2. Grafik Garis (Line Trend Chart): Memantau tren fluktuasi naik-turun perolehan pajak bulanan secara jelas.
+- Portabilitas Penuh: Dapat diakses kapan saja dari smartphone pimpinan tanpa ketergantungan perangkat desktop.`
+      },
+
+      {
+        id: 9,
+        tag: "FITUR 5: STATUS MAINTENANCE",
+        title: "Manajemen Status Maintenance Armada",
+        subtitle: "Mitigasi Kendala Nyata di Lapangan (Kendaraan, Jaringan, atau Perangkat)",
+        headline: "Mengakomodasi Realitas Lapangan Secara Transparan Tanpa Dugaan Mangkir",
+        contentHtml: `
+          <div class="flex-1 flex flex-col justify-center my-auto py-2">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div class="card-glass rounded-xl p-4 border-l-4 border-l-blue-400">
+                <h4 class="font-bold text-white text-sm mb-2 flex items-center gap-2">
+                  <span>🛠️</span> Ragam Kendala Operasional Lapangan:
+                </h4>
+                <ul class="text-xs text-slate-300 space-y-2">
+                  <li class="flex items-start gap-1.5">• <strong>Kendala Armada:</strong> Mesin mobil mogok, ban kempes, aki drop saat di perjalanan.</li>
+                  <li class="flex items-start gap-1.5">• <strong>Kendala Listrik/Genset:</strong> Genset unit mati atau bahan bakar habis di lokasi terbuka.</li>
+                  <li class="flex items-start gap-1.5">• <strong>Kendala Jaringan / Blank Spot:</strong> Sinyal satelit/seluler drop sehingga server pusat tidak terhubung.</li>
+                  <li class="flex items-start gap-1.5">• <strong>Kendala Perangkat:</strong> Printer notice macet atau laptop kasir bermasalah.</li>
+                </ul>
+              </div>
+
+              <div class="card-glass rounded-xl p-4 border-l-4 border-l-emerald-400">
+                <h4 class="font-bold text-white text-sm mb-2 flex items-center gap-2">
+                  <span>✨</span> Solusi SAKTI: Transparansi Status "Maintenance"
+                </h4>
+                <p class="text-xs text-slate-300 leading-relaxed mb-3">
+                  Petugas dapat mengajukan laporan maintenance langsung dari aplikasi disertai keterangan kendala riil.
+                </p>
+                <div class="p-2.5 rounded-lg bg-blue-950/60 border border-blue-800/40 text-xs text-blue-200">
+                  <strong>Dampak Positif:</strong> Pimpinan langsung melihat badge biru <em>"Maintenance"</em> pada dashboard, sehingga unit terdata mengalami kendala operasional terkonfirmasi, bukan dianggap terlambat atau mangkir (*Tanpa Keterangan*).
+                </div>
+              </div>
+            </div>
+
+            <div class="p-3 rounded-xl bg-slate-800/80 border border-slate-700 text-xs text-slate-300 flex items-center gap-2">
+              <span class="text-lg">📋</span>
+              <span>Laporan maintenance tercatat dalam riwayat operasional kendaraan, berguna sebagai bahan evaluasi peremajaan armada dinas.</span>
+            </div>
+          </div>
+        `,
+        speakerNotes: `
+          <p><strong>Poin Fitur Maintenance:</strong></p>
+          <p>Dalam kondisi nyata di Kabupaten Tanah Bumbu, kita tahu armada keliling sering menghadapi kendala jalanan berlubang, mobil mogok, atau genset mati.</p>
+          <p>Tanpa fitur ini, jika armada mogok di jalan, pimpinan akan mengira petugas mangkir atau terlambat (Tanpa Keterangan). Dengan fitur Maintenance, petugas segera melapor, pimpinan tahu armadanya sedang diperbaiki, dan citra kedisiplinan tetap terjaga dengan data yang jujur.</p>
+        `,
+        copyText: `FITUR 5: MANAJEMEN STATUS MAINTENANCE ARMADA (UNIT OFF):
+- Mengakomodasi Kendala Riil: Kerusakan mesin armada, genset listrik mati, printer notice macet, atau gangguan sinyal internet di pedalaman.
+- Transparansi Status Operasional: Petugas menginput laporan kendala sehingga status armada ditandai sebagai "Maintenance" (Badge Biru).
+- Akurasi Penilaian Disiplin: Pimpinan mengetahui unit sedang mengalami hambatan teknis yang sah, bukan mangkir atau bolos tugas.`
+      },
+
+      {
+        id: 10,
+        tag: "ARSITEKTUR & TEKNOLOGI",
+        title: "Arsitektur Sistem & Spesifikasi Teknologi",
+        subtitle: "Dibangun dengan Fondasi Modern yang Kuat, Aman, dan Skalabel",
+        headline: "Integrasi Web Modern, Native Android Bridge, dan Database Relasional",
+        contentHtml: `
+          <div class="flex-1 flex flex-col justify-center my-auto py-2">
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+              <div class="card-glass rounded-xl p-3.5 text-center">
+                <div class="text-2xl mb-1">🔴</div>
+                <h4 class="font-bold text-white text-xs sm:text-sm">Laravel Backend</h4>
+                <span class="text-[11px] text-slate-400">MVC, Eloquent, CSRF Protection & Throttle Rate Limit</span>
+              </div>
+              <div class="card-glass rounded-xl p-3.5 text-center">
+                <div class="text-2xl mb-1">🐬</div>
+                <h4 class="font-bold text-white text-xs sm:text-sm">MySQL Database</h4>
+                <span class="text-[11px] text-slate-400">Struktur relasi terindeks untuk query rekapitulasi cepat</span>
+              </div>
+              <div class="card-glass rounded-xl p-3.5 text-center">
+                <div class="text-2xl mb-1">📱</div>
+                <h4 class="font-bold text-white text-xs sm:text-sm">Android Native APK</h4>
+                <span class="text-[11px] text-slate-400">WebView Wrapper + Hardware Camera & Geolocation Bridge</span>
+              </div>
+              <div class="card-glass rounded-xl p-3.5 text-center">
+                <div class="text-2xl mb-1">🗺️</div>
+                <h4 class="font-bold text-white text-xs sm:text-sm">Maps & Charts</h4>
+                <span class="text-[11px] text-slate-400">Leaflet.js Geofencing Radius & Chart.js Visualizations</span>
+              </div>
+            </div>
+
+            <div class="card-glass rounded-xl p-4 border border-slate-700">
+              <h4 class="font-bold text-white text-xs sm:text-sm mb-2 flex items-center gap-1.5">
+                <span>🛡️</span> Aspek Keamanan & Ketahanan Sistem:
+              </h4>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-2.5 text-xs text-slate-300">
+                <div class="p-2 rounded-lg bg-slate-900/60">
+                  <strong class="text-blue-300">Proteksi Brute-Force:</strong> Batas percobaan login (Throttle limit) mencegah serangan tebak kata sandi.
+                </div>
+                <div class="p-2 rounded-lg bg-slate-900/60">
+                  <strong class="text-emerald-300">Sanitasi Berkas Selfie:</strong> Re-encoding foto wajah via GD Library membersihkan berkas dari muatan skrip asing.
+                </div>
+                <div class="p-2 rounded-lg bg-slate-900/60">
+                  <strong class="text-amber-300">Obfuscated Admin Path:</strong> Jalur login administrator disamarkan dari pemindaian bot otomatis.
+                </div>
+              </div>
+            </div>
+          </div>
+        `,
+        speakerNotes: `
+          <p><strong>Poin Teknis & Arsitektur:</strong></p>
+          <p>Bagi tim IT atau pengambil keputusan teknis, sistem SAKTI menggunakan arsitektur handal:</p>
+          <p>1. Framework Laravel yang menjadi standar industri dengan keamanan CSRF bawaan.</p>
+          <p>2. Aplikasi Android mandiri (APK) yang terhubung langsung dengan sensor kamera smartphone dan GPS internal.</p>
+          <p>3. Seluruh kalkulasi rekapitulasi diproses cepat menggunakan agregasi MySQL sehingga grafik pimpinan muncul instan tanpa jeda.</p>
+        `,
+        copyText: `ARSITEKTUR & SPESIFIKASI TEKNOLOGI SAKTI:
+- Backend: Framework PHP Laravel (Arsitektur MVC, Keamanan CSRF, Rate Limiting Login, Multi-guard Authentication).
+- Database: MySQL Enterprise/Community dengan relasi terindeks untuk query laporan cepat.
+- Mobile Client: Aplikasi Android Native Wrapper (.apk) dengan integrasi hardware kamera dan geolokasi.
+- Peta Digital & Geofencing: Leaflet.js & OpenStreetMap untuk kalkulasi jarak radius presensi.
+- Visualisasi Data: Chart.js (Grafik batang perbandingan armada dan grafik garis tren bulanan).
+- Keamanan: Proteksi brute-force, sanitasi berkas selfie otomatis via GD library, dan penyamaran URL back-office.`
+      },
+
+      {
+        id: 11,
+        tag: "MANFAAT & DAMPAK",
+        title: "Manfaat & Nilai Tambah (Impact)",
+        subtitle: "Manfaat Konkret Bagi Seluruh Pemangku Kepentingan (Stakeholders)",
+        headline: "Dampak Positif Bagi Pimpinan, Petugas Layanan, Wajib Pajak, dan Daerah",
+        contentHtml: `
+          <div class="flex-1 flex flex-col justify-center my-auto py-2">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div class="card-glass rounded-xl p-4 border-t-4 border-t-amber-400">
+                <div class="text-2xl mb-2">👔</div>
+                <h4 class="font-bold text-white text-sm mb-2">Bagi Pimpinan UPPD SAMSAT</h4>
+                <ul class="text-xs text-slate-300 space-y-1.5">
+                  <li>• Pengawasan 24/7 tanpa harus menelepon petugas satu per satu.</li>
+                  <li>• Mengetahui kepastian buka-tutup loket di lapangan.</li>
+                  <li>• Melihat tren capaian PAD harian dan bulanan secara visual.</li>
+                  <li>• Bahan laporan cepat ke Bapenda Provinsi Kalsel.</li>
+                </ul>
+              </div>
+
+              <div class="card-glass rounded-xl p-4 border-t-4 border-t-blue-400">
+                <div class="text-2xl mb-2">🚐</div>
+                <h4 class="font-bold text-white text-sm mb-2">Bagi Petugas Armada Layanan</h4>
+                <ul class="text-xs text-slate-300 space-y-1.5">
+                  <li>• Kepastian titik rute dan jadwal penugasan harian.</li>
+                  <li>• Pembuktian kehadiran yang sah (terhindar dari praduga mangkir).</li>
+                  <li>• Kemudahan rekap kas harian tanpa buku catatan manual.</li>
+                  <li>• Validasi resmi sebelum uang disetor ke kasir induk.</li>
+                </ul>
+              </div>
+
+              <div class="card-glass rounded-xl p-4 border-t-4 border-t-emerald-400">
+                <div class="text-2xl mb-2">🏛️</div>
+                <h4 class="font-bold text-white text-sm mb-2">Bagi Bapenda & Pemprov Kalsel</h4>
+                <ul class="text-xs text-slate-300 space-y-1.5">
+                  <li>• Optimalisasi Pendapatan Asli Daerah (PAD) sektor PKB.</li>
+                  <li>• Meningkatkan disiplin dan akuntabilitas aparatur.</li>
+                  <li>• Meminimalisir celah kebocoran penerimaan pajak.</li>
+                  <li>• Peningkatan indeks kepuasan pelayanan publik di masyarakat.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        `,
+        speakerNotes: `
+          <p><strong>Poin Dampak & Manfaat:</strong></p>
+          <p>Implementasi SAKTI memberikan solusi 'win-win' bagi semua pihak:</p>
+          <p>1. Pimpinan memiliki mata dan telinga digital untuk seluruh armada di wilayah Batulicin.</p>
+          <p>2. Petugas di lapangan bekerja dengan tenang karena kehadirannya tercatat jelas dan perolehan pajaknya terverifikasi.</p>
+          <p>3. Pemerintah Daerah mendapatkan jaminan bahwa penerimaan pajak dikelola dengan tertib dan transparan.</p>
+        `,
+        copyText: `MANFAAT & DAMPAK NYATA APLIKASI SAKTI:
+1. Bagi Pimpinan UPPD SAMSAT Batulicin:
+   - Pengawasan operasional armada 24/7 dari genggaman smartphone.
+   - Deteksi dini kendala operasional dan performa penerimaan titik lokasi.
+   - Data akurat untuk evaluasi dan penetapan target PAD.
+
+2. Bagi Petugas Armada Layanan Keliling:
+   - Kemudahan absensi digital di lapangan tanpa birokrasi manual.
+   - Bukti kehadiran yang sah dan terlindungi dari tuduhan ketidakhadiran.
+   - Pencatatan rekapitulasi penerimaan harian yang rapi dan terverifikasi.
+
+3. Bagi Bapenda Provinsi Kalimantan Selatan:
+   - Optimalisasi perolehan Pajak Kendaraan Bermotor (PKB).
+   - Penegakan integritas, transparansi kas, dan akuntabilitas keuangan daerah.
+   - Peningkatan standar kualitas pelayanan publik jemput bola bagi masyarakat.`
+      },
+
+      {
+        id: 12,
+        tag: "PENUTUP & ROADMAP",
+        title: "Kesimpulan & Rencana Pengembangan",
+        subtitle: "Langkah Strategis Menuju SAMSAT Digital Terpadu di Masa Depan",
+        headline: "SAKTI Siap Mendukung Peningkatan Pelayanan Publik dan Optimalisasi PAD",
+        contentHtml: `
+          <div class="flex-1 flex flex-col justify-center my-auto py-2">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+              <div class="card-glass rounded-xl p-4 border-l-4 border-l-emerald-500">
+                <h4 class="font-bold text-white text-sm mb-2 flex items-center gap-2">
+                  <span>📌</span> Kesimpulan Utama:
+                </h4>
+                <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                  Aplikasi <strong>SAKTI</strong> telah sukses menjawab kebutuhan mendesak UPPD SAMSAT Batulicin dalam mendigitalisasi pemantauan armada keliling, mengamankan presensi berbasis geofencing anti-fake GPS, serta menjamin akuntabilitas penerimaan PKB harian melalui dashboard mobile pimpinan yang modern dan terpadu.
+                </p>
+              </div>
+
+              <div class="card-glass rounded-xl p-4 border-l-4 border-l-blue-500">
+                <h4 class="font-bold text-white text-sm mb-2 flex items-center gap-2">
+                  <span>🚀</span> Rencana Pengembangan Masa Depan (Roadmap):
+                </h4>
+                <ul class="text-xs text-slate-300 space-y-1.5">
+                  <li>• <strong>Pembayaran Digital (QRIS):</strong> Integrasi langsung pembayaran non-tunai di loket armada keliling.</li>
+                  <li>• <strong>WhatsApp Notifier:</strong> Notifikasi otomatis rekap harian ke nomor HP pimpinan saat armada tutup loket.</li>
+                  <li>• <strong>Peta Pelacakan Live GPS:</strong> Menampilkan pergerakan posisi armada secara live pada peta digital.</li>
+                  <li>• <strong>Integrasi Database Bapenda Kalsel:</strong> Sinkronisasi data real-time dengan server induk provinsi.</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Closing Box -->
+            <div class="text-center p-4 rounded-xl bg-gradient-to-r from-blue-900/40 via-indigo-900/40 to-slate-900/60 border border-blue-700/40">
+              <h3 class="text-lg font-bold text-white mb-1">Terima Kasih atas Perhatian Bapak / Ibu</h3>
+              <p class="text-xs text-slate-300">Sesi Tanya Jawab & Diskusi Terbuka</p>
+              <div class="mt-2 text-xs font-semibold text-amber-400">UPPD SAMSAT Batulicin - Bapenda Provinsi Kalimantan Selatan</div>
+            </div>
+          </div>
+        `,
+        speakerNotes: `
+          <p><strong>Penutup Presentasi:</strong></p>
+          <p>Demikian paparan mengenai aplikasi SAKTI. Sistem ini bukan hanya perangkat lunak, tetapi wujud komitmen kita di UPPD SAMSAT Batulicin untuk terus berinovasi dalam melayani masyarakat dan mengamankan penerimaan daerah.</p>
+          <p>Kami sangat terbuka terhadap masukan dan arahan dari Bapak/Ibu sekalian. Terima kasih banyak, waktu dan forum kami kembalikan untuk sesi tanya jawab.</p>
+        `,
+        copyText: `KESIMPULAN & ROADMAP MASA DEPAN SAKTI:
+1. Kesimpulan:
+   - SAKTI berhasil mendigitalisasi operasional armada keliling UPPD SAMSAT Batulicin.
+   - Menghadirkan presensi valid (Geofencing + Anti-Fake GPS) dan rekap penerimaan transparan yang tervalidasi.
+   - Memudahkan pimpinan memantau operasional dan tren PAD langsung dari smartphone.
+
+2. Roadmap Pengembangan:
+   - Integrasi pembayaran non-tunai QRIS langsung di loket armada.
+   - Pengiriman laporan ringkas otomatis via WhatsApp ke smartphone pimpinan.
+   - Peta digital pelacakan posisi rute pergerakan armada secara live.
+   - Sinkronisasi penuh dengan server sentral Bapenda Provinsi Kalimantan Selatan.`
+      }
+    ];
+
+    let currentSlide = 0;
+    const totalSlides = slides.length;
+
+    function renderSlide(index) {
+      if (index < 0) index = 0;
+      if (index >= totalSlides) index = totalSlides - 1;
+      currentSlide = index;
+
+      const s = slides[currentSlide];
+
+      // Update Top Title & Number
+      document.getElementById('currentSlideNum').innerText = s.id;
+      document.getElementById('totalSlideNum').innerText = totalSlides;
+
+      // Update Progress Bar
+      const pct = ((currentSlide + 1) / totalSlides) * 100;
+      document.getElementById('progressBar').style.width = pct + '%';
+
+      // Update Nav Buttons
+      document.getElementById('btnPrev').disabled = (currentSlide === 0);
+      document.getElementById('btnNext').disabled = (currentSlide === totalSlides - 1);
+
+      // Render Content into Viewport
+      const viewport = document.getElementById('slideContent');
+      viewport.innerHTML = `
+        <!-- Slide Header -->
+        <div class="flex items-start justify-between border-b border-slate-800/80 pb-3">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30 uppercase tracking-wider">
+                ${s.tag}
+              </span>
+              <span class="text-xs text-slate-400 hidden sm:inline">• Slide ${s.id} dari ${totalSlides}</span>
+            </div>
+            <h2 class="text-xl sm:text-2xl md:text-3xl font-extrabold text-white font-heading mt-1">
+              ${s.title}
+            </h2>
+            <p class="text-xs sm:text-sm text-slate-400 mt-0.5 font-medium">
+              ${s.subtitle}
+            </p>
+          </div>
+
+          <div class="hidden sm:flex flex-col items-end">
+            <span class="text-[11px] text-slate-500 font-mono">SAKTI 2.0</span>
+            <span class="text-xs text-slate-400 font-semibold">SAMSAT Batulicin</span>
+          </div>
+        </div>
+
+        <!-- Slide Body Dynamic HTML -->
+        <div class="flex-1 flex flex-col justify-center my-auto py-2">
+          ${s.contentHtml}
+        </div>
+
+        <!-- Slide Footer Bar -->
+        <div class="pt-2 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-500">
+          <span class="truncate max-w-[70%] text-slate-400">💡 <em>Poin Kunci:</em> ${s.headline}</span>
+          <span class="font-mono text-slate-400">${String(s.id).padStart(2, '0')} / ${String(totalSlides).padStart(2, '0')}</span>
+        </div>
+      `;
+
+      // Update Speaker Notes Drawer Content
+      document.getElementById('speakerSlideTitle').innerText = `Slide ${s.id}: ${s.title}`;
+      document.getElementById('speakerHeadline').innerText = s.subtitle;
+      document.getElementById('speakerNotesBody').innerHTML = s.speakerNotes;
+
+      // Update active state in grid if open
+      updateGridSelection();
+    }
+
+    function nextSlide() {
+      if (currentSlide < totalSlides - 1) {
+        renderSlide(currentSlide + 1);
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlide > 0) {
+        renderSlide(currentSlide - 1);
+      }
+    }
+
+    function goToSlide(index) {
+      renderSlide(index);
+      closeGrid();
+    }
+
+    // Keyboard Shortcuts
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        nextSlide();
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        prevSlide();
+      } else if (e.key.toLowerCase() === 'n') {
+        toggleSpeakerNotes();
+      } else if (e.key.toLowerCase() === 'g') {
+        toggleGrid();
+      } else if (e.key === 'Escape') {
+        closeSpeakerNotes();
+        closeGrid();
+      }
+    });
+
+    // Speaker Notes Drawer Toggle
+    let speakerOpen = false;
+    function toggleSpeakerNotes() {
+      const drawer = document.getElementById('speakerDrawer');
+      speakerOpen = !speakerOpen;
+      if (speakerOpen) {
+        drawer.classList.remove('translate-x-full');
+      } else {
+        drawer.classList.add('translate-x-full');
+      }
+    }
+    function closeSpeakerNotes() {
+      const drawer = document.getElementById('speakerDrawer');
+      drawer.classList.add('translate-x-full');
+      speakerOpen = false;
+    }
+
+    // Grid Drawer Toggle
+    let gridOpen = false;
+    function toggleGrid() {
+      const drawer = document.getElementById('gridDrawer');
+      gridOpen = !gridOpen;
+      if (gridOpen) {
+        buildGrid();
+        drawer.classList.remove('hidden');
+      } else {
+        drawer.classList.add('hidden');
+      }
+    }
+    function closeGrid() {
+      const drawer = document.getElementById('gridDrawer');
+      drawer.classList.add('hidden');
+      gridOpen = false;
+    }
+
+    function buildGrid() {
+      const container = document.getElementById('gridContainer');
+      container.innerHTML = slides.map((s, idx) => `
+        <div onclick="goToSlide(${idx})" class="p-3 rounded-xl border ${idx === currentSlide ? 'border-amber-400 bg-amber-500/10' : 'border-slate-800 bg-slate-900/80 hover:border-slate-600'} cursor-pointer transition flex flex-col justify-between h-36">
+          <div>
+            <div class="flex items-center justify-between text-[11px] mb-1">
+              <span class="font-bold text-amber-400">Slide ${s.id}</span>
+              <span class="text-slate-400 text-[10px] uppercase">${s.tag}</span>
+            </div>
+            <h4 class="font-bold text-white text-xs line-clamp-2">${s.title}</h4>
+            <p class="text-[11px] text-slate-400 line-clamp-2 mt-1">${s.subtitle}</p>
+          </div>
+          <span class="text-[10px] text-blue-400 font-semibold mt-2">Klik untuk Lompat →</span>
+        </div>
+      `).join('');
+    }
+
+    function updateGridSelection() {
+      if (!gridOpen) return;
+      buildGrid();
+    }
+
+    // Fullscreen Toggle
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {
+          alert(`Error attempting to enable fullscreen: ${err.message}`);
+        });
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        }
+      }
+    }
+
+    // Toast Notification Utility
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastMsg').innerText = msg;
+      toast.classList.remove('translate-y-10', 'opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        toast.classList.add('translate-y-10', 'opacity-0', 'pointer-events-none');
+      }, 3000);
+    }
+
+    // Copy Slide Content for PPT
+    function copySlideContent() {
+      const s = slides[currentSlide];
+      navigator.clipboard.writeText(s.copyText).then(() => {
+        showToast(`Teks Slide ${s.id} siap ditempel (Paste) ke PowerPoint!`);
+      }).catch(() => {
+        showToast('Gagal menyalin teks secara otomatis.');
+      });
+    }
+
+    // Copy Speaker Notes
+    function copySpeakerNotes() {
+      const s = slides[currentSlide];
+      // strip html
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = s.speakerNotes;
+      const text = tempDiv.innerText || tempDiv.textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        showToast(`Naskah pembicara Slide ${s.id} disalin!`);
+      });
+    }
+
+    // Initialize first slide
+    renderSlide(0);
+  </script>
+</body>
+</html>

@@ -8,9 +8,13 @@ use Illuminate\Support\Facades\Redirect;
 
 class LokasiController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $cabang = DB::table('cabang')->orderBy('kode_cabang')->get();
+        $query = DB::table('cabang');
+        if (!empty($request->nama_cabang)) {
+            $query->where('nama_cabang', 'like', '%' . $request->nama_cabang . '%');
+        }
+        $cabang = $query->orderBy('kode_cabang')->get();
         return view('lokasi.index', compact('cabang'));
     }
 

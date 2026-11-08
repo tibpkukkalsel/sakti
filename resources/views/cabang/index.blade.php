@@ -273,9 +273,9 @@
         });
 
         $("#frmCabang").submit(function() {
-            var nama_cabang = $("#nama_cabang").val();
-            var lokasi_cabang = $("#lokasi_cabang").val();
-            var radius_cabang = $("#radius_cabang").val();
+            var nama_cabang = $("#frmCabang").find("#nama_cabang").val();
+            var lokasi_cabang = $("#frmCabang").find("#lokasi_cabang").val();
+            var radius_cabang = $("#frmCabang").find("#radius_cabang").val();
 
             if (nama_cabang == "") {
                 // alert('Nik Harus Diisi');

@@ -75,7 +75,7 @@
                     icon: 'warning',
                     confirmButtonText: 'Ok'
                 }).then((result) => {
-                    $("#nama_cabang").focus();
+                    $("#frmLokasiEdit").find("#nama_cabang").focus();
                 });
                 return false;
             } else if (lokasi_cabang == "") {
@@ -85,7 +85,7 @@
                     icon: 'warning',
                     confirmButtonText: 'Ok'
                 }).then((result) => {
-                    $("#lokasi_cabang").focus();
+                    $("#frmLokasiEdit").find("#lokasi_cabang").focus();
                 });
                 return false;
             } else if (radius_cabang == "") {
@@ -95,7 +95,7 @@
                     icon: 'warning',
                     confirmButtonText: 'Ok'
                 }).then((result) => {
-                    $("#radius_cabang").focus();
+                    $("#frmLokasiEdit").find("#radius_cabang").focus();
                 });
                 return false;
             }
