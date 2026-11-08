@@ -648,7 +648,7 @@
                                             class="{{ $iconColor }}"></ion-icon>
                                     </div>
                                     <div class="datapresensi flex-grow-1">
-                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <div class="d-flex justify-content-between align-items-center {{ $isLibur ? '' : 'mb-1' }}">
                                             <h4
                                                 style="margin:0px !important; font-weight: 700; color: #1e293b; font-size: 14px;">
                                                 {{ $row->nama_layanan }}
@@ -658,12 +658,8 @@
                                                 {{ $badgeText }}
                                             </span>
                                         </div>
-                                        <div style="font-size: 12px; color: #64748b; margin-bottom: 3px;">
-                                            @if ($isLibur)
-                                                <span style="font-weight: 600; color: #f97316;">
-                                                    <ion-icon name="calendar-outline" style="vertical-align: -1px;"></ion-icon> Libur Operasional
-                                                </span>
-                                            @else
+                                        @if (!$isLibur)
+                                            <div style="font-size: 12px; color: #64748b; margin-bottom: 3px;">
                                                 <span style="font-weight: 600; color: #2A8BF2;">
                                                     <ion-icon name="location-outline"
                                                         style="vertical-align: -1px;"></ion-icon> {{ $row->lokasi ?? 'UPPD SAMSAT Batulicin' }}
@@ -672,28 +668,26 @@
                                                     <span class="mx-1">&bull;</span>
                                                     <span>{{ $row->nama_jam_kerja }}</span>
                                                 @endif
-                                            @endif
-                                        </div>
-                                        <div style="font-size: 13px;">
-                                            <span>Scan: </span>
-                                            @if ($isHadir)
-                                                <strong
-                                                    style="color:#0f172a;">{{ date('H:i', strtotime($row->jam_in)) }}</strong>
-                                                <span> - </span>
-                                                @if (!empty($row->jam_out))
+                                            </div>
+                                            <div style="font-size: 13px;">
+                                                <span>Scan: </span>
+                                                @if ($isHadir)
                                                     <strong
-                                                        style="color:#0f172a;">{{ date('H:i', strtotime($row->jam_out)) }}</strong>
+                                                        style="color:#0f172a;">{{ date('H:i', strtotime($row->jam_in)) }}</strong>
+                                                    <span> - </span>
+                                                    @if (!empty($row->jam_out))
+                                                        <strong
+                                                            style="color:#0f172a;">{{ date('H:i', strtotime($row->jam_out)) }}</strong>
+                                                    @else
+                                                        <span class="text-muted">Belum Scan</span>
+                                                    @endif
+                                                @elseif ($isMaint)
+                                                    <span class="text-primary font-weight-bold">Maintenance</span>
                                                 @else
-                                                    <span class="text-muted">Belum Scan</span>
+                                                    <span class="text-danger font-weight-bold">Belum Scan</span>
                                                 @endif
-                                            @elseif ($isMaint)
-                                                <span class="text-primary font-weight-bold">Maintenance</span>
-                                            @elseif ($isLibur)
-                                                <span class="text-warning font-weight-bold">Libur</span>
-                                            @else
-                                                <span class="text-danger font-weight-bold">Belum Scan</span>
-                                            @endif
-                                        </div>
+                                            </div>
+                                        @endif
                                     </div>
                                 </div>
                             </div>

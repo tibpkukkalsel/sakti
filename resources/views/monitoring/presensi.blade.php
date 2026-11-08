@@ -259,15 +259,12 @@
                                     {{ date('d-m-Y', strtotime($item->tgl_presensi)) }}
                                 </div>
                             @endif
-                            <div class="text-muted" style="font-size: 11.5px; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                @if ($statusLabel == 'Libur')
-                                    <ion-icon name="calendar-outline" style="vertical-align: -1px; color: #f97316; margin-right: 2px;"></ion-icon>
-                                    <span style="color: #f97316; font-weight: 600;">Libur Operasional</span>
-                                @else
+                            @if ($statusLabel != 'Libur')
+                                <div class="text-muted" style="font-size: 11.5px; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                                     <ion-icon name="location-outline" style="vertical-align: -1px; color: #ef4444; margin-right: 2px;"></ion-icon>
                                     <span>{{ $item->lokasi_tugas }}</span>
-                                @endif
-                            </div>
+                                </div>
+                            @endif
                         </div>
                     </div>
                     <div class="text-end" style="flex-shrink: 0; margin-left: 8px;">
@@ -277,41 +274,43 @@
                     </div>
                 </div>
 
-                <div class="row mt-2 pt-2 border-top" style="margin-left: -4px; margin-right: -4px;">
-                    <!-- Masuk -->
-                    <div class="col-6" style="padding-left: 4px; padding-right: 4px;">
-                        <div class="p-2 d-flex align-items-center justify-content-between" style="background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0; min-height: 52px;">
-                            <div>
-                                <small class="text-muted d-block" style="font-size: 10.5px; font-weight: 600;">Jam Masuk</small>
-                                <div style="font-weight: 800; font-size: 14.5px; color: {{ $item->jam_in ? '#10b981' : '#94a3b8' }}; line-height: 1.2; margin-top: 2px;">
-                                    {{ $item->jam_in ? substr($item->jam_in, 0, 5) : '--:--' }}
+                @if ($statusLabel != 'Libur')
+                    <div class="row mt-2 pt-2 border-top" style="margin-left: -4px; margin-right: -4px;">
+                        <!-- Masuk -->
+                        <div class="col-6" style="padding-left: 4px; padding-right: 4px;">
+                            <div class="p-2 d-flex align-items-center justify-content-between" style="background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0; min-height: 52px;">
+                                <div>
+                                    <small class="text-muted d-block" style="font-size: 10.5px; font-weight: 600;">Jam Masuk</small>
+                                    <div style="font-weight: 800; font-size: 14.5px; color: {{ $item->jam_in ? '#10b981' : '#94a3b8' }}; line-height: 1.2; margin-top: 2px;">
+                                        {{ $item->jam_in ? substr($item->jam_in, 0, 5) : '--:--' }}
+                                    </div>
                                 </div>
+                                @if ($fotoInUrl)
+                                    <img src="{{ $fotoInUrl }}" class="thumb-selfie" alt="Foto Masuk"
+                                        onclick="showImageModal('{{ $fotoInUrl }}', 'Foto Masuk: {{ $item->nama_layanan }}')"
+                                        title="Klik untuk memperbesar">
+                                @endif
                             </div>
-                            @if ($fotoInUrl)
-                                <img src="{{ $fotoInUrl }}" class="thumb-selfie" alt="Foto Masuk"
-                                    onclick="showImageModal('{{ $fotoInUrl }}', 'Foto Masuk: {{ $item->nama_layanan }}')"
-                                    title="Klik untuk memperbesar">
-                            @endif
                         </div>
-                    </div>
 
-                    <!-- Pulang -->
-                    <div class="col-6" style="padding-left: 4px; padding-right: 4px;">
-                        <div class="p-2 d-flex align-items-center justify-content-between" style="background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0; min-height: 52px;">
-                            <div>
-                                <small class="text-muted d-block" style="font-size: 10.5px; font-weight: 600;">Jam Pulang</small>
-                                <div style="font-weight: 800; font-size: 14.5px; color: {{ $item->jam_out ? '#0284c7' : '#94a3b8' }}; line-height: 1.2; margin-top: 2px;">
-                                    {{ $item->jam_out ? substr($item->jam_out, 0, 5) : '--:--' }}
+                        <!-- Pulang -->
+                        <div class="col-6" style="padding-left: 4px; padding-right: 4px;">
+                            <div class="p-2 d-flex align-items-center justify-content-between" style="background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0; min-height: 52px;">
+                                <div>
+                                    <small class="text-muted d-block" style="font-size: 10.5px; font-weight: 600;">Jam Pulang</small>
+                                    <div style="font-weight: 800; font-size: 14.5px; color: {{ $item->jam_out ? '#0284c7' : '#94a3b8' }}; line-height: 1.2; margin-top: 2px;">
+                                        {{ $item->jam_out ? substr($item->jam_out, 0, 5) : '--:--' }}
+                                    </div>
                                 </div>
+                                @if ($fotoOutUrl)
+                                    <img src="{{ $fotoOutUrl }}" class="thumb-selfie" alt="Foto Pulang"
+                                        onclick="showImageModal('{{ $fotoOutUrl }}', 'Foto Pulang: {{ $item->nama_layanan }}')"
+                                        title="Klik untuk memperbesar">
+                                @endif
                             </div>
-                            @if ($fotoOutUrl)
-                                <img src="{{ $fotoOutUrl }}" class="thumb-selfie" alt="Foto Pulang"
-                                    onclick="showImageModal('{{ $fotoOutUrl }}', 'Foto Pulang: {{ $item->nama_layanan }}')"
-                                    title="Klik untuk memperbesar">
-                            @endif
                         </div>
                     </div>
-                </div>
+                @endif
             </div>
         @empty
             <div class="card text-center py-5" style="border-radius: 14px; border: 1px dashed #cbd5e1; background: #ffffff;">
