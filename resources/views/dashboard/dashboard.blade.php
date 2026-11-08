@@ -298,39 +298,65 @@
 
     <div class="section" id="menu-section">
         <div class="card">
-            <div class="card-body text-center" style="padding: 14px 10px !important;">
+            <div class="card-body text-center" style="padding: 12px 6px !important;">
                 <div class="list-menu">
                     <!-- 1. Lokasi -->
                     <div class="item-menu text-center">
-                        <div class="menu-icon">
-                            <a href="/editlokasi" class="orange" style="font-size: 40px;">
-                                <ion-icon name="location"></ion-icon>
-                            </a>
-                        </div>
+                        <a href="/editlokasi" style="text-decoration: none; color: inherit; display: block;">
+                            <div class="menu-icon">
+                                <span class="orange" style="font-size: 34px; display: inline-block; line-height: 1;">
+                                    <ion-icon name="location"></ion-icon>
+                                </span>
+                            </div>
+                            <div class="menu-name" style="margin-top: 3px;">
+                                <span
+                                    style="font-size: 11px; font-weight: 600; color: #475569; display: block; line-height: 1.2;">Lokasi</span>
+                            </div>
+                        </a>
                     </div>
                     <!-- 2. Histori -->
                     <div class="item-menu text-center">
-                        <div class="menu-icon">
-                            <a href="/presensi/histori" class="warning" style="font-size: 40px;">
-                                <ion-icon name="calendar-number"></ion-icon>
-                            </a>
-                        </div>
+                        <a href="/presensi/histori" style="text-decoration: none; color: inherit; display: block;">
+                            <div class="menu-icon">
+                                <span class="warning" style="font-size: 34px; display: inline-block; line-height: 1;">
+                                    <ion-icon name="calendar-number"></ion-icon>
+                                </span>
+                            </div>
+                            <div class="menu-name" style="margin-top: 3px;">
+                                <span
+                                    style="font-size: 11px; font-weight: 600; color: #475569; display: block; line-height: 1.2;">Histori</span>
+                            </div>
+                        </a>
                     </div>
                     <!-- 3. Penerimaan -->
                     <div class="item-menu text-center">
-                        <div class="menu-icon">
-                            <a href="/penerimaan" class="success" style="font-size: 40px; color: #10b981;">
-                                <ion-icon name="cash-outline"></ion-icon>
-                            </a>
-                        </div>
+                        <a href="/penerimaan" style="text-decoration: none; color: inherit; display: block;">
+                            <div class="menu-icon">
+                                <span class="success"
+                                    style="font-size: 34px; color: #10b981; display: inline-block; line-height: 1;">
+                                    <ion-icon name="cash-outline"></ion-icon>
+                                </span>
+                            </div>
+                            <div class="menu-name" style="margin-top: 3px;">
+                                <span
+                                    style="font-size: 11px; font-weight: 600; color: #475569; display: block; line-height: 1.2;">Penerimaan</span>
+                            </div>
+                        </a>
                     </div>
                     <!-- 4. Maintenance -->
                     <div class="item-menu text-center">
-                        <div class="menu-icon">
-                            <a href="/maintenance" class="danger" style="font-size: 40px; color: #ef4444;">
-                                <ion-icon name="construct"></ion-icon>
-                            </a>
-                        </div>
+                        <a href="/maintenance" style="text-decoration: none; color: inherit; display: block;">
+                            <div class="menu-icon">
+                                <span class="danger"
+                                    style="font-size: 34px; color: #ef4444; display: inline-block; line-height: 1;">
+                                    <ion-icon name="construct"></ion-icon>
+                                </span>
+                            </div>
+                            <div class="menu-name" style="margin-top: 3px;">
+                                <span
+                                    style="font-size: 11px; font-weight: 600; color: #475569; display: block; line-height: 1.2;">Maintenance</span>
+                            </div>
+                        </a>
                     </div>
                 </div>
             </div>
