@@ -248,7 +248,7 @@
                 </form>
 
                 <div class="form-footer">
-                    Copyright © 2024 Adimas Fitriandi - Bapenda Prov. Kalsel
+                    Copyright &copy; 2024 Adimas Fitriandi<br>Bapenda Prov. Kalsel
                 </div>
 
             </div>
