@@ -664,7 +664,7 @@
                                             <span class="mx-1">&bull;</span>
                                             <span>{{ $row->nama_jam_kerja ?? 'Reguler' }}</span>
                                         </div>
-                                        <div style="font-size: 13px; margin-bottom: 4px;">
+                                        <div style="font-size: 13px;">
                                             <span>Scan: </span>
                                             @if (!empty($row->jam_in))
                                                 <strong
@@ -679,15 +679,6 @@
                                             @else
                                                 <span class="text-muted">Belum Scan</span>
                                             @endif
-                                        </div>
-                                        <div>
-                                            <span style="font-size: 12px; font-weight: 700; color: #10b981;">
-                                                <ion-icon name="cash-outline" style="vertical-align: -1px;"></ion-icon>
-                                                Rp {{ number_format($row->penerimaan_hari_ini ?? 0, 0, ',', '.') }}
-                                                <small
-                                                    class="text-muted font-weight-normal">({{ $row->unit_hari_ini ?? 0 }}
-                                                    Unit &bull; {{ $row->notice_hari_ini ?? 0 }} Notice)</small>
-                                            </span>
                                         </div>
                                     </div>
                                 </div>
