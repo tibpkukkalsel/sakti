@@ -794,14 +794,23 @@
                         </div>
                     </div>
 
-                    <!-- Card Grafik Tren Penerimaan Bulanan (ApexCharts) -->
-                    <div class="card" style="border-radius: 12px; border: 1px solid #e2e8f0;">
+                    <!-- Card 1: Grafik Batang Penerimaan Bulanan (ApexCharts) -->
+                    <div class="card mt-2" style="border-radius: 12px; border: 1px solid #e2e8f0;">
                         <div class="card-body p-2">
                             <div class="d-flex justify-content-between align-items-center px-2 pt-2 mb-1">
-                                <span class="fw-bold text-dark" style="font-size: 13px;">Tren Perbulan
-                                    ({{ $tahunini }})</span>
+                                <span class="fw-bold text-dark" style="font-size: 13px;">Grafik Batang Penerimaan ({{ $tahunini }})</span>
                             </div>
-                            <div id="chart-penerimaan-monitoring" style="min-height: 250px;"></div>
+                            <div id="chart-penerimaan-bar-monitoring" style="min-height: 250px;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Grafik Garis Tren Bulanan (ApexCharts) -->
+                    <div class="card mt-2" style="border-radius: 12px; border: 1px solid #e2e8f0;">
+                        <div class="card-body p-2">
+                            <div class="d-flex justify-content-between align-items-center px-2 pt-2 mb-1">
+                                <span class="fw-bold text-dark" style="font-size: 13px;">Grafik Garis Tren Bulanan ({{ $tahunini }})</span>
+                            </div>
+                            <div id="chart-penerimaan-line-monitoring" style="min-height: 250px;"></div>
                         </div>
                     </div>
 
@@ -878,24 +887,120 @@
         }
     </script>
     <script>
-        var chartPenerimaanMonitoring = null;
+        var chartPenerimaanBarMonitoring = null;
 
-        function renderChartPenerimaanMonitoring() {
-            var el = document.querySelector("#chart-penerimaan-monitoring");
+        function renderChartPenerimaanBarMonitoring() {
+            var el = document.querySelector("#chart-penerimaan-bar-monitoring");
             if (!el) return;
 
             if (typeof ApexCharts === 'undefined') {
-                setTimeout(renderChartPenerimaanMonitoring, 200);
+                setTimeout(renderChartPenerimaanBarMonitoring, 200);
                 return;
             }
 
-            if (chartPenerimaanMonitoring) {
+            if (chartPenerimaanBarMonitoring) {
                 try {
-                    chartPenerimaanMonitoring.destroy();
+                    chartPenerimaanBarMonitoring.destroy();
                 } catch (e) {}
             }
 
-            var optionsPenerimaan = {
+            var optionsBar = {
+                series: [{
+                    name: 'Total (Rp)',
+                    data: @json($chartBulanValuesTotal)
+                }, {
+                    name: 'R2 (Rp)',
+                    data: @json($chartBulanValuesR2)
+                }, {
+                    name: 'R4 (Rp)',
+                    data: @json($chartBulanValuesR4)
+                }],
+                chart: {
+                    type: 'bar',
+                    height: 270,
+                    toolbar: {
+                        show: false
+                    },
+                    fontFamily: 'inherit'
+                },
+                plotOptions: {
+                    bar: {
+                        horizontal: false,
+                        columnWidth: '55%',
+                        borderRadius: 4
+                    }
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    show: true,
+                    width: 2,
+                    colors: ['transparent']
+                },
+                xaxis: {
+                    categories: @json($chartBulanLabels),
+                    labels: {
+                        style: {
+                            fontSize: '10px'
+                        }
+                    }
+                },
+                yaxis: {
+                    labels: {
+                        style: {
+                            fontSize: '10px'
+                        },
+                        formatter: function(val) {
+                            if (val >= 1000000000) return (val / 1000000000).toFixed(1) + 'M';
+                            if (val >= 1000000) return (val / 1000000).toFixed(0) + 'Jt';
+                            if (val >= 1000) return (val / 1000).toFixed(0) + 'Rb';
+                            return val;
+                        }
+                    }
+                },
+                colors: ['#2A8BF2', '#10b981', '#f59e0b'],
+                fill: {
+                    opacity: 1
+                },
+                tooltip: {
+                    y: {
+                        formatter: function(val) {
+                            return 'Rp ' + Number(val).toLocaleString('id-ID');
+                        }
+                    }
+                },
+                legend: {
+                    position: 'bottom',
+                    fontSize: '11px',
+                    markers: {
+                        radius: 12
+                    }
+                }
+            };
+
+            chartPenerimaanBarMonitoring = new ApexCharts(el, optionsBar);
+            chartPenerimaanBarMonitoring.render();
+        }
+
+        var chartPenerimaanLineMonitoring = null;
+
+        function renderChartPenerimaanLineMonitoring() {
+            var el = document.querySelector("#chart-penerimaan-line-monitoring");
+            if (!el) return;
+
+            if (typeof ApexCharts === 'undefined') {
+                setTimeout(renderChartPenerimaanLineMonitoring, 200);
+                return;
+            }
+
+            if (chartPenerimaanLineMonitoring) {
+                try {
+                    chartPenerimaanLineMonitoring.destroy();
+                } catch (e) {}
+            }
+
+            var optionsLine = {
                 series: [{
                     name: 'Total (Rp)',
                     data: @json($chartBulanValuesTotal)
@@ -998,8 +1103,8 @@
                 }
             };
 
-            chartPenerimaanMonitoring = new ApexCharts(el, optionsPenerimaan);
-            chartPenerimaanMonitoring.render();
+            chartPenerimaanLineMonitoring = new ApexCharts(el, optionsLine);
+            chartPenerimaanLineMonitoring.render();
         }
 
         var chartLayananPerBulanMonitoring = null;
@@ -1407,7 +1512,8 @@
         }
 
         document.addEventListener('DOMContentLoaded', function() {
-            renderChartPenerimaanMonitoring();
+            renderChartPenerimaanBarMonitoring();
+            renderChartPenerimaanLineMonitoring();
             renderChartLayananPerBulanMonitoring();
             renderChartPieLayananMonitoring();
             renderChartPieHariMonitoring();
@@ -1416,7 +1522,8 @@
             $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
                 if ($(e.target).attr('href') === '#tab-grafik') {
                     setTimeout(function() {
-                        renderChartPenerimaanMonitoring();
+                        renderChartPenerimaanBarMonitoring();
+                        renderChartPenerimaanLineMonitoring();
                         renderChartLayananPerBulanMonitoring();
                         renderChartPieLayananMonitoring();
                         renderChartPieHariMonitoring();
