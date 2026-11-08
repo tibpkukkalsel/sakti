@@ -320,7 +320,8 @@ class MonitoringController extends Controller
                 'presensi.foto_out',
                 'presensi.status as status_presensi',
                 'rekap_penerimaan_pkb.total_rp as penerimaan_hari_ini',
-                'rekap_penerimaan_pkb.total_unit as unit_hari_ini'
+                'rekap_penerimaan_pkb.total_unit as unit_hari_ini',
+                'rekap_penerimaan_pkb.jumlah_notice as notice_hari_ini'
             )
             ->orderBy('layanan.nama_layanan', 'asc')
             ->get();

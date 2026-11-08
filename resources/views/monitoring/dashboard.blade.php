@@ -686,7 +686,7 @@
                                                 Rp {{ number_format($row->penerimaan_hari_ini ?? 0, 0, ',', '.') }}
                                                 <small
                                                     class="text-muted font-weight-normal">({{ $row->unit_hari_ini ?? 0 }}
-                                                    Unit)</small>
+                                                    Unit &bull; {{ $row->notice_hari_ini ?? 0 }} Notice)</small>
                                             </span>
                                         </div>
                                     </div>

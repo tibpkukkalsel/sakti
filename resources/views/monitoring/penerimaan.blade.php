@@ -281,9 +281,14 @@
                     <span style="font-size: 16px; font-weight: 800; color: #2A8BF2; white-space: nowrap;">
                         Rp {{ number_format($row->total_rp, 0, ',', '.') }}
                     </span>
-                    <span class="badge" style="background: rgba(16, 185, 129, 0.12); color: #10b981; font-size: 11.5px; font-weight: 700; padding: 4px 10px; border-radius: 6px;">
-                        {{ number_format($row->total_unit, 0, ',', '.') }} Unit
-                    </span>
+                    <div class="d-flex align-items-center" style="gap: 5px;">
+                        <span class="badge" style="background: rgba(16, 185, 129, 0.12); color: #10b981; font-size: 11.5px; font-weight: 700; padding: 4px 8px; border-radius: 6px;">
+                            {{ number_format($row->total_unit, 0, ',', '.') }} Unit
+                        </span>
+                        <span class="badge" style="background: rgba(245, 158, 11, 0.12); color: #d97706; font-size: 11.5px; font-weight: 700; padding: 4px 8px; border-radius: 6px;">
+                            <ion-icon name="print-outline" style="font-size: 11px; vertical-align: -1px; margin-right: 2px;"></ion-icon>{{ number_format($row->jumlah_notice ?? 0, 0, ',', '.') }} Notice
+                        </span>
+                    </div>
                 </div>
                 <div class="text-muted small mt-2 pt-2 border-top d-flex justify-content-between" style="font-size: 12px;">
                     <span style="white-space: nowrap;">
