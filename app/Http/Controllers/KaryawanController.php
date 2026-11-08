@@ -41,6 +41,16 @@ class KaryawanController extends Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+            'nik' => 'required|string|max:50',
+            'nama_lengkap' => 'required|string|max:150',
+            'foto' => 'nullable|image|mimes:png,jpg,jpeg|max:2048'
+        ], [
+            'foto.image' => 'File foto harus berupa gambar.',
+            'foto.mimes' => 'Format file foto harus PNG, JPG, atau JPEG.',
+            'foto.max' => 'Ukuran file foto maksimal 2MB.'
+        ]);
+
         $nik = $request->nik;
         $nama_lengkap = $request->nama_lengkap;
         $jabatan = $request->jabatan;
@@ -49,7 +59,12 @@ class KaryawanController extends Controller
         $password = Hash::make('12345');
         $kode_cabang = $request->kode_cabang;
         if ($request->hasFile('foto')) {
-            $foto = $nik . "." . $request->file('foto')->getClientOriginalExtension();
+            $ext = strtolower($request->file('foto')->getClientOriginalExtension());
+            if (!in_array($ext, ['png', 'jpg', 'jpeg'])) {
+                return Redirect::back()->with(['warning' => 'Format file foto harus PNG, JPG, atau JPEG.']);
+            }
+            $safeNik = preg_replace('/[^A-Za-z0-9_\-]/', '', $nik);
+            $foto = $safeNik . "." . $ext;
         } else {
             $foto = null;
         }
@@ -96,6 +111,16 @@ class KaryawanController extends Controller
 
     public function update($nik, Request $request)
     {
+        $request->validate([
+            'nik_baru' => 'required|string|max:50',
+            'nama_lengkap' => 'required|string|max:150',
+            'foto' => 'nullable|image|mimes:png,jpg,jpeg|max:2048'
+        ], [
+            'foto.image' => 'File foto harus berupa gambar.',
+            'foto.mimes' => 'Format file foto harus PNG, JPG, atau JPEG.',
+            'foto.max' => 'Ukuran file foto maksimal 2MB.'
+        ]);
+
         $nik = Crypt::decrypt($nik);
         $nik_baru = $request->nik_baru;
         $nama_lengkap = $request->nama_lengkap;
@@ -106,7 +131,12 @@ class KaryawanController extends Controller
         $password = Hash::make('12345');
         $old_foto = $request->old_foto;
         if ($request->hasFile('foto')) {
-            $foto = $nik . "." . $request->file('foto')->getClientOriginalExtension();
+            $ext = strtolower($request->file('foto')->getClientOriginalExtension());
+            if (!in_array($ext, ['png', 'jpg', 'jpeg'])) {
+                return Redirect::back()->with(['warning' => 'Format file foto harus PNG, JPG, atau JPEG.']);
+            }
+            $safeNik = preg_replace('/[^A-Za-z0-9_\-]/', '', $nik);
+            $foto = $safeNik . "." . $ext;
         } else {
             $foto = $old_foto;
         }

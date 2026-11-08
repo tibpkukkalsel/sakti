@@ -31,8 +31,8 @@ class IzinabsenController extends Controller
         $tahun = date("Y", strtotime($tgl_izin_dari));
         $thn = substr($tahun, 2, 2);
         $lastizin = DB::table('pengajuan_izin')
-            ->whereRaw('MONTH(tgl_izin_dari)="' . $bulan . '"')
-            ->whereRaw('YEAR(tgl_izin_dari)="' . $tahun . '"')
+            ->whereRaw('MONTH(tgl_izin_dari) = ?', [$bulan])
+            ->whereRaw('YEAR(tgl_izin_dari) = ?', [$tahun])
             ->orderBy('kode_izin', 'desc')
             ->first();
         $lastkodeizin = $lastizin != null ? $lastizin->kode_izin : "";
@@ -72,7 +72,7 @@ class IzinabsenController extends Controller
         // 2. Cek bentrok dengan pengajuan izin yang sudah ada
         $cekpengajuan = DB::table('pengajuan_izin')
             ->where('nik', $nik)
-            ->whereRaw('"' . $tgl_izin_dari . '" BETWEEN tgl_izin_dari AND tgl_izin_sampai');
+            ->whereRaw('? BETWEEN tgl_izin_dari AND tgl_izin_sampai', [$tgl_izin_dari]);
 
         if ($status == 'it') {
             // Izin Terlambat (pagi) BISA berdampingan dengan Izin Pulang Cepat (sore)!

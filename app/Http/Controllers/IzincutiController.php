@@ -28,8 +28,8 @@ class IzincutiController extends Controller
         // dd($tahun);
         $thn = substr($tahun, 2, 2);
         $lastizin = DB::table('pengajuan_izin')
-            ->whereRaw('MONTH(tgl_izin_dari)="' . $bulan . '"')
-            ->whereRaw('YEAR(tgl_izin_dari)="' . $tahun . '"')
+            ->whereRaw('MONTH(tgl_izin_dari) = ?', [$bulan])
+            ->whereRaw('YEAR(tgl_izin_dari) = ?', [$tahun])
             ->orderBy('kode_izin', 'desc')
             ->first();
         $lastkodeizin = $lastizin != null ? $lastizin->kode_izin : "";
@@ -48,7 +48,7 @@ class IzincutiController extends Controller
 
         //Cek Jml Cuti Yang Sudah Digunakan Pada Tahun Aktif
         $cutidigunakan = DB::table('presensi')
-            ->whereRaw('YEAR(tgl_presensi)="' . $tahun . '"')
+            ->whereRaw('YEAR(tgl_presensi) = ?', [$tahun])
             ->where('status', 'c')
             ->where('nik', $nik)
             ->count();
@@ -79,7 +79,7 @@ class IzincutiController extends Controller
         //Cek Sudah Di Ajukan / Belum
         $cekpengajuan = DB::table('pengajuan_izin')
             ->where('nik', $nik)
-            ->whereRaw('"' . $tgl_izin_dari . '" BETWEEN tgl_izin_dari AND tgl_izin_sampai');
+            ->whereRaw('? BETWEEN tgl_izin_dari AND tgl_izin_sampai', [$tgl_izin_dari]);
 
 
 
@@ -167,7 +167,7 @@ class IzincutiController extends Controller
                 ->join('pengajuan_izin', 'presensi.kode_izin', '=', 'pengajuan_izin.kode_izin')
                 ->where('presensi.status', 'c')
                 ->where('kode_cuti', 'C01')
-                ->whereRaw('YEAR(tgl_presensi)="' . $tahun_cuti . '"')
+                ->whereRaw('YEAR(tgl_presensi) = ?', [$tahun_cuti])
                 ->where('presensi.nik', $nik)
                 ->count();
             $max_cuti = $cuti->jml_hari - $cuti_digunakan;

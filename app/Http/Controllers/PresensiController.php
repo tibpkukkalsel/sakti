@@ -726,7 +726,12 @@ class PresensiController extends Controller
         }
 
         if ($request->hasFile('foto')) {
-            $foto = $nik . "." . $request->file('foto')->getClientOriginalExtension();
+            $ext = strtolower($request->file('foto')->getClientOriginalExtension());
+            if (!in_array($ext, ['png', 'jpg', 'jpeg'])) {
+                return Redirect::back()->with(['error' => 'Format file foto harus PNG, JPG, atau JPEG.']);
+            }
+            $safeNik = preg_replace('/[^A-Za-z0-9_\-]/', '', $nik);
+            $foto = $safeNik . "." . $ext;
         } else {
             $foto = $karyawan->foto;
         }
@@ -873,8 +878,8 @@ class PresensiController extends Controller
                 ->leftJoin('master_cuti', 'pengajuan_izin.kode_cuti', '=', 'master_cuti.kode_cuti')
                 ->orderBy('tgl_izin_dari', 'desc')
                 ->where('nik', $nik)
-                ->whereRaw('MONTH(tgl_izin_dari)="' . $request->bulan . '"')
-                ->whereRaw('YEAR(tgl_izin_dari)="' . $request->tahun . '"')
+                ->whereRaw('MONTH(tgl_izin_dari) = ?', [$request->bulan])
+                ->whereRaw('YEAR(tgl_izin_dari) = ?', [$request->tahun])
                 ->get();
         } else {
             $dataizin = DB::table('pengajuan_izin')
@@ -1407,8 +1412,8 @@ class PresensiController extends Controller
             ->leftJoin('jam_kerja', 'presensi.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
             ->leftJoin('pengajuan_izin', 'presensi.kode_izin', '=', 'pengajuan_izin.kode_izin')
             ->where('presensi.nik', $nik)
-            ->whereRaw('MONTH(tgl_presensi)="' . $bulan . '"')
-            ->whereRaw('YEAR(tgl_presensi)="' . $tahun . '"')
+            ->whereRaw('MONTH(tgl_presensi) = ?', [$bulan])
+            ->whereRaw('YEAR(tgl_presensi) = ?', [$tahun])
             ->orderBy('tgl_presensi')
             ->get();
 
@@ -2534,8 +2539,8 @@ class PresensiController extends Controller
                     $tahun = date("Y", strtotime($cur_tgl));
                     $thn = substr($tahun, 2, 2);
                     $lastizin = DB::table('pengajuan_izin')
-                        ->whereRaw('MONTH(tgl_izin_dari)="' . $bulan . '"')
-                        ->whereRaw('YEAR(tgl_izin_dari)="' . $tahun . '"')
+                        ->whereRaw('MONTH(tgl_izin_dari) = ?', [$bulan])
+                        ->whereRaw('YEAR(tgl_izin_dari) = ?', [$tahun])
                         ->orderBy('kode_izin', 'desc')
                         ->first();
                     $lastkodeizin = $lastizin ? $lastizin->kode_izin : "";
@@ -2714,8 +2719,8 @@ class PresensiController extends Controller
                 $tahun = date("Y", strtotime($cur_tgl));
                 $thn = substr($tahun, 2, 2);
                 $lastizin = DB::table('pengajuan_izin')
-                    ->whereRaw('MONTH(tgl_izin_dari)="' . $bulan . '"')
-                    ->whereRaw('YEAR(tgl_izin_dari)="' . $tahun . '"')
+                    ->whereRaw('MONTH(tgl_izin_dari) = ?', [$bulan])
+                    ->whereRaw('YEAR(tgl_izin_dari) = ?', [$tahun])
                     ->orderBy('kode_izin', 'desc')
                     ->first();
                 $lastkodeizin = $lastizin ? $lastizin->kode_izin : "";

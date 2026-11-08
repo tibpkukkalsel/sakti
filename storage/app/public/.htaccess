@@ -1,0 +1,35 @@
+# ==============================================================================
+# SAKTI UPLOAD DIRECTORY SECURITY (ANTI-WEBSHELL / ANTI-MALWARE)
+# ==============================================================================
+
+# 1. Matikan modul eksekusi skrip engine (PHP, Perl, CGI)
+<IfModule mod_php7.c>
+    php_flag engine off
+</IfModule>
+<IfModule mod_php8.c>
+    php_flag engine off
+</IfModule>
+<IfModule mod_php.c>
+    php_flag engine off
+</IfModule>
+
+# 2. Hapus handler MIME eksekusi berkas skrip
+<IfModule mod_mime.c>
+    RemoveHandler .php .phtml .php3 .php4 .php5 .php7 .php8 .phps .phar .inc .sh .cgi .pl .py .shtml .asp .aspx
+    RemoveType .php .phtml .php3 .php4 .php5 .php7 .php8 .phps .phar .inc .sh .cgi .pl .py .shtml .asp .aspx
+</IfModule>
+
+# 3. Blokir total akses langsung ke berkas berbahaya
+<FilesMatch "\.(php|phtml|php3|php4|php5|php7|php8|phps|phar|inc|sh|cgi|pl|py|shtml|asp|aspx|exe|bat|cmd|dll|bin)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# 4. Larang eksekusi skrip CGI dan browsing isi folder
+Options -Indexes -ExecCGI
+

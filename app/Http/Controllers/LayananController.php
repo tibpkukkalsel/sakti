@@ -50,8 +50,12 @@ class LayananController extends Controller
             'nama_layanan' => 'required',
             'username' => 'required|unique:layanan,username',
             'nama_pic' => 'required',
+            'foto' => 'nullable|image|mimes:png,jpg,jpeg|max:2048'
         ], [
             'username.unique' => 'Username tersebut sudah digunakan oleh akun layanan lain.',
+            'foto.image' => 'File foto harus berupa gambar.',
+            'foto.mimes' => 'Format file foto harus PNG, JPG, atau JPEG.',
+            'foto.max' => 'Ukuran file foto maksimal 2MB.'
         ]);
 
         $nama_layanan = $request->nama_layanan;
@@ -65,7 +69,12 @@ class LayananController extends Controller
 
         $foto = null;
         if ($request->hasFile('foto')) {
-            $foto = time() . '_' . $username . '.' . $request->file('foto')->getClientOriginalExtension();
+            $ext = strtolower($request->file('foto')->getClientOriginalExtension());
+            if (!in_array($ext, ['png', 'jpg', 'jpeg'])) {
+                return Redirect::back()->with(['warning' => 'Format file foto harus PNG, JPG, atau JPEG.']);
+            }
+            $safeUsername = preg_replace('/[^A-Za-z0-9_\-]/', '', $username);
+            $foto = time() . '_' . $safeUsername . '.' . $ext;
         }
 
         try {
@@ -111,6 +120,17 @@ class LayananController extends Controller
 
     public function update($id, Request $request)
     {
+        $request->validate([
+            'nama_layanan' => 'required',
+            'username' => 'required',
+            'nama_pic' => 'required',
+            'foto' => 'nullable|image|mimes:png,jpg,jpeg|max:2048'
+        ], [
+            'foto.image' => 'File foto harus berupa gambar.',
+            'foto.mimes' => 'Format file foto harus PNG, JPG, atau JPEG.',
+            'foto.max' => 'Ukuran file foto maksimal 2MB.'
+        ]);
+
         $id = Crypt::decrypt($id);
         $nama_layanan = $request->nama_layanan;
         $username = trim($request->username);
@@ -130,7 +150,12 @@ class LayananController extends Controller
         }
 
         if ($request->hasFile('foto')) {
-            $foto = time() . '_' . $username . '.' . $request->file('foto')->getClientOriginalExtension();
+            $ext = strtolower($request->file('foto')->getClientOriginalExtension());
+            if (!in_array($ext, ['png', 'jpg', 'jpeg'])) {
+                return Redirect::back()->with(['warning' => 'Format file foto harus PNG, JPG, atau JPEG.']);
+            }
+            $safeUsername = preg_replace('/[^A-Za-z0-9_\-]/', '', $username);
+            $foto = time() . '_' . $safeUsername . '.' . $ext;
         } else {
             $foto = $old_foto;
         }
