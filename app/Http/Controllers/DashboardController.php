@@ -181,7 +181,7 @@ class DashboardController extends Controller
 
         // Data grafik penerimaan PKB tahun berjalan untuk akun layanan ini
         $monthlyDataRaw = DB::table('rekap_penerimaan_pkb')
-            ->selectRaw('MONTH(tgl_penerimaan) as bulan, SUM(total_rp) as total_rp, SUM(jumlah_rp_r2) as rp_r2, SUM(jumlah_rp_r4) as rp_r4, SUM(total_unit) as total_unit, SUM(jumlah_notice) as total_notice')
+            ->selectRaw('MONTH(tgl_penerimaan) as bulan, SUM(total_rp) as total_rp, SUM(jumlah_rp_r2) as rp_r2, SUM(jumlah_rp_r4) as rp_r4, SUM(total_unit) as total_unit, SUM(jumlah_notice) as total_notice, SUM(jumlah_unit_r2) as unit_r2, SUM(jumlah_unit_r4) as unit_r4')
             ->where('layanan_id', $layananId)
             ->whereYear('tgl_penerimaan', $tahunini)
             ->groupBy(DB::raw('MONTH(tgl_penerimaan)'))
@@ -196,17 +196,30 @@ class DashboardController extends Controller
         $totalTahunBerjalanRp = 0;
         $totalTahunBerjalanUnit = 0;
         $totalTahunBerjalanNotice = 0;
+        $totalTahunBerjalanR2Rp = 0;
+        $totalTahunBerjalanR2Unit = 0;
+        $totalTahunBerjalanR4Rp = 0;
+        $totalTahunBerjalanR4Unit = 0;
 
         for ($m = 1; $m <= 12; $m++) {
             $row = $monthlyDataRaw->get($m);
             $totalRp = (float) ($row ? $row->total_rp : 0);
+            $rpR2 = (float) ($row ? $row->rp_r2 : 0);
+            $rpR4 = (float) ($row ? $row->rp_r4 : 0);
+            $unitR2 = (int) ($row ? $row->unit_r2 : 0);
+            $unitR4 = (int) ($row ? $row->unit_r4 : 0);
+
             $chartBulanValuesTotal[] = $totalRp;
-            $chartBulanValuesR2[] = (float) ($row ? $row->rp_r2 : 0);
-            $chartBulanValuesR4[] = (float) ($row ? $row->rp_r4 : 0);
+            $chartBulanValuesR2[] = $rpR2;
+            $chartBulanValuesR4[] = $rpR4;
 
             $totalTahunBerjalanRp += $totalRp;
             $totalTahunBerjalanUnit += (int) ($row ? $row->total_unit : 0);
             $totalTahunBerjalanNotice += (int) ($row ? $row->total_notice : 0);
+            $totalTahunBerjalanR2Rp += $rpR2;
+            $totalTahunBerjalanR2Unit += $unitR2;
+            $totalTahunBerjalanR4Rp += $rpR4;
+            $totalTahunBerjalanR4Unit += $unitR4;
         }
 
         // Data Chart Pie Persentase Pendapatan Berdasarkan Hari untuk akun layanan ini
@@ -305,6 +318,7 @@ class DashboardController extends Controller
             'maintenanceHariIniLayanan', 'chartBulanLabels', 'chartBulanValuesTotal',
             'chartBulanValuesR2', 'chartBulanValuesR4', 'totalTahunBerjalanRp',
             'totalTahunBerjalanUnit', 'totalTahunBerjalanNotice',
+            'totalTahunBerjalanR2Rp', 'totalTahunBerjalanR2Unit', 'totalTahunBerjalanR4Rp', 'totalTahunBerjalanR4Unit',
             'pieHariLabels', 'pieHariValues', 'detailPerHariJson'
         ));
     }

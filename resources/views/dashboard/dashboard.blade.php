@@ -854,15 +854,98 @@
                 </div>
                 <div class="tab-pane fade" id="profile" role="tabpanel">
                     <!-- Ringkasan Akumulasi Tahun Berjalan -->
-                    <div class="card mb-2" style="border-radius: 12px; border: 1px solid #e2e8f0;">
+                    <div class="card mb-2" style="border-radius: 14px; border: 1px solid #e2e8f0; box-shadow: 0 1px 4px rgba(0,0,0,0.03);">
                         <div class="card-body p-3">
-                            <div class="d-flex justify-content-between align-items-center mb-1">
-                                <span class="text-muted small fw-bold text-uppercase" style="font-size: 11px;">Total Penerimaan {{ $tahunini }}</span>
-                                <strong style="color: #2A8BF2; font-size: 16px; white-space: nowrap;">Rp {{ number_format($totalTahunBerjalanRp, 0, ',', '.') }}</strong>
+                            <div class="mb-2">
+                                <div class="text-muted small fw-bold text-uppercase" style="font-size: 11px; letter-spacing: 0.5px;">
+                                    Total Penerimaan {{ $tahunini }}
+                                </div>
+                                <div style="color: #2A8BF2; font-size: 18px; font-weight: 800; white-space: nowrap; margin-top: 2px;">
+                                    Rp {{ number_format($totalTahunBerjalanRp, 0, ',', '.') }}
+                                </div>
                             </div>
-                            <div class="d-flex justify-content-between text-muted small" style="font-size: 12px;">
-                                <span>Total Unit: <strong>{{ number_format($totalTahunBerjalanUnit, 0, ',', '.') }}</strong></span>
-                                <span>Notice: <strong>{{ number_format($totalTahunBerjalanNotice, 0, ',', '.') }} Lbr</strong></span>
+
+                            <!-- Baris R2 (Motor) -->
+                            <div class="d-flex align-items-center justify-content-between p-2 mb-2"
+                                style="background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0;">
+                                <div class="d-flex align-items-center">
+                                    <div
+                                        style="width: 30px; height: 30px; border-radius: 8px; background: rgba(37, 99, 235, 0.1); display: flex; align-items: center; justify-content: center; margin-right: 10px; flex-shrink: 0;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-motorbike"
+                                            width="18" height="18" viewBox="0 0 24 24" stroke-width="2" stroke="#2563eb"
+                                            fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                            <path d="M5 16m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
+                                            <path d="M19 16m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
+                                            <path d="M7.5 14h5l4 -4H7.5m4 0h4l2 -3h-3"></path>
+                                        </svg>
+                                    </div>
+                                    <div style="font-size: 14px; font-weight: 700; color: #1e293b; white-space: nowrap;">
+                                        Rp {{ number_format($totalTahunBerjalanR2Rp, 0, ',', '.') }}
+                                    </div>
+                                </div>
+                                <div>
+                                    <span class="badge"
+                                        style="background: rgba(37, 99, 235, 0.1); color: #2563eb; font-size: 11.5px; font-weight: 700; padding: 4px 10px; border-radius: 6px;">
+                                        <ion-icon name="speedometer-outline"
+                                            style="font-size: 12px; vertical-align: -1px; margin-right: 3px;"></ion-icon>{{ number_format($totalTahunBerjalanR2Unit, 0, ',', '.') }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Baris R4 (Mobil) -->
+                            <div class="d-flex align-items-center justify-content-between p-2 mb-2"
+                                style="background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0;">
+                                <div class="d-flex align-items-center">
+                                    <div
+                                        style="width: 30px; height: 30px; border-radius: 8px; background: rgba(8, 145, 178, 0.1); display: flex; align-items: center; justify-content: center; margin-right: 10px; flex-shrink: 0;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-car"
+                                            width="18" height="18" viewBox="0 0 24 24" stroke-width="2" stroke="#0891b2"
+                                            fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                            <path d="M7 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
+                                            <path d="M17 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
+                                            <path d="M5 17h-2v-6l2 -5h9l4 5h1a2 2 0 0 1 2 2v4h-2m-4 0h-6"></path>
+                                            <path d="M7 9l1 3h8l1 -3"></path>
+                                        </svg>
+                                    </div>
+                                    <div style="font-size: 14px; font-weight: 700; color: #1e293b; white-space: nowrap;">
+                                        Rp {{ number_format($totalTahunBerjalanR4Rp, 0, ',', '.') }}
+                                    </div>
+                                </div>
+                                <div>
+                                    <span class="badge"
+                                        style="background: rgba(8, 145, 178, 0.1); color: #0891b2; font-size: 11.5px; font-weight: 700; padding: 4px 10px; border-radius: 6px;">
+                                        <ion-icon name="speedometer-outline"
+                                            style="font-size: 12px; vertical-align: -1px; margin-right: 3px;"></ion-icon>{{ number_format($totalTahunBerjalanR4Unit, 0, ',', '.') }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Baris Total Unit & Notice Dicetak -->
+                            <div class="row align-items-center" style="margin-left: -3px; margin-right: -3px;">
+                                <div class="col-6" style="padding-left: 3px; padding-right: 3px;">
+                                    <div class="p-2 d-flex align-items-center justify-content-center"
+                                        style="background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0; min-height: 38px;">
+                                        <ion-icon name="speedometer-outline"
+                                            style="font-size: 16px; color: #10b981; margin-right: 6px;"></ion-icon>
+                                        <span class="text-muted me-1" style="font-size: 11px;">Unit:</span>
+                                        <span style="font-size: 13.5px; font-weight: 800; color: #1e293b;">
+                                            {{ number_format($totalTahunBerjalanUnit, 0, ',', '.') }}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-6" style="padding-left: 3px; padding-right: 3px;">
+                                    <div class="p-2 d-flex align-items-center justify-content-center"
+                                        style="background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0; min-height: 38px;">
+                                        <ion-icon name="print-outline"
+                                            style="font-size: 16px; color: #f59e0b; margin-right: 6px;"></ion-icon>
+                                        <span class="text-muted me-1" style="font-size: 11px;">Notice:</span>
+                                        <span style="font-size: 13.5px; font-weight: 800; color: #1e293b;">
+                                            {{ number_format($totalTahunBerjalanNotice, 0, ',', '.') }}
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
