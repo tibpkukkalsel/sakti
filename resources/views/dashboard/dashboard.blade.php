@@ -354,7 +354,7 @@
                             </div>
                             <div class="menu-name" style="margin-top: 3px;">
                                 <span
-                                    style="font-size: 11px; font-weight: 600; color: #475569; display: block; line-height: 1.2;">Maintenance</span>
+                                    style="font-size: 11px; font-weight: 600; color: #475569; display: block; line-height: 1.2;">Mtc</span>
                             </div>
                         </a>
                     </div>
