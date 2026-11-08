@@ -32,7 +32,7 @@ class MonitoringController extends Controller
     /**
      * Dashboard Akun Monitoring Mobile
      */
-    public function dashboard(Request $request = null)
+    public function dashboard(?Request $request = null)
     {
         $user = Auth::guard('user')->user();
         $hariini = date('Y-m-d');
@@ -815,28 +815,39 @@ class MonitoringController extends Controller
     }
 
     /**
-     * Update Password Akun Monitoring
+     * Update Foto Profile Akun Monitoring (Hanya Foto Profile yang dapat diubah)
      */
     public function updateProfile(Request $request)
     {
         $user = Auth::guard('user')->user();
         $request->validate([
-            'name' => 'required|string|max:255',
-            'no_hp' => 'nullable|string|max:25',
-            'password' => 'nullable|min:6'
+            'foto' => 'required|image|mimes:png,jpg,jpeg|max:2048'
+        ], [
+            'foto.required' => 'Silakan pilih file foto terlebih dahulu.',
+            'foto.image' => 'File harus berupa gambar.',
+            'foto.mimes' => 'Format file foto harus PNG, JPG, atau JPEG.',
+            'foto.max' => 'Ukuran file foto maksimal 2MB.'
         ]);
 
-        $data = [
-            'name' => $request->name,
-            'no_hp' => $request->no_hp
-        ];
-        if (!empty($request->password)) {
-            $data['password'] = Hash::make($request->password);
+        if ($request->hasFile('foto')) {
+            try {
+                $file = $request->file('foto');
+                $filename = 'user_' . $user->id . '_' . time() . '.' . $file->getClientOriginalExtension();
+                $folderPath = "public/uploads/users/";
+                $file->storeAs($folderPath, $filename);
+
+                DB::table('users')->where('id', $user->id)->update([
+                    'foto' => $filename,
+                    'updated_at' => now()
+                ]);
+
+                return Redirect::back()->with(['success' => 'Foto profil berhasil diperbarui.']);
+            } catch (\Exception $e) {
+                return Redirect::back()->with(['error' => 'Gagal memperbarui foto profil: ' . $e->getMessage()]);
+            }
         }
 
-        DB::table('users')->where('id', $user->id)->update($data);
-
-        return Redirect::back()->with(['success' => 'Profil berhasil diperbarui.']);
+        return Redirect::back()->with(['error' => 'Silakan pilih file foto terlebih dahulu.']);
     }
 }
 

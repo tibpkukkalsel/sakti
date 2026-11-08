@@ -677,55 +677,35 @@ class PresensiController extends Controller
     public function updateprofile(Request $request)
     {
         $nik = Auth::guard('karyawan')->user()->nik;
-        $nama_lengkap = $request->nama_lengkap;
-        $no_hp = $request->no_hp;
-        $password = Hash::make($request->password);
-        $karyawan = DB::table('karyawan')->where('nik', $nik)->first();
+
         $request->validate([
-            'foto' => 'image|mimes:png,jpg|max:1024'
+            'foto' => 'required|image|mimes:png,jpg,jpeg|max:2048'
+        ], [
+            'foto.required' => 'Silakan pilih file foto terlebih dahulu.',
+            'foto.image' => 'File harus berupa gambar.',
+            'foto.mimes' => 'Format file foto harus PNG, JPG, atau JPEG.',
+            'foto.max' => 'Ukuran file foto maksimal 2MB.'
         ]);
+
         if ($request->hasFile('foto')) {
-            $foto = $nik . "." . $request->file('foto')->getClientOriginalExtension();
-        } else {
-            $foto = $karyawan->foto;
-        }
-        if (empty($request->password)) {
-            $data = [
-                'nama_lengkap' => $nama_lengkap,
-                'no_hp' => $no_hp,
-                'foto' => $foto
-            ];
-        } else {
-            $data = [
-                'nama_lengkap' => $nama_lengkap,
-                'no_hp' => $no_hp,
-                'password' => $password,
-                'foto' => $foto
-            ];
-        }
-
-        $data['nama_pic'] = $request->nama_pic ?? ($karyawan->nama_pic ?? null);
-        $data['nip_pic'] = $request->nip_pic ?? ($karyawan->nip_pic ?? null);
-        $data['jabatan_pic'] = $request->jabatan_pic ?? ($karyawan->jabatan_pic ?? null);
-
-        try {
-            DB::table('layanan')->where('id', $nik)->update([
-                'nama_layanan' => $nama_lengkap,
-                'nama_pic' => $data['nama_pic'],
-                'nip_pic' => $data['nip_pic'],
-                'jabatan_pic' => $data['jabatan_pic'],
-                'no_hp' => $no_hp,
-                'foto' => $foto,
-                'password' => !empty($request->password) ? $password : $karyawan->password
-            ]);
-            if ($request->hasFile('foto')) {
+            try {
+                $file = $request->file('foto');
+                $foto = 'layanan_' . $nik . '_' . time() . '.' . $file->getClientOriginalExtension();
                 $folderPath = "public/uploads/karyawan/";
-                $request->file('foto')->storeAs($folderPath, $foto);
+                $file->storeAs($folderPath, $foto);
+
+                DB::table('layanan')->where('id', $nik)->update([
+                    'foto' => $foto,
+                    'updated_at' => now()
+                ]);
+
+                return Redirect::back()->with(['success' => 'Foto profil layanan berhasil diperbarui.']);
+            } catch (\Exception $e) {
+                return Redirect::back()->with(['error' => 'Gagal memperbarui foto profil: ' . $e->getMessage()]);
             }
-            return Redirect::back()->with(['success' => 'Data Profil Layanan Berhasil Diperbarui']);
-        } catch (\Exception $e) {
-            return Redirect::back()->with(['error' => 'Data gagal Di Update: ' . $e->getMessage()]);
         }
+
+        return Redirect::back()->with(['error' => 'Silakan pilih file foto terlebih dahulu.']);
     }
 
     public function updatelokasi(Request $request)

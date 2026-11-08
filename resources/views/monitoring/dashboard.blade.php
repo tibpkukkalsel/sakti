@@ -299,8 +299,17 @@
 
         <div id="user-detail">
             <div class="avatar">
-                <img src="{{ asset('assets/img/avatar_monitoring.png') }}?v={{ time() }}" alt="avatar" class="imaged w64 rounded"
-                    style="width:64px; height:64px; object-fit:cover;">
+                @if (!empty($user->foto))
+                    @php
+                        $path = Storage::url('uploads/users/' . $user->foto);
+                    @endphp
+                    <img src="{{ url($path) }}" alt="avatar" class="imaged w64 rounded"
+                        style="width:64px; height:64px; object-fit:cover;"
+                        onerror="this.src='{{ asset('assets/img/avatar_monitoring.png') }}'">
+                @else
+                    <img src="{{ asset('assets/img/avatar_monitoring.png') }}?v={{ time() }}" alt="avatar" class="imaged w64 rounded"
+                        style="width:64px; height:64px; object-fit:cover;">
+                @endif
             </div>
             <div id="user-info">
                 <h3 id="user-name" style="color: #ffd700 !important; text-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);">
