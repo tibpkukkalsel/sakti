@@ -248,7 +248,7 @@
                 </form>
 
                 <div class="form-footer">
-                    UPPD SAMSAT Batulicin
+                    Copyright © 2024 Adimas Fitriandi - Bapenda Prov. Kalsel
                 </div>
 
             </div>

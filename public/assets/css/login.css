@@ -387,7 +387,13 @@ body {
     }
 
     .form-footer {
-        display: none;
+        display: block;
+        margin-top: 16px;
+        margin-bottom: 6px;
+        text-align: center;
+        font-size: 11px;
+        color: #94a3b8;
+        line-height: 1.4;
     }
 
     /* Panel ilustrasi di bagian bawah kartu */

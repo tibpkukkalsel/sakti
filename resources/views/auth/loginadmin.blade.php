@@ -39,15 +39,16 @@
             <div class="side-content">
                 <h2 class="side-title">SAKTI ADMIN</h2>
                 <p class="side-desc">
-                    Selamat datang di Panel Administrasi Sistem Absensi &amp; Rekap Penerimaan PKB UPPD SAMSAT Batulicin.
+                    Selamat datang di Panel Administrasi Sistem Absensi &amp; Rekap Penerimaan PKB UPPD SAMSAT
+                    Batulicin.
                     Silakan masuk untuk mengelola data dan sistem.
                 </p>
             </div>
 
             <!-- Ilustrasi Layanan Mobil Samsat Keliling -->
             <div class="side-illustration">
-                <img src="{{ asset('assets/img/login_samsat_keliling.png') . '?v=' . time() }}" alt="Ilustrasi SAKTI UPPD SAMSAT Batulicin"
-                    class="img-illustration">
+                <img src="{{ asset('assets/img/login_samsat_keliling.png') . '?v=' . time() }}"
+                    alt="Ilustrasi SAKTI UPPD SAMSAT Batulicin" class="img-illustration">
             </div>
         </div>
 
@@ -134,7 +135,7 @@
                 </form>
 
                 <div class="form-footer">
-                    UPPD SAMSAT Batulicin
+                    Copyright © 2024 Adimas Fitriandi - Bapenda Prov. Kalsel
                 </div>
 
             </div>
@@ -157,8 +158,8 @@
 
                 <!-- Mini Illustration for Mobile -->
                 <div class="mobile-illustration">
-                    <img src="{{ asset('assets/img/login_samsat_keliling.png') . '?v=' . time() }}" alt="Ilustrasi SAKTI UPPD SAMSAT Batulicin"
-                        class="img-illustration">
+                    <img src="{{ asset('assets/img/login_samsat_keliling.png') . '?v=' . time() }}"
+                        alt="Ilustrasi SAKTI UPPD SAMSAT Batulicin" class="img-illustration">
                 </div>
             </div>
         </div>
