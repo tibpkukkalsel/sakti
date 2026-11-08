@@ -1,4 +1,4 @@
-package com.presis.bpkukkalsel;
+package com.sakti.uppdbatulicin;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
