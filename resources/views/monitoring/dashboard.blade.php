@@ -907,57 +907,86 @@
                     data: @json($chartBulanValuesR4)
                 }],
                 chart: {
-                    type: 'bar',
+                    type: 'area',
                     height: 270,
                     toolbar: {
                         show: false
                     },
+                    zoom: {
+                        enabled: false
+                    },
                     fontFamily: 'inherit'
                 },
-                plotOptions: {
-                    bar: {
-                        horizontal: false,
-                        columnWidth: '55%',
-                        borderRadius: 4
+                colors: ['#2A8BF2', '#10b981', '#f59e0b'],
+                fill: {
+                    type: 'gradient',
+                    gradient: {
+                        shadeIntensity: 1,
+                        opacityFrom: 0.35,
+                        opacityTo: 0.05,
+                        stops: [0, 90, 100]
                     }
                 },
                 dataLabels: {
                     enabled: false
                 },
                 stroke: {
-                    show: true,
-                    width: 2,
-                    colors: ['transparent']
+                    curve: 'smooth',
+                    width: [3.5, 2.5, 2.5]
+                },
+                markers: {
+                    size: 4,
+                    strokeColors: '#ffffff',
+                    strokeWidth: 2,
+                    hover: {
+                        size: 6
+                    }
                 },
                 xaxis: {
                     categories: @json($chartBulanLabels),
                     labels: {
                         style: {
-                            fontSize: '10px'
+                            fontSize: '10.5px',
+                            colors: '#64748b'
                         }
+                    },
+                    axisBorder: {
+                        show: false
+                    },
+                    axisTicks: {
+                        show: false
                     }
                 },
                 yaxis: {
                     labels: {
                         style: {
-                            fontSize: '10px'
+                            fontSize: '10px',
+                            colors: '#64748b'
                         },
                         formatter: function(val) {
                             if (val >= 1000000000) return (val / 1000000000).toFixed(1) + 'M';
                             if (val >= 1000000) return (val / 1000000).toFixed(0) + 'Jt';
+                            if (val >= 1000) return (val / 1000).toFixed(0) + 'Rb';
                             return val;
                         }
                     }
-                },
-                colors: ['#2A8BF2', '#10b981', '#f59e0b'],
-                fill: {
-                    opacity: 1
                 },
                 tooltip: {
                     y: {
                         formatter: function(val) {
                             return 'Rp ' + Number(val).toLocaleString('id-ID');
                         }
+                    }
+                },
+                grid: {
+                    show: true,
+                    strokeDashArray: 4,
+                    borderColor: '#f1f5f9',
+                    padding: {
+                        top: 5,
+                        right: 10,
+                        bottom: 0,
+                        left: 10
                     }
                 },
                 legend: {
