@@ -33,6 +33,12 @@
             </div>
         @enderror
 
+        @error('password')
+            <div class="alert alert-warning mb-3">
+                <p class="mb-0">{{ $message }}</p>
+            </div>
+        @enderror
+
         <div class="text-center mb-3">
             @if (!empty($user->foto))
                 @php
@@ -83,6 +89,20 @@
                 </div>
             </div>
 
+            <div class="form-group boxed">
+                <div class="input-wrapper">
+                    <label style="font-size: 11px; font-weight: 600; color: #64748b; margin-bottom: 2px;">Password Baru</label>
+                    <input type="password" name="password" class="form-control" placeholder="Password Baru" autocomplete="new-password">
+                </div>
+            </div>
+
+            <div class="form-group boxed">
+                <div class="input-wrapper">
+                    <label style="font-size: 11px; font-weight: 600; color: #64748b; margin-bottom: 2px;">Konfirmasi Password</label>
+                    <input type="password" name="password_confirmation" class="form-control" placeholder="Konfirmasi Password" autocomplete="new-password">
+                </div>
+            </div>
+
             <div class="custom-file-upload mt-3" id="fileUploadMonitoring">
                 <input type="file" name="foto" id="fileuploadInput" accept=".png, .jpg, .jpeg">
                 <label for="fileuploadInput">
@@ -97,8 +117,8 @@
 
             <div class="form-group mt-3">
                 <button type="submit" class="btn btn-primary btn-block btn-lg" style="background-color: #2A8BF2; border-color: #2A8BF2;">
-                    <ion-icon name="camera-outline" style="vertical-align: -2px; margin-right: 4px;"></ion-icon>
-                    Update Foto Profil
+                    <ion-icon name="save-outline" style="vertical-align: -2px; margin-right: 4px;"></ion-icon>
+                    Simpan Perubahan
                 </button>
             </div>
         </form>

@@ -12,8 +12,8 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#123d7a">
-    <title>SAKTI UPPD SAMSAT Batulicin</title>
-    <meta name="description" content="SAKTI UPPD SAMSAT Batulicin">
+    <title>E-Lapor SAMKEL UPPD SAMSAT Batulicin</title>
+    <meta name="description" content="E-Lapor SAMKEL UPPD SAMSAT Batulicin">
     <meta name="keywords" content="ABSENSI DAN PENERIMAAN PKB SAMSAT BATULICIN" />
     <link rel="icon" type="image/png" href="{{ asset('Logo Sakti.png') }}?v=2" sizes="32x32"
         onerror="this.src='{{ asset('assets/img/favicon.png') }}'">

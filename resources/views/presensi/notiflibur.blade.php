@@ -7,7 +7,7 @@
                 <ion-icon name="chevron-back-outline"></ion-icon>
             </a>
         </div>
-        <div class="pageTitle">Sakti</div>
+        <div class="pageTitle">E-Lapor SAMKEL</div>
         <div class="right"></div>
     </div>
     <!-- * App Header -->

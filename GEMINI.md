@@ -1,6 +1,6 @@
-# Panduan & Kebiasaan Arahan Pengembangan SAKTI
+# Panduan & Kebiasaan Arahan Pengembangan E-Lapor SAMKEL
 
-File ini mencatat pedoman, preferensi, dan kebiasaan arahan USER untuk aplikasi SAKTI (Sistem Absensi & Rekap Penerimaan PKB UPPD SAMSAT Batulicin). Semua agen/assistant WAJIB mematuhi panduan ini.
+File ini mencatat pedoman, preferensi, dan kebiasaan arahan USER untuk aplikasi E-Lapor SAMKEL (Elektronik Laporan SAMSAT Keliling - Sistem Absensi & Rekap Penerimaan PKB UPPD SAMSAT Batulicin). Semua agen/assistant WAJIB mematuhi panduan ini.
 
 ---
 
@@ -14,7 +14,7 @@ File ini mencatat pedoman, preferensi, dan kebiasaan arahan USER untuk aplikasi 
 
 ---
 
-## 2. Standar Nama & Konvensi SAKTI
+## 2. Standar Nama & Konvensi E-Lapor SAMKEL
 - Penulisan nama kota yang baku dan benar adalah **Batulicin** (BUKAN *batu licin* atau *Batu Licin*).
 - **DILARANG menggunakan kata "Posko"**, gunakan istilah baku **"Lokasi"** (misal: *Lokasi Layanan*, bukan *Posko Layanan*).
 - Pewarnaan status presensi/layanan:

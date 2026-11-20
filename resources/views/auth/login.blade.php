@@ -8,7 +8,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#2A8BF2">
-    <title>SAKTI - Sign In</title>
+    <title>E-Lapor SAMKEL - Sign In</title>
     <meta name="description" content="Aplikasi Presensi &amp; Rekap Penerimaan PKB UPPD SAMSAT Batulicin">
     <link rel="icon" type="image/png" href="{{ asset('Logo Sakti.png') }}?v=2" sizes="32x32">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('Logo Sakti.png') }}?v=2">
@@ -113,18 +113,16 @@
 
             <!-- Text Content -->
             <div class="side-content">
-                <h2 class="side-title">SAKTI</h2>
+                <h2 class="side-title">E-Lapor SAMKEL</h2>
                 <p class="side-desc">
-                    Selamat datang di Sistem Absensi &amp; Rekap Penerimaan PKB UPPD SAMSAT Batulicin. Silakan masuk
-                    menggunakan Username Layanan Anda.
-
+                    Selamat datang di Sistem Digitalisasi Laporan SAMSAT Keliling. Silakan masuk menggunakan Username Layanan Anda.
                 </p>
             </div>
 
             <!-- Ilustrasi Layanan Mobil Samsat Keliling -->
             <div class="side-illustration">
                 <img src="{{ asset('assets/img/login_samsat_keliling.png') . '?v=' . time() }}"
-                    alt="Ilustrasi SAKTI UPPD SAMSAT Batulicin" class="img-illustration">
+                    alt="Ilustrasi E-Lapor SAMKEL UPPD SAMSAT Batulicin" class="img-illustration">
             </div>
         </div>
 
@@ -264,15 +262,15 @@
             </div>
 
             <div class="mobile-info-wrap">
-                <h3 class="mobile-info-title">SAKTI</h3>
+                <h3 class="mobile-info-title">E-Lapor SAMKEL</h3>
                 <p class="mobile-info-desc">
-                    Sistem Informasi Presensi <br> dan Rekap Penerimaan PKB<br> UPPD SAMSAT Batulicin
+                    Sistem Digitalisasi Laporan SAMSAT Keliling<br> UPPD SAMSAT Batulicin
                 </p>
 
                 <!-- Ilustrasi Layanan Mobil Samsat Keliling Mobile -->
                 <div class="mobile-illustration">
                     <img src="{{ asset('assets/img/login_samsat_keliling.png') . '?v=' . time() }}"
-                        alt="Ilustrasi SAKTI UPPD SAMSAT Batulicin" class="img-illustration">
+                        alt="Ilustrasi E-Lapor SAMKEL UPPD SAMSAT Batulicin" class="img-illustration">
                 </div>
             </div>
         </div>

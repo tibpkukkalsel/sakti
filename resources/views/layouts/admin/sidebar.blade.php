@@ -10,7 +10,7 @@
             </span>
             <!--end::Brand Icon-->
             <!--begin::Brand Text-->
-            <span class="brand-text fw-semibold text-white fs-6">SAKTI</span>
+            <span class="brand-text fw-semibold text-white fs-6">E-Lapor SAMKEL</span>
             <!--end::Brand Text-->
         </a>
         <!--end::Brand Link-->

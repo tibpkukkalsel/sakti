@@ -8,8 +8,8 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#334155">
-    <title>SAKTI - Admin Panel</title>
-    <meta name="description" content="Panel Administrator SAKTI UPPD SAMSAT Batulicin">
+    <title>E-Lapor SAMKEL - Admin Panel</title>
+    <meta name="description" content="Panel Administrator E-Lapor SAMKEL UPPD SAMSAT Batulicin">
     <link rel="icon" type="image/png" href="{{ asset('Logo Sakti.png') }}?v=2" sizes="32x32">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('Logo Sakti.png') }}?v=2">
     <link rel="manifest" href="{{ asset('manifest.json') }}">
@@ -37,7 +37,7 @@
 
             <!-- Text Content -->
             <div class="side-content">
-                <h2 class="side-title">SAKTI ADMIN</h2>
+                <h2 class="side-title">E-LAPOR SAMKEL ADMIN</h2>
                 <p class="side-desc">
                     Selamat datang di Panel Administrasi Sistem Absensi &amp; Rekap Penerimaan PKB UPPD SAMSAT
                     Batulicin.
@@ -48,7 +48,7 @@
             <!-- Ilustrasi Layanan Mobil Samsat Keliling -->
             <div class="side-illustration">
                 <img src="{{ asset('assets/img/login_samsat_keliling.png') . '?v=' . time() }}"
-                    alt="Ilustrasi SAKTI UPPD SAMSAT Batulicin" class="img-illustration">
+                    alt="Ilustrasi E-Lapor SAMKEL UPPD SAMSAT Batulicin" class="img-illustration">
             </div>
         </div>
 
@@ -151,7 +151,7 @@
             </div>
 
             <div class="mobile-info-wrap">
-                <h3 class="mobile-info-title">SAKTI ADMIN</h3>
+                <h3 class="mobile-info-title">E-LAPOR SAMKEL ADMIN</h3>
                 <p class="mobile-info-desc">
                     Panel Kontrol &amp; Pengelolaan Presensi Serta Penerimaan PKB UPPD SAMSAT Batulicin
                 </p>
@@ -159,7 +159,7 @@
                 <!-- Mini Illustration for Mobile -->
                 <div class="mobile-illustration">
                     <img src="{{ asset('assets/img/login_samsat_keliling.png') . '?v=' . time() }}"
-                        alt="Ilustrasi SAKTI UPPD SAMSAT Batulicin" class="img-illustration">
+                        alt="Ilustrasi E-Lapor SAMKEL UPPD SAMSAT Batulicin" class="img-illustration">
                 </div>
             </div>
         </div>
