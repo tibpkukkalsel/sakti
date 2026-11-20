@@ -135,7 +135,7 @@
                 </form>
 
                 <div class="form-footer">
-                    Copyright &copy; 2024 Adimas Fitriandi<br>Bapenda Prov. Kalsel
+                    Copyright &copy; 2026 Adimas Fitriandi<br>Bapenda Prov. Kalsel
                 </div>
 
             </div>
