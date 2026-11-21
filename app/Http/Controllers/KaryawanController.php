@@ -35,7 +35,7 @@ class KaryawanController extends Controller
         $karyawan = $query->paginate(10);
 
         $departemen = collect([]);
-        $cabang = DB::table('cabang')->orderBy('kode_cabang')->get();
+        $cabang = DB::table('cabang')->orderBy('nama_cabang')->get();
         return view('karyawan.index', compact('karyawan', 'departemen', 'cabang'));
     }
 
@@ -104,7 +104,7 @@ class KaryawanController extends Controller
     {
         $nik = $request->nik;
         $departemen = collect([]);
-        $cabang = DB::table('cabang')->orderBy('kode_cabang')->get();
+        $cabang = DB::table('cabang')->orderBy('nama_cabang')->get();
         $karyawan = DB::table('pegawai')->where('nik', $nik)->first();
         return view('karyawan.edit', compact('departemen', 'karyawan', 'cabang'));
     }

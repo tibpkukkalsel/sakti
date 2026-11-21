@@ -1,7 +1,7 @@
 @foreach ($konfigurasijamkerjabydate as $d)
     <tr>
         <td>{{ $loop->iteration }}</td>
-        <td>{{ date('d-m-Y', strtotime($d->tanggal)) }}</td>
+        <td>{{ formatHariTanggal($d->tanggal) }}</td>
         <td>{{ $d->nama_jam_kerja }}</td>
         <td>
             <a href="#" class="btn btn-danger btn-sm hapus" nik="{{ $d->nik }}" tanggal="{{ $d->tanggal }}">

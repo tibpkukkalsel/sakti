@@ -30,6 +30,16 @@
                                     {{ Session::get('warning') }}
                                 </div>
                                 @endif
+
+                                @if ($errors->any())
+                                <div class="alert alert-danger">
+                                    <ul class="mb-0 ps-3">
+                                        @foreach ($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                                @endif
                             </div>
                         </div>
                         @role('administrator', 'user')
@@ -52,15 +62,15 @@
                                     <div class="row">
                                         <div class="col-6">
                                             <div class="form-group">
-                                                <input type="text" name="nama_layanan" id="nama_layanan" class="form-control" placeholder="Nama Layanan / Username / PIC" value="{{ Request('nama_layanan') }}">
+                                                <input type="text" name="nama_layanan" id="cari_nama_layanan" class="form-control" placeholder="Nama Layanan / Username" value="{{ Request('nama_layanan') }}">
                                             </div>
                                         </div>
                                         <div class="col-4">
                                             <div class="form-group">
-                                                <select name="kode_cabang" id="kode_cabang" class="form-select">
+                                                <select name="kode_cabang" id="cari_kode_cabang" class="form-select">
                                                     <option value="">Semua Lokasi</option>
                                                     @foreach ($cabang as $c)
-                                                    <option value="{{ $c->kode_cabang }}" {{ Request('kode_cabang') == $c->kode_cabang ? 'selected' : '' }}>
+                                                    <option value="{{ $c->id }}" {{ Request('kode_cabang') == $c->id ? 'selected' : '' }}>
                                                         {{ strtoupper($c->nama_cabang) }}
                                                     </option>
                                                     @endforeach
@@ -91,11 +101,11 @@
                                             <tr>
                                                 <th style="width: 50px;" class="text-center">No</th>
                                                 <th>Nama Layanan</th>
-                                                <th>Username</th>
-                                                <th>Penanggung Jawab (PIC)</th>
+                                                <th>Mode Presensi</th>
+                                                <th>Petugas</th>
                                                 <th>Lokasi</th>
                                                 <th class="text-center">Keamanan</th>
-                                                <th style="width: 140px;" class="text-center">Aksi</th>
+                                                <th style="width: 170px;" class="text-center">Aksi</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -111,22 +121,32 @@
                                                         @endif
                                                         <div>
                                                             <div class="fw-bold">{{ $d->nama_layanan }}</div>
+                                                            <code class="small text-muted">{{ $d->username }}</code>
                                                         </div>
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <span class="badge bg-light text-dark border">{{ $d->username }}</span>
-                                                </td>
-                                                <td>
-                                                    <div class="fw-bold">{{ $d->nama_pic }}</div>
-                                                    <small class="text-muted">NIP: {{ $d->nip_pic ?: '-' }} | {{ $d->jabatan_pic ?: 'Petugas' }}</small>
-                                                    @if ($d->no_hp)
-                                                    <div class="small text-success">{{ $d->no_hp }}</div>
+                                                    @if (($d->mode_presensi ?? 'bebas') == 'jadwal')
+                                                        <span class="badge bg-warning text-dark">Jadwal Mingguan</span>
+                                                    @else
+                                                        <span class="badge bg-success">Bebas</span>
                                                     @endif
                                                 </td>
                                                 <td>
+                                                    <a href="/panel-adm14/petugas-layanan?layanan_id={{ $d->id }}" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-users" width="16" height="16" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                            <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path>
+                                                            <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"></path>
+                                                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                                                            <path d="M21 21v-2a4 4 0 0 0 -3 -3.85"></path>
+                                                        </svg>
+                                                        <span>{{ $d->petugas_count ?? $d->petugas()->count() }} Petugas</span>
+                                                    </a>
+                                                </td>
+                                                <td>
                                                     @php
-                                                    $lok = $cabang->firstWhere('kode_cabang', $d->kode_cabang);
+                                                    $lok = $cabang->firstWhere('id', $d->kode_cabang);
                                                     @endphp
                                                     {{ $lok ? $lok->nama_cabang : ($d->kode_cabang ?: '-') }}
                                                 </td>
@@ -194,6 +214,17 @@
                                                 </td>
                                                 <td>
                                                     <div class="d-flex justify-content-center">
+                                                        <a href="/panel-adm14/petugas-layanan/jadwal?layanan_id={{ $d->id }}" class="btn btn-primary btn-sm me-1" title="Atur Jadwal & Mode Presensi">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="20" height="20" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                                <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4"></path>
+                                                                <path d="M18 18m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path>
+                                                                <path d="M15 3v4"></path>
+                                                                <path d="M7 3v4"></path>
+                                                                <path d="M3 11h16"></path>
+                                                                <path d="M18 16.496v1.504l1 1"></path>
+                                                            </svg>
+                                                        </a>
                                                         <a href="#" class="edit btn btn-info btn-sm me-1" id_layanan="{{ $d->id }}">
                                                             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-edit" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                                                 <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
@@ -301,67 +332,12 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-12">
-                            <div class="input-icon mb-3">
-                                <span class="input-icon-addon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user-check" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                        <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"></path>
-                                        <path d="M6 21v-2a4 4 0 0 1 4 -4h4"></path>
-                                        <path d="M15 19l2 2l4 -4"></path>
-                                    </svg>
-                                </span>
-                                <input type="text" id="nama_pic" class="form-control" name="nama_pic" placeholder="Nama PIC">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="input-icon mb-3">
-                                <span class="input-icon-addon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-id" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                        <path d="M3 4m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v10a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z"></path>
-                                        <path d="M9 10m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
-                                        <path d="M15 8l2 0"></path>
-                                        <path d="M15 12l2 0"></path>
-                                        <path d="M7 16l10 0"></path>
-                                    </svg>
-                                </span>
-                                <input type="text" id="nip_pic" class="form-control" name="nip_pic" placeholder="NIP PIC">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="input-icon mb-3">
-                                <span class="input-icon-addon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-briefcase" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                        <path d="M3 7m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z"></path>
-                                        <path d="M8 7v-2a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v2"></path>
-                                        <path d="M12 12l0 .01"></path>
-                                        <path d="M3 13a20 20 0 0 0 18 0"></path>
-                                    </svg>
-                                </span>
-                                <input type="text" id="jabatan_pic" class="form-control" name="jabatan_pic" placeholder="Jabatan PIC">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="input-icon mb-3">
-                                <span class="input-icon-addon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-phone" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                        <path d="M5 4h4l2 5l-2.5 1.5a11 11 0 0 0 5 5l1.5 -2.5l5 2v4a2 2 0 0 1 -2 2a16 16 0 0 1 -15 -15a2 2 0 0 1 2 -2"></path>
-                                    </svg>
-                                </span>
-                                <input type="text" id="no_hp" class="form-control" name="no_hp" placeholder="No. HP">
-                            </div>
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Mode Presensi</label>
+                            <select name="mode_presensi" class="form-select">
+                                <option value="bebas">Bebas</option>
+                                <option value="jadwal">Jadwal Mingguan</option>
+                            </select>
                         </div>
                     </div>
 
@@ -451,9 +427,9 @@
         });
 
         $("#frmLayanan").submit(function() {
-            var nama_layanan = $("#nama_layanan").val();
-            var username = $("#username").val();
-            var nama_pic = $("#nama_pic").val();
+            var form = $(this);
+            var nama_layanan = form.find("input[name='nama_layanan']").val();
+            var username = form.find("input[name='username']").val();
 
             if (nama_layanan == "") {
                 Swal.fire({
@@ -462,7 +438,7 @@
                     icon: 'warning',
                     confirmButtonText: 'Ok'
                 }).then((result) => {
-                    $("#nama_layanan").focus();
+                    form.find("input[name='nama_layanan']").focus();
                 });
                 return false;
             } else if (username == "") {
@@ -472,17 +448,7 @@
                     icon: 'warning',
                     confirmButtonText: 'Ok'
                 }).then((result) => {
-                    $("#username").focus();
-                });
-                return false;
-            } else if (nama_pic == "") {
-                Swal.fire({
-                    title: 'Warning!',
-                    text: 'Nama PIC Harus Diisi !',
-                    icon: 'warning',
-                    confirmButtonText: 'Ok'
-                }).then((result) => {
-                    $("#nama_pic").focus();
+                    form.find("input[name='username']").focus();
                 });
                 return false;
             }

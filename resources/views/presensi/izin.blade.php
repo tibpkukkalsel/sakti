@@ -148,11 +148,11 @@
                                 @endif
                             </div>
                             <div class="datapresensi">
-                                <h3 style="line-height: 3px">{{ date('d-m-Y', strtotime($d->tgl_izin_dari)) }}
+                                <h3 style="line-height: 3px">{{ formatHariTanggal($d->tgl_izin_dari) }}
                                     ({{ $status }})
                                 </h3>
-                                <small>{{ date('d-m-Y', strtotime($d->tgl_izin_dari)) }} s/d
-                                    {{ date('d-m-Y', strtotime($d->tgl_izin_sampai)) }} </small>
+                                <small>{{ formatHariTanggal($d->tgl_izin_dari) }} s/d
+                                    {{ formatHariTanggal($d->tgl_izin_sampai) }} </small>
                                 <p>
 
 

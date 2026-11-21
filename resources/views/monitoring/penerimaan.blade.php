@@ -272,10 +272,37 @@
                             <ion-icon name="location-outline" style="font-size: 13px; color: #ef4444; flex-shrink: 0;"></ion-icon>
                             <span>{{ $row->nama_lokasi ?? 'UPPD SAMSAT Batulicin' }}</span>
                         </div>
+                        @if (!empty($row->input_by_nama))
+                            <div class="text-muted" style="font-size: 11px; display: flex; align-items: center; gap: 4px; margin-top: 2px;">
+                                <ion-icon name="person-outline" style="font-size: 12px; color: #2563eb; flex-shrink: 0;"></ion-icon>
+                                <span>Diinput: {{ $row->input_by_nama }}</span>
+                            </div>
+                        @endif
                     </div>
-                    <span class="badge bg-light text-primary border" style="font-size: 11px; padding: 4px 8px; border-radius: 6px;">
-                        {{ date('d-m-Y', strtotime($row->tgl_penerimaan)) }}
-                    </span>
+                    <div class="text-end">
+                        <span class="badge bg-light text-primary border" style="font-size: 11px; padding: 4px 8px; border-radius: 6px; display: inline-block; margin-bottom: 4px;">
+                            {{ formatHariTanggal($row->tgl_penerimaan) }}
+                        </span>
+                        <div>
+                            @if (($row->status_verifikasi ?? 'draft') == 'disetujui')
+                                <span class="badge" style="background: rgba(16, 185, 129, 0.15); color: #059669; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 4px;">
+                                    Disetujui
+                                </span>
+                            @elseif (($row->status_verifikasi ?? 'draft') == 'ditolak')
+                                <span class="badge" style="background: rgba(239, 68, 68, 0.15); color: #dc2626; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 4px;">
+                                    Ditolak
+                                </span>
+                            @elseif (($row->status_verifikasi ?? 'draft') == 'menunggu')
+                                <span class="badge" style="background: rgba(37, 99, 235, 0.15); color: #2563eb; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 4px;">
+                                    Menunggu
+                                </span>
+                            @else
+                                <span class="badge" style="background: rgba(245, 158, 11, 0.15); color: #d97706; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 4px;">
+                                    Draft
+                                </span>
+                            @endif
+                        </div>
+                    </div>
                 </div>
                 <div class="d-flex align-items-center justify-content-between mt-2">
                     <span style="font-size: 16px; font-weight: 800; color: #2A8BF2; white-space: nowrap;">
@@ -285,6 +312,11 @@
                         <span class="badge" style="background: rgba(16, 185, 129, 0.12); color: #10b981; font-size: 11.5px; font-weight: 700; padding: 4px 8px; border-radius: 6px;">
                             {{ number_format($row->total_unit, 0, ',', '.') }} Unit
                         </span>
+                        @if ($row->lintasDaerah && $row->lintasDaerah->count() > 0)
+                            <span class="badge" style="background: rgba(37, 99, 235, 0.12); color: #2563eb; font-size: 11.5px; font-weight: 700; padding: 4px 8px; border-radius: 6px;">
+                                Lintas: {{ $row->lintasDaerah->count() }}
+                            </span>
+                        @endif
                         <span class="badge" style="background: rgba(245, 158, 11, 0.12); color: #d97706; font-size: 11.5px; font-weight: 700; padding: 4px 8px; border-radius: 6px;">
                             <ion-icon name="print-outline" style="font-size: 11px; vertical-align: -1px; margin-right: 2px;"></ion-icon>{{ number_format($row->jumlah_notice ?? 0, 0, ',', '.') }} Notice
                         </span>
@@ -300,6 +332,43 @@
                         Rp {{ number_format($row->jumlah_rp_r4, 0, ',', '.') }} ({{ $row->jumlah_unit_r4 }})
                     </span>
                 </div>
+                @if (!empty($row->no_awal_notice) || !empty($row->no_akhir_notice) || !empty($row->foto_awal_notice) || !empty($row->foto_akhir_notice))
+                    <div class="mt-2 pt-2 border-top d-flex align-items-center justify-content-between" style="font-size: 11px; background: #f8fafc; border-radius: 8px; padding: 6px 10px;">
+                        <div>
+                            <span class="text-muted">Notice:</span>
+                            <strong class="text-dark">{{ $row->no_awal_notice ?? '-' }} s/d {{ $row->no_akhir_notice ?? '-' }}</strong>
+                        </div>
+                        <div class="d-flex" style="gap: 5px;">
+                            @if (!empty($row->foto_awal_notice))
+                                <a href="javascript:void(0)" onclick="previewFotoNotice('{{ asset('uploads/notice/' . $row->foto_awal_notice) }}', 'Bukti Notice Awal')" class="badge bg-light text-primary border" style="text-decoration: none; padding: 3px 6px; cursor: pointer;">
+                                    Foto Awal
+                                </a>
+                            @endif
+                            @if (!empty($row->foto_akhir_notice))
+                                <a href="javascript:void(0)" onclick="previewFotoNotice('{{ asset('uploads/notice/' . $row->foto_akhir_notice) }}', 'Bukti Notice Akhir')" class="badge bg-light text-primary border" style="text-decoration: none; padding: 3px 6px; cursor: pointer;">
+                                    Foto Akhir
+                                </a>
+                            @endif
+                        </div>
+                    </div>
+                @endif
+                @if ($row->lintasDaerah && $row->lintasDaerah->count() > 0)
+                    <div class="mt-2 pt-2 border-top" style="font-size: 11px;">
+                        <span class="text-muted fw-bold">Notice Lintas Daerah ({{ $row->lintasDaerah->count() }}):</span>
+                        <div class="d-flex flex-wrap gap-1 mt-1">
+                            @foreach ($row->lintasDaerah as $ld)
+                                <span class="badge bg-light text-dark border font-monospace" style="font-size: 10.5px; padding: 3px 6px;">
+                                    {{ $ld->nopol }} ({{ $ld->kabupaten->nama_kabupaten ?? '-' }})
+                                </span>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+                @if (!empty($row->catatan_verifikasi) && ($row->status_verifikasi ?? '') == 'ditolak')
+                    <div class="mt-2 p-2 rounded" style="background: #fef2f2; border: 1px solid #fee2e2; font-size: 11.5px; color: #991b1b;">
+                        <strong>Catatan Perbaikan:</strong> {{ $row->catatan_verifikasi }}
+                    </div>
+                @endif
             </div>
         @empty
             <div class="card text-center py-5" style="border-radius: 14px; border: 1px dashed #cbd5e1; background: #ffffff;">

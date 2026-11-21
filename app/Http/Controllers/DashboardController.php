@@ -143,37 +143,53 @@ class DashboardController extends Controller
         $namabulan = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
 
         $namahari = (new PresensiController)->gethari(date('D', strtotime($hariini)));
+        $authUser = Auth::guard('karyawan')->user();
+        $layananId = $authUser->layanan_id ?? $authUser->id;
+
         // Cek custom tanggal / event khusus dulu, lalu fallback ke rutin mingguan
         $jadwalHariIni = DB::table('jadwal_lokasi_layanan')
-            ->join('cabang', 'jadwal_lokasi_layanan.kode_cabang', '=', 'cabang.kode_cabang')
+            ->join('cabang', 'jadwal_lokasi_layanan.kode_cabang', '=', 'cabang.id')
             ->leftJoin('jam_kerja', 'jadwal_lokasi_layanan.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
-            ->where('jadwal_lokasi_layanan.layanan_id', Auth::guard('karyawan')->user()->id)
+            ->where('jadwal_lokasi_layanan.layanan_id', $layananId)
             ->where('jadwal_lokasi_layanan.tanggal', $hariini)
             ->where('jadwal_lokasi_layanan.status', 1)
-            ->select('cabang.*', 'jadwal_lokasi_layanan.keterangan as ket_jadwal', 'jadwal_lokasi_layanan.jenis_jadwal', 'jadwal_lokasi_layanan.kode_jam_kerja', 'jam_kerja.nama_jam_kerja', 'jam_kerja.jam_masuk', 'jam_kerja.jam_pulang')
+            ->select('cabang.*', 'jadwal_lokasi_layanan.kode_cabang', 'jadwal_lokasi_layanan.keterangan as ket_jadwal', 'jadwal_lokasi_layanan.jenis_jadwal', 'jadwal_lokasi_layanan.kode_jam_kerja', 'jam_kerja.nama_jam_kerja', 'jam_kerja.jam_masuk', 'jam_kerja.jam_pulang')
             ->first();
 
         if (!$jadwalHariIni) {
             $jadwalHariIni = DB::table('jadwal_lokasi_layanan')
-                ->join('cabang', 'jadwal_lokasi_layanan.kode_cabang', '=', 'cabang.kode_cabang')
+                ->join('cabang', 'jadwal_lokasi_layanan.kode_cabang', '=', 'cabang.id')
                 ->leftJoin('jam_kerja', 'jadwal_lokasi_layanan.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
-                ->where('jadwal_lokasi_layanan.layanan_id', Auth::guard('karyawan')->user()->id)
+                ->where('jadwal_lokasi_layanan.layanan_id', $layananId)
                 ->where('jadwal_lokasi_layanan.hari', $namahari)
                 ->where('jadwal_lokasi_layanan.jenis_jadwal', 'rutin')
                 ->where('jadwal_lokasi_layanan.status', 1)
-                ->select('cabang.*', 'jadwal_lokasi_layanan.keterangan as ket_jadwal', 'jadwal_lokasi_layanan.jenis_jadwal', 'jadwal_lokasi_layanan.kode_jam_kerja', 'jam_kerja.nama_jam_kerja', 'jam_kerja.jam_masuk', 'jam_kerja.jam_pulang')
+                ->select('cabang.*', 'jadwal_lokasi_layanan.kode_cabang', 'jadwal_lokasi_layanan.keterangan as ket_jadwal', 'jadwal_lokasi_layanan.jenis_jadwal', 'jadwal_lokasi_layanan.kode_jam_kerja', 'jam_kerja.nama_jam_kerja', 'jam_kerja.jam_masuk', 'jam_kerja.jam_pulang')
                 ->first();
         }
 
         if ($jadwalHariIni) {
+            $jadwalHariIni->kode_cabang = $jadwalHariIni->kode_cabang ?? $jadwalHariIni->id ?? null;
             $cabang = $jadwalHariIni;
         } else {
-            $cabang = DB::table('cabang')->where('kode_cabang', $kode_cabang)->first();
+            // Jika layanan tidak ada jadwal lokasi hari ini, otomatis berstatus Libur
+            $cabang = (object) [
+                'id' => null,
+                'nama_cabang' => 'Libur (Tidak Ada Jadwal)',
+                'lokasi_cabang' => null,
+                'radius_cabang' => 0,
+            ];
+            if (!$dataliburhariini) {
+                $dataliburhariini = (object) [
+                    'kode_libur' => 'LIBUR',
+                    'tanggal_libur' => $hariini,
+                    'keterangan' => 'Libur (Tidak Ada Jadwal Layanan)',
+                ];
+            }
         }
         $departemen = null;
 
         // Penerimaan PKB hari ini untuk akun layanan ini
-        $layananId = Auth::guard('karyawan')->user()->id;
         $penerimaanHariIniLayanan = DB::table('rekap_penerimaan_pkb')
             ->where('layanan_id', $layananId)
             ->where('tgl_penerimaan', $hariini)
@@ -268,7 +284,7 @@ class DashboardController extends Controller
                         WHEN 7 THEN 'Sabtu'
                     END");
             })
-            ->leftJoin('cabang as c_lokasi', DB::raw("COALESCE(rekap_penerimaan_pkb.kode_cabang, j_khusus.kode_cabang, j_rutin.kode_cabang, layanan.kode_cabang)"), '=', 'c_lokasi.kode_cabang')
+            ->leftJoin('cabang as c_lokasi', DB::raw("COALESCE(rekap_penerimaan_pkb.kode_cabang, j_khusus.kode_cabang, j_rutin.kode_cabang, layanan.kode_cabang)"), '=', 'c_lokasi.id')
             ->where('rekap_penerimaan_pkb.layanan_id', $layananId)
             ->whereYear('rekap_penerimaan_pkb.tgl_penerimaan', $tahunini)
             ->selectRaw("
@@ -342,7 +358,7 @@ class DashboardController extends Controller
         // 3. Ambil data seluruh akun layanan beserta cabang default-nya
         $listLayanan = DB::table('layanan')
             ->select('layanan.*', 'cabang.nama_cabang as nama_cabang_default')
-            ->leftJoin('cabang', 'layanan.kode_cabang', '=', 'cabang.kode_cabang')
+            ->leftJoin('cabang', 'layanan.kode_cabang', '=', 'cabang.id')
             ->orderBy('layanan.nama_layanan', 'asc')
             ->get();
 
@@ -356,7 +372,7 @@ class DashboardController extends Controller
 
         // 5. Jadwal lokasi pelayanan hari ini (prioritaskan event khusus, lalu rutin mingguan)
         $jadwalRutinHariIni = DB::table('jadwal_lokasi_layanan')
-            ->join('cabang', 'jadwal_lokasi_layanan.kode_cabang', '=', 'cabang.kode_cabang')
+            ->join('cabang', 'jadwal_lokasi_layanan.kode_cabang', '=', 'cabang.id')
             ->where('jadwal_lokasi_layanan.hari', $namahari)
             ->where('jadwal_lokasi_layanan.jenis_jadwal', 'rutin')
             ->where('jadwal_lokasi_layanan.status', 1)
@@ -365,7 +381,7 @@ class DashboardController extends Controller
             ->keyBy('layanan_id');
 
         $jadwalKhususHariIni = DB::table('jadwal_lokasi_layanan')
-            ->join('cabang', 'jadwal_lokasi_layanan.kode_cabang', '=', 'cabang.kode_cabang')
+            ->join('cabang', 'jadwal_lokasi_layanan.kode_cabang', '=', 'cabang.id')
             ->where('jadwal_lokasi_layanan.tanggal', $hariini)
             ->where('jadwal_lokasi_layanan.status', 1)
             ->select('jadwal_lokasi_layanan.*', 'cabang.nama_cabang', 'cabang.lokasi_cabang', 'cabang.radius_cabang')
@@ -388,6 +404,7 @@ class DashboardController extends Controller
         $jmlLayananAktif = 0;
         $jmlLayananPulang = 0;
         $jmlMaintenance = 0;
+        $jmlLayananLibur = 0;
         $monitoringLayanan = [];
 
         foreach ($listLayanan as $l) {
@@ -401,7 +418,7 @@ class DashboardController extends Controller
             if ($m || ($p && $p->status == 'm')) {
                 $jmlMaintenance++;
                 $statusText = 'Maintenance';
-                $statusBadge = 'bg-warning text-dark';
+                $statusBadge = 'bg-info text-white';
                 $ketMaint = $m ? $m->keterangan : 'Pemeliharaan Unit';
                 $lokasiTampil = 'Maintenance' . ($ketMaint ? ' (' . $ketMaint . ')' : '');
             } elseif ($p && !empty($jamIn)) {
@@ -422,9 +439,15 @@ class DashboardController extends Controller
                 } elseif (!empty($l->nama_cabang_default)) {
                     $lokasiTampil = $l->nama_cabang_default;
                 }
+            } elseif (!$j || ($p && $p->status == 'l')) {
+                // Jika layanan tidak ada jadwal lokasi hari ini, otomatis Libur
+                $jmlLayananLibur++;
+                $statusText = 'Libur';
+                $statusBadge = 'bg-warning text-white';
+                $lokasiTampil = 'Libur (Tidak Ada Jadwal)';
             } else {
                 $statusText = 'Belum Hadir';
-                $statusBadge = 'bg-secondary text-white';
+                $statusBadge = 'bg-danger text-white';
 
                 // Tentukan lokasi jadwal hari ini
                 $lokasiTampil = '-';
@@ -450,7 +473,7 @@ class DashboardController extends Controller
             ];
         }
 
-        $jmlBelumAbsen = max(0, $totalLayanan - $jmlLayananAktif - $jmlMaintenance);
+        $jmlBelumAbsen = max(0, $totalLayanan - $jmlLayananAktif - $jmlMaintenance - $jmlLayananLibur);
 
         return view('dashboard.dashboardadmin', compact(
             'totalLayanan',
@@ -458,6 +481,7 @@ class DashboardController extends Controller
             'jmlLayananPulang',
             'jmlMaintenance',
             'jmlBelumAbsen',
+            'jmlLayananLibur',
             'monitoringLayanan',
             'hariini',
             'namahari'
@@ -662,7 +686,7 @@ class DashboardController extends Controller
                         WHEN 7 THEN 'Sabtu'
                     END");
             })
-            ->leftJoin('cabang as c_lokasi', DB::raw("COALESCE(rekap_penerimaan_pkb.kode_cabang, j_khusus.kode_cabang, j_rutin.kode_cabang, layanan.kode_cabang)"), '=', 'c_lokasi.kode_cabang')
+            ->leftJoin('cabang as c_lokasi', DB::raw("COALESCE(rekap_penerimaan_pkb.kode_cabang, j_khusus.kode_cabang, j_rutin.kode_cabang, layanan.kode_cabang)"), '=', 'c_lokasi.id')
             ->whereYear('rekap_penerimaan_pkb.tgl_penerimaan', $tahunini);
 
         if (!empty($layanan_id) && $layanan_id != 'all') {
@@ -756,7 +780,7 @@ class DashboardController extends Controller
                         WHEN 7 THEN 'Sabtu'
                     END");
             })
-            ->leftJoin('cabang as c_lokasi', DB::raw("COALESCE(rekap_penerimaan_pkb.kode_cabang, j_khusus.kode_cabang, j_rutin.kode_cabang, layanan.kode_cabang)"), '=', 'c_lokasi.kode_cabang')
+            ->leftJoin('cabang as c_lokasi', DB::raw("COALESCE(rekap_penerimaan_pkb.kode_cabang, j_khusus.kode_cabang, j_rutin.kode_cabang, layanan.kode_cabang)"), '=', 'c_lokasi.id')
             ->whereBetween('rekap_penerimaan_pkb.tgl_penerimaan', [$startDate, $endDate]);
 
         if (!empty($layanan_id) && $layanan_id != 'all') {
@@ -764,7 +788,7 @@ class DashboardController extends Controller
         }
 
         $rekapLokasiTabel = $lokasiQuery->select(
-            DB::raw("COALESCE(c_lokasi.kode_cabang, 'LAIN') as kode_cabang"),
+            DB::raw("COALESCE(c_lokasi.id, 'LAIN') as kode_cabang"),
             DB::raw("COALESCE(c_lokasi.nama_cabang, 'Lokasi Lainnya') as nama_cabang"),
             DB::raw("COALESCE(c_lokasi.lokasi_cabang, '-') as titik_lokasi"),
             DB::raw("COALESCE(c_lokasi.radius_cabang, 0) as radius_cabang"),
@@ -778,7 +802,7 @@ class DashboardController extends Controller
             DB::raw("COUNT(DISTINCT rekap_penerimaan_pkb.tgl_penerimaan) as total_hari")
         )
         ->groupBy(
-            DB::raw("COALESCE(c_lokasi.kode_cabang, 'LAIN')"),
+            DB::raw("COALESCE(c_lokasi.id, 'LAIN')"),
             DB::raw("COALESCE(c_lokasi.nama_cabang, 'Lokasi Lainnya')"),
             DB::raw("COALESCE(c_lokasi.lokasi_cabang, '-')"),
             DB::raw("COALESCE(c_lokasi.radius_cabang, 0)")

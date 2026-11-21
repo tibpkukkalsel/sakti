@@ -17,6 +17,7 @@ use App\Http\Controllers\LokasiController;
 use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\MonitoringController;
 use App\Http\Controllers\PenerimaanController;
+use App\Http\Controllers\PetugasLayananController;
 use App\Http\Controllers\PresensiController;
 use App\Http\Controllers\UserController;
 use App\Models\Karyawan;
@@ -101,9 +102,21 @@ Route::middleware(['auth:karyawan'])->group(function () {
     Route::get('/penerimaan', [PenerimaanController::class, 'index']);
     Route::get('/penerimaan/create', [PenerimaanController::class, 'create']);
     Route::post('/penerimaan/store', [PenerimaanController::class, 'store']);
+    Route::get('/penerimaan/buka-layanan', [PenerimaanController::class, 'bukaLayanan']);
+    Route::post('/penerimaan/simpan-buka-layanan', [PenerimaanController::class, 'simpanBukaLayanan']);
+    Route::get('/penerimaan/{id}/tutup-layanan', [PenerimaanController::class, 'tutupLayanan']);
+    Route::post('/penerimaan/{id}/kirim-laporan', [PenerimaanController::class, 'kirimLaporan']);
+    Route::post('/penerimaan/{id}/kirim', [PenerimaanController::class, 'kirim']);
+    Route::post('/penerimaan/{id}/batal-kirim', [PenerimaanController::class, 'batalKirim']);
     Route::get('/penerimaan/{id}/edit', [PenerimaanController::class, 'edit']);
     Route::post('/penerimaan/{id}/update', [PenerimaanController::class, 'update']);
     Route::post('/penerimaan/{id}/delete', [PenerimaanController::class, 'delete']);
+
+    // Data Cetak Notice Lintas Luar Daerah
+    Route::get('/penerimaan/{id}/lintas-daerah', [PenerimaanController::class, 'lintasDaerah']);
+    Route::post('/penerimaan/{id}/lintas-daerah/store', [PenerimaanController::class, 'storeLintasDaerah']);
+    Route::post('/penerimaan/lintas-daerah/{lintasId}/update', [PenerimaanController::class, 'updateLintasDaerah']);
+    Route::post('/penerimaan/lintas-daerah/{lintasId}/delete', [PenerimaanController::class, 'deleteLintasDaerah']);
 
     //Presensi
     Route::get('/presensi/{kode_jam_kerja}/create', [PresensiController::class, 'create']);
@@ -177,14 +190,26 @@ Route::group(['prefix' => 'panel-adm14', 'middleware' => ['auth:user', 'role:adm
     Route::get('/layanan/{id}/lockandunlockjamkerja', [LayananController::class, 'lockandunlockjamkerja']);
     Route::get('/layanan/{id}/lockandunlockscan', [LayananController::class, 'lockandunlockscan']);
 
+    // Petugas Layanan (Akun Perorangan di Layanan)
+    Route::get('/petugas-layanan', [PetugasLayananController::class, 'index']);
+    Route::post('/petugas-layanan/store', [PetugasLayananController::class, 'store']);
+    Route::post('/petugas-layanan/edit', [PetugasLayananController::class, 'edit']);
+    Route::post('/petugas-layanan/{id}/update', [PetugasLayananController::class, 'update']);
+    Route::post('/petugas-layanan/{id}/delete', [PetugasLayananController::class, 'delete']);
+    Route::get('/petugas-layanan/{id}/toggle', [PetugasLayananController::class, 'toggleStatus']);
+    Route::get('/petugas-layanan/jadwal', [PetugasLayananController::class, 'jadwal']);
+    Route::post('/petugas-layanan/jadwal/simpan', [PetugasLayananController::class, 'storeJadwal']);
+
+
     // Rekap Penerimaan PKB Admin
     Route::get('/penerimaan', [PenerimaanController::class, 'adminIndex']);
     Route::post('/penerimaan/store', [PenerimaanController::class, 'adminStore']);
     Route::post('/penerimaan/edit', [PenerimaanController::class, 'adminEdit']);
     Route::post('/penerimaan/{id}/update', [PenerimaanController::class, 'adminUpdate']);
     Route::post('/penerimaan/{id}/delete', [PenerimaanController::class, 'adminDelete']);
-    Route::post('/penerimaan/{id}/toggle-lock', [PenerimaanController::class, 'adminToggleLock']);
-    Route::post('/penerimaan/bulk-lock', [PenerimaanController::class, 'adminBulkLock']);
+    Route::post('/penerimaan/{id}/detail-verifikasi', [PenerimaanController::class, 'adminDetailVerifikasi']);
+    Route::post('/penerimaan/{id}/setujui', [PenerimaanController::class, 'adminSetujui']);
+    Route::post('/penerimaan/{id}/tolak', [PenerimaanController::class, 'adminTolak']);
     Route::get('/penerimaan/cetak', [PenerimaanController::class, 'adminCetak']);
     Route::get('/penerimaan/rekap-layanan', [PenerimaanController::class, 'rekapLayanan']);
     Route::get('/penerimaan/rekap-lokasi', [PenerimaanController::class, 'rekapLokasi']);
@@ -198,7 +223,7 @@ Route::group(['prefix' => 'panel-adm14', 'middleware' => ['auth:user', 'role:adm
     Route::post('/lokasi/store', [LokasiController::class, 'store']);
     Route::post('/lokasi/edit', [LokasiController::class, 'edit']);
     Route::post('/lokasi/update', [LokasiController::class, 'update']);
-    Route::post('/lokasi/{kode_cabang}/delete', [LokasiController::class, 'delete']);
+    Route::post('/lokasi/{id}/delete', [LokasiController::class, 'delete']);
 
     // Jadwal Lokasi Layanan
     Route::get('/presensi/jadwal-layanan', [JadwalLokasiController::class, 'jadwalLayananView']);
@@ -268,14 +293,26 @@ Route::group(['prefix' => 'panel-adm14', 'middleware' => ['auth:user', 'role:adm
     Route::get('/layanan/{id}/lockandunlockjamkerja', [LayananController::class, 'lockandunlockjamkerja']);
     Route::get('/layanan/{id}/lockandunlockscan', [LayananController::class, 'lockandunlockscan']);
 
+    // Petugas Layanan (Akun Perorangan di Layanan)
+    Route::get('/petugas-layanan', [PetugasLayananController::class, 'index']);
+    Route::post('/petugas-layanan/store', [PetugasLayananController::class, 'store']);
+    Route::post('/petugas-layanan/edit', [PetugasLayananController::class, 'edit']);
+    Route::post('/petugas-layanan/{id}/update', [PetugasLayananController::class, 'update']);
+    Route::post('/petugas-layanan/{id}/delete', [PetugasLayananController::class, 'delete']);
+    Route::get('/petugas-layanan/{id}/toggle', [PetugasLayananController::class, 'toggleStatus']);
+    Route::get('/petugas-layanan/jadwal', [PetugasLayananController::class, 'jadwal']);
+    Route::post('/petugas-layanan/jadwal/simpan', [PetugasLayananController::class, 'storeJadwal']);
+
+
     // Rekap Penerimaan PKB Admin
     Route::get('/penerimaan', [PenerimaanController::class, 'adminIndex']);
     Route::post('/penerimaan/store', [PenerimaanController::class, 'adminStore']);
     Route::post('/penerimaan/edit', [PenerimaanController::class, 'adminEdit']);
     Route::post('/penerimaan/{id}/update', [PenerimaanController::class, 'adminUpdate']);
     Route::post('/penerimaan/{id}/delete', [PenerimaanController::class, 'adminDelete']);
-    Route::post('/penerimaan/{id}/toggle-lock', [PenerimaanController::class, 'adminToggleLock']);
-    Route::post('/penerimaan/bulk-lock', [PenerimaanController::class, 'adminBulkLock']);
+    Route::post('/penerimaan/{id}/detail-verifikasi', [PenerimaanController::class, 'adminDetailVerifikasi']);
+    Route::post('/penerimaan/{id}/setujui', [PenerimaanController::class, 'adminSetujui']);
+    Route::post('/penerimaan/{id}/tolak', [PenerimaanController::class, 'adminTolak']);
     Route::get('/penerimaan/cetak', [PenerimaanController::class, 'adminCetak']);
     Route::get('/penerimaan/rekap-layanan', [PenerimaanController::class, 'rekapLayanan']);
     Route::get('/penerimaan/rekap-lokasi', [PenerimaanController::class, 'rekapLokasi']);
@@ -289,7 +326,7 @@ Route::group(['prefix' => 'panel-adm14', 'middleware' => ['auth:user', 'role:adm
     Route::post('/lokasi/store', [LokasiController::class, 'store']);
     Route::post('/lokasi/edit', [LokasiController::class, 'edit']);
     Route::post('/lokasi/update', [LokasiController::class, 'update']);
-    Route::post('/lokasi/{kode_cabang}/delete', [LokasiController::class, 'delete']);
+    Route::post('/lokasi/{id}/delete', [LokasiController::class, 'delete']);
 
     //Pegawai / Karyawan Fallback
     Route::post('/karyawan/store', [KaryawanController::class, 'store']);
@@ -336,7 +373,7 @@ Route::group(['prefix' => 'panel-adm14', 'middleware' => ['auth:user', 'role:adm
     Route::post('/cabang/store', [CabangController::class, 'store']);
     Route::post('/cabang/edit', [CabangController::class, 'edit']);
     Route::post('/cabang/update', [CabangController::class, 'update']);
-    Route::post('/cabang/{kode_cabang}/delete', [CabangController::class, 'delete']);
+    Route::post('/cabang/{id}/delete', [CabangController::class, 'delete']);
 
     //Konfigurasi
 

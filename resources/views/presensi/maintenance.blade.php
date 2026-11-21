@@ -147,10 +147,10 @@
                                             </td>
                                             <td>
                                                 <div class="fw-semibold text-dark">
-                                                    {{ date('d-m-Y', strtotime($d->tgl_izin_dari)) }}
+                                                    {{ formatHariTanggal($d->tgl_izin_dari) }}
                                                     @if ($d->tgl_izin_dari != $d->tgl_izin_sampai)
                                                         <span class="text-muted fw-normal">s/d</span>
-                                                        {{ date('d-m-Y', strtotime($d->tgl_izin_sampai)) }}
+                                                        {{ formatHariTanggal($d->tgl_izin_sampai) }}
                                                     @endif
                                                 </div>
                                             </td>

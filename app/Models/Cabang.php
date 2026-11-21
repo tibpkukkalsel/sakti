@@ -10,13 +10,12 @@ class Cabang extends Model
     use HasFactory;
 
     protected $table = 'cabang';
-    protected $primaryKey = 'kode_cabang';
-    public $incrementing = false;
-    protected $keyType = 'string';
+    protected $primaryKey = 'id';
+    public $incrementing = true;
+    protected $keyType = 'int';
     public $timestamps = false;
 
     protected $fillable = [
-        'kode_cabang',
         'nama_cabang',
         'lokasi_cabang',
         'radius_cabang',
@@ -24,12 +23,12 @@ class Cabang extends Model
 
     public function jadwalLokasi()
     {
-        return $this->hasMany(JadwalLokasiLayanan::class, 'kode_cabang', 'kode_cabang');
+        return $this->hasMany(JadwalLokasiLayanan::class, 'kode_cabang', 'id');
     }
 
     public function layanan()
     {
-        return $this->hasMany(Layanan::class, 'kode_cabang', 'kode_cabang');
+        return $this->hasMany(Layanan::class, 'kode_cabang', 'id');
     }
 }
 

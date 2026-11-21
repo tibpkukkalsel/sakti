@@ -28,7 +28,7 @@
                     </div>
                     <div class="datapresensi">
                         <h3 style="line-height: 3px">{{ $d->nama_jam_kerja }}</h3>
-                        <h4 style="margin:0px !important">{{ date('d-m-Y', strtotime($d->tgl_presensi)) }}</h4>
+                        <h4 style="margin:0px !important">{{ formatHariTanggal($d->tgl_presensi) }}</h4>
                         <span>
                             {!! $d->jam_in != null ? date('H:i', strtotime($d->jam_in)) : '<span class="text-danger">Belum Scan</span>' !!}
                         </span>
@@ -70,7 +70,7 @@
                     </div>
                     <div class="datapresensi">
                         <h3 style="line-height: 3px">TUGAS LUAR {{ !empty($d->kode_izin) ? '- ' . $d->kode_izin : '' }}</h3>
-                        <h4 style="margin:0px !important">{{ date('d-m-Y', strtotime($d->tgl_presensi)) }}</h4>
+                        <h4 style="margin:0px !important">{{ formatHariTanggal($d->tgl_presensi) }}</h4>
                         <span>
                             {{ $d->keterangan }}
                         </span>
@@ -87,7 +87,7 @@
                     </div>
                     <div class="datapresensi">
                         <h3 style="line-height: 3px">LIBUR NASIONAL</h3>
-                        <h4 style="margin:0px !important">{{ date('d-m-Y', strtotime($d->tgl_presensi)) }}</h4>
+                        <h4 style="margin:0px !important">{{ formatHariTanggal($d->tgl_presensi) }}</h4>
                         <span class="text-danger font-weight-bold">
                             {{ !empty($d->keterangan) ? $d->keterangan : 'Libur Nasional / Bersama' }}
                         </span>
@@ -104,7 +104,7 @@
                     </div>
                     <div class="datapresensi">
                         <h3 style="line-height: 3px">IZIN - {{ $d->kode_izin }}</h3>
-                        <h4 style="margin:0px !important">{{ date('d-m-Y', strtotime($d->tgl_presensi)) }}</h4>
+                        <h4 style="margin:0px !important">{{ formatHariTanggal($d->tgl_presensi) }}</h4>
                         <span>
                             {{ $d->keterangan }}
                         </span>
@@ -121,7 +121,7 @@
                     </div>
                     <div class="datapresensi">
                         <h3 style="line-height: 3px">SAKIT - {{ $d->kode_izin }}</h3>
-                        <h4 style="margin:0px !important">{{ date('d-m-Y', strtotime($d->tgl_presensi)) }}</h4>
+                        <h4 style="margin:0px !important">{{ formatHariTanggal($d->tgl_presensi) }}</h4>
                         <span>
                             {{ $d->keterangan }}
                         </span>
@@ -144,7 +144,7 @@
                     </div>
                     <div class="datapresensi">
                         <h3 style="line-height: 3px">CUTI - {{ $d->kode_izin }}</h3>
-                        <h4 style="margin:0px !important">{{ date('d-m-Y', strtotime($d->tgl_presensi)) }}</h4>
+                        <h4 style="margin:0px !important">{{ formatHariTanggal($d->tgl_presensi) }}</h4>
                         <span class="text-info">
                             {{ $d->nama_cuti }}
                         </span>

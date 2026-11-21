@@ -49,67 +49,12 @@
     </div>
 
     <div class="row">
-        <div class="col-12">
-            <div class="input-icon mb-3">
-                <span class="input-icon-addon">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user-check" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                        <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"></path>
-                        <path d="M6 21v-2a4 4 0 0 1 4 -4h4"></path>
-                        <path d="M15 19l2 2l4 -4"></path>
-                    </svg>
-                </span>
-                <input type="text" id="nama_pic" value="{{ $layanan->nama_pic }}" class="form-control" name="nama_pic" placeholder="Nama PIC">
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-12">
-            <div class="input-icon mb-3">
-                <span class="input-icon-addon">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-id" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                        <path d="M3 4m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v10a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z"></path>
-                        <path d="M9 10m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
-                        <path d="M15 8l2 0"></path>
-                        <path d="M15 12l2 0"></path>
-                        <path d="M7 16l10 0"></path>
-                    </svg>
-                </span>
-                <input type="text" id="nip_pic" value="{{ $layanan->nip_pic }}" class="form-control" name="nip_pic" placeholder="NIP PIC">
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-12">
-            <div class="input-icon mb-3">
-                <span class="input-icon-addon">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-briefcase" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                        <path d="M3 7m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z"></path>
-                        <path d="M8 7v-2a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v2"></path>
-                        <path d="M12 12l0 .01"></path>
-                        <path d="M3 13a20 20 0 0 0 18 0"></path>
-                    </svg>
-                </span>
-                <input type="text" id="jabatan_pic" value="{{ $layanan->jabatan_pic }}" class="form-control" name="jabatan_pic" placeholder="Jabatan PIC">
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-12">
-            <div class="input-icon mb-3">
-                <span class="input-icon-addon">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-phone" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                        <path d="M5 4h4l2 5l-2.5 1.5a11 11 0 0 0 5 5l1.5 -2.5l5 2v4a2 2 0 0 1 -2 2a16 16 0 0 1 -15 -15a2 2 0 0 1 2 -2"></path>
-                    </svg>
-                </span>
-                <input type="text" id="no_hp" value="{{ $layanan->no_hp }}" class="form-control" name="no_hp" placeholder="No. HP">
-            </div>
+        <div class="col-12 mb-3">
+            <label class="form-label">Mode Presensi</label>
+            <select name="mode_presensi" class="form-select">
+                <option value="bebas" {{ ($layanan->mode_presensi ?? 'bebas') == 'bebas' ? 'selected' : '' }}>Bebas</option>
+                <option value="jadwal" {{ ($layanan->mode_presensi ?? '') == 'jadwal' ? 'selected' : '' }}>Jadwal Mingguan</option>
+            </select>
         </div>
     </div>
 
@@ -137,9 +82,9 @@
 </form>
 <script>
     $("#frmEditLayanan").submit(function() {
-        var nama_layanan = $("#frmEditLayanan").find("#nama_layanan").val();
-        var username = $("#frmEditLayanan").find("#username").val();
-        var nama_pic = $("#frmEditLayanan").find("#nama_pic").val();
+        var form = $(this);
+        var nama_layanan = form.find("input[name='nama_layanan']").val();
+        var username = form.find("input[name='username']").val();
 
         if (nama_layanan == "") {
             Swal.fire({
@@ -148,7 +93,7 @@
                 icon: 'warning',
                 confirmButtonText: 'Ok'
             }).then((result) => {
-                $("#nama_layanan").focus();
+                form.find("input[name='nama_layanan']").focus();
             });
             return false;
         } else if (username == "") {
@@ -158,17 +103,7 @@
                 icon: 'warning',
                 confirmButtonText: 'Ok'
             }).then((result) => {
-                $("#username").focus();
-            });
-            return false;
-        } else if (nama_pic == "") {
-            Swal.fire({
-                title: 'Warning!',
-                text: 'Nama PIC Harus Diisi !',
-                icon: 'warning',
-                confirmButtonText: 'Ok'
-            }).then((result) => {
-                $("#nama_pic").focus();
+                form.find("input[name='username']").focus();
             });
             return false;
         }

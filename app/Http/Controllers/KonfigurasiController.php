@@ -217,7 +217,7 @@ class KonfigurasiController extends Controller
     public function jamkerjadept()
     {
         $jamkerjadept = DB::table('konfigurasi_jk_dept')
-            ->join('cabang', 'konfigurasi_jk_dept.kode_cabang', '=', 'cabang.kode_cabang')
+            ->join('cabang', 'konfigurasi_jk_dept.kode_cabang', '=', 'cabang.id')
             ->select('konfigurasi_jk_dept.*', 'cabang.nama_cabang')
             ->get();
         return view('konfigurasi.jamkerjadept', compact('jamkerjadept'));

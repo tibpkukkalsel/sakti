@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Layanan;
 use App\Models\RekapPenerimaanPkb;
+use App\Models\Kabupaten;
+use App\Models\PenerimaanLintasDaerah;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,14 +18,143 @@ class PenerimaanController extends Controller
     // BAGIAN LAYANAN (MOBILE / KARYAWAN GUARD)
     // ==========================================
 
+    private function uploadNoticePhoto($file, $prefix, $layananId, $tgl)
+    {
+        $tglStr = $tgl ? date('Y-m-d', strtotime((string) $tgl)) : date('Y-m-d');
+        $extension = $file->getClientOriginalExtension() ?: 'jpg';
+        $filename = $prefix . '-' . $layananId . '-' . $tglStr . '-' . date('His') . '-' . rand(100, 999) . '.' . $extension;
+        $folderPath = 'public/uploads/notice/';
+        $file->storeAs($folderPath, $filename);
+
+        try {
+            $publicDir = public_path('uploads/notice');
+            if (!file_exists($publicDir)) {
+                @mkdir($publicDir, 0777, true);
+            }
+            $storagePath = storage_path('app/public/uploads/notice/' . $filename);
+            if (file_exists($storagePath)) {
+                @copy($storagePath, $publicDir . '/' . $filename);
+            } elseif ($file->isValid() && file_exists($file->getRealPath())) {
+                @copy($file->getRealPath(), $publicDir . '/' . $filename);
+            }
+        } catch (\Throwable $e) {
+            \Log::warning("Gagal copy foto notice ke public: " . $e->getMessage());
+        }
+
+        return $filename;
+    }
+
+    /**
+     * Memeriksa apakah layanan berstatus libur pada tanggal tertentu.
+     * Mengembalikan array ['is_libur' => bool, 'keterangan' => string, 'jadwal' => object|null]
+     */
+    private function getStatusLiburLayanan($layananId, $tanggal)
+    {
+        // 1. Cek Hari Libur Nasional / Bersama di tabel harilibur
+        $dataLibur = DB::table('harilibur')
+            ->leftJoin('harilibur_detail', 'harilibur.kode_libur', '=', 'harilibur_detail.kode_libur')
+            ->where('harilibur.tanggal_libur', $tanggal)
+            ->where(function ($query) use ($layananId) {
+                $query->where('harilibur_detail.nik', (string) $layananId)
+                    ->orWhere('harilibur.kode_cabang', 'ALL');
+            })
+            ->select('harilibur.keterangan')
+            ->first();
+
+        if ($dataLibur) {
+            $ket = !empty($dataLibur->keterangan) ? $dataLibur->keterangan : 'Hari Libur Nasional / Bersama';
+            return [
+                'is_libur' => true,
+                'keterangan' => $ket,
+                'jadwal' => null,
+            ];
+        }
+
+        // 2. Cek apakah ada jadwal lokasi operasional (khusus tanggal atau rutin mingguan)
+        $dayNum = date('w', strtotime($tanggal));
+        $hariMap = [0 => 'Minggu', 1 => 'Senin', 2 => 'Selasa', 3 => 'Rabu', 4 => 'Kamis', 5 => 'Jumat', 6 => 'Sabtu'];
+        $hariIndo = $hariMap[$dayNum] ?? 'Senin';
+
+        $jadwalToday = DB::table('jadwal_lokasi_layanan')
+            ->join('cabang', 'jadwal_lokasi_layanan.kode_cabang', '=', 'cabang.id')
+            ->where('jadwal_lokasi_layanan.layanan_id', $layananId)
+            ->where('jadwal_lokasi_layanan.tanggal', $tanggal)
+            ->where('jadwal_lokasi_layanan.status', 1)
+            ->select('cabang.nama_cabang', 'jadwal_lokasi_layanan.kode_cabang')
+            ->first();
+
+        if (!$jadwalToday) {
+            $jadwalToday = DB::table('jadwal_lokasi_layanan')
+                ->join('cabang', 'jadwal_lokasi_layanan.kode_cabang', '=', 'cabang.id')
+                ->where('jadwal_lokasi_layanan.layanan_id', $layananId)
+                ->where('jadwal_lokasi_layanan.hari', $hariIndo)
+                ->where('jadwal_lokasi_layanan.jenis_jadwal', 'rutin')
+                ->where('jadwal_lokasi_layanan.status', 1)
+                ->select('cabang.nama_cabang', 'jadwal_lokasi_layanan.kode_cabang')
+                ->first();
+        }
+
+        if (!$jadwalToday) {
+            return [
+                'is_libur' => true,
+                'keterangan' => 'Tidak ada jadwal operasional hari ini',
+                'jadwal' => null,
+            ];
+        }
+
+        // 3. Cek apakah presensi pada tanggal tersebut sudah tercatat berstatus libur ('l')
+        $presensiLibur = DB::table('presensi')
+            ->where('nik', (string) $layananId)
+            ->where('tgl_presensi', $tanggal)
+            ->where('status', 'l')
+            ->first();
+
+        if ($presensiLibur) {
+            return [
+                'is_libur' => true,
+                'keterangan' => 'Layanan berstatus Libur',
+                'jadwal' => null,
+            ];
+        }
+
+        // 4. Cek apakah layanan sedang dalam status Maintenance
+        $maintenance = DB::table('pengajuan_izin')
+            ->where('nik', (string) $layananId)
+            ->where('status', 'm')
+            ->where('status_approved', 1)
+            ->where('tgl_izin_dari', '<=', $tanggal)
+            ->where('tgl_izin_sampai', '>=', $tanggal)
+            ->first();
+
+        if ($maintenance) {
+            return [
+                'is_libur' => true,
+                'keterangan' => 'Layanan sedang dalam masa Maintenance',
+                'jadwal' => null,
+            ];
+        }
+
+        return [
+            'is_libur' => false,
+            'keterangan' => '',
+            'jadwal' => $jadwalToday,
+        ];
+    }
+
     public function index(Request $request)
     {
         $user = Auth::guard('karyawan')->user();
-        $layananId = $user->id;
+        $layananId = $user->layanan_id ?? $user->id;
         $hariini = date('Y-m-d');
 
+        // Cek status operasional / libur layanan hari ini
+        $statusLibur = $this->getStatusLiburLayanan($layananId, $hariini);
+        $isLiburHariIni = $statusLibur['is_libur'];
+        $keteranganLibur = $statusLibur['keterangan'];
+
         // Cek apakah hari ini sudah ada input
-        $penerimaanHariIni = RekapPenerimaanPkb::where('layanan_id', $layananId)
+        $penerimaanHariIni = RekapPenerimaanPkb::with(['cabang', 'lintasDaerah.kabupaten'])
+            ->where('layanan_id', $layananId)
             ->where('tgl_penerimaan', $hariini)
             ->first();
 
@@ -37,7 +168,7 @@ class PenerimaanController extends Controller
         $sampai = $request->get('sampai', date('Y-m-d'));
 
         // Ambil query histori penerimaan akun layanan ini sesuai filter
-        $query = RekapPenerimaanPkb::with('cabang')->where('layanan_id', $layananId);
+        $query = RekapPenerimaanPkb::with(['cabang', 'lintasDaerah'])->where('layanan_id', $layananId);
 
         if ($filter === 'minggu') {
             $startOfWeek = Carbon::now()->startOfWeek()->format('Y-m-d');
@@ -71,18 +202,447 @@ class PenerimaanController extends Controller
             ->selectRaw('SUM(total_rp) as total_rp, SUM(total_unit) as total_unit, SUM(jumlah_notice) as total_notice')
             ->first();
 
+        $penerimaanIds = (clone $query)->pluck('id');
+        $totalUnitLintasAkumulasi = DB::table('penerimaan_lintas_daerah')
+            ->whereIn('penerimaan_id', $penerimaanIds)
+            ->count();
+
         // Ambil histori penerimaan terpaginasi (6 item per halaman)
         $histori = $query->orderBy('tgl_penerimaan', 'desc')
             ->paginate(6)
             ->withQueryString();
 
-        return view('penerimaan.index', compact('penerimaanHariIni', 'histori', 'totalAkumulasi', 'labelAkumulasi', 'user', 'filter', 'dari', 'sampai'));
+        return view('penerimaan.index', compact('penerimaanHariIni', 'histori', 'totalAkumulasi', 'totalUnitLintasAkumulasi', 'labelAkumulasi', 'user', 'filter', 'dari', 'sampai', 'isLiburHariIni', 'keteranganLibur'));
+    }
+
+    public function bukaLayanan()
+    {
+        $user = Auth::guard('karyawan')->user();
+        $layananId = $user->layanan_id ?? $user->id;
+        $petugasId = $user->id;
+        $tglDefault = date('Y-m-d');
+
+        // Cek apakah hari ini sudah ada data
+        $existing = RekapPenerimaanPkb::where('layanan_id', $layananId)
+            ->where('tgl_penerimaan', $tglDefault)
+            ->first();
+
+        if ($existing) {
+            if ($existing->status_verifikasi == 'draft') {
+                return redirect('/penerimaan/' . $existing->id . '/tutup-layanan')->with(['warning' => 'Layanan hari ini sudah dibuka sebelumnya. Silakan lengkapi laporan dan nomor akhir notice saat pelayanan selesai.']);
+            }
+            return redirect('/penerimaan')->with(['warning' => 'Layanan hari ini sudah pernah diinput sebelumnya.']);
+        }
+
+        // Validasi status libur layanan
+        $statusLibur = $this->getStatusLiburLayanan($layananId, $tglDefault);
+        if ($statusLibur['is_libur']) {
+            return redirect('/penerimaan')->with(['warning' => 'Tidak dapat membuka layanan: ' . $statusLibur['keterangan'] . '.']);
+        }
+
+        // Jika presensi hari ini sudah dilakukan oleh petugas tertentu, pastikan yang membuka adalah petugas yang sama
+        $presensiHariIni = DB::table('presensi')
+            ->where('nik', (string) $layananId)
+            ->where('tgl_presensi', $tglDefault)
+            ->first();
+
+        if ($presensiHariIni && !empty($presensiHariIni->jam_in) && !empty($presensiHariIni->petugas_id) && $presensiHariIni->petugas_id != $petugasId) {
+            $namaYangAbsen = $presensiHariIni->petugas_nama ?: 'Petugas lain';
+            return redirect('/penerimaan')->with(['warning' => "Hanya petugas yang melakukan presensi hari ini ({$namaYangAbsen}) yang berhak membuka layanan."]);
+        }
+
+        $jadwalToday = $statusLibur['jadwal'];
+        $lokasiId = $jadwalToday ? $jadwalToday->kode_cabang : ($user->kode_cabang ?: 1);
+        $namaLokasi = $jadwalToday ? $jadwalToday->nama_cabang : (DB::table('cabang')->where('id', $lokasiId)->value('nama_cabang') ?? 'UPPD SAMSAT Batulicin');
+
+        return view('penerimaan.buka_layanan', compact('user', 'tglDefault', 'lokasiId', 'namaLokasi'));
+    }
+
+    public function simpanBukaLayanan(Request $request)
+    {
+        $user = Auth::guard('karyawan')->user();
+        $layananId = $user->layanan_id ?? $user->id;
+        $petugasId = $user->id;
+        $petugasNama = $user->nama_petugas ?? $user->nama_pic ?? $user->nama_layanan;
+        $tgl = $request->tgl_penerimaan ?: date('Y-m-d');
+
+        // Validasi status libur layanan
+        $statusLibur = $this->getStatusLiburLayanan($layananId, $tgl);
+        if ($statusLibur['is_libur']) {
+            return redirect()->back()->withInput()->with(['warning' => 'Tidak dapat membuka layanan: ' . $statusLibur['keterangan'] . '.']);
+        }
+
+        // Jika presensi pada tanggal tersebut sudah dilakukan oleh petugas lain
+        $presensiTgl = DB::table('presensi')
+            ->where('nik', (string) $layananId)
+            ->where('tgl_presensi', $tgl)
+            ->first();
+
+        if ($presensiTgl && !empty($presensiTgl->jam_in) && !empty($presensiTgl->petugas_id) && $presensiTgl->petugas_id != $petugasId) {
+            $namaYangAbsen = $presensiTgl->petugas_nama ?: 'Petugas lain';
+            return redirect()->back()->withInput()->with(['warning' => "Hanya petugas yang melakukan presensi ({$namaYangAbsen}) yang berhak membuka layanan."]);
+        }
+
+        $request->validate([
+            'no_awal_notice' => 'required|string|max:50',
+            'foto_awal_notice' => 'required|image|mimes:jpeg,png,jpg,webp|max:5120',
+        ]);
+
+        $fotoAwal = null;
+        if ($request->hasFile('foto_awal_notice')) {
+            $fotoAwal = $this->uploadNoticePhoto($request->file('foto_awal_notice'), 'awal', $layananId, $tgl);
+        }
+
+        $jadwalToday = $statusLibur['jadwal'];
+        $kodeCabang = $jadwalToday ? $jadwalToday->kode_cabang : ($request->kode_cabang ?: ($user->kode_cabang ?: 1));
+
+        try {
+            RekapPenerimaanPkb::updateOrCreate(
+                [
+                    'layanan_id' => $layananId,
+                    'tgl_penerimaan' => $tgl,
+                ],
+                [
+                    'kode_cabang' => $kodeCabang,
+                    'no_awal_notice' => $request->no_awal_notice,
+                    'foto_awal_notice' => $fotoAwal,
+                    'status_verifikasi' => 'draft',
+                    'input_by_petugas_id' => $petugasId,
+                ]
+            );
+
+            return redirect('/penerimaan')->with(['success' => 'Layanan berhasil dibuka! Nomor awal notice tersimpan sebagai draft.']);
+        } catch (\Exception $e) {
+            return redirect()->back()->withInput()->with(['warning' => 'Gagal membuka layanan: ' . $e->getMessage()]);
+        }
+    }
+
+    public function tutupLayanan($id)
+    {
+        $user = Auth::guard('karyawan')->user();
+        $layananId = $user->layanan_id ?? $user->id;
+
+        $data = RekapPenerimaanPkb::where('id', $id)
+            ->where('layanan_id', $layananId)
+            ->firstOrFail();
+
+        if ($data->status_verifikasi == 'disetujui') {
+            return redirect('/penerimaan')->with(['success' => 'Data penerimaan ini telah disetujui dan tidak dapat diubah lagi.']);
+        }
+
+        if ($data->status_verifikasi == 'menunggu') {
+            return redirect('/penerimaan')->with(['warning' => 'Laporan penerimaan sedang menunggu verifikasi admin.']);
+        }
+
+        $daftarLokasi = DB::table('cabang')->orderBy('nama_cabang')->get();
+
+        return view('penerimaan.tutup_layanan', compact('data', 'user', 'daftarLokasi'));
+    }
+
+    public function kirimLaporan($id, Request $request)
+    {
+        $user = Auth::guard('karyawan')->user();
+        $layananId = $user->layanan_id ?? $user->id;
+        $petugasId = $user->id;
+        $petugasNama = $user->nama_petugas ?? $user->nama_pic ?? $user->nama_layanan;
+
+        $data = RekapPenerimaanPkb::where('id', $id)
+            ->where('layanan_id', $layananId)
+            ->firstOrFail();
+
+        if ($data->status_verifikasi == 'disetujui') {
+            return redirect('/penerimaan')->with(['error' => 'Data penerimaan telah disetujui dan tidak dapat diubah.']);
+        }
+
+        if ($data->status_verifikasi == 'menunggu') {
+            return redirect('/penerimaan')->with(['warning' => 'Laporan penerimaan sedang menunggu verifikasi admin.']);
+        }
+
+        $rules = [
+            'no_akhir_notice' => 'required|string|max:50',
+            'jumlah_rp_r2' => 'nullable',
+            'jumlah_rp_r4' => 'nullable',
+            'jumlah_unit_r2' => 'nullable|numeric|min:0',
+            'jumlah_unit_r4' => 'nullable|numeric|min:0',
+            'jumlah_notice' => 'nullable|numeric|min:0',
+        ];
+
+        if (empty($data->foto_akhir_notice)) {
+            $rules['foto_akhir_notice'] = 'required|image|mimes:jpeg,png,jpg,webp|max:5120';
+        } else {
+            $rules['foto_akhir_notice'] = 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120';
+        }
+
+        $request->validate($rules);
+
+        $fotoAkhir = $data->foto_akhir_notice;
+        if ($request->hasFile('foto_akhir_notice')) {
+            $fotoAkhir = $this->uploadNoticePhoto($request->file('foto_akhir_notice'), 'akhir', $layananId, $data->tgl_penerimaan);
+        }
+
+        $rpR2 = (float) preg_replace('/[^0-9]/', '', $request->jumlah_rp_r2);
+        $rpR4 = (float) preg_replace('/[^0-9]/', '', $request->jumlah_rp_r4);
+        $unitR2 = (int) $request->jumlah_unit_r2;
+        $unitR4 = (int) $request->jumlah_unit_r4;
+        $notice = (int) $request->jumlah_notice;
+
+        $totalRp = $rpR2 + $rpR4;
+        $totalUnit = $unitR2 + $unitR4;
+
+        try {
+            $data->update([
+                'no_akhir_notice' => $request->no_akhir_notice,
+                'foto_akhir_notice' => $fotoAkhir,
+                'jumlah_rp_r2' => $rpR2,
+                'jumlah_rp_r4' => $rpR4,
+                'total_rp' => $totalRp,
+                'jumlah_unit_r2' => $unitR2,
+                'jumlah_unit_r4' => $unitR4,
+                'total_unit' => $totalUnit,
+                'jumlah_notice' => $notice,
+                'keterangan' => $request->keterangan,
+                'status_verifikasi' => 'draft',
+                'catatan_verifikasi' => null,
+                'input_by_petugas_id' => $petugasId,
+            ]);
+
+            return redirect('/penerimaan')->with(['success' => 'Data penerimaan berhasil disimpan sebagai draft. Silakan periksa kembali atau kirim laporan jika sudah sesuai.']);
+        } catch (\Exception $e) {
+            return redirect()->back()->withInput()->with(['warning' => 'Gagal menyimpan: ' . $e->getMessage()]);
+        }
+    }
+
+    public function kirim($id)
+    {
+        $user = Auth::guard('karyawan')->user();
+        $layananId = $user->layanan_id ?? $user->id;
+        $petugasId = $user->id;
+        $petugasNama = $user->nama_petugas ?? $user->nama_pic ?? $user->nama_layanan;
+
+        $data = RekapPenerimaanPkb::where('id', $id)
+            ->where('layanan_id', $layananId)
+            ->firstOrFail();
+
+        if ($data->status_verifikasi == 'disetujui') {
+            return redirect('/penerimaan')->with(['error' => 'Data penerimaan telah disetujui dan tidak dapat diubah.']);
+        }
+
+        if ($data->status_verifikasi == 'menunggu') {
+            return redirect('/penerimaan')->with(['warning' => 'Laporan penerimaan sudah dalam antrean verifikasi admin.']);
+        }
+
+        if (empty($data->no_akhir_notice) || empty($data->foto_akhir_notice)) {
+            return redirect('/penerimaan/' . $data->id . '/tutup-layanan')->with(['warning' => 'Silakan lengkapi nomor akhir notice dan bukti foto sebelum mengirim laporan.']);
+        }
+
+        try {
+            $data->update([
+                'status_verifikasi' => 'menunggu',
+                'catatan_verifikasi' => null,
+                'input_by_petugas_id' => $petugasId,
+            ]);
+
+            return redirect('/penerimaan')->with(['success' => 'Laporan penerimaan berhasil dikirim dan sedang menunggu verifikasi admin.']);
+        } catch (\Exception $e) {
+            return redirect()->back()->with(['warning' => 'Gagal mengirim laporan: ' . $e->getMessage()]);
+        }
+    }
+
+    public function batalKirim($id)
+    {
+        $user = Auth::guard('karyawan')->user();
+        $layananId = $user->layanan_id ?? $user->id;
+
+        $data = RekapPenerimaanPkb::where('id', $id)
+            ->where('layanan_id', $layananId)
+            ->firstOrFail();
+
+        if ($data->status_verifikasi != 'menunggu') {
+            return redirect('/penerimaan')->with(['warning' => 'Hanya laporan dengan status menunggu verifikasi yang dapat dibatalkan.']);
+        }
+
+        try {
+            $data->update([
+                'status_verifikasi' => 'draft',
+            ]);
+
+            return redirect('/penerimaan')->with(['success' => 'Pengiriman laporan berhasil dibatalkan. Status kembali ke draft.']);
+        } catch (\Exception $e) {
+            return redirect()->back()->with(['warning' => 'Gagal membatalkan pengiriman: ' . $e->getMessage()]);
+        }
+    }
+
+    public function lintasDaerah($id)
+    {
+        $user = Auth::guard('karyawan')->user();
+        $layananId = $user ? ($user->layanan_id ?? $user->id) : null;
+
+        $dataQuery = RekapPenerimaanPkb::with(['cabang', 'layanan', 'lintasDaerah.kabupaten'])
+            ->where('id', $id);
+
+        if ($layananId) {
+            $dataQuery->where('layanan_id', $layananId);
+        }
+
+        $data = $dataQuery->firstOrFail();
+        $daftarKabupaten = Kabupaten::orderBy('nama_kabupaten', 'asc')->get();
+        $isEditable = ($data->status_verifikasi == 'draft');
+
+        $totalUnitLokal = (int) $data->total_unit;
+        $totalUnitLintas = (int) $data->lintasDaerah->count();
+        $totalUnitSemua = $totalUnitLokal + $totalUnitLintas;
+        $totalRpLintas = (float) $data->lintasDaerah->sum('nominal');
+
+        return view('penerimaan.lintas_daerah', compact(
+            'data',
+            'daftarKabupaten',
+            'isEditable',
+            'totalUnitLokal',
+            'totalUnitLintas',
+            'totalUnitSemua',
+            'totalRpLintas'
+        ));
+    }
+
+    public function storeLintasDaerah($id, Request $request)
+    {
+        $user = Auth::guard('karyawan')->user();
+        $layananId = $user ? ($user->layanan_id ?? $user->id) : null;
+
+        $data = RekapPenerimaanPkb::where('id', $id)
+            ->when($layananId, function ($q) use ($layananId) {
+                $q->where('layanan_id', $layananId);
+            })
+            ->firstOrFail();
+
+        if ($data->status_verifikasi != 'draft') {
+            return redirect()->back()->with(['error' => 'Data lintas daerah hanya dapat ditambah saat status masih draft.']);
+        }
+
+        $request->validate([
+            'nopol' => 'required|string|max:20',
+            'nama_wp' => 'required|string|max:100',
+            'kabupaten_id' => 'required|exists:kabupaten,id',
+            'jenis_kendaraan' => 'required|in:R2,R4',
+            'nominal' => 'nullable',
+            'keterangan' => 'nullable|string|max:255',
+        ]);
+
+        $nominal = 0;
+        if ($request->filled('nominal')) {
+            $nominal = (float) preg_replace('/[^0-9]/', '', $request->nominal);
+        }
+
+        try {
+            PenerimaanLintasDaerah::create([
+                'penerimaan_id' => $data->id,
+                'kabupaten_id' => $request->kabupaten_id,
+                'nopol' => strtoupper(trim($request->nopol)),
+                'nama_wp' => trim($request->nama_wp),
+                'jenis_kendaraan' => $request->jenis_kendaraan,
+                'nominal' => $nominal,
+                'keterangan' => $request->keterangan,
+            ]);
+
+            return redirect()->back()->with(['success' => 'Data notice lintas daerah berhasil ditambahkan.']);
+        } catch (\Exception $e) {
+            return redirect()->back()->withInput()->with(['warning' => 'Gagal menyimpan: ' . $e->getMessage()]);
+        }
+    }
+
+    public function updateLintasDaerah($lintasId, Request $request)
+    {
+        $user = Auth::guard('karyawan')->user();
+        $layananId = $user ? ($user->layanan_id ?? $user->id) : null;
+
+        $lintas = PenerimaanLintasDaerah::with('penerimaan')->findOrFail($lintasId);
+        $data = $lintas->penerimaan;
+
+        if ($layananId && $data->layanan_id != $layananId) {
+            abort(403);
+        }
+
+        if ($data->status_verifikasi != 'draft') {
+            return redirect()->back()->with(['error' => 'Data lintas daerah hanya dapat diubah saat status masih draft.']);
+        }
+
+        $request->validate([
+            'nopol' => 'required|string|max:20',
+            'nama_wp' => 'required|string|max:100',
+            'kabupaten_id' => 'required|exists:kabupaten,id',
+            'jenis_kendaraan' => 'required|in:R2,R4',
+            'nominal' => 'nullable',
+            'keterangan' => 'nullable|string|max:255',
+        ]);
+
+        $nominal = 0;
+        if ($request->filled('nominal')) {
+            $nominal = (float) preg_replace('/[^0-9]/', '', $request->nominal);
+        }
+
+        try {
+            $lintas->update([
+                'kabupaten_id' => $request->kabupaten_id,
+                'nopol' => strtoupper(trim($request->nopol)),
+                'nama_wp' => trim($request->nama_wp),
+                'jenis_kendaraan' => $request->jenis_kendaraan,
+                'nominal' => $nominal,
+                'keterangan' => $request->keterangan,
+            ]);
+
+            return redirect()->back()->with(['success' => 'Data notice lintas daerah berhasil diperbarui.']);
+        } catch (\Exception $e) {
+            return redirect()->back()->with(['warning' => 'Gagal memperbarui data: ' . $e->getMessage()]);
+        }
+    }
+
+    public function deleteLintasDaerah($lintasId)
+    {
+        $user = Auth::guard('karyawan')->user();
+        $layananId = $user ? ($user->layanan_id ?? $user->id) : null;
+
+        $lintas = PenerimaanLintasDaerah::with('penerimaan')->findOrFail($lintasId);
+        $data = $lintas->penerimaan;
+
+        if ($layananId && $data->layanan_id != $layananId) {
+            abort(403);
+        }
+
+        if ($data->status_verifikasi != 'draft') {
+            return redirect()->back()->with(['error' => 'Data lintas daerah hanya dapat dihapus saat status masih draft.']);
+        }
+
+        try {
+            $lintas->delete();
+            return redirect()->back()->with(['success' => 'Data notice lintas daerah berhasil dihapus.']);
+        } catch (\Exception $e) {
+            return redirect()->back()->with(['warning' => 'Gagal menghapus data: ' . $e->getMessage()]);
+        }
     }
 
     public function create()
     {
         $user = Auth::guard('karyawan')->user();
+        $layananId = $user->layanan_id ?? $user->id;
+        $petugasId = $user->id;
         $tglDefault = date('Y-m-d');
+
+        // Validasi: Cek apakah Layanan sudah absen masuk hari ini
+        $presensiHariIni = DB::table('presensi')
+            ->where('nik', (string) $layananId)
+            ->where('tgl_presensi', $tglDefault)
+            ->first();
+
+        if (!$presensiHariIni || empty($presensiHariIni->jam_in)) {
+            return redirect('/penerimaan')->with(['warning' => 'Layanan belum melakukan presensi masuk hari ini. Silakan lakukan presensi masuk terlebih dahulu sebelum mengisi penerimaan.']);
+        }
+
+        // Validasi: Cek apakah petugas yang login adalah orang yang melakukan presensi hari ini
+        if (!empty($presensiHariIni->petugas_id) && $presensiHariIni->petugas_id != $petugasId) {
+            $namaYangAbsen = $presensiHariIni->petugas_nama ?: 'Petugas lain';
+            return redirect('/penerimaan')->with(['warning' => "Hanya petugas yang melakukan presensi hari ini ({$namaYangAbsen}) yang berhak menginput data penerimaan."]);
+        }
+
         $daftarLokasi = DB::table('cabang')->orderBy('nama_cabang')->get();
 
         // Deteksi lokasi hari ini dari jadwal
@@ -90,7 +650,7 @@ class PenerimaanController extends Controller
         $hariMap = [0 => 'Minggu', 1 => 'Senin', 2 => 'Selasa', 3 => 'Rabu', 4 => 'Kamis', 5 => 'Jumat', 6 => 'Sabtu'];
         $hariIndo = $hariMap[$dayNum] ?? 'Senin';
         $jadwalToday = DB::table('jadwal_lokasi_layanan')
-            ->where('layanan_id', $user->id)
+            ->where('layanan_id', $layananId)
             ->where(function ($q) use ($tglDefault, $hariIndo) {
                 $q->where('tanggal', $tglDefault)->orWhere(function ($q2) use ($hariIndo) {
                     $q2->where('jenis_jadwal', 'rutin')->where('hari', $hariIndo);
@@ -99,7 +659,7 @@ class PenerimaanController extends Controller
             ->where('status', 1)
             ->orderBy('jenis_jadwal', 'desc')
             ->first();
-        $lokasiDefault = $jadwalToday ? $jadwalToday->kode_cabang : ($user->kode_cabang ?: 'SM1');
+        $lokasiDefault = $jadwalToday ? $jadwalToday->kode_cabang : ($user->kode_cabang ?: 1);
 
         return view('penerimaan.create', compact('user', 'tglDefault', 'daftarLokasi', 'lokasiDefault'));
     }
@@ -107,7 +667,26 @@ class PenerimaanController extends Controller
     public function store(Request $request)
     {
         $user = Auth::guard('karyawan')->user();
-        $layananId = $user->id;
+        $layananId = $user->layanan_id ?? $user->id;
+        $petugasId = $user->id;
+        $petugasNama = $user->nama_petugas ?? $user->nama_pic ?? $user->nama_layanan;
+        $tgl = $request->tgl_penerimaan;
+
+        // Validasi: Cek presensi masuk pada tanggal tersebut
+        $presensiTgl = DB::table('presensi')
+            ->where('nik', (string) $layananId)
+            ->where('tgl_presensi', $tgl)
+            ->first();
+
+        if (!$presensiTgl || empty($presensiTgl->jam_in)) {
+            return redirect()->back()->withInput()->with(['warning' => 'Layanan belum melakukan presensi masuk pada tanggal ' . date('d/m/Y', strtotime($tgl)) . '. Presensi masuk wajib dilakukan sebelum menginput penerimaan.']);
+        }
+
+        // Validasi: Cek apakah yang menginput adalah petugas yang melakukan presensi
+        if (!empty($presensiTgl->petugas_id) && $presensiTgl->petugas_id != $petugasId) {
+            $namaYangAbsen = $presensiTgl->petugas_nama ?: 'Petugas lain';
+            return redirect()->back()->withInput()->with(['warning' => "Hanya petugas yang melakukan presensi pada tanggal tersebut ({$namaYangAbsen}) yang berhak menginput data penerimaan."]);
+        }
 
         $request->validate([
             'tgl_penerimaan' => 'required|date',
@@ -125,7 +704,6 @@ class PenerimaanController extends Controller
         $unitR2 = (int) $request->jumlah_unit_r2;
         $unitR4 = (int) $request->jumlah_unit_r4;
         $notice = (int) $request->jumlah_notice;
-        $tgl = $request->tgl_penerimaan;
 
         $totalRp = $rpR2 + $rpR4;
         $totalUnit = $unitR2 + $unitR4;
@@ -150,7 +728,7 @@ class PenerimaanController extends Controller
                     ->where('hari', $hariIndo)
                     ->where('status', 1)
                     ->first();
-                $kodeCabang = $jadwalRutin ? $jadwalRutin->kode_cabang : ($user->kode_cabang ?: 'SM1');
+                $kodeCabang = $jadwalRutin ? $jadwalRutin->kode_cabang : ($user->kode_cabang ?: 1);
             }
         }
 
@@ -159,8 +737,17 @@ class PenerimaanController extends Controller
             ->where('tgl_penerimaan', $tgl)
             ->first();
 
-        if ($existing && $existing->is_locked) {
-            return redirect()->back()->withInput()->with(['error' => 'Data penerimaan untuk tanggal tersebut telah dikunci oleh admin dan tidak dapat diubah lagi.']);
+        if ($existing && $existing->status_verifikasi == 'disetujui') {
+            return redirect()->back()->withInput()->with(['error' => 'Data penerimaan untuk tanggal tersebut telah disetujui oleh admin dan tidak dapat diubah lagi.']);
+        }
+
+        $fotoAwal = $existing ? $existing->foto_awal_notice : null;
+        if ($request->hasFile('foto_awal_notice')) {
+            $fotoAwal = $this->uploadNoticePhoto($request->file('foto_awal_notice'), 'awal', $layananId, $tgl);
+        }
+        $fotoAkhir = $existing ? $existing->foto_akhir_notice : null;
+        if ($request->hasFile('foto_akhir_notice')) {
+            $fotoAkhir = $this->uploadNoticePhoto($request->file('foto_akhir_notice'), 'akhir', $layananId, $tgl);
         }
 
         try {
@@ -171,6 +758,10 @@ class PenerimaanController extends Controller
                 ],
                 [
                     'kode_cabang' => $kodeCabang,
+                    'no_awal_notice' => $request->no_awal_notice ?: ($existing ? $existing->no_awal_notice : null),
+                    'foto_awal_notice' => $fotoAwal,
+                    'no_akhir_notice' => $request->no_akhir_notice ?: ($existing ? $existing->no_akhir_notice : null),
+                    'foto_akhir_notice' => $fotoAkhir,
                     'jumlah_rp_r2' => $rpR2,
                     'jumlah_rp_r4' => $rpR4,
                     'total_rp' => $totalRp,
@@ -178,7 +769,10 @@ class PenerimaanController extends Controller
                     'jumlah_unit_r4' => $unitR4,
                     'total_unit' => $totalUnit,
                     'jumlah_notice' => $notice,
+                    'status_verifikasi' => 'draft',
+                    'catatan_verifikasi' => null,
                     'keterangan' => $request->keterangan,
+                    'input_by_petugas_id' => $petugasId,
                 ]
             );
 
@@ -191,12 +785,30 @@ class PenerimaanController extends Controller
     public function edit($id)
     {
         $user = Auth::guard('karyawan')->user();
+        $layananId = $user->layanan_id ?? $user->id;
+        $petugasId = $user->id;
+
         $data = RekapPenerimaanPkb::where('id', $id)
-            ->where('layanan_id', $user->id)
+            ->where('layanan_id', $layananId)
             ->firstOrFail();
 
-        if ($data->is_locked) {
-            return redirect('/penerimaan')->with(['warning' => 'Data penerimaan ini telah dikunci oleh admin dan tidak dapat diubah lagi.']);
+        if ($data->status_verifikasi == 'disetujui') {
+            return redirect('/penerimaan')->with(['warning' => 'Data penerimaan ini telah disetujui dan tidak dapat diubah lagi.']);
+        }
+
+        if ($data->status_verifikasi == 'menunggu') {
+            return redirect('/penerimaan')->with(['warning' => 'Laporan penerimaan sedang menunggu verifikasi admin.']);
+        }
+
+        // Validasi: Cek apakah petugas yang membuka edit adalah yang melakukan presensi pada tanggal data
+        $presensiTgl = DB::table('presensi')
+            ->where('nik', (string) $layananId)
+            ->where('tgl_presensi', $data->tgl_penerimaan)
+            ->first();
+
+        if ($presensiTgl && !empty($presensiTgl->petugas_id) && $presensiTgl->petugas_id != $petugasId) {
+            $namaYangAbsen = $presensiTgl->petugas_nama ?: 'Petugas lain';
+            return redirect('/penerimaan')->with(['warning' => "Hanya petugas yang melakukan presensi pada tanggal tersebut ({$namaYangAbsen}) yang berhak mengubah data penerimaan."]);
         }
 
         $daftarLokasi = DB::table('cabang')->orderBy('nama_cabang')->get();
@@ -207,12 +819,31 @@ class PenerimaanController extends Controller
     public function update($id, Request $request)
     {
         $user = Auth::guard('karyawan')->user();
+        $layananId = $user->layanan_id ?? $user->id;
+        $petugasId = $user->id;
+        $petugasNama = $user->nama_petugas ?? $user->nama_pic ?? $user->nama_layanan;
+
         $data = RekapPenerimaanPkb::where('id', $id)
-            ->where('layanan_id', $user->id)
+            ->where('layanan_id', $layananId)
             ->firstOrFail();
 
-        if ($data->is_locked) {
-            return redirect('/penerimaan')->with(['error' => 'Data penerimaan ini telah dikunci oleh admin dan tidak dapat diubah lagi.']);
+        if ($data->status_verifikasi == 'disetujui') {
+            return redirect('/penerimaan')->with(['error' => 'Data penerimaan ini telah disetujui dan tidak dapat diubah lagi.']);
+        }
+
+        if ($data->status_verifikasi == 'menunggu') {
+            return redirect('/penerimaan')->with(['warning' => 'Laporan penerimaan sedang menunggu verifikasi admin.']);
+        }
+
+        // Validasi: Cek presensi tanggal data
+        $presensiTgl = DB::table('presensi')
+            ->where('nik', (string) $layananId)
+            ->where('tgl_presensi', $data->tgl_penerimaan)
+            ->first();
+
+        if ($presensiTgl && !empty($presensiTgl->petugas_id) && $presensiTgl->petugas_id != $petugasId) {
+            $namaYangAbsen = $presensiTgl->petugas_nama ?: 'Petugas lain';
+            return redirect('/penerimaan')->with(['warning' => "Hanya petugas yang melakukan presensi pada tanggal tersebut ({$namaYangAbsen}) yang berhak mengubah data penerimaan."]);
         }
 
         $rpR2 = (float) preg_replace('/[^0-9]/', '', $request->jumlah_rp_r2);
@@ -235,7 +866,24 @@ class PenerimaanController extends Controller
                 'total_unit' => $totalUnit,
                 'jumlah_notice' => $notice,
                 'keterangan' => $request->keterangan,
+                'status_verifikasi' => 'draft',
+                'catatan_verifikasi' => null,
+                'input_by_petugas_id' => $petugasId,
             ];
+
+            if ($request->filled('no_awal_notice')) {
+                $updateData['no_awal_notice'] = $request->no_awal_notice;
+            }
+            if ($request->hasFile('foto_awal_notice')) {
+                $updateData['foto_awal_notice'] = $this->uploadNoticePhoto($request->file('foto_awal_notice'), 'awal', $layananId, $data->tgl_penerimaan);
+            }
+            if ($request->filled('no_akhir_notice')) {
+                $updateData['no_akhir_notice'] = $request->no_akhir_notice;
+            }
+            if ($request->hasFile('foto_akhir_notice')) {
+                $updateData['foto_akhir_notice'] = $this->uploadNoticePhoto($request->file('foto_akhir_notice'), 'akhir', $layananId, $data->tgl_penerimaan);
+            }
+
             if (!empty($request->kode_cabang)) {
                 $updateData['kode_cabang'] = $request->kode_cabang;
             }
@@ -254,8 +902,12 @@ class PenerimaanController extends Controller
             ->where('layanan_id', $user->id)
             ->firstOrFail();
 
-        if ($data->is_locked) {
-            return redirect('/penerimaan')->with(['error' => 'Data penerimaan ini telah dikunci oleh admin dan tidak dapat dihapus lagi.']);
+        if ($data->status_verifikasi == 'disetujui') {
+            return redirect('/penerimaan')->with(['error' => 'Data penerimaan ini telah disetujui dan tidak dapat dihapus lagi.']);
+        }
+
+        if ($data->status_verifikasi == 'menunggu') {
+            return redirect('/penerimaan')->with(['warning' => 'Laporan penerimaan sedang menunggu verifikasi admin.']);
         }
 
         $data->delete();
@@ -272,7 +924,7 @@ class PenerimaanController extends Controller
         $tgl_sampai = $request->tgl_sampai ?: date('Y-m-d');
         $layanan_id = $request->layanan_id;
 
-        $query = RekapPenerimaanPkb::with(['layanan', 'cabang'])
+        $query = RekapPenerimaanPkb::with(['layanan', 'cabang', 'petugas', 'lintasDaerah'])
             ->whereBetween('tgl_penerimaan', [$tgl_dari, $tgl_sampai])
             ->orderBy('tgl_penerimaan', 'desc');
 
@@ -347,7 +999,7 @@ class PenerimaanController extends Controller
                     ->where('status', 1)
                     ->first();
                 $layananItem = Layanan::find($request->layanan_id);
-                $kodeCabang = $jadwalRutin ? $jadwalRutin->kode_cabang : ($layananItem ? $layananItem->kode_cabang : 'SM1');
+                $kodeCabang = $jadwalRutin ? $jadwalRutin->kode_cabang : ($layananItem ? $layananItem->kode_cabang : 1);
             }
         }
 
@@ -366,8 +1018,10 @@ class PenerimaanController extends Controller
                     'jumlah_unit_r4' => $unitR4,
                     'total_unit' => $totalUnit,
                     'jumlah_notice' => $notice,
+                    'status_verifikasi' => 'disetujui',
                     'keterangan' => $request->keterangan,
-                    'is_locked' => $request->has('is_locked') ? 1 : 0,
+                    'verified_at' => Carbon::now(),
+                    'verified_by' => Auth::guard('user')->user()->id ?? null,
                 ]
             );
 
@@ -400,6 +1054,8 @@ class PenerimaanController extends Controller
         $totalRp = $rpR2 + $rpR4;
         $totalUnit = $unitR2 + $unitR4;
 
+        $newStatus = $request->input('status_verifikasi', $data->status_verifikasi);
+
         try {
             $updateData = [
                 'layanan_id' => $request->layanan_id ?: $data->layanan_id,
@@ -411,9 +1067,16 @@ class PenerimaanController extends Controller
                 'jumlah_unit_r4' => $unitR4,
                 'total_unit' => $totalUnit,
                 'jumlah_notice' => $notice,
+                'status_verifikasi' => $newStatus,
+                'catatan_verifikasi' => $request->has('catatan_verifikasi') ? $request->catatan_verifikasi : $data->catatan_verifikasi,
                 'keterangan' => $request->keterangan,
-                'is_locked' => $request->has('is_locked') ? 1 : 0,
             ];
+            if ($request->filled('no_awal_notice')) {
+                $updateData['no_awal_notice'] = $request->no_awal_notice;
+            }
+            if ($request->filled('no_akhir_notice')) {
+                $updateData['no_akhir_notice'] = $request->no_akhir_notice;
+            }
             if (!empty($request->kode_cabang)) {
                 $updateData['kode_cabang'] = $request->kode_cabang;
             }
@@ -433,37 +1096,47 @@ class PenerimaanController extends Controller
         return Redirect::back()->with(['success' => 'Data Penerimaan PKB Berhasil Dihapus']);
     }
 
-    public function adminToggleLock($id)
+    public function adminDetailVerifikasi(Request $request, $id)
     {
-        $data = RekapPenerimaanPkb::findOrFail($id);
-        $data->is_locked = !$data->is_locked;
-        $data->save();
-
-        $statusText = $data->is_locked ? 'dikunci (user tidak dapat mengedit/menghapus)' : 'dibuka kuncinya (user dapat mengedit)';
-        return Redirect::back()->with(['success' => "Data penerimaan tanggal " . date('d-m-Y', strtotime($data->tgl_penerimaan)) . " berhasil {$statusText}."]);
+        $data = RekapPenerimaanPkb::with(['layanan', 'cabang', 'lintasDaerah.kabupaten'])->findOrFail($id);
+        return view('penerimaan.admin_modal_verifikasi', compact('data'));
     }
 
-    public function adminBulkLock(Request $request)
+    public function adminSetujui($id, Request $request)
     {
-        $lockAction = $request->input('lock_action', 'lock'); // 'lock' atau 'unlock'
-        $tgl_dari = $request->tgl_dari;
-        $tgl_sampai = $request->tgl_sampai;
-        $layanan_id = $request->layanan_id;
+        $data = RekapPenerimaanPkb::findOrFail($id);
+        $data->update([
+            'status_verifikasi' => 'disetujui',
+            'verified_at' => now(),
+            'verified_by' => Auth::user()->id,
+            'catatan_verifikasi' => null,
+        ]);
 
-        $query = RekapPenerimaanPkb::query();
+        return Redirect::back()->with(['success' => 'Laporan penerimaan tanggal ' . date('d-m-Y', strtotime($data->tgl_penerimaan)) . ' (' . ($data->layanan->nama_layanan ?? '') . ') berhasil disetujui dan otomatis dikunci.']);
+    }
 
-        if (!empty($tgl_dari) && !empty($tgl_sampai)) {
-            $query->whereBetween('tgl_penerimaan', [$tgl_dari, $tgl_sampai]);
+    public function adminTolak($id, Request $request)
+    {
+        $data = RekapPenerimaanPkb::findOrFail($id);
+        $wasApproved = ($data->status_verifikasi == 'disetujui');
+
+        $catatan = $request->input('catatan_verifikasi');
+        if (empty($catatan)) {
+            $catatan = $wasApproved ? 'Persetujuan dibatalkan oleh admin untuk dilakukan revisi data.' : 'Laporan memerlukan revisi data.';
         }
-        if (!empty($layanan_id)) {
-            $query->where('layanan_id', $layanan_id);
-        }
 
-        $newVal = ($lockAction === 'lock') ? 1 : 0;
-        $count = $query->update(['is_locked' => $newVal]);
+        $data->update([
+            'status_verifikasi' => 'ditolak',
+            'catatan_verifikasi' => $catatan,
+            'verified_at' => now(),
+            'verified_by' => Auth::user()->id,
+        ]);
 
-        $label = ($lockAction === 'lock') ? 'dikunci (user tidak dapat mengedit/menghapus)' : 'dibuka kuncinya';
-        return Redirect::back()->with(['success' => "Sebanyak {$count} data penerimaan berhasil {$label}."]);
+        $msg = $wasApproved
+            ? 'Persetujuan laporan berhasil dibatalkan dan status dikembalikan ke petugas layanan untuk direvisi.'
+            : 'Laporan penerimaan tanggal ' . date('d-m-Y', strtotime($data->tgl_penerimaan)) . ' dikembalikan ke petugas layanan untuk direvisi.';
+
+        return Redirect::back()->with(['success' => $msg]);
     }
 
     public function adminCetak(Request $request)
@@ -609,9 +1282,11 @@ class PenerimaanController extends Controller
         if (!empty($layanan_id) && $layanan_id != "all") {
             $layananTerpilih = DB::table("layanan")->where("id", $layanan_id)->first();
             $detailHarian = DB::table("rekap_penerimaan_pkb")
-                ->where("layanan_id", $layanan_id)
-                ->whereBetween("tgl_penerimaan", [$startDate, $endDate])
-                ->orderBy("tgl_penerimaan", "asc")
+                ->leftJoin("petugas_layanan", "rekap_penerimaan_pkb.input_by_petugas_id", "=", "petugas_layanan.id")
+                ->where("rekap_penerimaan_pkb.layanan_id", $layanan_id)
+                ->whereBetween("rekap_penerimaan_pkb.tgl_penerimaan", [$startDate, $endDate])
+                ->select("rekap_penerimaan_pkb.*", "petugas_layanan.nama_petugas as input_by_nama")
+                ->orderBy("rekap_penerimaan_pkb.tgl_penerimaan", "asc")
                 ->get();
         }
 
@@ -717,15 +1392,15 @@ class PenerimaanController extends Controller
                         WHEN 7 THEN 'Sabtu'
                     END");
             })
-            ->leftJoin("cabang as c_lokasi", DB::raw("COALESCE(rekap_penerimaan_pkb.kode_cabang, j_khusus.kode_cabang, j_rutin.kode_cabang, layanan.kode_cabang)"), "=", "c_lokasi.kode_cabang")
+            ->leftJoin("cabang as c_lokasi", DB::raw("COALESCE(rekap_penerimaan_pkb.kode_cabang, j_khusus.kode_cabang, j_rutin.kode_cabang, layanan.kode_cabang)"), "=", "c_lokasi.id")
             ->whereBetween("rekap_penerimaan_pkb.tgl_penerimaan", [$startDate, $endDate]);
 
         if (!empty($kode_cabang) && $kode_cabang != "all") {
-            $query->where("c_lokasi.kode_cabang", $kode_cabang);
+            $query->where("c_lokasi.id", $kode_cabang);
         }
 
         $rekapLokasi = $query->select(
-            DB::raw("COALESCE(c_lokasi.kode_cabang, 'LAIN') as kode_cabang"),
+            DB::raw("COALESCE(c_lokasi.id, 'LAIN') as kode_cabang"),
             DB::raw("COALESCE(c_lokasi.nama_cabang, 'Lokasi Lainnya') as nama_cabang"),
             DB::raw("COALESCE(c_lokasi.lokasi_cabang, '-') as lokasi_cabang"),
             DB::raw("COALESCE(SUM(rekap_penerimaan_pkb.jumlah_rp_r2), 0) as rp_r2"),
@@ -738,7 +1413,7 @@ class PenerimaanController extends Controller
             DB::raw("COUNT(DISTINCT rekap_penerimaan_pkb.tgl_penerimaan) as total_hari_operasi")
         )
         ->groupBy(
-            DB::raw("COALESCE(c_lokasi.kode_cabang, 'LAIN')"),
+            DB::raw("COALESCE(c_lokasi.id, 'LAIN')"),
             DB::raw("COALESCE(c_lokasi.nama_cabang, 'Lokasi Lainnya')"),
             DB::raw("COALESCE(c_lokasi.lokasi_cabang, '-')")
         )
@@ -759,8 +1434,9 @@ class PenerimaanController extends Controller
         $detailHarian = null;
         $lokasiTerpilih = null;
         if (!empty($kode_cabang) && $kode_cabang != "all") {
-            $lokasiTerpilih = DB::table("cabang")->where("kode_cabang", $kode_cabang)->first();
+            $lokasiTerpilih = DB::table("cabang")->where("id", $kode_cabang)->first();
             $detailHarian = $query->clone()
+                ->leftJoin("petugas_layanan", "rekap_penerimaan_pkb.input_by_petugas_id", "=", "petugas_layanan.id")
                 ->select(
                     "rekap_penerimaan_pkb.tgl_penerimaan",
                     "layanan.nama_layanan",
@@ -771,6 +1447,7 @@ class PenerimaanController extends Controller
                     "rekap_penerimaan_pkb.total_rp",
                     "rekap_penerimaan_pkb.total_unit",
                     "rekap_penerimaan_pkb.jumlah_notice",
+                    "petugas_layanan.nama_petugas as input_by_nama",
                     "rekap_penerimaan_pkb.keterangan"
                 )
                 ->orderBy("rekap_penerimaan_pkb.tgl_penerimaan", "asc")

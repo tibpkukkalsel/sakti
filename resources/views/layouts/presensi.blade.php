@@ -12,12 +12,12 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#2A8BF2">
-    <title>E-Lapor SAMKEL UPPD SAMSAT Batulicin</title>
+    <title>E-Lapor SAMKEL</title>
     <meta name="description" content="E-Lapor SAMKEL UPPD SAMSAT Batulicin">
     <meta name="keywords" content="ABSENSI DAN PENERIMAAN PKB SAMSAT BATULICIN" />
-    <link rel="icon" type="image/png" href="{{ asset('Logo Sakti.png') }}?v=2" sizes="32x32"
+    <link rel="icon" type="image/png" href="{{ asset('E-LAPOR_SAMKEL.png') }}?v=3" sizes="32x32"
         onerror="this.src='{{ asset('assets/img/favicon.png') }}'">
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('Logo Sakti.png') }}?v=2">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('E-LAPOR_SAMKEL.png') }}?v=3">
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
     <link rel="manifest" href="{{ asset('manifest.json') }}">
     <style>
@@ -140,6 +140,7 @@
 
     @include('layouts.bottomNav')
 
+    @include('layouts.modal_foto')
 
     @include('layouts.script')
 

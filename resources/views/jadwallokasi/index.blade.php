@@ -106,7 +106,7 @@
                                                 <select name="kode_cabang" class="form-select">
                                                     <option value="">Semua Lokasi</option>
                                                     @foreach ($listLokasi as $lok)
-                                                    <option value="{{ $lok->kode_cabang }}" {{ Request('kode_cabang') == $lok->kode_cabang ? 'selected' : '' }}>
+                                                    <option value="{{ $lok->id }}" {{ Request('kode_cabang') == $lok->id ? 'selected' : '' }}>
                                                         {{ $lok->nama_cabang }}
                                                     </option>
                                                     @endforeach
@@ -159,7 +159,7 @@
                                                             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-star" width="14" height="14" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="currentColor" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
                                                             Event Khusus
                                                         </span>
-                                                        <div class="fw-bold text-primary">{{ date('d/m/Y', strtotime($d->tanggal)) }}</div>
+                                                        <div class="fw-bold text-primary">{{ formatHariTanggal($d->tanggal) }}</div>
                                                         <div class="small text-muted">Hari {{ $d->hari }}</div>
                                                     @else
                                                         <span class="badge bg-primary text-white mb-1">Rutin Mingguan</span>
@@ -168,7 +168,6 @@
                                                 </td>
                                                 <td>
                                                     <strong>{{ $d->nama_cabang }}</strong>
-                                                    <div class="small text-muted">Kode: {{ $d->kode_cabang }}</div>
                                                 </td>
                                                 <td>
                                                     @if (!empty($d->nama_jam_kerja))
@@ -263,7 +262,7 @@
                             <select name="kode_cabang" id="kode_cabang" class="form-select mb-3">
                                 <option value="">Pilih Lokasi Pelayanan</option>
                                 @foreach ($listLokasi as $lok)
-                                <option value="{{ $lok->kode_cabang }}">{{ $lok->nama_cabang }} (Radius {{ $lok->radius_cabang }}m)</option>
+                                <option value="{{ $lok->id }}">{{ $lok->nama_cabang }} (Radius {{ $lok->radius_cabang }}m)</option>
                                 @endforeach
                             </select>
                         </div>
@@ -351,7 +350,7 @@
                             <select name="kode_cabang" id="kode_cabang_event" class="form-select mb-3">
                                 <option value="">Pilih Lokasi Pelayanan</option>
                                 @foreach ($listLokasi as $lok)
-                                <option value="{{ $lok->kode_cabang }}">{{ $lok->nama_cabang }} (Radius {{ $lok->radius_cabang }}m)</option>
+                                <option value="{{ $lok->id }}">{{ $lok->nama_cabang }} (Radius {{ $lok->radius_cabang }}m)</option>
                                 @endforeach
                             </select>
                         </div>
@@ -443,7 +442,7 @@
                                         <select name="jadwal[{{ $h }}][kode_cabang]" class="form-select">
                                             <option value="">Lokasi Default / Libur</option>
                                             @foreach ($listLokasi as $lok)
-                                            <option value="{{ $lok->kode_cabang }}">{{ $lok->nama_cabang }}</option>
+                                            <option value="{{ $lok->id }}">{{ $lok->nama_cabang }}</option>
                                             @endforeach
                                         </select>
                                     </td>

@@ -283,8 +283,12 @@
             </div>
             <div id="user-info">
                 <h3 id="user-name">
-                    {{ Auth::guard('karyawan')->user()->nama_layanan ?? Auth::guard('karyawan')->user()->nama_lengkap }}
+                    {{ Auth::guard('karyawan')->user()->nama_petugas ?? Auth::guard('karyawan')->user()->nama_lengkap }}
                 </h3>
+                <span style="font-size: 11.5px; font-weight: 600; color: #fde047; display: block; margin-top: 1px;">
+                    <ion-icon name="bus" style="vertical-align: -1px;"></ion-icon>
+                    {{ Auth::guard('karyawan')->user()->nama_layanan ?? 'Layanan' }}
+                </span>
                 <span style="font-size: 11px; color: rgba(255, 255, 255, 0.95); display: block; margin-top: 2px;">
                     <ion-icon name="location" style="vertical-align: -1px; color: #fde047;"></ion-icon>
                     {{ $cabang ? $cabang->nama_cabang : 'UPPD SAMSAT Batulicin' }}
@@ -432,6 +436,11 @@
                                 <div class="presencedetail">
                                     <h4 class="presencetitle">Masuk</h4>
                                     <span>{{ $presensihariini != null && $presensihariini->jam_in != null ? $presensihariini->jam_in : ($dataliburhariini != null ? 'Libur' : 'Belum Absen') }}</span>
+                                    @if ($presensihariini != null && !empty($presensihariini->petugas_nama))
+                                        <div style="font-size: 9.5px; opacity: 0.92; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 125px;">
+                                            {{ $presensihariini->petugas_nama }}
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -484,20 +493,63 @@
                                 {{ \Carbon\Carbon::parse($hariini ?? date('Y-m-d'))->translatedFormat('l, d F Y') }}</div>
                         </div>
                     </div>
-                    @if (isset($penerimaanHariIniLayanan) && $penerimaanHariIniLayanan)
-                        <span class="badge badge-success"
-                            style="font-size: 11px; padding: 4px 10px; background-color: #10b981; color: #ffffff;">Sudah
-                            Input</span>
-                    @else
-                        <span class="badge badge-warning"
-                            style="font-size: 11px; padding: 4px 10px; background-color: #f59e0b; color: #ffffff;">Belum
-                            Input</span>
+                    @if (!isset($penerimaanHariIniLayanan) || !$penerimaanHariIniLayanan)
+                        <span class="badge"
+                            style="font-size: 11px; padding: 4px 10px; background-color: #64748b; color: #ffffff;">Belum Buka Layanan</span>
+                    @elseif ($penerimaanHariIniLayanan->status_verifikasi == 'draft')
+                        <span class="badge"
+                            style="font-size: 11px; padding: 4px 10px; background-color: #f59e0b; color: #ffffff;">{{ empty($penerimaanHariIniLayanan->no_akhir_notice) ? 'Layanan Berjalan' : 'Draft' }}</span>
+                    @elseif ($penerimaanHariIniLayanan->status_verifikasi == 'menunggu')
+                        <span class="badge"
+                            style="font-size: 11px; padding: 4px 10px; background-color: #0284c7; color: #ffffff;">Menunggu Verifikasi</span>
+                    @elseif ($penerimaanHariIniLayanan->status_verifikasi == 'disetujui')
+                        <span class="badge"
+                            style="font-size: 11px; padding: 4px 10px; background-color: #10b981; color: #ffffff;">Disetujui</span>
+                    @elseif ($penerimaanHariIniLayanan->status_verifikasi == 'ditolak')
+                        <span class="badge"
+                            style="font-size: 11px; padding: 4px 10px; background-color: #ef4444; color: #ffffff;">Perlu Revisi</span>
                     @endif
                 </div>
 
-                @if (isset($penerimaanHariIniLayanan) && $penerimaanHariIniLayanan)
+                @if (!isset($penerimaanHariIniLayanan) || !$penerimaanHariIniLayanan)
+                    <div class="text-center py-2">
+                        <a href="/penerimaan/buka-layanan" class="btn btn-sm btn-primary btn-block"
+                            style="border-radius: 8px; font-weight: 700; background: linear-gradient(135deg, #2A8BF2 0%, #1A73E8 100%); border: none; height: 38px; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                            <ion-icon name="document-text-outline" style="font-size: 18px;"></ion-icon>
+                            <span>Input Notice Awal</span>
+                        </a>
+                    </div>
+                @elseif ($penerimaanHariIniLayanan->status_verifikasi == 'draft' && empty($penerimaanHariIniLayanan->no_akhir_notice))
                     <div class="d-flex align-items-center justify-content-between p-2 mt-1"
-                        style="background: #f8fafc; border-radius: 10px;">
+                        style="background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0;">
+                        <div>
+                            <div style="font-size: 11px; color: #64748b;">Notice Awal</div>
+                            <div style="font-size: 15px; font-weight: 800; color: #2A8BF2;">
+                                {{ $penerimaanHariIniLayanan->no_awal_notice }}
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="badge bg-light text-primary border" style="font-size: 11px;">
+                                Pelayanan Aktif
+                            </span>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <a href="/penerimaan/{{ $penerimaanHariIniLayanan->id }}/tutup-layanan" class="btn btn-sm btn-success btn-block"
+                            style="border-radius: 8px; font-weight: 700; background-color: #10b981; border-color: #10b981; height: 38px; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                            <ion-icon name="add-circle-outline" style="font-size: 18px;"></ion-icon>
+                            <span>+ Input Penerimaan Hari Ini</span>
+                        </a>
+                    </div>
+                @else
+                    @if ($penerimaanHariIniLayanan->status_verifikasi == 'ditolak' && !empty($penerimaanHariIniLayanan->catatan_verifikasi))
+                        <div class="alert alert-danger py-2 px-3 mt-1 mb-2 small" style="border-radius: 8px;">
+                            <strong>Catatan Revisi:</strong> {{ $penerimaanHariIniLayanan->catatan_verifikasi }}
+                        </div>
+                    @endif
+
+                    <div class="d-flex align-items-center justify-content-between p-2 mt-1"
+                        style="background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0;">
                         <div>
                             <div style="font-size: 11px; color: #64748b;">Total Realisasi</div>
                             <div style="font-size: 16px; font-weight: 800; color: #0f172a;">Rp
@@ -510,26 +562,32 @@
                                 {{ $penerimaanHariIniLayanan->jumlah_notice }} Notice</div>
                         </div>
                     </div>
-                    <div class="row mt-2">
-                        <div class="col-6">
-                            <a href="/penerimaan/{{ $penerimaanHariIniLayanan->id }}/edit"
-                                class="btn btn-sm btn-outline-primary btn-block" style="border-radius: 8px;">
-                                <ion-icon name="create-outline"></ion-icon> Update
+
+                    @if ($penerimaanHariIniLayanan->status_verifikasi == 'ditolak')
+                        <div class="mt-2">
+                            <a href="/penerimaan/{{ $penerimaanHariIniLayanan->id }}/tutup-layanan" class="btn btn-sm btn-danger btn-block"
+                                style="border-radius: 8px; font-weight: 700;">
+                                <ion-icon name="create-outline"></ion-icon> Perbaiki Laporan
                             </a>
                         </div>
-                        <div class="col-6">
-                            <a href="/penerimaan" class="btn btn-sm btn-primary btn-block" style="border-radius: 8px;">
-                                <ion-icon name="list-outline"></ion-icon> Rekap
+                    @elseif ($penerimaanHariIniLayanan->status_verifikasi == 'draft')
+                        <div class="mt-2 d-flex gap-2">
+                            <a href="/penerimaan/{{ $penerimaanHariIniLayanan->id }}/tutup-layanan" class="btn btn-sm btn-outline-primary"
+                                style="flex: 1; border-radius: 8px; font-weight: 700; height: 38px; display: flex; align-items: center; justify-content: center; gap: 5px;">
+                                <ion-icon name="create-outline" style="font-size: 16px;"></ion-icon> Edit
+                            </a>
+                            <a href="/penerimaan" class="btn btn-sm btn-primary"
+                                style="flex: 1; border-radius: 8px; font-weight: 700; height: 38px; display: flex; align-items: center; justify-content: center; gap: 5px;">
+                                <ion-icon name="paper-plane-outline" style="font-size: 16px;"></ion-icon> Kirim
                             </a>
                         </div>
-                    </div>
-                @else
-                    <div class="text-center py-2">
-                        <a href="/penerimaan/create" class="btn btn-sm btn-success btn-block"
-                            style="border-radius: 8px; font-weight: 600; background-color: #10b981; border-color: #10b981;">
-                            <ion-icon name="add-circle-outline"></ion-icon> + Input Penerimaan Hari Ini
-                        </a>
-                    </div>
+                    @else
+                        <div class="mt-2">
+                            <a href="/penerimaan" class="btn btn-sm btn-primary btn-block" style="border-radius: 8px; font-weight: 600;">
+                                <ion-icon name="list-outline"></ion-icon> Lihat Detail Rekap
+                            </a>
+                        </div>
+                    @endif
                 @endif
             </div>
         </div>
@@ -648,7 +706,7 @@
                                             <div class="d-flex justify-content-between align-items-center mb-1">
                                                 <h4
                                                     style="margin:0px !important; font-weight: 700; color: #1e293b; font-size: 14px;">
-                                                    {{ date('d-m-Y', strtotime($d->tgl_presensi)) }}
+                                                    {{ formatHariTanggal($d->tgl_presensi) }}
                                                 </h4>
                                                 <span class="badge"
                                                     style="font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 6px; {{ $is_tidak_absen_masuk ? 'background:#fee2e2; color:#b91c1c;' : ($is_terlambat ? 'background:#ffedd5; color:#c2410c;' : 'background:#dcfce7; color:#15803d;') }}">
@@ -723,7 +781,7 @@
                                             <div class="d-flex justify-content-between align-items-center mb-1">
                                                 <h4
                                                     style="margin:0px !important; font-weight: 700; color: #1e293b; font-size: 14px;">
-                                                    {{ date('d-m-Y', strtotime($d->tgl_presensi)) }}
+                                                    {{ formatHariTanggal($d->tgl_presensi) }}
                                                 </h4>
                                                 <span class="badge"
                                                     style="background:#cffafe; color:#0e7490; font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 6px;">
@@ -754,7 +812,7 @@
                                             <div class="d-flex justify-content-between align-items-center mb-1">
                                                 <h4
                                                     style="margin:0px !important; font-weight: 700; color: #1e293b; font-size: 14px;">
-                                                    {{ date('d-m-Y', strtotime($d->tgl_presensi)) }}
+                                                    {{ formatHariTanggal($d->tgl_presensi) }}
                                                 </h4>
                                                 <span class="badge"
                                                     style="background:#fef3c7; color:#b45309; font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 6px;">
@@ -785,7 +843,7 @@
                                             <div class="d-flex justify-content-between align-items-center mb-1">
                                                 <h4
                                                     style="margin:0px !important; font-weight: 700; color: #1e293b; font-size: 14px;">
-                                                    {{ date('d-m-Y', strtotime($d->tgl_presensi)) }}
+                                                    {{ formatHariTanggal($d->tgl_presensi) }}
                                                 </h4>
                                                 <span class="badge"
                                                     style="background:#fee2e2; color:#b91c1c; font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 6px;">
@@ -816,7 +874,7 @@
                                             <div class="d-flex justify-content-between align-items-center mb-1">
                                                 <h4
                                                     style="margin:0px !important; font-weight: 700; color: #1e293b; font-size: 14px;">
-                                                    {{ date('d-m-Y', strtotime($d->tgl_presensi)) }}
+                                                    {{ formatHariTanggal($d->tgl_presensi) }}
                                                 </h4>
                                                 <span class="badge"
                                                     style="background:#dbeafe; color:#1d4ed8; font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 6px;">
@@ -857,7 +915,7 @@
                                             <div class="d-flex justify-content-between align-items-center mb-1">
                                                 <h4
                                                     style="margin:0px !important; font-weight: 700; color: #1e293b; font-size: 14px;">
-                                                    {{ date('d-m-Y', strtotime($d->tgl_presensi)) }}
+                                                    {{ formatHariTanggal($d->tgl_presensi) }}
                                                 </h4>
                                                 <span class="badge"
                                                     style="background:#ede9fe; color:#6d28d9; font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 6px;">

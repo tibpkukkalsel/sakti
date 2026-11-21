@@ -66,7 +66,7 @@
             <select name="kode_cabang" id="kode_cabang_edit" class="form-select mb-3">
                 <option value="">Pilih Lokasi Pelayanan</option>
                 @foreach ($listLokasi as $lok)
-                <option value="{{ $lok->kode_cabang }}" {{ $jadwal->kode_cabang == $lok->kode_cabang ? 'selected' : '' }}>
+                <option value="{{ $lok->id }}" {{ $jadwal->kode_cabang == $lok->id ? 'selected' : '' }}>
                     {{ $lok->nama_cabang }} (Radius {{ $lok->radius_cabang }}m)
                 </option>
                 @endforeach

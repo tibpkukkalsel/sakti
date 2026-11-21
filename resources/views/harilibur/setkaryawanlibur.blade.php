@@ -58,7 +58,7 @@
                                     <table class="table">
                                         <tr>
                                             <th>Tanggal</th>
-                                            <td>{{ date('d-m-Y', strtotime($harilibur->tanggal_libur)) }}</td>
+                                            <td>{{ formatHariTanggal($harilibur->tanggal_libur) }}</td>
                                         </tr>
                                         <tr>
                                             <th>Layanan</th>

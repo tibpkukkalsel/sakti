@@ -272,23 +272,29 @@ function gethari($hari)
 function cekJadwalKerja($nik, $kode_cabang, $kode_dept, $tanggal, $hari, $jadwal_by_date = null, $jadwal_pegawai = null, $jadwal_dept = null)
 {
     // 0. Cek Jadwal Lokasi Layanan (Event Khusus per Tanggal atau Rutin Mingguan)
-    $jadwalLokasiEvent = DB::table('jadwal_lokasi_layanan')
-        ->where('layanan_id', $nik)
-        ->where('tanggal', $tanggal)
-        ->where('status', 1)
-        ->first();
-    if ($jadwalLokasiEvent) {
-        return !empty($jadwalLokasiEvent->kode_jam_kerja);
-    }
+    $isLayanan = DB::table('layanan')->where('id', $nik)->exists();
+    if ($isLayanan) {
+        $jadwalLokasiEvent = DB::table('jadwal_lokasi_layanan')
+            ->where('layanan_id', $nik)
+            ->where('tanggal', $tanggal)
+            ->where('status', 1)
+            ->first();
+        if ($jadwalLokasiEvent) {
+            return true;
+        }
 
-    $jadwalLokasiRutin = DB::table('jadwal_lokasi_layanan')
-        ->where('layanan_id', $nik)
-        ->where('hari', $hari)
-        ->where('jenis_jadwal', 'rutin')
-        ->where('status', 1)
-        ->first();
-    if ($jadwalLokasiRutin) {
-        return !empty($jadwalLokasiRutin->kode_jam_kerja);
+        $jadwalLokasiRutin = DB::table('jadwal_lokasi_layanan')
+            ->where('layanan_id', $nik)
+            ->where('hari', $hari)
+            ->where('jenis_jadwal', 'rutin')
+            ->where('status', 1)
+            ->first();
+        if ($jadwalLokasiRutin) {
+            return true;
+        }
+
+        // Jika layanan tidak ada jadwal lokasi pada hari tersebut, otomatis libur
+        return false;
     }
 
     // 1. Cek Jadwal Khusus per Tanggal
@@ -398,5 +404,21 @@ if (!function_exists('hitungSelisihAdmin')) {
             return $jam . ' jam ' . $menit . ' mnt';
         }
         return $menit . ' mnt';
+    }
+}
+
+if (!function_exists('formatHariTanggal')) {
+    /**
+     * Format tanggal Indonesia dengan nama hari: "Hari, tgl-bulan-tahun"
+     * Contoh output: "Senin, 21-11-2026"
+     */
+    function formatHariTanggal($date) {
+        if (empty($date)) return '-';
+        $time = is_numeric($date) ? (int)$date : strtotime($date);
+        if (!$time) return $date;
+        $hariArr = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+        $w = (int)date('w', $time);
+        $namaHari = $hariArr[$w] ?? '';
+        return $namaHari . ', ' . date('d-m-Y', $time);
     }
 }

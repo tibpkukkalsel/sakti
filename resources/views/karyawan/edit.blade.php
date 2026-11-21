@@ -106,8 +106,8 @@
             <select name="kode_cabang" id="kode_cabang" class="form-select">
                 <option value="">Lokasi</option>
                 @foreach ($cabang as $d)
-                    <option {{ $karyawan->kode_cabang == $d->kode_cabang ? 'selected' : '' }}
-                        value="{{ $d->kode_cabang }}">{{ strtoupper($d->nama_cabang) }}</option>
+                    <option {{ $karyawan->kode_cabang == $d->id ? 'selected' : '' }}
+                        value="{{ $d->id }}">{{ strtoupper($d->nama_cabang) }}</option>
                 @endforeach
             </select>
         </div>

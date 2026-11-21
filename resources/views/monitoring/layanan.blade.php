@@ -105,7 +105,7 @@
                                 style="color: #ef4444; font-size: 14px; margin-right: 3px; flex-shrink: 0;"></ion-icon>
                             <span style="color: #64748b; margin-right: 4px;">Lokasi:</span>
                             <strong style="color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                {{ $item->lokasi_hari_ini }}
+                                {{ $item->has_jadwal ? $item->lokasi_hari_ini : 'Libur (Tidak Ada Jadwal)' }}
                             </strong>
                         </div>
                     </div>
@@ -115,10 +115,17 @@
                 <div class="mt-3 pt-2 d-flex align-items-center justify-content-between"
                     style="border-top: 1px solid #f1f5f9;">
                     <div>
-                        <span
-                            style="display: inline-flex; align-items: center; justify-content: center; height: 30px; background: rgba(34, 197, 94, 0.12); color: #15803d; font-size: 11.5px; font-weight: 600; padding: 0 12px; border-radius: 20px; border: 1px solid rgba(34, 197, 94, 0.25);">
-                            Siap Layanan
-                        </span>
+                        @if (empty($item->has_jadwal))
+                            <span
+                                style="display: inline-flex; align-items: center; justify-content: center; height: 30px; background: rgba(245, 158, 11, 0.15); color: #d97706; font-size: 11.5px; font-weight: 600; padding: 0 12px; border-radius: 20px; border: 1px solid rgba(245, 158, 11, 0.3);">
+                                Libur
+                            </span>
+                        @else
+                            <span
+                                style="display: inline-flex; align-items: center; justify-content: center; height: 30px; background: rgba(34, 197, 94, 0.12); color: #15803d; font-size: 11.5px; font-weight: 600; padding: 0 12px; border-radius: 20px; border: 1px solid rgba(34, 197, 94, 0.25);">
+                                Siap Layanan
+                            </span>
+                        @endif
                     </div>
 
                     @if (!empty($item->no_hp))

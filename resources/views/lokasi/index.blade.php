@@ -47,23 +47,24 @@
                         <div class="row mt-2">
                             <div class="col-12">
                                 <form action="/panel-adm14/lokasi" method="GET">
-                                    <div class="row">
-                                        <div class="col-10">
+                                    <div class="row g-2">
+                                        <div class="col-md-9 col-12">
                                             <div class="form-group">
-                                                <input type="text" name="nama_cabang" id="cari_nama_cabang" class="form-control" placeholder="Nama Lokasi" value="{{ Request('nama_cabang') }}">
+                                                <input type="text" name="nama_cabang" id="cari_nama_cabang" class="form-control" placeholder="Nama Lokasi / Koordinat" value="{{ Request('nama_cabang') }}">
                                             </div>
                                         </div>
-                                        <div class="col-2">
-                                            <div class="form-group">
-                                                <button type="submit" class="btn btn-primary">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                                        <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"></path>
-                                                        <path d="M21 21l-6 -6"></path>
-                                                    </svg>
-                                                    Cari
-                                                </button>
-                                            </div>
+                                        <div class="col-md-3 col-12 d-flex gap-2">
+                                            <button type="submit" class="btn btn-primary flex-fill">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                    <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"></path>
+                                                    <path d="M21 21l-6 -6"></path>
+                                                </svg>
+                                                Cari
+                                            </button>
+                                            @if (Request('nama_cabang'))
+                                            <a href="/panel-adm14/lokasi" class="btn btn-outline-secondary">Reset</a>
+                                            @endif
                                         </div>
                                     </div>
                                 </form>
@@ -83,15 +84,15 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($cabang as $d)
+                                            @forelse ($cabang as $d)
                                             <tr>
-                                                <td class="text-center">{{ $loop->iteration }}</td>
+                                                <td class="text-center">{{ $loop->iteration + $cabang->firstItem() - 1 }}</td>
                                                 <td class="fw-bold">{{ $d->nama_cabang }}</td>
                                                 <td><code>{{ $d->lokasi_cabang }}</code></td>
                                                 <td><span class="badge bg-info text-white">{{ $d->radius_cabang }} Meter</span></td>
                                                 <td>
                                                     <div class="d-flex justify-content-center">
-                                                        <a href="#" class="edit btn btn-info btn-sm" kode_cabang="{{ $d->kode_cabang }}">
+                                                        <a href="#" class="edit btn btn-info btn-sm" data-id="{{ $d->id }}">
                                                             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-edit" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                                                 <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                                                                 <path d="M9 7h-3a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-3"></path>
@@ -99,7 +100,7 @@
                                                                 <path d="M16 5l3 3"></path>
                                                             </svg>
                                                         </a>
-                                                        <form action="/panel-adm14/lokasi/{{ $d->kode_cabang }}/delete" method="POST" style="margin-left:5px">
+                                                        <form action="/panel-adm14/lokasi/{{ $d->id }}/delete" method="POST" style="margin-left:5px">
                                                             @csrf
                                                             <a class="btn btn-danger btn-sm delete-confirm">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -115,9 +116,21 @@
                                                     </div>
                                                 </td>
                                             </tr>
-                                            @endforeach
+                                            @empty
+                                            <tr>
+                                                <td colspan="5" class="text-center text-muted py-4">Data lokasi tidak ditemukan</td>
+                                            </tr>
+                                            @endforelse
                                         </tbody>
                                     </table>
+                                </div>
+                                <div class="mt-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
+                                    <div class="text-muted small">
+                                        Menampilkan {{ $cabang->firstItem() ?? 0 }} sampai {{ $cabang->lastItem() ?? 0 }} dari {{ $cabang->total() }} data lokasi
+                                    </div>
+                                    <div>
+                                        {{ $cabang->links('vendor.pagination.bootstrap-5') }}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -227,14 +240,14 @@
         });
 
         $(".edit").click(function() {
-            var kode_cabang = $(this).attr('kode_cabang');
+            var id = $(this).attr('data-id');
             $.ajax({
                 type: 'POST',
                 url: '/panel-adm14/lokasi/edit',
                 cache: false,
                 data: {
                     _token: "{{ csrf_token() }}",
-                    kode_cabang: kode_cabang
+                    id: id
                 },
                 success: function(respond) {
                     $("#loadeditform").html(respond);

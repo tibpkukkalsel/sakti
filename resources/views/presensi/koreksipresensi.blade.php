@@ -14,7 +14,7 @@
             </div>
             <div class="row">
                 <div class="col-4 text-muted small">Tanggal Presensi</div>
-                <div class="col-8 fw-bold small">: {{ date('d-m-Y', strtotime($tanggal)) }}</div>
+                <div class="col-8 fw-bold small">: {{ formatHariTanggal($tanggal) }}</div>
             </div>
         </div>
     </div>

@@ -141,7 +141,7 @@
                                 <tr>
                                     <th style="width: 50px;" class="text-center">No.</th>
                                     <th style="width: 120px;">Kode</th>
-                                    <th>Tanggal</th>
+                                    <th style="min-width: 155px;">Hari/Tanggal</th>
                                     <th>Pegawai</th>
                                     <th>Seksi</th>
                                     <th>Kategori</th>
@@ -158,9 +158,9 @@
                                         <td class="text-center">{{ $loop->iteration }}</td>
                                         <td><span class="badge bg-light text-dark border">{{ $d->kode_izin }}</span></td>
                                         <td>
-                                            <span class="fw-semibold">{{ date('d-m-Y', strtotime($d->tgl_izin_dari)) }}</span>
+                                            <span class="fw-semibold">{{ formatHariTanggal($d->tgl_izin_dari) }}</span>
                                             <span class="text-muted">s/d</span>
-                                            <span class="fw-semibold">{{ date('d-m-Y', strtotime($d->tgl_izin_sampai)) }}</span>
+                                            <span class="fw-semibold">{{ formatHariTanggal($d->tgl_izin_sampai) }}</span>
                                         </td>
                                         <td class="fw-bold">{{ $d->nama_lengkap }}</td>
                                         <td>{{ $d->nama_dept }}</td>

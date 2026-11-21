@@ -256,13 +256,24 @@
                             @if (!empty($item->tgl_presensi))
                                 <div style="font-size: 11.5px; color: #2A8BF2; font-weight: 600; margin-top: 2px;">
                                     <ion-icon name="calendar-outline" style="vertical-align: -1px; margin-right: 2px;"></ion-icon>
-                                    {{ date('d-m-Y', strtotime($item->tgl_presensi)) }}
+                                    {{ formatHariTanggal($item->tgl_presensi) }}
                                 </div>
                             @endif
                             @if ($statusLabel != 'Libur')
                                 <div class="text-muted" style="font-size: 11.5px; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                                     <ion-icon name="location-outline" style="vertical-align: -1px; color: #ef4444; margin-right: 2px;"></ion-icon>
                                     <span>{{ $item->lokasi_tugas }}</span>
+                                </div>
+                            @else
+                                <div class="text-warning fw-semibold" style="font-size: 11.5px; margin-top: 1px;">
+                                    <ion-icon name="calendar-outline" style="vertical-align: -1px; margin-right: 2px;"></ion-icon>
+                                    <span>Libur (Tidak Ada Jadwal)</span>
+                                </div>
+                            @endif
+                            @if (!empty($item->petugas_nama))
+                                <div style="font-size: 11px; color: #16a34a; font-weight: 600; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                    <ion-icon name="person-outline" style="vertical-align: -1px; margin-right: 2px;"></ion-icon>
+                                    <span>Absen: {{ $item->petugas_nama }}</span>
                                 </div>
                             @endif
                         </div>

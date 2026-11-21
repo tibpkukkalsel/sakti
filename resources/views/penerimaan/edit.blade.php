@@ -58,7 +58,8 @@
                         <label class="label">Lokasi Layanan</label>
                         <select class="form-control" name="kode_cabang" id="kode_cabang">
                             @foreach ($daftarLokasi as $lok)
-                                <option value="{{ $lok->kode_cabang }}" {{ (old('kode_cabang', $data->kode_cabang) == $lok->kode_cabang) ? 'selected' : '' }}>
+                                <option value="{{ $lok->id }}"
+                                    {{ old('kode_cabang', $data->kode_cabang) == $lok->id ? 'selected' : '' }}>
                                     {{ $lok->nama_cabang }}
                                 </option>
                             @endforeach
@@ -71,8 +72,10 @@
                         <div class="form-group boxed">
                             <div class="input-wrapper">
                                 <label class="label">Penerimaan R2 (Rp)</label>
-                                <input type="text" class="form-control rupiah-input" name="jumlah_rp_r2" id="jumlah_rp_r2"
-                                    placeholder="Rp 0" value="{{ old('jumlah_rp_r2', $data->jumlah_rp_r2 > 0 ? number_format($data->jumlah_rp_r2, 0, ',', '.') : '') }}" autocomplete="off">
+                                <input type="text" class="form-control rupiah-input" name="jumlah_rp_r2"
+                                    id="jumlah_rp_r2" placeholder="Rp 0"
+                                    value="{{ old('jumlah_rp_r2', $data->jumlah_rp_r2 > 0 ? number_format($data->jumlah_rp_r2, 0, ',', '.') : '') }}"
+                                    autocomplete="off">
                                 <i class="clear-input">
                                     <ion-icon name="close-circle"></ion-icon>
                                 </i>
@@ -83,8 +86,9 @@
                         <div class="form-group boxed">
                             <div class="input-wrapper">
                                 <label class="label">Unit R2</label>
-                                <input type="number" class="form-control unit-calc" name="jumlah_unit_r2" id="jumlah_unit_r2"
-                                    placeholder="0" min="0" value="{{ old('jumlah_unit_r2', $data->jumlah_unit_r2 > 0 ? $data->jumlah_unit_r2 : '') }}">
+                                <input type="number" class="form-control unit-calc" name="jumlah_unit_r2"
+                                    id="jumlah_unit_r2" placeholder="0" min="0"
+                                    value="{{ old('jumlah_unit_r2', $data->jumlah_unit_r2 > 0 ? $data->jumlah_unit_r2 : '') }}">
                                 <i class="clear-input">
                                     <ion-icon name="close-circle"></ion-icon>
                                 </i>
@@ -98,8 +102,10 @@
                         <div class="form-group boxed">
                             <div class="input-wrapper">
                                 <label class="label">Penerimaan R4 (Rp)</label>
-                                <input type="text" class="form-control rupiah-input" name="jumlah_rp_r4" id="jumlah_rp_r4"
-                                    placeholder="Rp 0" value="{{ old('jumlah_rp_r4', $data->jumlah_rp_r4 > 0 ? number_format($data->jumlah_rp_r4, 0, ',', '.') : '') }}" autocomplete="off">
+                                <input type="text" class="form-control rupiah-input" name="jumlah_rp_r4"
+                                    id="jumlah_rp_r4" placeholder="Rp 0"
+                                    value="{{ old('jumlah_rp_r4', $data->jumlah_rp_r4 > 0 ? number_format($data->jumlah_rp_r4, 0, ',', '.') : '') }}"
+                                    autocomplete="off">
                                 <i class="clear-input">
                                     <ion-icon name="close-circle"></ion-icon>
                                 </i>
@@ -110,8 +116,9 @@
                         <div class="form-group boxed">
                             <div class="input-wrapper">
                                 <label class="label">Unit R4</label>
-                                <input type="number" class="form-control unit-calc" name="jumlah_unit_r4" id="jumlah_unit_r4"
-                                    placeholder="0" min="0" value="{{ old('jumlah_unit_r4', $data->jumlah_unit_r4 > 0 ? $data->jumlah_unit_r4 : '') }}">
+                                <input type="number" class="form-control unit-calc" name="jumlah_unit_r4"
+                                    id="jumlah_unit_r4" placeholder="0" min="0"
+                                    value="{{ old('jumlah_unit_r4', $data->jumlah_unit_r4 > 0 ? $data->jumlah_unit_r4 : '') }}">
                                 <i class="clear-input">
                                     <ion-icon name="close-circle"></ion-icon>
                                 </i>
@@ -125,11 +132,13 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <div class="text-muted small fw-bold text-uppercase">Total Penerimaan</div>
-                            <div style="font-size: 18px; font-weight: 800; color: #10b981;" id="previewTotalRp">Rp {{ number_format($data->total_rp, 0, ',', '.') }}</div>
+                            <div style="font-size: 18px; font-weight: 800; color: #10b981;" id="previewTotalRp">Rp
+                                {{ number_format($data->total_rp, 0, ',', '.') }}</div>
                         </div>
                         <div class="text-right">
                             <div class="text-muted small fw-bold text-uppercase">Total Unit</div>
-                            <div style="font-size: 15px; font-weight: 700; color: #1e293b;" id="previewTotalUnit">{{ $data->total_unit }} Unit</div>
+                            <div style="font-size: 15px; font-weight: 700; color: #1e293b;" id="previewTotalUnit">
+                                {{ $data->total_unit }} Unit</div>
                         </div>
                     </div>
                 </div>
@@ -138,7 +147,8 @@
                     <div class="input-wrapper">
                         <label class="label">Notice Pajak Dicetak (Lembar)</label>
                         <input type="number" class="form-control" name="jumlah_notice" id="jumlah_notice"
-                            placeholder="Jumlah Lembar Notice" min="0" value="{{ old('jumlah_notice', $data->jumlah_notice > 0 ? $data->jumlah_notice : '') }}">
+                            placeholder="Jumlah Lembar Notice" min="0"
+                            value="{{ old('jumlah_notice', $data->jumlah_notice > 0 ? $data->jumlah_notice : '') }}">
                         <i class="clear-input">
                             <ion-icon name="close-circle"></ion-icon>
                         </i>
@@ -167,49 +177,49 @@
 @endsection
 
 @push('myscript')
-<script>
-    function formatRupiah(angka) {
-        var number_string = angka.replace(/[^,\d]/g, '').toString(),
-            split = number_string.split(','),
-            sisa = split[0].length % 3,
-            rupiah = split[0].substr(0, sisa),
-            ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+    <script>
+        function formatRupiah(angka) {
+            var number_string = angka.replace(/[^,\d]/g, '').toString(),
+                split = number_string.split(','),
+                sisa = split[0].length % 3,
+                rupiah = split[0].substr(0, sisa),
+                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
 
-        if (ribuan) {
-            separator = sisa ? '.' : '';
-            rupiah += separator + ribuan.join('.');
+            if (ribuan) {
+                separator = sisa ? '.' : '';
+                rupiah += separator + ribuan.join('.');
+            }
+
+            rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+            return rupiah;
         }
 
-        rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
-        return rupiah;
-    }
+        function hitungTotal() {
+            var valR2 = $('#jumlah_rp_r2').val().replace(/[^0-9]/g, '') || 0;
+            var valR4 = $('#jumlah_rp_r4').val().replace(/[^0-9]/g, '') || 0;
+            var totalRp = parseInt(valR2) + parseInt(valR4);
 
-    function hitungTotal() {
-        var valR2 = $('#jumlah_rp_r2').val().replace(/[^0-9]/g, '') || 0;
-        var valR4 = $('#jumlah_rp_r4').val().replace(/[^0-9]/g, '') || 0;
-        var totalRp = parseInt(valR2) + parseInt(valR4);
+            $('#previewTotalRp').text('Rp ' + formatRupiah(totalRp.toString()));
 
-        $('#previewTotalRp').text('Rp ' + formatRupiah(totalRp.toString()));
+            var unitR2 = parseInt($('#jumlah_unit_r2').val()) || 0;
+            var unitR4 = parseInt($('#jumlah_unit_r4').val()) || 0;
+            var totalUnit = unitR2 + unitR4;
 
-        var unitR2 = parseInt($('#jumlah_unit_r2').val()) || 0;
-        var unitR4 = parseInt($('#jumlah_unit_r4').val()) || 0;
-        var totalUnit = unitR2 + unitR4;
+            $('#previewTotalUnit').text(totalUnit + ' Unit');
+        }
 
-        $('#previewTotalUnit').text(totalUnit + ' Unit');
-    }
+        $(document).ready(function() {
+            $('.rupiah-input').on('keyup', function(e) {
+                $(this).val(formatRupiah($(this).val()));
+                hitungTotal();
+            });
 
-    $(document).ready(function() {
-        $('.rupiah-input').on('keyup', function(e) {
-            $(this).val(formatRupiah($(this).val()));
+            $('.unit-calc').on('input change', function() {
+                hitungTotal();
+            });
+
+            // Hitung saat load
             hitungTotal();
         });
-
-        $('.unit-calc').on('input change', function() {
-            hitungTotal();
-        });
-
-        // Hitung saat load
-        hitungTotal();
-    });
-</script>
+    </script>
 @endpush

@@ -139,7 +139,7 @@
                                             <thead>
                                                 <tr>
                                                     <th style="width: 40px;" class="text-center">No</th>
-                                                    <th style="width: 95px;" class="text-center">Tanggal</th>
+                                                    <th style="min-width: 155px;" class="text-center">Hari/Tanggal</th>
                                                     <th>Pegawai</th>
                                                     <th>Jadwal Kerja</th>
                                                     <th style="width: 130px;" class="text-center">Jam Masuk</th>
@@ -197,7 +197,7 @@
                                                         <td class="text-center">
                                                             {{ $loop->iteration + $datapresensi->firstItem() - 1 }}</td>
                                                         <td class="text-center fw-semibold">
-                                                            {{ date('d-m-Y', strtotime($d->tgl_presensi)) }}
+                                                            {{ formatHariTanggal($d->tgl_presensi) }}
                                                         </td>
                                                         <td>
                                                             <div class="d-flex align-items-center">

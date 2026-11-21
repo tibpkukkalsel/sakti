@@ -29,7 +29,7 @@
                                                 <select name="kode_cabang" id="kode_cabang" class="form-select" hidden>
                                                     <option value="">Semua Cabang</option>
                                                     @foreach ($cabang as $d)
-                                                        <option value="{{ $d->kode_cabang }}">{{ strtoupper($d->nama_cabang) }}
+                                                        <option value="{{ $d->id }}">{{ strtoupper($d->nama_cabang) }}
                                                         </option>
                                                     @endforeach
                                                 </select>

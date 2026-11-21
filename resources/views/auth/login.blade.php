@@ -8,10 +8,10 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#2A8BF2">
-    <title>E-Lapor SAMKEL - Sign In</title>
+    <title>E-Lapor SAMKEL</title>
     <meta name="description" content="Aplikasi Presensi &amp; Rekap Penerimaan PKB UPPD SAMSAT Batulicin">
-    <link rel="icon" type="image/png" href="{{ asset('Logo Sakti.png') }}?v=2" sizes="32x32">
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('Logo Sakti.png') }}?v=2">
+    <link rel="icon" type="image/png" href="{{ asset('E-LAPOR_SAMKEL.png') }}?v=3" sizes="32x32">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('E-LAPOR_SAMKEL.png') }}?v=3">
     <link rel="manifest" href="{{ asset('manifest.json') }}">
 
     <!-- Google Fonts Poppins -->
@@ -115,7 +115,7 @@
             <div class="side-content">
                 <h2 class="side-title">E-Lapor SAMKEL</h2>
                 <p class="side-desc">
-                    Selamat datang di Sistem Digitalisasi Laporan SAMSAT Keliling. Silakan masuk menggunakan Username Layanan Anda.
+                    Selamat datang di Sistem Digitalisasi Laporan SAMSAT Keliling. Silakan masuk menggunakan Username atau No. HP Anda.
                 </p>
             </div>
 
@@ -292,7 +292,7 @@
                 btnRoleMonitoring.classList.add('active');
                 btnRoleLayanan.classList.remove('active');
                 roleTypeInput.value = 'monitoring';
-                usernameInput.placeholder = 'Email / No. HP';
+                usernameInput.placeholder = 'Username / No. HP';
                 roleHint.textContent = 'Masuk sebagai akun Monitoring';
                 btnSubmit.classList.add('btn-monitoring');
                 btnSubmit.textContent = 'Login';

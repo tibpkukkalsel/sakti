@@ -19,7 +19,7 @@ class LayananController extends Controller
         $kode_cabang = Auth::guard('user')->user()->kode_cabang;
         $user = User::find(Auth::guard('user')->user()->id);
 
-        $query = Layanan::query();
+        $query = Layanan::withCount('petugas');
         $query->orderBy('nama_layanan');
 
         if (!empty($request->nama_layanan)) {
@@ -39,7 +39,7 @@ class LayananController extends Controller
         }
 
         $layanan = $query->paginate(10);
-        $cabang = DB::table('cabang')->orderBy('kode_cabang')->get();
+        $cabang = DB::table('cabang')->orderBy('nama_cabang')->get();
 
         return view('layanan.index', compact('layanan', 'cabang'));
     }
@@ -48,23 +48,22 @@ class LayananController extends Controller
     {
         $request->validate([
             'nama_layanan' => 'required',
-            'username' => 'required|unique:layanan,username',
-            'nama_pic' => 'required',
+            'username' => 'required|unique:layanan,username|unique:petugas_layanan,username',
             'foto' => 'nullable|image|mimes:png,jpg,jpeg|max:2048'
         ], [
-            'username.unique' => 'Username tersebut sudah digunakan oleh akun layanan lain.',
+            'username.unique' => 'Username tersebut sudah digunakan oleh akun lain.',
             'foto.image' => 'File foto harus berupa gambar.',
             'foto.mimes' => 'Format file foto harus PNG, JPG, atau JPEG.',
             'foto.max' => 'Ukuran file foto maksimal 2MB.'
         ]);
 
-        $nama_layanan = $request->nama_layanan;
-        $username = trim($request->username);
-        $nama_pic = $request->nama_pic;
-        $nip_pic = $request->nip_pic;
-        $jabatan_pic = $request->jabatan_pic;
-        $no_hp = $request->no_hp;
-        $kode_cabang = $request->kode_cabang;
+        $nama_layanan = trim($request->nama_layanan);
+        $username = strtolower(trim($request->username));
+        $nama_pic = $request->filled('nama_pic') ? trim($request->nama_pic) : null;
+        $nip_pic = $request->filled('nip_pic') ? trim($request->nip_pic) : null;
+        $jabatan_pic = $request->filled('jabatan_pic') ? trim($request->jabatan_pic) : null;
+        $no_hp = $request->filled('no_hp') ? trim($request->no_hp) : null;
+        $kode_cabang = $request->filled('kode_cabang') ? $request->kode_cabang : null;
         $password = Hash::make($request->password ?: '12345');
 
         $foto = null;
@@ -78,6 +77,8 @@ class LayananController extends Controller
         }
 
         try {
+            DB::beginTransaction();
+
             $data = [
                 'nama_layanan' => $nama_layanan,
                 'username' => $username,
@@ -91,6 +92,7 @@ class LayananController extends Controller
                 'status_location' => '1',
                 'status_jam_kerja' => '1',
                 'status_scan' => '1',
+                'mode_presensi' => $request->mode_presensi ?: 'bebas',
                 'created_at' => now(),
                 'updated_at' => now(),
             ];
@@ -102,9 +104,15 @@ class LayananController extends Controller
                     $folderPath = "public/uploads/karyawan/";
                     $request->file('foto')->storeAs($folderPath, $foto);
                 }
+
+                DB::commit();
                 return Redirect::back()->with(['success' => 'Data Akun Layanan Berhasil Disimpan']);
             }
+
+            DB::rollBack();
+            return Redirect::back()->with(['warning' => 'Data Gagal Disimpan']);
         } catch (\Exception $e) {
+            DB::rollBack();
             return Redirect::back()->with(['warning' => 'Data Gagal Disimpan: ' . $e->getMessage()]);
         }
     }
@@ -112,7 +120,7 @@ class LayananController extends Controller
     public function edit(Request $request)
     {
         $id = $request->id;
-        $cabang = DB::table('cabang')->orderBy('kode_cabang')->get();
+        $cabang = DB::table('cabang')->orderBy('nama_cabang')->get();
         $layanan = DB::table('layanan')->where('id', $id)->first();
 
         return view('layanan.edit', compact('layanan', 'cabang'));
@@ -123,7 +131,6 @@ class LayananController extends Controller
         $request->validate([
             'nama_layanan' => 'required',
             'username' => 'required',
-            'nama_pic' => 'required',
             'foto' => 'nullable|image|mimes:png,jpg,jpeg|max:2048'
         ], [
             'foto.image' => 'File foto harus berupa gambar.',
@@ -131,13 +138,9 @@ class LayananController extends Controller
             'foto.max' => 'Ukuran file foto maksimal 2MB.'
         ]);
 
-        $id = Crypt::decrypt($id);
-        $nama_layanan = $request->nama_layanan;
-        $username = trim($request->username);
-        $nama_pic = $request->nama_pic;
-        $nip_pic = $request->nip_pic;
-        $jabatan_pic = $request->jabatan_pic;
-        $no_hp = $request->no_hp;
+        $id = is_numeric($id) ? (int)$id : Crypt::decrypt($id);
+        $nama_layanan = trim($request->nama_layanan);
+        $username = strtolower(trim($request->username));
         $old_foto = $request->old_foto;
 
         $cekUsername = DB::table('layanan')
@@ -161,18 +164,30 @@ class LayananController extends Controller
         }
 
         try {
+            DB::beginTransaction();
+
             $data = [
                 'nama_layanan' => $nama_layanan,
                 'username' => $username,
-                'nama_pic' => $nama_pic,
-                'nip_pic' => $nip_pic,
-                'jabatan_pic' => $jabatan_pic,
-                'no_hp' => $no_hp,
                 'foto' => $foto,
+                'mode_presensi' => $request->mode_presensi ?: 'bebas',
                 'updated_at' => now(),
             ];
 
-            if ($request->has('kode_cabang')) {
+            if ($request->filled('nama_pic')) {
+                $data['nama_pic'] = trim($request->nama_pic);
+            }
+            if ($request->filled('nip_pic')) {
+                $data['nip_pic'] = trim($request->nip_pic);
+            }
+            if ($request->filled('jabatan_pic')) {
+                $data['jabatan_pic'] = trim($request->jabatan_pic);
+            }
+            if ($request->filled('no_hp')) {
+                $data['no_hp'] = trim($request->no_hp);
+            }
+
+            if ($request->filled('kode_cabang')) {
                 $data['kode_cabang'] = $request->kode_cabang;
             }
 
@@ -182,37 +197,70 @@ class LayananController extends Controller
 
             $update = DB::table('layanan')->where('id', $id)->update($data);
 
-            if ($update !== false) {
-                if ($request->hasFile('foto')) {
-                    $folderPath = "public/uploads/karyawan/";
-                    if ($old_foto) {
-                        Storage::delete($folderPath . $old_foto);
-                    }
-                    $request->file('foto')->storeAs($folderPath, $foto);
+            // Sinkronkan password ke akun petugas utama jika ada password baru
+            if (!empty($request->password)) {
+                $primaryPetugas = DB::table('petugas_layanan')
+                    ->where('layanan_id', $id)
+                    ->orderBy('id', 'asc')
+                    ->first();
+
+                if ($primaryPetugas) {
+                    DB::table('petugas_layanan')->where('id', $primaryPetugas->id)->update([
+                        'password' => Hash::make($request->password),
+                        'updated_at' => now(),
+                    ]);
                 }
-                return Redirect::back()->with(['success' => 'Data Akun Layanan Berhasil Diupdate']);
             }
+
+            if ($request->hasFile('foto')) {
+                $folderPath = "public/uploads/karyawan/";
+                if ($old_foto) {
+                    Storage::delete($folderPath . $old_foto);
+                }
+                $request->file('foto')->storeAs($folderPath, $foto);
+            }
+
+            DB::commit();
+            return Redirect::back()->with(['success' => 'Data Akun Layanan Berhasil Diupdate']);
         } catch (\Exception $e) {
+            DB::rollBack();
             return Redirect::back()->with(['warning' => 'Data Gagal Diupdate: ' . $e->getMessage()]);
         }
     }
 
     public function delete($id)
     {
-        $delete = DB::table('layanan')->where('id', $id)->delete();
-        if ($delete) {
-            return Redirect::back()->with(['success' => 'Data Layanan Berhasil Dihapus']);
-        } else {
-            return Redirect::back()->with(['warning' => 'Data Layanan Gagal Dihapus']);
+        try {
+            DB::beginTransaction();
+            DB::table('jadwal_petugas_layanan')->where('layanan_id', $id)->delete();
+            DB::table('petugas_layanan')->where('layanan_id', $id)->delete();
+            DB::table('jadwal_lokasi_layanan')->where('layanan_id', $id)->delete();
+            $delete = DB::table('layanan')->where('id', $id)->delete();
+            DB::commit();
+
+            if ($delete) {
+                return Redirect::back()->with(['success' => 'Data Layanan Berhasil Dihapus']);
+            } else {
+                return Redirect::back()->with(['warning' => 'Data Layanan Gagal Dihapus']);
+            }
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return Redirect::back()->with(['warning' => 'Data Layanan Gagal Dihapus: ' . $e->getMessage()]);
         }
     }
 
     public function resetpassword($id)
     {
-        $id = Crypt::decrypt($id);
+        $id = is_numeric($id) ? (int)$id : Crypt::decrypt($id);
         $password = Hash::make('12345');
         $reset = DB::table('layanan')->where('id', $id)->update([
-            'password' => $password
+            'password' => $password,
+            'updated_at' => now(),
+        ]);
+
+        DB::table('petugas_layanan')->where('layanan_id', $id)->limit(1)->update([
+            'password' => $password,
+            'updated_at' => now(),
         ]);
 
         if ($reset) {

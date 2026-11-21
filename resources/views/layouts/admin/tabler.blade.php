@@ -4,10 +4,10 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-    <title>E-Lapor SAMKEL - Admin Panel</title>
-    <link rel="icon" type="image/png" href="{{ asset('Logo Sakti.png') }}?v=2" sizes="32x32"
+    <title>E-Lapor SAMKEL</title>
+    <link rel="icon" type="image/png" href="{{ asset('E-LAPOR_SAMKEL.png') }}?v=3" sizes="32x32"
         onerror="this.src='{{ asset('assets/img/favicon.png') }}'">
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('Logo Sakti.png') }}?v=2">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('E-LAPOR_SAMKEL.png') }}?v=3">
 
     <!--begin::Fonts-->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -303,6 +303,18 @@
             border: 1px solid #e2e8f0;
             background: #ffffff;
             margin-bottom: 1rem;
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .table-responsive:focus,
+        .table-responsive.table-focused {
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.18) !important;
+        }
+
+        .table-responsive.is-overflowing {
+            cursor: default;
         }
 
         .table {
@@ -598,8 +610,129 @@
                 });
             });
         });
+
+        /* =========================================================
+           Horizontal Table Keyboard Scrolling (ArrowLeft / ArrowRight)
+           Memungkinkan menggeser tabel yang panjang menggunakan tombol panah keyboard saat diklik / difokuskan
+           ========================================================= */
+        (function() {
+            let activeScrollableTable = null;
+            let hoveredTable = null;
+
+            function initScrollableTables() {
+                document.querySelectorAll('.table-responsive').forEach(function(el) {
+                    if (!el.hasAttribute('tabindex')) {
+                        el.setAttribute('tabindex', '0');
+                    }
+                    if (el.scrollWidth > el.clientWidth) {
+                        el.classList.add('is-overflowing');
+                    } else {
+                        el.classList.remove('is-overflowing');
+                    }
+                });
+            }
+
+            // Inisialisasi awal & saat resize window
+            initScrollableTables();
+            window.addEventListener('resize', initScrollableTables);
+
+            // MutationObserver untuk mendeteksi tabel hasil AJAX/pagination
+            const tableObserver = new MutationObserver(function() {
+                initScrollableTables();
+            });
+            tableObserver.observe(document.body, { childList: true, subtree: true });
+
+            // Ketika user mengklik tabel atau elemen di dalamnya
+            document.addEventListener('click', function(e) {
+                const tableContainer = e.target.closest('.table-responsive');
+                if (tableContainer) {
+                    document.querySelectorAll('.table-responsive.table-focused').forEach(function(t) {
+                        if (t !== tableContainer) t.classList.remove('table-focused');
+                    });
+                    tableContainer.classList.add('table-focused');
+                    activeScrollableTable = tableContainer;
+                    // Jangan merebut fokus jika user mengklik input/select/textarea di dalam tabel
+                    if (!e.target.matches('input, textarea, select, [contenteditable="true"]')) {
+                        tableContainer.focus({ preventScroll: true });
+                    }
+                } else {
+                    document.querySelectorAll('.table-responsive.table-focused').forEach(function(t) {
+                        t.classList.remove('table-focused');
+                    });
+                    activeScrollableTable = null;
+                }
+            });
+
+            // Catat tabel yang sedang berada di bawah kursor mouse
+            document.addEventListener('mouseover', function(e) {
+                const tableContainer = e.target.closest('.table-responsive');
+                if (tableContainer && tableContainer.scrollWidth > tableContainer.clientWidth) {
+                    hoveredTable = tableContainer;
+                } else {
+                    hoveredTable = null;
+                }
+            });
+
+            // Handle event tombol panah keyboard
+            window.addEventListener('keydown', function(e) {
+                // Abaikan jika fokus sedang berada pada input teks, textarea, dropdown, atau link yang sedang diedit
+                if (e.target.matches('input, textarea, select, [contenteditable="true"]')) {
+                    return;
+                }
+
+                // Cari target tabel yang aktif:
+                // 1. activeScrollableTable yang diklik
+                // 2. tabel yang membungkus document.activeElement
+                // 3. tabel yang sedang di-hover oleh kursor mouse
+                let target = null;
+                if (activeScrollableTable && document.body.contains(activeScrollableTable) && activeScrollableTable.scrollWidth > activeScrollableTable.clientWidth) {
+                    target = activeScrollableTable;
+                } else if (document.activeElement && document.activeElement.closest('.table-responsive')) {
+                    target = document.activeElement.closest('.table-responsive');
+                } else if (hoveredTable && document.body.contains(hoveredTable)) {
+                    target = hoveredTable;
+                }
+
+                if (!target || target.scrollWidth <= target.clientWidth) {
+                    return;
+                }
+
+                const step = e.shiftKey ? 300 : 140; // Shift + Arrow untuk geser lebih jauh
+
+                if (e.key === 'ArrowRight') {
+                    const maxScroll = target.scrollWidth - target.clientWidth;
+                    if (target.scrollLeft < maxScroll - 1) {
+                        e.preventDefault();
+                        target.scrollBy({ left: step, behavior: 'smooth' });
+                    }
+                } else if (e.key === 'ArrowLeft') {
+                    if (target.scrollLeft > 0) {
+                        e.preventDefault();
+                        target.scrollBy({ left: -step, behavior: 'smooth' });
+                    }
+                } else if (e.key === 'Home' && !e.ctrlKey && !e.altKey) {
+                    if (target.scrollLeft > 0) {
+                        e.preventDefault();
+                        target.scrollTo({ left: 0, behavior: 'smooth' });
+                    }
+                } else if (e.key === 'End' && !e.ctrlKey && !e.altKey) {
+                    const maxScroll = target.scrollWidth - target.clientWidth;
+                    if (target.scrollLeft < maxScroll) {
+                        e.preventDefault();
+                        target.scrollTo({ left: maxScroll, behavior: 'smooth' });
+                    }
+                } else if (e.key === 'PageDown' && (e.altKey || target === document.activeElement)) {
+                    e.preventDefault();
+                    target.scrollBy({ left: target.clientWidth * 0.8, behavior: 'smooth' });
+                } else if (e.key === 'PageUp' && (e.altKey || target === document.activeElement)) {
+                    e.preventDefault();
+                    target.scrollBy({ left: -target.clientWidth * 0.8, behavior: 'smooth' });
+                }
+            });
+        })();
     </script>
 
+    @include('layouts.modal_foto')
     @stack('myscript')
     <!--end::Scripts-->
 </body>

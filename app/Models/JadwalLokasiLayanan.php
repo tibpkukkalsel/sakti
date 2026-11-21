@@ -28,12 +28,12 @@ class JadwalLokasiLayanan extends Model
 
     public function lokasi()
     {
-        return $this->belongsTo(Cabang::class, 'kode_cabang', 'kode_cabang');
+        return $this->belongsTo(Cabang::class, 'kode_cabang', 'id');
     }
 
     public function cabang()
     {
-        return $this->belongsTo(Cabang::class, 'kode_cabang', 'kode_cabang');
+        return $this->belongsTo(Cabang::class, 'kode_cabang', 'id');
     }
 }
 

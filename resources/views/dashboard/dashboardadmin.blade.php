@@ -57,87 +57,108 @@
     </div>
 
     <!-- Small boxes (Stat box) - AdminLTE Style -->
-    <div class="row mb-4">
+    <div class="row g-3 mb-4">
         <!-- Box 1: Jumlah Layanan (Blue) -->
-        <div class="col-xl-3 col-sm-6 col-12 mb-3 mb-xl-0">
+        <div class="col-xl col-md-4 col-sm-6 col-12">
             <div class="small-box text-bg-primary shadow-sm h-100 d-flex flex-column justify-content-between"
                 style="border-radius: 12px; overflow: hidden; position: relative;">
                 <div class="inner p-3" style="position: relative; z-index: 2;">
-                    <h3 class="fw-bold mb-1 text-white" style="font-size: 2.3rem; line-height: 1.1;">{{ $totalLayanan }}
+                    <h3 class="fw-bold mb-1 text-white" style="font-size: 2.1rem; line-height: 1.1;">{{ $totalLayanan }}
                     </h3>
                     <p class="mb-0 fs-6 text-white text-opacity-90 fw-medium">Jumlah Layanan</p>
                 </div>
                 <div class="small-box-icon"
-                    style="position: absolute; right: 15px; top: 12px; z-index: 1; opacity: 0.25; font-size: 72px; line-height: 1; pointer-events: none; color: #fff;">
+                    style="position: absolute; right: 15px; top: 12px; z-index: 1; opacity: 0.25; font-size: 64px; line-height: 1; pointer-events: none; color: #fff;">
                     <i class="bi bi-people-fill"></i>
                 </div>
                 <a href="/panel-adm14/layanan"
                     class="small-box-footer d-flex align-items-center justify-content-center text-white text-decoration-none py-2"
-                    style="background-color: rgba(0, 0, 0, 0.15); font-size: 13.5px; font-weight: 500; transition: background-color 0.2s;">
-                    Lihat Data Layanan <i class="bi bi-arrow-right-circle ms-1" style="font-size: 15px;"></i>
+                    style="background-color: rgba(0, 0, 0, 0.15); font-size: 13px; font-weight: 500; transition: background-color 0.2s;">
+                    Lihat Data Layanan <i class="bi bi-arrow-right-circle ms-1" style="font-size: 14px;"></i>
                 </a>
             </div>
         </div>
 
         <!-- Box 2: Layanan Hadir (Green) -->
-        <div class="col-xl-3 col-sm-6 col-12 mb-3 mb-xl-0">
+        <div class="col-xl col-md-4 col-sm-6 col-12">
             <div class="small-box text-bg-success shadow-sm h-100 d-flex flex-column justify-content-between"
                 style="border-radius: 12px; overflow: hidden; position: relative;">
                 <div class="inner p-3" style="position: relative; z-index: 2;">
-                    <h3 class="fw-bold mb-1 text-white" style="font-size: 2.3rem; line-height: 1.1;">{{ $jmlLayananAktif }}
+                    <h3 class="fw-bold mb-1 text-white" style="font-size: 2.1rem; line-height: 1.1;">{{ $jmlLayananAktif }}
                     </h3>
                     <p class="mb-0 fs-6 text-white text-opacity-90 fw-medium">Layanan Hadir</p>
                 </div>
                 <div class="small-box-icon"
-                    style="position: absolute; right: 15px; top: 12px; z-index: 1; opacity: 0.25; font-size: 72px; line-height: 1; pointer-events: none; color: #fff;">
+                    style="position: absolute; right: 15px; top: 12px; z-index: 1; opacity: 0.25; font-size: 64px; line-height: 1; pointer-events: none; color: #fff;">
                     <i class="bi bi-fingerprint"></i>
                 </div>
                 <a href="/panel-adm14/presensi/monitoring"
                     class="small-box-footer d-flex align-items-center justify-content-center text-white text-decoration-none py-2"
-                    style="background-color: rgba(0, 0, 0, 0.15); font-size: 13.5px; font-weight: 500; transition: background-color 0.2s;">
-                    Monitoring Presensi <i class="bi bi-arrow-right-circle ms-1" style="font-size: 15px;"></i>
+                    style="background-color: rgba(0, 0, 0, 0.15); font-size: 13px; font-weight: 500; transition: background-color 0.2s;">
+                    Monitoring Presensi <i class="bi bi-arrow-right-circle ms-1" style="font-size: 14px;"></i>
                 </a>
             </div>
         </div>
 
-        <!-- Box 3: Layanan Maintenance (Yellow) -->
-        <div class="col-xl-3 col-sm-6 col-12 mb-3 mb-xl-0">
-            <div class="small-box text-bg-warning shadow-sm h-100 d-flex flex-column justify-content-between"
-                style="border-radius: 12px; overflow: hidden; position: relative; color: #1e293b;">
+        <!-- Box 3: Layanan Libur (Oren) -->
+        <div class="col-xl col-md-4 col-sm-6 col-12">
+            <div class="small-box shadow-sm h-100 d-flex flex-column justify-content-between"
+                style="border-radius: 12px; overflow: hidden; position: relative; background-color: #f59e0b !important; color: #ffffff;">
                 <div class="inner p-3" style="position: relative; z-index: 2;">
-                    <h3 class="fw-bold mb-1" style="font-size: 2.3rem; line-height: 1.1; color: #1e293b;">
-                        {{ $jmlMaintenance }}</h3>
-                    <p class="mb-0 fs-6 fw-medium" style="color: #1e293b;">Layanan Maintenance</p>
+                    <h3 class="fw-bold mb-1 text-white" style="font-size: 2.1rem; line-height: 1.1;">{{ $jmlLayananLibur }}
+                    </h3>
+                    <p class="mb-0 fs-6 text-white text-opacity-90 fw-medium">Layanan Libur</p>
                 </div>
                 <div class="small-box-icon"
-                    style="position: absolute; right: 15px; top: 12px; z-index: 1; opacity: 0.20; font-size: 72px; line-height: 1; pointer-events: none; color: #000;">
+                    style="position: absolute; right: 15px; top: 12px; z-index: 1; opacity: 0.25; font-size: 64px; line-height: 1; pointer-events: none; color: #fff;">
+                    <i class="bi bi-calendar-x-fill"></i>
+                </div>
+                <a href="/panel-adm14/presensi/monitoring"
+                    class="small-box-footer d-flex align-items-center justify-content-center text-white text-decoration-none py-2"
+                    style="background-color: rgba(0, 0, 0, 0.15); font-size: 13px; font-weight: 500; transition: background-color 0.2s;">
+                    Monitoring Presensi <i class="bi bi-arrow-right-circle ms-1" style="font-size: 14px;"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Box 4: Layanan Maintenance (Biru) -->
+        <div class="col-xl col-md-4 col-sm-6 col-12">
+            <div class="small-box text-bg-info shadow-sm h-100 d-flex flex-column justify-content-between"
+                style="border-radius: 12px; overflow: hidden; position: relative; background-color: #0284c7 !important; color: #ffffff;">
+                <div class="inner p-3" style="position: relative; z-index: 2;">
+                    <h3 class="fw-bold mb-1 text-white" style="font-size: 2.1rem; line-height: 1.1;">
+                        {{ $jmlMaintenance }}</h3>
+                    <p class="mb-0 fs-6 text-white text-opacity-90 fw-medium">Layanan Maintenance</p>
+                </div>
+                <div class="small-box-icon"
+                    style="position: absolute; right: 15px; top: 12px; z-index: 1; opacity: 0.25; font-size: 64px; line-height: 1; pointer-events: none; color: #fff;">
                     <i class="bi bi-tools"></i>
                 </div>
                 <a href="/panel-adm14/presensi/maintenance"
-                    class="small-box-footer d-flex align-items-center justify-content-center text-decoration-none py-2"
-                    style="background-color: rgba(0, 0, 0, 0.12); font-size: 13.5px; font-weight: 500; color: #1e293b; transition: background-color 0.2s;">
-                    Data Maintenance <i class="bi bi-arrow-right-circle ms-1" style="font-size: 15px;"></i>
+                    class="small-box-footer d-flex align-items-center justify-content-center text-white text-decoration-none py-2"
+                    style="background-color: rgba(0, 0, 0, 0.15); font-size: 13px; font-weight: 500; transition: background-color 0.2s;">
+                    Data Maintenance <i class="bi bi-arrow-right-circle ms-1" style="font-size: 14px;"></i>
                 </a>
             </div>
         </div>
 
-        <!-- Box 4: Belum Absen (Red) -->
-        <div class="col-xl-3 col-sm-6 col-12 mb-3 mb-xl-0">
+        <!-- Box 5: Belum Absen (Red) -->
+        <div class="col-xl col-md-4 col-sm-6 col-12">
             <div class="small-box text-bg-danger shadow-sm h-100 d-flex flex-column justify-content-between"
                 style="border-radius: 12px; overflow: hidden; position: relative;">
                 <div class="inner p-3" style="position: relative; z-index: 2;">
-                    <h3 class="fw-bold mb-1 text-white" style="font-size: 2.3rem; line-height: 1.1;">{{ $jmlBelumAbsen }}
+                    <h3 class="fw-bold mb-1 text-white" style="font-size: 2.1rem; line-height: 1.1;">{{ $jmlBelumAbsen }}
                     </h3>
                     <p class="mb-0 fs-6 text-white text-opacity-90 fw-medium">Belum Absen</p>
                 </div>
                 <div class="small-box-icon"
-                    style="position: absolute; right: 15px; top: 12px; z-index: 1; opacity: 0.25; font-size: 72px; line-height: 1; pointer-events: none; color: #fff;">
+                    style="position: absolute; right: 15px; top: 12px; z-index: 1; opacity: 0.25; font-size: 64px; line-height: 1; pointer-events: none; color: #fff;">
                     <i class="bi bi-clock-history"></i>
                 </div>
                 <a href="/panel-adm14/presensi/monitoring"
                     class="small-box-footer d-flex align-items-center justify-content-center text-white text-decoration-none py-2"
-                    style="background-color: rgba(0, 0, 0, 0.15); font-size: 13.5px; font-weight: 500; transition: background-color 0.2s;">
-                    Monitoring Presensi <i class="bi bi-arrow-right-circle ms-1" style="font-size: 15px;"></i>
+                    style="background-color: rgba(0, 0, 0, 0.15); font-size: 13px; font-weight: 500; transition: background-color 0.2s;">
+                    Monitoring Presensi <i class="bi bi-arrow-right-circle ms-1" style="font-size: 14px;"></i>
                 </a>
             </div>
         </div>

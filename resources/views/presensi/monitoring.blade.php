@@ -17,7 +17,7 @@
         <div class="container-xl">
             <div class="row">
                 <div class="col-12">
-                    <div class="card shadow-sm border-0">
+                    <div class="card">
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-12">
@@ -35,7 +35,7 @@
                                 </div>
                             </div>
 
-                            <!-- Filter Data (Sama dengan App Penerimaan PKB) -->
+                            <!-- Filter Data -->
                             <div class="row">
                                 <div class="col-12">
                                     <form action="/panel-adm14/presensi/monitoring" method="GET">
@@ -90,50 +90,100 @@
                             <div class="row mt-3" id="containerTablePresensi">
                                 <div class="col-12">
                                     <div class="table-responsive">
-                                        <table class="table table-bordered table-striped table-hover align-middle mb-0">
+                                        <table class="table table-bordered table-striped table-hover align-middle">
                                             <thead>
                                                 <tr>
-                                                    <th class="text-center" style="width: 40px;">No</th>
-                                                    <th style="width: 110px;">Tanggal</th>
-                                                    <th>Akun Layanan</th>
-                                                    <th>Lokasi Pelayanan</th>
-                                                    <th>Jadwal Kerja</th>
-                                                    <th class="text-center" style="width: 115px;">Jam Masuk</th>
-                                                    <th class="text-center" style="width: 70px;">Foto Masuk</th>
-                                                    <th class="text-center" style="width: 115px;">Jam Pulang</th>
-                                                    <th class="text-center" style="width: 70px;">Foto Pulang</th>
-                                                    <th class="text-center" style="width: 100px;">Status</th>
-                                                    <th class="text-center" style="width: 100px;">Aksi</th>
+                                                    <th class="text-center" style="width: 45px;">No</th>
+                                                    <th style="min-width: 175px;">Hari/Tanggal</th>
+                                                    <th style="min-width: 180px;">Layanan</th>
+                                                    <th style="min-width: 175px;">Lokasi</th>
+                                                    <th style="min-width: 140px;">Jadwal Kerja</th>
+                                                    <th class="text-center" style="min-width: 110px;">Jam Masuk</th>
+                                                    <th class="text-center" style="width: 75px;">Foto Masuk</th>
+                                                    <th class="text-center" style="min-width: 110px;">Jam Pulang</th>
+                                                    <th class="text-center" style="width: 75px;">Foto Pulang</th>
+                                                    <th class="text-center" style="min-width: 100px;">Status</th>
+                                                    <th class="text-center" style="min-width: 90px;">Aksi</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 @forelse ($presensi as $d)
                                                     @php
-                                                        $foto_in = !empty($d->foto_in) ? Storage::url('uploads/absensi/' . $d->foto_in) . '?v=' . time() : null;
-                                                        $foto_out = !empty($d->foto_out) ? Storage::url('uploads/absensi/' . $d->foto_out) . '?v=' . time() : null;
+                                                        $foto_in = !empty($d->foto_in)
+                                                            ? Storage::url('uploads/absensi/' . $d->foto_in) .
+                                                                '?v=' .
+                                                                time()
+                                                            : null;
+                                                        $foto_out = !empty($d->foto_out)
+                                                            ? Storage::url('uploads/absensi/' . $d->foto_out) .
+                                                                '?v=' .
+                                                                time()
+                                                            : null;
                                                     @endphp
                                                     <tr>
                                                         <td class="text-center text-muted fw-bold">
                                                             {{ $loop->iteration + $presensi->firstItem() - 1 }}
                                                         </td>
-                                                        <td>
-                                                            <strong class="text-dark">{{ date('d-m-Y', strtotime($d->tgl_presensi)) }}</strong>
+                                                        <td style="white-space: nowrap;">
+                                                            <span class="fw-bold text-dark" style="font-size: 0.95rem;">
+                                                                {{ formatHariTanggal($d->tgl_presensi) }}
+                                                            </span>
                                                         </td>
                                                         <td>
-                                                            <span class="badge bg-light text-dark border fs-6 px-2 py-1" style="color: #0f172a !important; background-color: #f1f5f9 !important;">
+                                                            <div class="fw-bold text-dark" style="font-size: 0.95rem;">
                                                                 {{ $d->nama_layanan }}
-                                                            </span>
+                                                            </div>
+                                                            @if (!empty($d->petugas_nama))
+                                                                <div
+                                                                    class="text-primary small d-flex align-items-center gap-1 mt-1">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                                        class="icon icon-tabler icon-tabler-user"
+                                                                        width="14" height="14" viewBox="0 0 24 24"
+                                                                        stroke-width="2" stroke="currentColor"
+                                                                        fill="none" stroke-linecap="round"
+                                                                        stroke-linejoin="round">
+                                                                        <path stroke="none" d="M0 0h24v24H0z"
+                                                                            fill="none" />
+                                                                        <circle cx="12" cy="7" r="4" />
+                                                                        <path
+                                                                            d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+                                                                    </svg>
+                                                                    <span>Petugas: {{ $d->petugas_nama }}</span>
+                                                                </div>
+                                                            @endif
                                                         </td>
                                                         <td>
-                                                            <span class="badge bg-light text-dark border" style="color: #0f172a !important; background-color: #f1f5f9 !important;">
-                                                                {{ $d->lokasi ?: 'Kantor Pusat' }}
-                                                            </span>
+                                                            <div class="d-flex align-items-center gap-1">
+                                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                                    class="icon icon-tabler icon-tabler-map-pin text-danger"
+                                                                    width="16" height="16" viewBox="0 0 24 24"
+                                                                    stroke-width="2" stroke="currentColor" fill="none"
+                                                                    stroke-linecap="round" stroke-linejoin="round">
+                                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none">
+                                                                    </path>
+                                                                    <circle cx="12" cy="11" r="3"></circle>
+                                                                    <path
+                                                                        d="M17.657 16.657l-4.243 4.243a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0z">
+                                                                    </path>
+                                                                </svg>
+                                                                @if (!empty($d->has_jadwal) || (!empty($d->lokasi) && $d->lokasi != 'Libur (Tidak Ada Jadwal)'))
+                                                                    <span
+                                                                        class="text-dark fw-medium">{{ $d->lokasi ?: 'UPPD SAMSAT Batulicin' }}</span>
+                                                                @else
+                                                                    <span class="badge bg-warning text-white"
+                                                                        style="background-color: #f59e0b !important;">Libur
+                                                                        (Tidak Ada Jadwal)
+                                                                    </span>
+                                                                @endif
+                                                            </div>
                                                         </td>
                                                         <td>
                                                             @if (!empty($d->nama_jam_kerja))
-                                                                <div class="fw-semibold text-dark">{{ $d->nama_jam_kerja }}</div>
+                                                                <div class="fw-semibold text-dark">
+                                                                    {{ $d->nama_jam_kerja }}</div>
                                                                 <div class="small text-muted font-monospace">
-                                                                    {{ substr($d->jam_masuk, 0, 5) }} - {{ substr($d->jam_pulang, 0, 5) }}
+                                                                    {{ substr($d->jam_masuk, 0, 5) }} -
+                                                                    {{ substr($d->jam_pulang, 0, 5) }}
                                                                 </div>
                                                             @else
                                                                 <span class="text-muted">-</span>
@@ -141,38 +191,61 @@
                                                         </td>
                                                         <td class="text-center">
                                                             @if ($d->jam_in != null)
-                                                                <span class="badge bg-success text-white fs-6">{{ substr($d->jam_in, 0, 5) }}</span>
+                                                                <span
+                                                                    class="badge bg-success text-white fs-6">{{ substr($d->jam_in, 0, 5) }}</span>
                                                                 @if ($d->status_in == 'izin_terlambat')
-                                                                    <br><span class="badge bg-warning text-dark mt-1" style="color: #000000 !important;">Izin Terlambat</span>
+                                                                    <br><span class="badge bg-warning text-dark mt-1"
+                                                                        style="color: #000000 !important;">Izin
+                                                                        Terlambat</span>
                                                                 @elseif ($d->status_in == 'terlambat' || (!empty($d->jam_masuk) && $d->jam_in > $d->jam_masuk))
-                                                                    <br><span class="badge bg-danger text-white mt-1">Terlambat {{ hitungSelisihAdmin($d->jam_masuk, $d->jam_in) }}</span>
+                                                                    <br><span
+                                                                        class="badge bg-danger text-white mt-1">Terlambat
+                                                                        {{ hitungSelisihAdmin($d->jam_masuk, $d->jam_in) }}</span>
                                                                 @endif
+                                                            @elseif (empty($d->has_jadwal) || $d->presensi_status == 'l')
+                                                                <span class="badge bg-warning text-white"
+                                                                    style="background-color: #f59e0b !important;">Libur</span>
                                                             @else
                                                                 <span class="badge bg-danger text-white">Belum Absen</span>
                                                             @endif
                                                         </td>
                                                         <td class="text-center">
                                                             @if ($foto_in != null)
-                                                                <img src="{{ url($foto_in) }}" class="avatar rounded border shadow-sm" alt="Foto Masuk" style="width: 40px; height: 40px; object-fit: cover;">
+                                                                <img src="{{ url($foto_in) }}"
+                                                                    class="avatar rounded border shadow-sm"
+                                                                    alt="Foto Masuk"
+                                                                    style="width: 40px; height: 40px; object-fit: cover;">
                                                             @else
                                                                 <span class="text-muted small">-</span>
                                                             @endif
                                                         </td>
                                                         <td class="text-center">
                                                             @if ($d->jam_out != null)
-                                                                <span class="badge bg-info text-white fs-6" style="background-color: #0284c7 !important; color: #ffffff !important;">{{ substr($d->jam_out, 0, 5) }}</span>
+                                                                <span class="badge bg-info text-white fs-6"
+                                                                    style="background-color: #0284c7 !important; color: #ffffff !important;">{{ substr($d->jam_out, 0, 5) }}</span>
                                                                 @if ($d->status_out == 'izin_pulang_cepat')
-                                                                    <br><span class="badge bg-warning text-dark mt-1" style="color: #000000 !important;">Izin Pulang Cepat</span>
+                                                                    <br><span class="badge bg-warning text-dark mt-1"
+                                                                        style="color: #000000 !important;">Izin Pulang
+                                                                        Cepat</span>
                                                                 @elseif ($d->status_out == 'pulang_duluan' || (!empty($d->jam_pulang) && $d->jam_out < $d->jam_pulang))
-                                                                    <br><span class="badge bg-danger text-white mt-1">Pulang Duluan {{ hitungSelisihAdmin($d->jam_out, $d->jam_pulang) }}</span>
+                                                                    <br><span
+                                                                        class="badge bg-danger text-white mt-1">Pulang
+                                                                        Duluan
+                                                                        {{ hitungSelisihAdmin($d->jam_out, $d->jam_pulang) }}</span>
                                                                 @endif
+                                                            @elseif (empty($d->has_jadwal) || $d->presensi_status == 'l')
+                                                                <span class="badge bg-warning text-white"
+                                                                    style="background-color: #f59e0b !important;">Libur</span>
                                                             @else
                                                                 <span class="badge bg-danger text-white">Belum Absen</span>
                                                             @endif
                                                         </td>
                                                         <td class="text-center">
                                                             @if ($foto_out != null)
-                                                                <img src="{{ url($foto_out) }}" class="avatar rounded border shadow-sm" alt="Foto Pulang" style="width: 40px; height: 40px; object-fit: cover;">
+                                                                <img src="{{ url($foto_out) }}"
+                                                                    class="avatar rounded border shadow-sm"
+                                                                    alt="Foto Pulang"
+                                                                    style="width: 40px; height: 40px; object-fit: cover;">
                                                             @else
                                                                 <span class="text-muted small">-</span>
                                                             @endif
@@ -181,35 +254,68 @@
                                                             @if ($d->presensi_status == 'h')
                                                                 <span class="badge bg-success text-white">Hadir</span>
                                                             @elseif ($d->presensi_status == 'i')
-                                                                <span class="badge bg-warning text-dark" style="color: #000000 !important;">Izin</span>
+                                                                <span class="badge bg-warning text-dark"
+                                                                    style="color: #000000 !important;">Izin</span>
                                                             @elseif ($d->presensi_status == 's')
-                                                                <span class="badge bg-info text-white" style="background-color: #0284c7 !important; color: #ffffff !important;">Sakit</span>
+                                                                <span class="badge bg-info text-white"
+                                                                    style="background-color: #0284c7 !important; color: #ffffff !important;">Sakit</span>
                                                             @elseif ($d->presensi_status == 'c')
                                                                 <span class="badge bg-secondary text-white">Cuti</span>
+                                                            @elseif ($d->presensi_status == 'l' || (empty($d->has_jadwal) && empty($d->jam_in)))
+                                                                <span class="badge bg-warning text-white"
+                                                                    style="background-color: #f59e0b !important;">Libur</span>
                                                             @elseif (empty($d->jam_in) && empty($d->jam_out))
                                                                 <span class="badge bg-danger text-white">Belum Absen</span>
                                                             @else
-                                                                <span class="badge bg-primary text-white">{{ strtoupper($d->presensi_status) }}</span>
+                                                                <span
+                                                                    class="badge bg-primary text-white">{{ strtoupper($d->presensi_status) }}</span>
                                                             @endif
                                                         </td>
                                                         <td class="text-center">
-                                                            <div class="btn-group" role="group">
+                                                            <div
+                                                                class="d-flex justify-content-center align-items-center gap-1">
                                                                 @if (!empty($d->presensi_id) && (!empty($d->lokasi_in) || !empty($d->lokasi_out)))
-                                                                    <a href="#" class="btn btn-primary btn-sm tampilkanpeta" id="{{ $d->presensi_id }}" title="Lihat Peta Lokasi">
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-map-2" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                                                            <path d="M12 18.5l-3 -1.5l-6 3v-13l6 -3l6 3l6 -3v7.5"></path>
+                                                                    <a href="#"
+                                                                        class="btn btn-primary btn-sm tampilkanpeta"
+                                                                        id="{{ $d->presensi_id }}"
+                                                                        title="Lihat Peta Lokasi">
+                                                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                                                            class="icon icon-tabler icon-tabler-map-2"
+                                                                            width="18" height="18"
+                                                                            viewBox="0 0 24 24" stroke-width="2"
+                                                                            stroke="currentColor" fill="none"
+                                                                            stroke-linecap="round"
+                                                                            stroke-linejoin="round">
+                                                                            <path stroke="none" d="M0 0h24v24H0z"
+                                                                                fill="none"></path>
+                                                                            <path
+                                                                                d="M12 18.5l-3 -1.5l-6 3v-13l6 -3l6 3l6 -3v7.5">
+                                                                            </path>
                                                                             <path d="M9 4v13"></path>
                                                                             <path d="M15 7v5.5"></path>
-                                                                            <path d="M21.121 20.121a3 3 0 1 0 -4.242 0c.418 .419 1.125 1.045 2.121 1.879c1.051 -.89 1.759 -1.516 2.121 -1.879z"></path>
+                                                                            <path
+                                                                                d="M21.121 20.121a3 3 0 1 0 -4.242 0c.418 .419 1.125 1.045 2.121 1.879c1.051 -.89 1.759 -1.516 2.121 -1.879z">
+                                                                            </path>
                                                                             <path d="M19 18v.01"></path>
                                                                         </svg>
                                                                     </a>
                                                                 @endif
-                                                                <a href="#" class="btn btn-success btn-sm koreksipresensi" nik="{{ $d->layanan_id }}" tanggal="{{ $d->tgl_presensi }}" title="Koreksi Presensi">
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-pencil" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                                                        <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4"></path>
+                                                                <a href="#"
+                                                                    class="btn btn-success btn-sm koreksipresensi"
+                                                                    nik="{{ $d->layanan_id }}"
+                                                                    tanggal="{{ $d->tgl_presensi }}"
+                                                                    title="Koreksi Presensi">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                                        class="icon icon-tabler icon-tabler-pencil"
+                                                                        width="18" height="18" viewBox="0 0 24 24"
+                                                                        stroke-width="2" stroke="currentColor"
+                                                                        fill="none" stroke-linecap="round"
+                                                                        stroke-linejoin="round">
+                                                                        <path stroke="none" d="M0 0h24v24H0z"
+                                                                            fill="none"></path>
+                                                                        <path
+                                                                            d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4">
+                                                                        </path>
                                                                         <path d="M13.5 6.5l4 4"></path>
                                                                     </svg>
                                                                 </a>
@@ -219,20 +325,19 @@
                                                 @empty
                                                     <tr>
                                                         <td colspan="11" class="text-center py-4 text-muted">
-                                                            Tidak ada data presensi pada periode atau filter layanan yang dipilih.
+                                                            Tidak ada data presensi pada periode atau filter layanan yang
+                                                            dipilih.
                                                         </td>
                                                     </tr>
                                                 @endforelse
                                             </tbody>
                                         </table>
                                     </div>
+                                    <div class="mt-3">
+                                        {{ $presensi->links('vendor.pagination.bootstrap-5') }}
+                                    </div>
                                 </div>
                             </div>
-                            @if ($presensi->hasPages())
-                                <div class="card-footer bg-white py-2 border-top d-flex align-items-center">
-                                    {{ $presensi->links('vendor.pagination.bootstrap-5') }}
-                                </div>
-                            @endif
                         </div>
                     </div>
                 </div>
@@ -273,7 +378,9 @@
                 e.preventDefault();
                 var id = $(this).attr('id');
                 $("#modal-tampilkanpeta").modal("show");
-                $("#loadmap").html('<div class="text-center py-4"><div class="spinner-border text-primary" role="status"></div><div class="mt-2 text-muted">Memuat peta...</div></div>');
+                $("#loadmap").html(
+                    '<div class="text-center py-4"><div class="spinner-border text-primary" role="status"></div><div class="mt-2 text-muted">Memuat peta...</div></div>'
+                );
                 $.ajax({
                     type: 'POST',
                     url: '/panel-adm14/tampilkanpeta',
@@ -286,7 +393,9 @@
                         $("#loadmap").html(respond);
                     },
                     error: function() {
-                        $("#loadmap").html('<div class="alert alert-danger m-3">Gagal memuat peta lokasi presensi.</div>');
+                        $("#loadmap").html(
+                            '<div class="alert alert-danger m-3">Gagal memuat peta lokasi presensi.</div>'
+                        );
                     }
                 });
             });
@@ -296,7 +405,9 @@
                 e.preventDefault();
                 var nik = $(this).attr('nik');
                 var tanggal = $(this).attr('tanggal');
-                $("#loadkoreksipresensi").html('<div class="text-center py-4"><div class="spinner-border text-success" role="status"></div><div class="mt-2 text-muted">Memuat form koreksi...</div></div>');
+                $("#loadkoreksipresensi").html(
+                    '<div class="text-center py-4"><div class="spinner-border text-success" role="status"></div><div class="mt-2 text-muted">Memuat form koreksi...</div></div>'
+                );
                 $("#modal-koreksipresensi").modal("show");
                 $.ajax({
                     type: 'POST',
@@ -311,7 +422,9 @@
                         $("#loadkoreksipresensi").html(respond);
                     },
                     error: function() {
-                        $("#loadkoreksipresensi").html('<div class="alert alert-danger m-3">Gagal memuat form koreksi presensi.</div>');
+                        $("#loadkoreksipresensi").html(
+                            '<div class="alert alert-danger m-3">Gagal memuat form koreksi presensi.</div>'
+                        );
                     }
                 });
             });
@@ -319,10 +432,10 @@
             // AJAX Pagination untuk Tabel Monitoring Presensi
             function loadMonitoringTable(url, pushState) {
                 if (pushState === undefined) pushState = true;
-                var card = document.querySelector('.card');
-                if (!card) return;
+                var container = document.getElementById('containerTablePresensi');
+                if (!container) return;
 
-                $('#containerTablePresensi, .card-footer').css({
+                $('#containerTablePresensi').css({
                     'opacity': '0.35',
                     'pointer-events': 'none',
                     'transition': 'opacity 0.2s ease'
@@ -338,25 +451,18 @@
                         try {
                             var parser = new DOMParser();
                             var doc = parser.parseFromString(response, 'text/html');
-                            var newTable = doc.getElementById('containerTablePresensi');
-                            var newFooter = doc.querySelector('.card-footer');
+                            var newElem = doc.getElementById('containerTablePresensi');
 
-                            if (newTable) {
-                                document.getElementById('containerTablePresensi').innerHTML = newTable.innerHTML;
-                                var currentFooter = document.querySelector('.card-footer');
-                                if (currentFooter && newFooter) {
-                                    currentFooter.innerHTML = newFooter.innerHTML;
-                                } else if (!currentFooter && newFooter) {
-                                    document.querySelector('.card-body').appendChild(newFooter);
-                                } else if (currentFooter && !newFooter) {
-                                    currentFooter.remove();
-                                }
-                                $('#containerTablePresensi, .card-footer').css({
+                            if (newElem) {
+                                container.innerHTML = newElem.innerHTML;
+                                $('#containerTablePresensi').css({
                                     'opacity': '1',
                                     'pointer-events': 'auto'
                                 });
                                 if (pushState && window.history && window.history.pushState) {
-                                    window.history.pushState({ path: url }, '', url);
+                                    window.history.pushState({
+                                        path: url
+                                    }, '', url);
                                 }
                             } else {
                                 window.location.href = url;
@@ -371,7 +477,7 @@
                 });
             }
 
-            $(document).on('click', '.card-footer .pagination a', function(e) {
+            $(document).on('click', '#containerTablePresensi .pagination a', function(e) {
                 e.preventDefault();
                 var url = $(this).attr('href');
                 if (!url || url === '#' || url.indexOf('javascript') === 0) return;

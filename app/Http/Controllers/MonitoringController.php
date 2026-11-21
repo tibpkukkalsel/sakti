@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
+use App\Models\RekapPenerimaanPkb;
 
 class MonitoringController extends Controller
 {
@@ -61,7 +62,7 @@ class MonitoringController extends Controller
                     ->where('j_rutin.hari', '=', $namahari)
                     ->where('j_rutin.status', '=', 1);
             })
-            ->leftJoin('cabang', DB::raw("COALESCE(j_khusus.kode_cabang, j_rutin.kode_cabang, layanan.kode_cabang)"), '=', 'cabang.kode_cabang')
+            ->leftJoin('cabang', DB::raw("COALESCE(j_khusus.kode_cabang, j_rutin.kode_cabang, layanan.kode_cabang)"), '=', 'cabang.id')
             ->leftJoin('jam_kerja', DB::raw("COALESCE(j_khusus.kode_jam_kerja, j_rutin.kode_jam_kerja)"), '=', 'jam_kerja.kode_jam_kerja')
             ->leftJoin('presensi', function ($join) use ($hariini) {
                 $join->on('layanan.id', '=', 'presensi.nik')
@@ -84,6 +85,7 @@ class MonitoringController extends Controller
                 'presensi.foto_in',
                 'presensi.foto_out',
                 'presensi.status as status_presensi',
+                'presensi.petugas_nama',
                 'rekap_penerimaan_pkb.total_rp as penerimaan_hari_ini',
                 'rekap_penerimaan_pkb.total_unit as unit_hari_ini',
                 'rekap_penerimaan_pkb.jumlah_notice as notice_hari_ini',
@@ -288,7 +290,7 @@ class MonitoringController extends Controller
                         WHEN 7 THEN 'Sabtu'
                     END");
             })
-            ->leftJoin('cabang as c_lokasi', DB::raw("COALESCE(rekap_penerimaan_pkb.kode_cabang, j_khusus.kode_cabang, j_rutin.kode_cabang, layanan.kode_cabang)"), '=', 'c_lokasi.kode_cabang')
+            ->leftJoin('cabang as c_lokasi', DB::raw("COALESCE(rekap_penerimaan_pkb.kode_cabang, j_khusus.kode_cabang, j_rutin.kode_cabang, layanan.kode_cabang)"), '=', 'c_lokasi.id')
             ->whereYear('rekap_penerimaan_pkb.tgl_penerimaan', $tahunini)
             ->selectRaw("
                 CASE DAYOFWEEK(rekap_penerimaan_pkb.tgl_penerimaan)
@@ -396,15 +398,18 @@ class MonitoringController extends Controller
                     ->where('j_rutin.hari', '=', $namahari)
                     ->where('j_rutin.status', '=', 1);
             })
-            ->leftJoin('cabang as c_aktif', DB::raw("COALESCE(j_khusus.kode_cabang, j_rutin.kode_cabang, layanan.kode_cabang)"), '=', 'c_aktif.kode_cabang')
+            ->leftJoin('cabang as c_aktif', DB::raw("COALESCE(j_khusus.kode_cabang, j_rutin.kode_cabang)"), '=', 'c_aktif.id')
             ->leftJoin('jam_kerja', DB::raw("COALESCE(j_khusus.kode_jam_kerja, j_rutin.kode_jam_kerja)"), '=', 'jam_kerja.kode_jam_kerja')
             ->select(
                 'layanan.*',
-                DB::raw("COALESCE(c_aktif.nama_cabang, 'UPPD SAMSAT Batulicin') as lokasi_hari_ini"),
+                DB::raw("COALESCE(layanan.nama_pic, (SELECT nama_petugas FROM petugas_layanan WHERE petugas_layanan.layanan_id = layanan.id AND petugas_layanan.status_aktif = 1 ORDER BY id ASC LIMIT 1)) as nama_pic"),
+                DB::raw("COALESCE(layanan.no_hp, (SELECT no_hp FROM petugas_layanan WHERE petugas_layanan.layanan_id = layanan.id AND petugas_layanan.status_aktif = 1 ORDER BY id ASC LIMIT 1)) as no_hp"),
+                DB::raw("COALESCE(c_aktif.nama_cabang, 'Libur (Tidak Ada Jadwal)') as lokasi_hari_ini"),
                 'c_aktif.nama_cabang as lokasi_default',
                 'jam_kerja.nama_jam_kerja',
                 'jam_kerja.jam_masuk',
                 'jam_kerja.jam_pulang',
+                DB::raw("CASE WHEN j_khusus.id IS NOT NULL OR j_rutin.id IS NOT NULL THEN 1 ELSE 0 END as has_jadwal"),
                 DB::raw("CASE WHEN j_khusus.id IS NOT NULL THEN 'khusus' WHEN j_rutin.id IS NOT NULL THEN 'rutin' ELSE 'default' END as status_jadwal")
             );
 
@@ -434,7 +439,7 @@ class MonitoringController extends Controller
         // 1. Jadwal Rutin Mingguan
         $jadwalRutin = DB::table('jadwal_lokasi_layanan')
             ->join('layanan', 'jadwal_lokasi_layanan.layanan_id', '=', 'layanan.id')
-            ->join('cabang', 'jadwal_lokasi_layanan.kode_cabang', '=', 'cabang.kode_cabang')
+            ->join('cabang', 'jadwal_lokasi_layanan.kode_cabang', '=', 'cabang.id')
             ->leftJoin('jam_kerja', 'jadwal_lokasi_layanan.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
             ->where('jadwal_lokasi_layanan.jenis_jadwal', 'rutin')
             ->select(
@@ -455,7 +460,7 @@ class MonitoringController extends Controller
         // 2. Jadwal Event Khusus Mendatang
         $eventKhusus = DB::table('jadwal_lokasi_layanan')
             ->join('layanan', 'jadwal_lokasi_layanan.layanan_id', '=', 'layanan.id')
-            ->join('cabang', 'jadwal_lokasi_layanan.kode_cabang', '=', 'cabang.kode_cabang')
+            ->join('cabang', 'jadwal_lokasi_layanan.kode_cabang', '=', 'cabang.id')
             ->leftJoin('jam_kerja', 'jadwal_lokasi_layanan.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
             ->where('jadwal_lokasi_layanan.jenis_jadwal', 'khusus')
             ->where('jadwal_lokasi_layanan.status', 1)
@@ -593,7 +598,7 @@ class MonitoringController extends Controller
                         ->where('j_rutin.hari', '=', $hariNama)
                         ->where('j_rutin.status', '=', 1);
                 })
-                ->leftJoin('cabang', DB::raw("COALESCE(j_khusus.kode_cabang, j_rutin.kode_cabang, layanan.kode_cabang)"), '=', 'cabang.kode_cabang')
+                ->leftJoin('cabang', DB::raw("COALESCE(j_khusus.kode_cabang, j_rutin.kode_cabang)"), '=', 'cabang.id')
                 ->leftJoin('jam_kerja', DB::raw("COALESCE(j_khusus.kode_jam_kerja, j_rutin.kode_jam_kerja)"), '=', 'jam_kerja.kode_jam_kerja')
                 ->leftJoin('presensi', function ($join) use ($singleDate) {
                     $join->on('layanan.id', '=', 'presensi.nik')
@@ -610,7 +615,7 @@ class MonitoringController extends Controller
                 'layanan.foto as foto_avatar',
                 'layanan.nama_pic',
                 'layanan.no_hp',
-                DB::raw('COALESCE(cabang.nama_cabang, "UPPD SAMSAT Batulicin") as lokasi_tugas'),
+                DB::raw('COALESCE(cabang.nama_cabang, "Libur (Tidak Ada Jadwal)") as lokasi_tugas'),
                 'jam_kerja.nama_jam_kerja',
                 'jam_kerja.jam_masuk as jam_standar_masuk',
                 'jam_kerja.jam_pulang as jam_standar_pulang',
@@ -623,6 +628,7 @@ class MonitoringController extends Controller
                 'presensi.lokasi_in',
                 'presensi.lokasi_out',
                 'presensi.status as status_presensi',
+                'presensi.petugas_nama',
                 DB::raw('COALESCE(j_khusus.id, j_rutin.id) as jadwal_id')
             )->orderBy('layanan.nama_layanan', 'asc');
         } else {
@@ -650,7 +656,7 @@ class MonitoringController extends Controller
                         ->where('j_rutin.jenis_jadwal', '=', 'rutin')
                         ->where('j_rutin.status', '=', 1);
                 })
-                ->leftJoin('cabang', DB::raw("COALESCE(j_khusus.kode_cabang, j_rutin.kode_cabang, layanan.kode_cabang)"), '=', 'cabang.kode_cabang')
+                ->leftJoin('cabang', DB::raw("COALESCE(j_khusus.kode_cabang, j_rutin.kode_cabang, layanan.kode_cabang)"), '=', 'cabang.id')
                 ->leftJoin('jam_kerja', DB::raw("COALESCE(j_khusus.kode_jam_kerja, j_rutin.kode_jam_kerja)"), '=', 'jam_kerja.kode_jam_kerja');
 
             if (!empty($layanan_id) && $layanan_id != 'all') {
@@ -675,7 +681,8 @@ class MonitoringController extends Controller
                 'presensi.foto_out',
                 'presensi.lokasi_in',
                 'presensi.lokasi_out',
-                'presensi.status as status_presensi'
+                'presensi.status as status_presensi',
+                'presensi.petugas_nama'
             )
             ->orderBy('presensi.tgl_presensi', 'desc')
             ->orderBy('presensi.id', 'desc');
@@ -752,24 +759,21 @@ class MonitoringController extends Controller
 
         $layananList = DB::table('layanan')->orderBy('nama_layanan')->get();
 
-        $query = DB::table('rekap_penerimaan_pkb')
-            ->join('layanan', 'rekap_penerimaan_pkb.layanan_id', '=', 'layanan.id')
-            ->leftJoin('cabang', 'rekap_penerimaan_pkb.kode_cabang', '=', 'cabang.kode_cabang')
-            ->whereBetween('rekap_penerimaan_pkb.tgl_penerimaan', [$dari_tanggal, $sampai_tanggal]);
+        $baseQuery = RekapPenerimaanPkb::whereBetween('tgl_penerimaan', [$dari_tanggal, $sampai_tanggal]);
 
         if (!empty($layanan_id) && $layanan_id != 'all') {
-            $query->where('rekap_penerimaan_pkb.layanan_id', $layanan_id);
+            $baseQuery->where('layanan_id', $layanan_id);
         }
 
         // Hitung total akumulasi sesuai filter
-        $summary = (clone $query)->selectRaw('
-            COALESCE(SUM(rekap_penerimaan_pkb.total_rp), 0) as total_rp,
-            COALESCE(SUM(rekap_penerimaan_pkb.total_unit), 0) as total_unit,
-            COALESCE(SUM(rekap_penerimaan_pkb.jumlah_notice), 0) as total_notice,
-            COALESCE(SUM(rekap_penerimaan_pkb.jumlah_rp_r2), 0) as total_r2_rp,
-            COALESCE(SUM(rekap_penerimaan_pkb.jumlah_rp_r4), 0) as total_r4_rp,
-            COALESCE(SUM(rekap_penerimaan_pkb.jumlah_unit_r2), 0) as total_unit_r2,
-            COALESCE(SUM(rekap_penerimaan_pkb.jumlah_unit_r4), 0) as total_unit_r4
+        $summary = (clone $baseQuery)->selectRaw('
+            COALESCE(SUM(total_rp), 0) as total_rp,
+            COALESCE(SUM(total_unit), 0) as total_unit,
+            COALESCE(SUM(jumlah_notice), 0) as total_notice,
+            COALESCE(SUM(jumlah_rp_r2), 0) as total_r2_rp,
+            COALESCE(SUM(jumlah_rp_r4), 0) as total_r4_rp,
+            COALESCE(SUM(jumlah_unit_r2), 0) as total_unit_r2,
+            COALESCE(SUM(jumlah_unit_r4), 0) as total_unit_r4
         ')->first();
 
         $totalRp = (float) ($summary->total_rp ?? 0);
@@ -781,14 +785,10 @@ class MonitoringController extends Controller
         $totalUnitR4 = (int) ($summary->total_unit_r4 ?? 0);
 
         // Ambil data 10 per halaman dengan pagination
-        $rekapList = $query->select(
-            'rekap_penerimaan_pkb.*',
-            'layanan.nama_layanan',
-            'layanan.foto as foto_layanan',
-            'cabang.nama_cabang as nama_lokasi'
-        )
-            ->orderBy('rekap_penerimaan_pkb.tgl_penerimaan', 'desc')
-            ->orderBy('rekap_penerimaan_pkb.id', 'desc')
+        $rekapList = (clone $baseQuery)
+            ->with(['layanan', 'cabang', 'petugas', 'lintasDaerah.kabupaten'])
+            ->orderBy('tgl_penerimaan', 'desc')
+            ->orderBy('id', 'desc')
             ->paginate(10)
             ->withQueryString();
 

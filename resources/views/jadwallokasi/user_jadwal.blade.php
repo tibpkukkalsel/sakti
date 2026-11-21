@@ -103,11 +103,10 @@
                     <div class="px-3 py-3 border-bottom {{ $isEventHariIni ? 'bg-light' : '' }}">
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="d-flex align-items-center gap-2">
-                                <div style="min-width: 75px; text-align: center;">
-                                    <span class="badge bg-warning text-dark" style="font-size: 11px; padding: 4px 6px; border-radius: 6px;">
-                                        {{ date('d/m/Y', strtotime($ev->tanggal)) }}
+                                <div style="min-width: 95px; text-align: center;">
+                                    <span class="badge bg-warning text-dark" style="font-size: 11px; padding: 4px 8px; border-radius: 6px;">
+                                        {{ formatHariTanggal($ev->tanggal) }}
                                     </span>
-                                    <div class="small text-muted mt-1">{{ $ev->hari }}</div>
                                 </div>
                                 <div>
                                     <strong class="text-dark" style="font-size: 14px;">{{ $ev->nama_cabang }}</strong>

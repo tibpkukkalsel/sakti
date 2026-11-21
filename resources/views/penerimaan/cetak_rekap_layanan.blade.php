@@ -289,7 +289,7 @@
                 @foreach ($detailHarian as $dh)
                     <tr>
                         <td class="text-center">{{ $loop->iteration }}</td>
-                        <td class="text-center">{{ date('d-m-Y', strtotime($dh->tgl_penerimaan)) }}</td>
+                        <td class="text-center">{{ formatHariTanggal($dh->tgl_penerimaan) }}</td>
                         <td class="text-center">{{ number_format($dh->jumlah_unit_r2, 0, ',', '.') }}</td>
                         <td class="text-end">Rp {{ number_format($dh->jumlah_rp_r2, 0, ',', '.') }}</td>
                         <td class="text-center">{{ number_format($dh->jumlah_unit_r4, 0, ',', '.') }}</td>
@@ -297,7 +297,12 @@
                         <td class="text-center"><strong>{{ number_format($dh->total_unit, 0, ',', '.') }}</strong></td>
                         <td class="text-end"><strong>Rp {{ number_format($dh->total_rp, 0, ',', '.') }}</strong></td>
                         <td class="text-center">{{ number_format($dh->jumlah_notice, 0, ',', '.') }}</td>
-                        <td>{{ $dh->keterangan ?: '-' }}</td>
+                        <td>
+                            @if (!empty($dh->input_by_nama))
+                                <div style="font-size: 7.5pt; color: #333; margin-bottom: 2px;">Petugas: {{ $dh->input_by_nama }}</div>
+                            @endif
+                            {{ $dh->keterangan ?: '-' }}
+                        </td>
                     </tr>
                 @endforeach
             </tbody>

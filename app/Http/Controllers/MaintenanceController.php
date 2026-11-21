@@ -15,7 +15,7 @@ class MaintenanceController extends Controller
     public function index(Request $request)
     {
         $user = Auth::guard('karyawan')->user();
-        $layananId = $user->id;
+        $layananId = $user->layanan_id ?? $user->id;
         $hariini = date('Y-m-d');
 
         // Status maintenance aktif hari ini untuk akun layanan ini
@@ -63,7 +63,7 @@ class MaintenanceController extends Controller
     public function store(Request $request)
     {
         $user = Auth::guard('karyawan')->user();
-        $layananId = $user->id;
+        $layananId = $user->layanan_id ?? $user->id;
 
         $request->validate([
             'tgl_izin_dari' => 'required|date',
@@ -168,7 +168,7 @@ class MaintenanceController extends Controller
     public function delete($kode_izin)
     {
         $user = Auth::guard('karyawan')->user();
-        $layananId = $user->id;
+        $layananId = $user->layanan_id ?? $user->id;
 
         $data = DB::table('pengajuan_izin')
             ->where('kode_izin', $kode_izin)

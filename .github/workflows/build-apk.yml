@@ -1,4 +1,4 @@
-name: Build Android APK (E-Lapor SAMKEL)
+name: Build Android APK (E-Lapor Samkel)
 
 on:
   push:
@@ -32,11 +32,15 @@ jobs:
       - name: Prepare APK File
         run: |
           mkdir -p output-apk
-          cp android/app/build/outputs/apk/debug/app-debug.apk output-apk/E-Lapor-SAMKEL-Batulicin.apk
+          if [ -f android/app/build/outputs/apk/debug/E-Lapor-Samkel.apk ]; then
+            cp android/app/build/outputs/apk/debug/E-Lapor-Samkel.apk output-apk/E-Lapor-Samkel.apk
+          else
+            cp android/app/build/outputs/apk/debug/app-debug.apk output-apk/E-Lapor-Samkel.apk
+          fi
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: E-Lapor-SAMKEL-Batulicin-APK
-          path: output-apk/E-Lapor-SAMKEL-Batulicin.apk
+          name: E-Lapor-Samkel-APK
+          path: output-apk/E-Lapor-Samkel.apk
           retention-days: 30

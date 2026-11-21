@@ -1,6 +1,6 @@
 <form action="/panel-adm14/cabang/update" method="POST" id="frmCabangEdit">
     @csrf
-    <input type="hidden" value="{{ $cabang->kode_cabang }}" id="kode_cabang" name="kode_cabang">
+    <input type="hidden" value="{{ $cabang->id }}" id="id" name="id">
     <div class="row">
         <div class="col-12">
             <div class="input-icon mb-3">

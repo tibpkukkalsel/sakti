@@ -23,12 +23,21 @@ class RekapPenerimaanPkb extends Model
         'jumlah_unit_r4',
         'total_unit',
         'jumlah_notice',
+        'no_awal_notice',
+        'foto_awal_notice',
+        'no_akhir_notice',
+        'foto_akhir_notice',
+        'status_verifikasi',
+        'catatan_verifikasi',
+        'verified_at',
+        'verified_by',
         'keterangan',
-        'is_locked',
+        'input_by_petugas_id',
     ];
 
     protected $casts = [
         'tgl_penerimaan' => 'date',
+        'verified_at' => 'datetime',
         'jumlah_rp_r2' => 'float',
         'jumlah_rp_r4' => 'float',
         'total_rp' => 'float',
@@ -36,8 +45,29 @@ class RekapPenerimaanPkb extends Model
         'jumlah_unit_r4' => 'integer',
         'total_unit' => 'integer',
         'jumlah_notice' => 'integer',
-        'is_locked' => 'boolean',
     ];
+
+    public function getFotoAwalUrlAttribute()
+    {
+        if (empty($this->foto_awal_notice)) {
+            return null;
+        }
+        if (file_exists(public_path('uploads/notice/' . $this->foto_awal_notice))) {
+            return asset('uploads/notice/' . $this->foto_awal_notice);
+        }
+        return asset('storage/uploads/notice/' . $this->foto_awal_notice);
+    }
+
+    public function getFotoAkhirUrlAttribute()
+    {
+        if (empty($this->foto_akhir_notice)) {
+            return null;
+        }
+        if (file_exists(public_path('uploads/notice/' . $this->foto_akhir_notice))) {
+            return asset('uploads/notice/' . $this->foto_akhir_notice);
+        }
+        return asset('storage/uploads/notice/' . $this->foto_akhir_notice);
+    }
 
     public function layanan()
     {
@@ -46,12 +76,12 @@ class RekapPenerimaanPkb extends Model
 
     public function cabang()
     {
-        return $this->belongsTo(Cabang::class, 'kode_cabang', 'kode_cabang');
+        return $this->belongsTo(Cabang::class, 'kode_cabang', 'id');
     }
 
     public function lokasi()
     {
-        return $this->belongsTo(Cabang::class, 'kode_cabang', 'kode_cabang');
+        return $this->belongsTo(Cabang::class, 'kode_cabang', 'id');
     }
 
     public function getIdLokasiAttribute()
@@ -62,6 +92,46 @@ class RekapPenerimaanPkb extends Model
     public function setIdLokasiAttribute($value)
     {
         $this->attributes['kode_cabang'] = $value;
+    }
+
+    public function lintasDaerah()
+    {
+        return $this->hasMany(PenerimaanLintasDaerah::class, 'penerimaan_id');
+    }
+
+    public function getTotalUnitLintasAttribute()
+    {
+        return $this->relationLoaded('lintasDaerah') ? $this->lintasDaerah->count() : $this->lintasDaerah()->count();
+    }
+
+    public function getTotalRpLintasAttribute()
+    {
+        return $this->relationLoaded('lintasDaerah') ? (float) $this->lintasDaerah->sum('nominal') : (float) $this->lintasDaerah()->sum('nominal');
+    }
+
+    public function petugas()
+    {
+        return $this->belongsTo(PetugasLayanan::class, 'input_by_petugas_id');
+    }
+
+    public function getInputByNamaAttribute()
+    {
+        return $this->petugas->nama_petugas ?? null;
+    }
+
+    public function getIsLockedAttribute()
+    {
+        return ($this->status_verifikasi == 'disetujui');
+    }
+
+    public function getNamaLayananAttribute()
+    {
+        return $this->layanan->nama_layanan ?? null;
+    }
+
+    public function getNamaLokasiAttribute()
+    {
+        return $this->cabang->nama_cabang ?? null;
     }
 }
 

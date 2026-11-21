@@ -12,35 +12,23 @@ class LokasiController extends Controller
     {
         $query = DB::table('cabang');
         if (!empty($request->nama_cabang)) {
-            $query->where('nama_cabang', 'like', '%' . $request->nama_cabang . '%');
+            $query->where(function ($q) use ($request) {
+                $q->where('nama_cabang', 'like', '%' . $request->nama_cabang . '%')
+                  ->orWhere('lokasi_cabang', 'like', '%' . $request->nama_cabang . '%');
+            });
         }
-        $cabang = $query->orderBy('kode_cabang')->get();
+        $cabang = $query->orderBy('id', 'asc')->paginate(10)->withQueryString();
         return view('lokasi.index', compact('cabang'));
     }
 
     public function store(Request $request)
     {
-        $kode_cabang = strtoupper(trim($request->kode_cabang));
-        if (empty($kode_cabang)) {
-            $allCodes = DB::table('cabang')->pluck('kode_cabang');
-            $maxNum = 0;
-            foreach ($allCodes as $c) {
-                if (preg_match('/^SM(\d+)$/i', $c, $m)) {
-                    $num = (int)$m[1];
-                    if ($num > $maxNum) {
-                        $maxNum = $num;
-                    }
-                }
-            }
-            $kode_cabang = 'SM' . ($maxNum + 1);
-        }
         $nama_cabang = trim($request->nama_cabang);
         $lokasi_cabang = trim($request->lokasi_cabang);
         $radius_cabang = $request->radius_cabang ?: 100;
 
         try {
             $data = [
-                'kode_cabang' => $kode_cabang,
                 'nama_cabang' => $nama_cabang,
                 'lokasi_cabang' => $lokasi_cabang,
                 'radius_cabang' => $radius_cabang
@@ -54,14 +42,14 @@ class LokasiController extends Controller
 
     public function edit(Request $request)
     {
-        $kode_cabang = $request->kode_cabang;
-        $cabang = DB::table('cabang')->where('kode_cabang', $kode_cabang)->first();
+        $id = $request->id;
+        $cabang = DB::table('cabang')->where('id', $id)->first();
         return view('lokasi.edit', compact('cabang'));
     }
 
     public function update(Request $request)
     {
-        $kode_cabang = $request->kode_cabang;
+        $id = $request->id;
         $nama_cabang = trim($request->nama_cabang);
         $lokasi_cabang = trim($request->lokasi_cabang);
         $radius_cabang = $request->radius_cabang ?: 100;
@@ -72,18 +60,16 @@ class LokasiController extends Controller
                 'lokasi_cabang' => $lokasi_cabang,
                 'radius_cabang' => $radius_cabang
             ];
-            DB::table('cabang')
-                ->where('kode_cabang', $kode_cabang)
-                ->update($data);
+            DB::table('cabang')->where('id', $id)->update($data);
             return Redirect::back()->with(['success' => 'Data Lokasi Berhasil Diupdate']);
         } catch (\Exception $e) {
             return Redirect::back()->with(['warning' => 'Data Lokasi Gagal Diupdate: ' . $e->getMessage()]);
         }
     }
 
-    public function delete($kode_cabang)
+    public function delete($id)
     {
-        $hapus = DB::table('cabang')->where('kode_cabang', $kode_cabang)->delete();
+        $hapus = DB::table('cabang')->where('id', $id)->delete();
         if ($hapus) {
             return Redirect::back()->with(['success' => 'Data Lokasi Berhasil Dihapus']);
         } else {

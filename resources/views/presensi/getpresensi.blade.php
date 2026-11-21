@@ -32,7 +32,12 @@ if (!function_exists('hitungSelisihAdmin')) {
     <tr>
         <td class="text-center">{{ $loop->iteration }}</td>
         <td><span class="badge bg-light text-dark border">{{ $d->nik }}</span></td>
-        <td class="fw-bold">{{ $d->nama_lengkap }}</td>
+        <td class="fw-bold">
+            {{ $d->nama_lengkap }}
+            @if (!empty($d->petugas_nama))
+                <div class="small text-muted font-weight-normal mt-1">Absen: {{ $d->petugas_nama }}</div>
+            @endif
+        </td>
         <td>{{ $d->nama_dept ?? '-' }}</td>
         <td>{{ $d->lokasi ?? '-' }}</td>
         <td>

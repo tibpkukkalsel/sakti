@@ -94,7 +94,7 @@
                                                 <td><span class="badge bg-info text-white">{{ $d->radius_cabang }} Meter</span></td>
                                                 <td class="text-center">
                                                     <div class="d-flex align-items-center justify-content-center gap-1">
-                                                        <a href="#" class="edit btn btn-info btn-sm btn-action" kode_cabang="{{ $d->kode_cabang }}" title="Edit Lokasi">
+                                                        <a href="#" class="edit btn btn-info btn-sm btn-action" data-id="{{ $d->id }}" title="Edit Lokasi">
                                                             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-edit" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                                                 <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                                                                 <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1"></path>
@@ -102,7 +102,7 @@
                                                                 <path d="M16 5l3 3"></path>
                                                             </svg>
                                                         </a>
-                                                        <form action="/panel-adm14/cabang/{{ $d->kode_cabang }}/delete" method="POST" class="m-0 d-inline-block">
+                                                        <form action="/panel-adm14/cabang/{{ $d->id }}/delete" method="POST" class="m-0 d-inline-block">
                                                             @csrf
                                                             <a class="btn btn-danger btn-sm btn-action delete-confirm" title="Hapus Lokasi">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash-filled" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -233,14 +233,14 @@
         });
 
         $(".edit").click(function() {
-            var kode_cabang = $(this).attr('kode_cabang');
+            var id = $(this).attr('data-id');
             $.ajax({
                 type: 'POST'
                 , url: '/panel-adm14/cabang/edit'
                 , cache: false
                 , data: {
                     _token: "{{ csrf_token(); }}"
-                    , kode_cabang: kode_cabang
+                    , id: id
                 }
                 , success: function(respond) {
                     $("#loadeditform").html(respond);

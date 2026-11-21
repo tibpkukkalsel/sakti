@@ -192,7 +192,7 @@
                                     <td class="text-center fw-bold text-muted">{{ $loop->iteration }}</td>
                                     <td class="text-center">
                                         <span class="badge bg-warning text-dark fw-bold">
-                                            {{ date('d/m/Y', strtotime($ek->tanggal)) }}
+                                            {{ formatHariTanggal($ek->tanggal) }}
                                         </span>
                                     </td>
                                     <td class="text-center fw-semibold">
@@ -203,7 +203,6 @@
                                     </td>
                                     <td>
                                         <strong class="text-primary">{{ $ek->nama_cabang }}</strong>
-                                        <div class="small text-muted">Kode: {{ $ek->kode_cabang }}</div>
                                     </td>
                                     <td class="text-center">
                                         @if (!empty($ek->nama_jam_kerja))

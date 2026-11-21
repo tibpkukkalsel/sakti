@@ -81,7 +81,7 @@
                         <span class="badge maint-badge">Maintenance (X)</span>
                     </div>
                     <div class="text-muted small mt-1">
-                        <ion-icon name="calendar-outline" style="vertical-align:-1px;"></ion-icon> Tanggal: {{ date('d-m-Y', strtotime($row->tgl_presensi)) }}
+                        <ion-icon name="calendar-outline" style="vertical-align:-1px;"></ion-icon> Tanggal: {{ formatHariTanggal($row->tgl_presensi) }}
                     </div>
                     <div class="text-muted small">
                         PIC: {{ $row->nama_pic ?: '-' }}

@@ -191,7 +191,7 @@
                     @endphp
                     <tr>
                         <td class="text-center">{{ $loop->iteration }}</td>
-                        <td class="text-center" style="mso-number-format: '\@';">{{ date('d-m-Y', strtotime($d->tgl_presensi)) }}</td>
+                        <td class="text-center" style="mso-number-format: '\@';">{{ formatHariTanggal($d->tgl_presensi) }}</td>
                         <td class="text-center" style="mso-number-format: '\@';">{{ $d->jam_in }}</td>
                         <td class="text-center">
                             @if ($has_in)
@@ -226,6 +226,9 @@
                             @endif
                         </td>
                         <td class="text-center">
+                            @if (!empty($d->petugas_nama))
+                                <div>Petugas: {{ $d->petugas_nama }}</div>
+                            @endif
                             @if ($d->status_in == 'izin_terlambat')
                                 <span style="color: #0284c7;">Disetujui Izin Terlambat</span>
                             @elseif ($d->jam_in > $d->jam_masuk)
@@ -241,7 +244,7 @@
                 @else
                     <tr>
                         <td class="text-center">{{ $loop->iteration }}</td>
-                        <td class="text-center" style="mso-number-format: '\@';">{{ date('d-m-Y', strtotime($d->tgl_presensi)) }}</td>
+                        <td class="text-center" style="mso-number-format: '\@';">{{ formatHariTanggal($d->tgl_presensi) }}</td>
                         <td class="text-center">-</td>
                         <td class="text-center">-</td>
                         <td class="text-center">-</td>

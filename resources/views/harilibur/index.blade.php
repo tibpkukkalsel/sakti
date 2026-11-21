@@ -94,14 +94,14 @@
                                                     <th>Tanggal Libur</th>
                                                     <th>Layanan</th>
                                                     <th>Keterangan</th>
-                                                    <th style="width: 120px;" class="text-center">Aksi</th>
+                                                    <th style="width: 90px;" class="text-center">Aksi</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 @foreach ($harilibur as $d)
                                                     <tr>
                                                         <td class="text-center">{{ $loop->iteration + $harilibur->firstItem() - 1 }}</td>
-                                                        <td class="fw-bold">{{ date('d-m-Y', strtotime($d->tanggal_libur)) }}</td>
+                                                        <td class="fw-bold">{{ formatHariTanggal($d->tanggal_libur) }}</td>
                                                         <td>
                                                             @if ($d->kode_cabang == 'ALL')
                                                                 <span class="badge bg-primary text-white">Semua Layanan</span>
@@ -130,23 +130,6 @@
                                                                                 d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z">
                                                                             </path>
                                                                             <path d="M16 5l3 3"></path>
-                                                                        </svg>
-                                                                    </a>
-                                                                    <a href="/panel-adm14/konfigurasi/harilibur/{{ $d->kode_libur }}/setkaryawanlibur"
-                                                                        class="btn btn-success btn-sm btn-action" title="Daftar Pegawai Libur">
-                                                                        <svg xmlns="http://www.w3.org/2000/svg"
-                                                                            class="icon icon-tabler icon-tabler-settings-up"
-                                                                            viewBox="0 0 24 24"
-                                                                            stroke-width="2" stroke="currentColor"
-                                                                            fill="none" stroke-linecap="round"
-                                                                            stroke-linejoin="round">
-                                                                            <path stroke="none" d="M0 0h24v24H0z"
-                                                                                fill="none" />
-                                                                            <path
-                                                                                d="M12.501 20.93c-.866 .25 -1.914 -.166 -2.176 -1.247a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.074 .26 1.49 1.296 1.252 2.158" />
-                                                                            <path d="M19 22v-6" />
-                                                                            <path d="M22 19l-3 -3l-3 3" />
-                                                                            <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
                                                                         </svg>
                                                                     </a>
                                                                     <form

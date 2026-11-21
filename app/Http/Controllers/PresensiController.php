@@ -63,7 +63,10 @@ class PresensiController extends Controller
     {
 
         $kode_jam_kerja = $kode_jam_kerja != "null" ? Crypt::decrypt($kode_jam_kerja) : $kode_jam_kerja;
-        $nik = Auth::guard('karyawan')->user()->nik;
+        $authUser = Auth::guard('karyawan')->user();
+        $layananId = $authUser->layanan_id ?? $authUser->id;
+        $petugasId = $authUser->id;
+        $nik = (string) $layananId;
         $hariini = date("Y-m-d");
         $jamsekarang = date("H:i");
         $tgl_sebelumnya = date('Y-m-d', strtotime("-1 days", strtotime($hariini)));
@@ -82,39 +85,71 @@ class PresensiController extends Controller
         }
         $namahari = $this->gethari(date('D', strtotime($hariini)));
 
+        // Cek Mode Presensi Layanan: 'bebas' atau 'jadwal'
+        $layananData = DB::table('layanan')->where('id', $layananId)->first();
+        $modePresensi = $layananData->mode_presensi ?? 'bebas';
 
-        $kode_dept = Auth::guard('karyawan')->user()->kode_dept;
+        if ($modePresensi === 'jadwal') {
+            $isTerjadwal = DB::table('jadwal_petugas_layanan')
+                ->where('layanan_id', $layananId)
+                ->where('petugas_id', $petugasId)
+                ->where('status', 1)
+                ->where(function ($q) use ($hariini, $namahari) {
+                    $q->where('tanggal', $hariini)
+                      ->orWhere('hari', $namahari)
+                      ->orWhereNull('hari')
+                      ->orWhere('hari', 'Semua');
+                })
+                ->exists();
+
+            if (!$isTerjadwal) {
+                return view('presensi.notifjadwal_petugas', compact('authUser', 'layananData', 'hariini', 'namahari'));
+            }
+        }
+
+        $kode_dept = Auth::guard('karyawan')->user()->kode_dept ?? null;
         $presensi = DB::table('presensi')->where('tgl_presensi', $hariini)->where('nik', $nik);
         $cek = $presensi->count();
         $datapresensi = $presensi->first();
+
+        // Jika layanan ini sudah diabsen oleh petugas lain hari ini, petugas ini tidak bisa presensi
+        if ($datapresensi != null && !empty($datapresensi->petugas_id) && $datapresensi->petugas_id != $petugasId) {
+            return view('presensi.notifdiwakili_petugas', compact('authUser', 'layananData', 'hariini', 'datapresensi'));
+        }
         $namahari = $this->gethari(date('D', strtotime($hariini)));
         // Cek jadwal lokasi: Prioritaskan custom tanggal / event khusus hari ini
         $jadwalLokasi = DB::table('jadwal_lokasi_layanan')
-            ->join('cabang', 'jadwal_lokasi_layanan.kode_cabang', '=', 'cabang.kode_cabang')
+            ->join('cabang', 'jadwal_lokasi_layanan.kode_cabang', '=', 'cabang.id')
             ->where('jadwal_lokasi_layanan.layanan_id', $nik)
             ->where('jadwal_lokasi_layanan.tanggal', $hariini)
             ->where('jadwal_lokasi_layanan.status', 1)
-            ->select('cabang.*', 'jadwal_lokasi_layanan.keterangan as ket_jadwal', 'jadwal_lokasi_layanan.jenis_jadwal', 'jadwal_lokasi_layanan.kode_jam_kerja')
+            ->select('cabang.*', 'jadwal_lokasi_layanan.kode_cabang', 'jadwal_lokasi_layanan.keterangan as ket_jadwal', 'jadwal_lokasi_layanan.jenis_jadwal', 'jadwal_lokasi_layanan.kode_jam_kerja')
             ->first();
 
         // Jika tidak ada jadwal khusus hari ini, fallback ke jadwal rutin mingguan
         if (!$jadwalLokasi) {
             $jadwalLokasi = DB::table('jadwal_lokasi_layanan')
-                ->join('cabang', 'jadwal_lokasi_layanan.kode_cabang', '=', 'cabang.kode_cabang')
+                ->join('cabang', 'jadwal_lokasi_layanan.kode_cabang', '=', 'cabang.id')
                 ->where('jadwal_lokasi_layanan.layanan_id', $nik)
                 ->where('jadwal_lokasi_layanan.hari', $namahari)
                 ->where('jadwal_lokasi_layanan.jenis_jadwal', 'rutin')
                 ->where('jadwal_lokasi_layanan.status', 1)
-                ->select('cabang.*', 'jadwal_lokasi_layanan.keterangan as ket_jadwal', 'jadwal_lokasi_layanan.jenis_jadwal', 'jadwal_lokasi_layanan.kode_jam_kerja')
+                ->select('cabang.*', 'jadwal_lokasi_layanan.kode_cabang', 'jadwal_lokasi_layanan.keterangan as ket_jadwal', 'jadwal_lokasi_layanan.jenis_jadwal', 'jadwal_lokasi_layanan.kode_jam_kerja')
                 ->first();
         }
 
         if ($jadwalLokasi != null) {
+            $kode_cabang = $jadwalLokasi->kode_cabang ?? $jadwalLokasi->id ?? null;
+            $jadwalLokasi->kode_cabang = $kode_cabang;
             $lok_kantor = $jadwalLokasi;
-            $kode_cabang = $jadwalLokasi->kode_cabang;
         } else {
-            $kode_cabang = Auth::guard('karyawan')->user()->kode_cabang;
-            $lok_kantor = DB::table('cabang')->where('kode_cabang', $kode_cabang)->first();
+            // Jika layanan tidak ada jadwal lokasi hari ini, otomatis diarahkan ke tampilan Libur
+            $datalibur = (object)[
+                'kode_libur' => 'LIBUR',
+                'tanggal_libur' => $hariini,
+                'keterangan' => 'Tidak Ada Jadwal Layanan Hari Ini (Libur)'
+            ];
+            return view('presensi.notiflibur', compact('datalibur'));
         }
 
         // Cek apakah hari ini adalah Hari Libur
@@ -196,8 +231,12 @@ class PresensiController extends Controller
     public function store(Request $request)
     {
         $kode_jam_kerja = $request->kode_jam_kerja;
-        $nik = Auth::guard('karyawan')->user()->nik;
-        $status_location = Auth::guard('karyawan')->user()->status_location;
+        $authUser = Auth::guard('karyawan')->user();
+        $layananId = $authUser->layanan_id ?? $authUser->id;
+        $petugasId = $authUser->id;
+        $petugasNama = $authUser->nama_petugas ?? $authUser->nama_pic ?? $authUser->nama_layanan;
+        $nik = (string) $layananId;
+        $status_location = $authUser->status_location;
         $hariini = date("Y-m-d");
         $jamsekarang = date("H:i");
         $tgl_sebelumnya = date('Y-m-d', strtotime("-1 days", strtotime($hariini)));
@@ -209,9 +248,33 @@ class PresensiController extends Controller
 
         $ceklintashari_presensi = $cekpresensi_sebelumnya != null  ? $cekpresensi_sebelumnya->lintashari : 0;
 
-        $kode_cabang = Auth::guard('karyawan')->user()->kode_cabang;
-        $kode_dept = Auth::guard('karyawan')->user()->kode_dept;
+        $kode_cabang = $authUser->kode_cabang ?? null;
+        $kode_dept = $authUser->kode_dept ?? null;
         $tgl_presensi = $ceklintashari_presensi == 1 && $jamsekarang < "08:00" ? $tgl_sebelumnya : date("Y-m-d");
+
+        // Cek Mode Presensi Layanan: 'bebas' atau 'jadwal'
+        $layananData = DB::table('layanan')->where('id', $layananId)->first();
+        $modePresensi = $layananData->mode_presensi ?? 'bebas';
+
+        if ($modePresensi === 'jadwal') {
+            $namahariCheck = $this->gethari(date('D', strtotime($tgl_presensi)));
+            $isTerjadwal = DB::table('jadwal_petugas_layanan')
+                ->where('layanan_id', $layananId)
+                ->where('petugas_id', $petugasId)
+                ->where('status', 1)
+                ->where(function ($q) use ($tgl_presensi, $namahariCheck) {
+                    $q->where('tanggal', $tgl_presensi)
+                      ->orWhere('hari', $namahariCheck)
+                      ->orWhereNull('hari')
+                      ->orWhere('hari', 'Semua');
+                })
+                ->exists();
+
+            if (!$isTerjadwal) {
+                echo "error|Anda tidak dijadwalkan bertugas pada layanan ini untuk hari ini.|in";
+                return;
+            }
+        }
 
         // Cek apakah hari ini adalah Hari Libur
         $datalibur = DB::table('harilibur')
@@ -242,30 +305,32 @@ class PresensiController extends Controller
         $namahari = $this->gethari(date('D', strtotime($tgl_presensi)));
         // Cek jadwal lokasi: Prioritaskan custom tanggal / event khusus hari ini
         $jadwalLokasi = DB::table('jadwal_lokasi_layanan')
-            ->join('cabang', 'jadwal_lokasi_layanan.kode_cabang', '=', 'cabang.kode_cabang')
+            ->join('cabang', 'jadwal_lokasi_layanan.kode_cabang', '=', 'cabang.id')
             ->where('jadwal_lokasi_layanan.layanan_id', $nik)
             ->where('jadwal_lokasi_layanan.tanggal', $tgl_presensi)
             ->where('jadwal_lokasi_layanan.status', 1)
-            ->select('cabang.*', 'jadwal_lokasi_layanan.keterangan as ket_jadwal', 'jadwal_lokasi_layanan.jenis_jadwal', 'jadwal_lokasi_layanan.kode_jam_kerja')
+            ->select('cabang.*', 'jadwal_lokasi_layanan.kode_cabang', 'jadwal_lokasi_layanan.keterangan as ket_jadwal', 'jadwal_lokasi_layanan.jenis_jadwal', 'jadwal_lokasi_layanan.kode_jam_kerja')
             ->first();
 
         // Jika tidak ada jadwal khusus hari ini, fallback ke jadwal rutin mingguan
         if (!$jadwalLokasi) {
             $jadwalLokasi = DB::table('jadwal_lokasi_layanan')
-                ->join('cabang', 'jadwal_lokasi_layanan.kode_cabang', '=', 'cabang.kode_cabang')
+                ->join('cabang', 'jadwal_lokasi_layanan.kode_cabang', '=', 'cabang.id')
                 ->where('jadwal_lokasi_layanan.layanan_id', $nik)
                 ->where('jadwal_lokasi_layanan.hari', $namahari)
                 ->where('jadwal_lokasi_layanan.jenis_jadwal', 'rutin')
                 ->where('jadwal_lokasi_layanan.status', 1)
-                ->select('cabang.*', 'jadwal_lokasi_layanan.keterangan as ket_jadwal', 'jadwal_lokasi_layanan.jenis_jadwal', 'jadwal_lokasi_layanan.kode_jam_kerja')
+                ->select('cabang.*', 'jadwal_lokasi_layanan.kode_cabang', 'jadwal_lokasi_layanan.keterangan as ket_jadwal', 'jadwal_lokasi_layanan.jenis_jadwal', 'jadwal_lokasi_layanan.kode_jam_kerja')
                 ->first();
         }
 
         if ($jadwalLokasi != null) {
+            $kode_cabang = $jadwalLokasi->kode_cabang ?? $jadwalLokasi->id ?? null;
+            $jadwalLokasi->kode_cabang = $kode_cabang;
             $lok_kantor = $jadwalLokasi;
-            $kode_cabang = $jadwalLokasi->kode_cabang;
         } else {
-            $lok_kantor = DB::table('cabang')->where('kode_cabang', $kode_cabang)->first();
+            echo "error|Tidak ada jadwal layanan hari ini (Libur)|libur";
+            return;
         }
         if (!$lok_kantor) {
             echo "error|Data kantor / cabang tidak ditemukan|radius";
@@ -347,10 +412,18 @@ class PresensiController extends Controller
         // Validasi Status Absen sesuai pilihan pegawai ('in' atau 'out')
         $status_absen_req = ($request->status_absen == "out") ? "out" : "in";
 
+        // Tolak jika presensi hari ini sudah dilakukan oleh petugas lain
+        if ($datapresensi != null && !empty($datapresensi->petugas_id) && $datapresensi->petugas_id != $petugasId) {
+            $namaYangAbsen = !empty($datapresensi->petugas_nama) ? $datapresensi->petugas_nama : 'Petugas lain';
+            echo "error|Presensi {$layananData->nama_layanan} hari ini sudah diisi oleh {$namaYangAbsen}. Anda tidak dapat melakukan presensi.|" . $status_absen_req;
+            return;
+        }
+
         if ($status_absen_req == "in") {
-            // Pegawai bermaksud Absen Masuk: Tolak jika sudah pernah absen masuk hari ini
+            // Pegawai bermaksud Absen Masuk: Tolak jika sudah pernah diabsen masuk hari ini
             if ($datapresensi != null && !empty($datapresensi->jam_in)) {
-                echo "error|Anda sudah berhasil melakukan presensi masuk hari ini|in";
+                $namaYangAbsen = !empty($datapresensi->petugas_nama) ? $datapresensi->petugas_nama : 'Petugas lain';
+                echo "error|Layanan ini sudah diabsen masuk oleh " . $namaYangAbsen . " hari ini|in";
                 return;
             }
             $ket = "in";
@@ -386,7 +459,7 @@ class PresensiController extends Controller
         $jamkerja_pulang = $tgl_pulang . " " . $jamkerja->jam_pulang;
         $datakaryawan = DB::table('pegawai')->where('nik', $nik)->first();
         $no_hp = $datakaryawan ? $datakaryawan->no_hp : '';
-        $datalokasi = DB::table('cabang')->where('kode_cabang', $kode_cabang)->first();
+        $datalokasi = DB::table('cabang')->where('id', $kode_cabang)->first();
         $nama_lokasi = $datalokasi ? $datalokasi->nama_cabang : '';
         if ($status_location == 1 && $radius > $lok_kantor->radius_cabang) {
             echo "error|Maaf Anda Berada Diluar Radius, Jarak Anda " . $radius . " meter dari Kantor|radius";
@@ -454,6 +527,8 @@ class PresensiController extends Controller
                     // Pegawai tidak absen masuk, lalu langsung absen pulang -> Insert record baru
                     $data_pulang = [
                         'nik' => $nik,
+                        'petugas_id' => $petugasId,
+                        'petugas_nama' => $petugasNama,
                         'tgl_presensi' => $tgl_presensi,
                         'jam_in' => null,
                         'foto_in' => null,
@@ -515,6 +590,8 @@ class PresensiController extends Controller
 
                     $data = [
                         'nik' => $nik,
+                        'petugas_id' => $petugasId,
+                        'petugas_nama' => $petugasNama,
                         'tgl_presensi' => $tgl_presensi,
                         'jam_in' => $jam,
                         'foto_in' => $fileName,
@@ -729,7 +806,7 @@ class PresensiController extends Controller
         $karyawan = DB::table('karyawan')->where('nik', $nik)->first();
 
         $request->validate([
-            'kode_cabang' => 'nullable|exists:cabang,kode_cabang',
+            'kode_cabang' => 'nullable|exists:cabang,id',
             'foto' => 'nullable|image|mimes:png,jpg|max:1024'
         ]);
 
@@ -945,7 +1022,7 @@ class PresensiController extends Controller
 
         if (!empty($request->bulan) && !empty($request->tahun)) {
             $datapenerimaan = DB::table('penerimaan')
-                ->leftJoin('cabang', 'penerimaan.kode_cabang', '=', 'cabang.kode_cabang')
+                ->leftJoin('cabang', 'penerimaan.kode_cabang', '=', 'cabang.id')
                 ->orderBy('tgl_penerimaan', 'desc')
                 ->where('nik', $nik)
                 ->whereRaw('MONTH(tgl_penerimaan)="' . $request->bulan . '"')
@@ -953,7 +1030,7 @@ class PresensiController extends Controller
                 ->get();
         } else {
             $datapenerimaan = DB::table('penerimaan')
-                ->leftJoin('cabang', 'penerimaan.kode_cabang', '=', 'cabang.kode_cabang')
+                ->leftJoin('cabang', 'penerimaan.kode_cabang', '=', 'cabang.id')
                 ->orderBy('tgl_penerimaan', 'desc')
                 ->where('nik', $nik)->limit(5)->orderBy('tgl_penerimaan', 'desc')
                 ->get();
@@ -1004,7 +1081,7 @@ class PresensiController extends Controller
                         END");
                 })
                 ->leftJoin('jam_kerja', DB::raw("COALESCE(presensi.kode_jam_kerja, j_khusus.kode_jam_kerja, j_rutin.kode_jam_kerja)"), '=', 'jam_kerja.kode_jam_kerja')
-                ->leftJoin('cabang as c_lokasi', DB::raw("COALESCE(j_khusus.kode_cabang, j_rutin.kode_cabang, layanan.kode_cabang)"), '=', 'c_lokasi.kode_cabang')
+                ->leftJoin('cabang as c_lokasi', DB::raw("COALESCE(j_khusus.kode_cabang, j_rutin.kode_cabang)"), '=', 'c_lokasi.id')
                 ->select(
                     DB::raw("'$tgl_dari' as tgl_presensi"),
                     'layanan.id as layanan_id',
@@ -1013,6 +1090,8 @@ class PresensiController extends Controller
                     'layanan.jabatan_pic',
                     'layanan.foto as foto_layanan',
                     'presensi.id as presensi_id',
+                    'presensi.petugas_id',
+                    'presensi.petugas_nama',
                     'presensi.jam_in',
                     'presensi.jam_out',
                     'presensi.foto_in',
@@ -1028,7 +1107,8 @@ class PresensiController extends Controller
                     'jam_kerja.nama_jam_kerja',
                     'jam_kerja.jam_masuk',
                     'jam_kerja.jam_pulang',
-                    'c_lokasi.nama_cabang as lokasi',
+                    DB::raw("CASE WHEN j_khusus.id IS NOT NULL OR j_rutin.id IS NOT NULL THEN 1 ELSE 0 END as has_jadwal"),
+                    DB::raw("COALESCE(c_lokasi.nama_cabang, 'Libur (Tidak Ada Jadwal)') as lokasi"),
                     'pengajuan_izin.keterangan as keterangan_izin'
                 );
 
@@ -1062,7 +1142,7 @@ class PresensiController extends Controller
                         END");
                 })
                 ->leftJoin('jam_kerja', DB::raw("COALESCE(presensi.kode_jam_kerja, j_khusus.kode_jam_kerja, j_rutin.kode_jam_kerja)"), '=', 'jam_kerja.kode_jam_kerja')
-                ->leftJoin('cabang as c_lokasi', DB::raw("COALESCE(j_khusus.kode_cabang, j_rutin.kode_cabang, layanan.kode_cabang)"), '=', 'c_lokasi.kode_cabang')
+                ->leftJoin('cabang as c_lokasi', DB::raw("COALESCE(j_khusus.kode_cabang, j_rutin.kode_cabang, layanan.kode_cabang)"), '=', 'c_lokasi.id')
                 ->whereBetween('presensi.tgl_presensi', [$tgl_dari, $tgl_sampai])
                 ->select(
                     'presensi.tgl_presensi',
@@ -1072,6 +1152,8 @@ class PresensiController extends Controller
                     'layanan.jabatan_pic',
                     'layanan.foto as foto_layanan',
                     'presensi.id as presensi_id',
+                    'presensi.petugas_id',
+                    'presensi.petugas_nama',
                     'presensi.jam_in',
                     'presensi.jam_out',
                     'presensi.foto_in',
@@ -1110,7 +1192,7 @@ class PresensiController extends Controller
         $id = $request->id;
         $presensi = DB::table('presensi')->where('presensi.id', $id)
             ->join('layanan', 'presensi.nik', '=', 'layanan.id')
-            ->leftJoin('cabang', 'layanan.kode_cabang', '=', 'cabang.kode_cabang')
+            ->leftJoin('cabang', 'layanan.kode_cabang', '=', 'cabang.id')
             ->select('presensi.*', 'layanan.nama_layanan as nama_lengkap', 'cabang.nama_cabang')
             ->first();
         return view('presensi.showmap', compact('presensi'));
@@ -1168,7 +1250,7 @@ class PresensiController extends Controller
 
         $penerimaan = DB::table('penerimaan')
             ->select('penerimaan.*', 'nama_cabang', 'nama_lengkap')
-            ->leftJoin('cabang', 'penerimaan.kode_cabang', '=', 'cabang.kode_cabang')
+            ->leftJoin('cabang', 'penerimaan.kode_cabang', '=', 'cabang.id')
             ->leftJoin('karyawan', 'penerimaan.nik', '=', 'karyawan.nik')
             ->where('penerimaan.nik', $nik)
             ->where('penerimaan.status_approved', '1')
@@ -1179,7 +1261,7 @@ class PresensiController extends Controller
 
             $totalpenerimaan = DB::table('penerimaan')
             ->select('penerimaan.*', 'nama_cabang', 'nama_lengkap')
-            ->leftJoin('cabang', 'penerimaan.kode_cabang', '=', 'cabang.kode_cabang')
+            ->leftJoin('cabang', 'penerimaan.kode_cabang', '=', 'cabang.id')
             ->leftJoin('karyawan', 'penerimaan.nik', '=', 'karyawan.nik')
             ->where('penerimaan.nik', $nik)
             ->where('penerimaan.status_approved', '1')
@@ -1190,7 +1272,7 @@ class PresensiController extends Controller
 
             $totalr2 = DB::table('penerimaan')
             ->select('penerimaan.*', 'nama_cabang', 'nama_lengkap')
-            ->leftJoin('cabang', 'penerimaan.kode_cabang', '=', 'cabang.kode_cabang')
+            ->leftJoin('cabang', 'penerimaan.kode_cabang', '=', 'cabang.id')
             ->leftJoin('karyawan', 'penerimaan.nik', '=', 'karyawan.nik')
             ->where('penerimaan.nik', $nik)
             ->where('penerimaan.status_approved', '1')
@@ -1201,7 +1283,7 @@ class PresensiController extends Controller
 
             $totalr4 = DB::table('penerimaan')
             ->select('penerimaan.*', 'nama_cabang', 'nama_lengkap')
-            ->leftJoin('cabang', 'penerimaan.kode_cabang', '=', 'cabang.kode_cabang')
+            ->leftJoin('cabang', 'penerimaan.kode_cabang', '=', 'cabang.id')
             ->leftJoin('karyawan', 'penerimaan.nik', '=', 'karyawan.nik')
             ->where('penerimaan.nik', $nik)
             ->where('penerimaan.status_approved', '1')
@@ -1212,7 +1294,7 @@ class PresensiController extends Controller
 
             $totalnotice = DB::table('penerimaan')
             ->select('penerimaan.*', 'nama_cabang', 'nama_lengkap')
-            ->leftJoin('cabang', 'penerimaan.kode_cabang', '=', 'cabang.kode_cabang')
+            ->leftJoin('cabang', 'penerimaan.kode_cabang', '=', 'cabang.id')
             ->leftJoin('karyawan', 'penerimaan.nik', '=', 'karyawan.nik')
             ->where('penerimaan.nik', $nik)
             ->where('penerimaan.status_approved', '1')
@@ -1269,7 +1351,7 @@ class PresensiController extends Controller
           DB::raw('SUM(IF(MONTH(tgl_penerimaan) = 12, jumlah, 0)) as j12'),
           DB::raw('SUM(jumlah) as total')
           )
-        ->leftJoin('cabang', 'penerimaan.kode_cabang', '=', 'cabang.kode_cabang')
+        ->leftJoin('cabang', 'penerimaan.kode_cabang', '=', 'cabang.id')
         ->leftJoin('karyawan', 'penerimaan.nik', '=', 'karyawan.nik')
         ->where('penerimaan.status_approved', '1')
         ->whereRaw('YEAR(tgl_penerimaan)="' . $tahun . '"')
@@ -1477,7 +1559,7 @@ class PresensiController extends Controller
     {
         $namabulan = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
         $departemen = collect([]);
-        $cabang = DB::table('cabang')->orderBy('kode_cabang')->get();
+        $cabang = DB::table('cabang')->orderBy('nama_cabang')->get();
         return view('presensi.rekappenerimaan', compact('namabulan', 'departemen', 'cabang'));
     }
 
@@ -1485,7 +1567,7 @@ class PresensiController extends Controller
     {
         $namabulan = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
         $departemen = collect([]);
-        $cabang = DB::table('cabang')->orderBy('kode_cabang')->get();
+        $cabang = DB::table('cabang')->orderBy('nama_cabang')->get();
         $listLayanan = DB::table('layanan')->orderBy('nama_layanan')->get();
         return view('presensi.rekap', compact('namabulan', 'departemen', 'cabang', 'listLayanan'));
     }
@@ -1646,7 +1728,7 @@ class PresensiController extends Controller
 
         $query = Penerimaan::query();
         $query->select('penerimaan.*', 'nama_cabang', 'nama_lengkap');
-        $query->join('cabang', 'penerimaan.kode_cabang', '=', 'cabang.kode_cabang');
+        $query->join('cabang', 'penerimaan.kode_cabang', '=', 'cabang.id');
         $query->join('karyawan', 'penerimaan.nik', '=', 'karyawan.nik');
         $query->orderBy('tgl_penerimaan');
         if (!empty($request->dari) && !empty($request->sampai)) {
@@ -1675,7 +1757,7 @@ class PresensiController extends Controller
         $penerimaan = $query->paginate(10);
 
         $karyawan = DB::table('karyawan')->get();
-        $cabang = DB::table('cabang')->orderBy('kode_cabang')->get();
+        $cabang = DB::table('cabang')->orderBy('nama_cabang')->get();
         return view('penerimaan.index', compact('penerimaan', 'karyawan', 'cabang'));
     }
 
@@ -1780,7 +1862,7 @@ class PresensiController extends Controller
         $izinsakit = $query->paginate(10);
         $izinsakit->appends($request->all());
 
-        $cabang = DB::table('cabang')->orderBy('kode_cabang')->get();
+        $cabang = DB::table('cabang')->orderBy('nama_cabang')->get();
         $departemen = collect([]);
         return view('presensi.izinsakit', compact('izinsakit', 'cabang', 'departemen'));
     }
@@ -2189,6 +2271,20 @@ class PresensiController extends Controller
         $kode_cabang = Auth::guard('karyawan')->user()->kode_cabang;
         $hariini = date('Y-m-d');
 
+        // Cek apakah akun layanan memiliki jadwal lokasi hari ini
+        $isLayanan = DB::table('layanan')->where('kode_layanan', $nik)->exists();
+        if ($isLayanan) {
+            $jadwalLokasi = JadwalLokasiLayanan::getJadwalHariIni($nik, $hariini);
+            if (!$jadwalLokasi) {
+                $datalibur = (object)[
+                    'kode_libur' => 'LIBUR',
+                    'tanggal_libur' => $hariini,
+                    'keterangan' => 'Tidak Ada Jadwal Layanan Hari Ini (Libur)'
+                ];
+                return view('presensi.notiflibur', compact('datalibur'));
+            }
+        }
+
         // Cek apakah hari ini adalah Hari Libur
         $datalibur = DB::table('harilibur')
             ->leftJoin('harilibur_detail', 'harilibur.kode_libur', '=', 'harilibur_detail.kode_libur')
@@ -2401,7 +2497,7 @@ class PresensiController extends Controller
                 'pengajuan_izin.keterangan as keterangan_izin'
             )
             ->join('pegawai', 'presensi.nik', '=', 'pegawai.nik')
-            ->leftJoin('cabang', 'pegawai.kode_cabang', '=', 'cabang.kode_cabang')
+            ->leftJoin('cabang', 'pegawai.kode_cabang', '=', 'cabang.id')
             ->leftJoin('jam_kerja', 'presensi.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
             ->leftJoin('pengajuan_izin', 'presensi.kode_izin', '=', 'pengajuan_izin.kode_izin')
             ->whereBetween('presensi.tgl_presensi', [$dari, $sampai]);

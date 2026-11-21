@@ -24,7 +24,7 @@
                         <select name="kode_cabang" id="kode_cabang" class="form-select" required>
                             <option value="">Pilih Kantor / Cabang</option>
                             @foreach ($cabang as $d)
-                            <option value="{{ $d->kode_cabang }}">{{ strtoupper($d->nama_cabang) }}</option>
+                            <option value="{{ $d->id }}">{{ strtoupper($d->nama_cabang) }}</option>
                             @endforeach
                         </select>
                     </div>

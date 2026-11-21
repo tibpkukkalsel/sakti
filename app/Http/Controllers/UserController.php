@@ -166,7 +166,7 @@ class UserController extends Controller
     {
         $id = Auth::guard('user')->user()->id;
         $user = DB::table('users')
-            ->leftJoin('cabang', 'users.kode_cabang', '=', 'cabang.kode_cabang')
+            ->leftJoin('cabang', 'users.kode_cabang', '=', 'cabang.id')
             ->leftJoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
             ->leftJoin('roles', 'model_has_roles.role_id', '=', 'roles.id')
             ->where('users.id', $id)

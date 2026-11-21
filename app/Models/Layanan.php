@@ -29,6 +29,7 @@ class Layanan extends Authenticatable
         'status_location',
         'status_jam_kerja',
         'status_scan',
+        'mode_presensi',
     ];
 
     protected $hidden = [
@@ -69,7 +70,17 @@ class Layanan extends Authenticatable
 
     public function lokasi()
     {
-        return $this->belongsTo(Cabang::class, 'kode_cabang', 'kode_cabang');
+        return $this->belongsTo(Cabang::class, 'kode_cabang', 'id');
+    }
+
+    public function petugas()
+    {
+        return $this->hasMany(PetugasLayanan::class, 'layanan_id', 'id');
+    }
+
+    public function jadwalPetugas()
+    {
+        return $this->hasMany(JadwalPetugasLayanan::class, 'layanan_id', 'id');
     }
 }
 

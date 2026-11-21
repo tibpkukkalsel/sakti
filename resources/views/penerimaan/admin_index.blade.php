@@ -109,35 +109,68 @@
                                         <table class="table table-bordered table-striped table-hover align-middle">
                                             <thead>
                                                 <tr>
-                                                    <th class="text-center" style="width: 40px;">No</th>
-                                                    <th>Tanggal</th>
-                                                    <th>Layanan</th>
+                                                    <th class="text-center" style="width: 45px;">No</th>
+                                                    <th style="min-width: 175px;">Hari/Tanggal</th>
+                                                    <th style="min-width: 180px;">Layanan</th>
+                                                    <th style="min-width: 175px;">Lokasi</th>
                                                     <th>Roda 2 (R2)</th>
                                                     <th>Roda 4 (R4)</th>
                                                     <th>Total Penerimaan</th>
                                                     <th class="text-center">Total Unit</th>
                                                     <th class="text-center">Notice Dicetak</th>
                                                     <th class="text-center" style="width: 100px;">Status</th>
-                                                    <th class="text-center" style="width: 140px;">Aksi</th>
+                                                    <th class="text-center" style="width: 125px;">Aksi</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 @forelse ($penerimaan as $d)
                                                     <tr>
-                                                        <td class="text-center">
+                                                        <td class="text-center text-muted fw-bold">
                                                             {{ $loop->iteration + $penerimaan->firstItem() - 1 }}</td>
-                                                        <td>
-                                                            <strong>{{ date('d-m-Y', strtotime($d->tgl_penerimaan)) }}</strong>
+                                                        <td style="white-space: nowrap;">
+                                                            <span class="fw-bold text-dark" style="font-size: 0.95rem;">
+                                                                {{ formatHariTanggal($d->tgl_penerimaan) }}
+                                                            </span>
                                                         </td>
                                                         <td>
-                                                            <strong>{{ $d->layanan->nama_layanan ?? '-' }}</strong>
-                                                            <div class="text-muted small d-flex align-items-center gap-1 mt-1">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-map-pin text-danger" width="14" height="14" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                            <div class="fw-bold text-dark" style="font-size: 0.95rem;">
+                                                                {{ $d->layanan->nama_layanan ?? '-' }}
+                                                            </div>
+                                                            @if (!empty($d->input_by_nama))
+                                                                <div
+                                                                    class="text-primary small d-flex align-items-center gap-1 mt-1">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                                        class="icon icon-tabler icon-tabler-user"
+                                                                        width="14" height="14" viewBox="0 0 24 24"
+                                                                        stroke-width="2" stroke="currentColor"
+                                                                        fill="none" stroke-linecap="round"
+                                                                        stroke-linejoin="round">
+                                                                        <path stroke="none" d="M0 0h24v24H0z"
+                                                                            fill="none"></path>
+                                                                        <circle cx="12" cy="7" r="4">
+                                                                        </circle>
+                                                                        <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2">
+                                                                        </path>
+                                                                    </svg>
+                                                                    <span>Petugas: {{ $d->input_by_nama }}</span>
+                                                                </div>
+                                                            @endif
+                                                        </td>
+                                                        <td>
+                                                            <div class="d-flex align-items-center gap-1">
+                                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                                    class="icon icon-tabler icon-tabler-map-pin text-danger"
+                                                                    width="16" height="16" viewBox="0 0 24 24"
+                                                                    stroke-width="2" stroke="currentColor" fill="none"
+                                                                    stroke-linecap="round" stroke-linejoin="round">
+                                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none">
+                                                                    </path>
                                                                     <circle cx="12" cy="11" r="3"></circle>
-                                                                    <path d="M17.657 16.657l-4.243 4.243a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0z"></path>
+                                                                    <path
+                                                                        d="M17.657 16.657l-4.243 4.243a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0z">
+                                                                    </path>
                                                                 </svg>
-                                                                <span>{{ $d->cabang->nama_cabang ?? 'UPPD SAMSAT Batulicin' }}</span>
+                                                                <span class="text-dark fw-medium">{{ $d->cabang->nama_cabang ?? 'UPPD SAMSAT Batulicin' }}</span>
                                                             </div>
                                                         </td>
                                                         <td class="text-end">
@@ -159,61 +192,52 @@
                                                             <span
                                                                 class="badge bg-light text-dark border">{{ $d->total_unit }}
                                                                 Unit</span>
+                                                            @if ($d->lintasDaerah && $d->lintasDaerah->count() > 0)
+                                                                <div class="small text-primary mt-1" style="font-size: 11px;">
+                                                                    Lintas: {{ $d->lintasDaerah->count() }} Unit
+                                                                </div>
+                                                            @endif
                                                         </td>
                                                         <td class="text-center">
                                                             <span
                                                                 class="badge bg-warning text-dark border">{{ $d->jumlah_notice }}
                                                                 Lembar</span>
+                                                            @if (!empty($d->no_awal_notice) || !empty($d->no_akhir_notice))
+                                                                <div class="small text-muted mt-1" style="font-size: 11px;">
+                                                                    {{ $d->no_awal_notice ?? '-' }} s/d {{ $d->no_akhir_notice ?? '-' }}
+                                                                </div>
+                                                            @endif
                                                         </td>
                                                         <td class="text-center">
-                                                            @if ($d->is_locked)
-                                                                <span class="badge bg-warning text-dark d-inline-flex align-items-center gap-1" title="Data dikunci - User tidak dapat mengedit/menghapus">
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-lock" width="16" height="16" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                                                        <path d="M5 11m0 2a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2z"></path>
-                                                                        <path d="M8 11v-4a4 4 0 0 1 8 0v4"></path>
-                                                                    </svg>
-                                                                    Terkunci
-                                                                </span>
+                                                            @if ($d->status_verifikasi == 'disetujui')
+                                                                <span class="badge bg-success text-white">Disetujui</span>
+                                                            @elseif ($d->status_verifikasi == 'ditolak')
+                                                                <span class="badge bg-danger text-white">Ditolak</span>
+                                                            @elseif ($d->status_verifikasi == 'menunggu')
+                                                                <span class="badge bg-info text-white">Menunggu</span>
                                                             @else
-                                                                <span class="badge bg-success text-white d-inline-flex align-items-center gap-1" title="Data terbuka - User dapat mengedit">
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-lock-open" width="16" height="16" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                                                        <path d="M5 11m0 2a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2z"></path>
-                                                                        <path d="M12 16m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
-                                                                        <path d="M8 11v-5a4 4 0 0 1 8 0"></path>
-                                                                    </svg>
-                                                                    Terbuka
-                                                                </span>
+                                                                <span class="badge bg-secondary text-white">Draft</span>
                                                             @endif
                                                         </td>
                                                         <td>
                                                             <div class="d-flex justify-content-center align-items-center">
-                                                                <!-- Button Kunci / Buka Kunci -->
-                                                                <form action="/panel-adm14/penerimaan/{{ $d->id }}/toggle-lock" method="POST" class="d-inline" style="margin-right: 5px;">
-                                                                    @csrf
-                                                                    @if ($d->is_locked)
-                                                                        <button type="submit" class="btn btn-warning btn-sm" title="Data Terkunci (Klik untuk Buka Kunci)">
-                                                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-lock" width="18" height="18" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                                                                <path d="M5 11m0 2a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2z"></path>
-                                                                                <path d="M8 11v-4a4 4 0 0 1 8 0v4"></path>
-                                                                            </svg>
-                                                                        </button>
-                                                                    @else
-                                                                        <button type="submit" class="btn btn-outline-secondary btn-sm" title="Data Terbuka (Klik untuk Kunci Data)">
-                                                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-lock-open" width="18" height="18" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                                                                <path d="M5 11m0 2a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2z"></path>
-                                                                                <path d="M12 16m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
-                                                                                <path d="M8 11v-5a4 4 0 0 1 8 0"></path>
-                                                                            </svg>
-                                                                        </button>
-                                                                    @endif
-                                                                </form>
+                                                                <!-- Button Verifikasi Notice & Penerimaan -->
+                                                                <button type="button"
+                                                                    class="btn {{ $d->status_verifikasi == 'menunggu' ? 'btn-primary' : 'btn-outline-primary' }} btn-sm btn-verifikasi"
+                                                                    data-id="{{ $d->id }}"
+                                                                    style="margin-right: 5px;"
+                                                                    title="{{ $d->status_verifikasi == 'menunggu' ? 'Perlu Diverifikasi Segera' : 'Verifikasi Notice & Laporan' }}">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-file-check" width="18" height="18" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                                        <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
+                                                                        <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
+                                                                        <path d="M9 15l2 2l4 -4"></path>
+                                                                    </svg>
+                                                                </button>
 
                                                                 <a href="#" class="edit btn btn-info btn-sm"
-                                                                    id_penerimaan="{{ $d->id }}" title="Edit Data">
+                                                                    id_penerimaan="{{ $d->id }}"
+                                                                    title="Edit Data">
                                                                     <svg xmlns="http://www.w3.org/2000/svg"
                                                                         class="icon icon-tabler icon-tabler-edit"
                                                                         width="18" height="18" viewBox="0 0 24 24"
@@ -235,7 +259,8 @@
                                                                     action="/panel-adm14/penerimaan/{{ $d->id }}/delete"
                                                                     method="POST" style="margin-left:5px">
                                                                     @csrf
-                                                                    <a class="btn btn-danger btn-sm delete-confirm" title="Hapus Data">
+                                                                    <a class="btn btn-danger btn-sm delete-confirm"
+                                                                        title="Hapus Data">
                                                                         <svg xmlns="http://www.w3.org/2000/svg"
                                                                             class="icon icon-tabler icon-tabler-trash"
                                                                             width="18" height="18"
@@ -262,7 +287,7 @@
                                                     </tr>
                                                 @empty
                                                     <tr>
-                                                        <td colspan="10" class="text-center py-4 text-muted">
+                                                        <td colspan="11" class="text-center py-4 text-muted">
                                                             Tidak ada data penerimaan pada rentang tanggal atau filter yang
                                                             dipilih.
                                                         </td>
@@ -309,7 +334,7 @@
                                 <select name="kode_cabang" id="kode_cabang" class="form-select mb-3">
                                     <option value="">Lokasi Layanan</option>
                                     @foreach ($daftarLokasi as $lok)
-                                        <option value="{{ $lok->kode_cabang }}">{{ $lok->nama_cabang }}</option>
+                                        <option value="{{ $lok->id }}">{{ $lok->nama_cabang }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -462,14 +487,6 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row mb-3">
-                            <div class="col-12">
-                                <label class="form-check form-switch m-0">
-                                    <input class="form-check-input" type="checkbox" name="is_locked" value="1">
-                                    <span class="form-check-label fw-bold">Kunci Data Ini (User Layanan Tidak Dapat Mengedit/Menghapus)</span>
-                                </label>
-                            </div>
-                        </div>
                         <div class="row mt-2">
                             <div class="col-12">
                                 <div class="form-group">
@@ -505,6 +522,14 @@
                 </div>
                 <div class="modal-body" id="loadeditform">
                 </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Modal Verifikasi Penerimaan & Notice --}}
+    <div class="modal modal-blur fade" id="modal-verifikasipenerimaan" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content" id="loadverifikasipenerimaan">
             </div>
         </div>
     </div>
@@ -570,6 +595,27 @@
                 });
             });
 
+            $(document).on('click', '.btn-verifikasi', function(e) {
+                e.preventDefault();
+                var id = $(this).data('id');
+                $('#loadverifikasipenerimaan').html('<div class="p-4 text-center text-muted"><div class="spinner-border text-primary" role="status"></div><div class="mt-2">Memuat data verifikasi notice...</div></div>');
+                $('#modal-verifikasipenerimaan').modal('show');
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/panel-adm14/penerimaan/' + id + '/detail-verifikasi',
+                    data: {
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function(respond) {
+                        $('#loadverifikasipenerimaan').html(respond);
+                    },
+                    error: function(err) {
+                        $('#loadverifikasipenerimaan').html('<div class="p-4 text-center text-danger">Gagal memuat data verifikasi. Silakan coba lagi.</div>');
+                    }
+                });
+            });
+
             $(document).on('click', '.delete-confirm', function(e) {
                 var form = $(this).closest('form');
                 e.preventDefault();
@@ -619,7 +665,9 @@
                                     'pointer-events': 'auto'
                                 });
                                 if (pushState && window.history && window.history.pushState) {
-                                    window.history.pushState({ path: url }, '', url);
+                                    window.history.pushState({
+                                        path: url
+                                    }, '', url);
                                 }
                             } else {
                                 window.location.href = url;
