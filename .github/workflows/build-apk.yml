@@ -9,6 +9,8 @@ jobs:
   build:
     name: Build Android APK
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout Repository
@@ -44,3 +46,13 @@ jobs:
           name: E-Lapor-Samkel-APK
           path: output-apk/E-Lapor-Samkel.apk
           retention-days: 30
+
+      - name: Create or Update GitHub Release
+        uses: softprops/action-gh-release@v2
+        continue-on-error: true
+        with:
+          tag_name: latest
+          name: "E-Lapor SAMKEL APK (Domain Baru)"
+          files: output-apk/E-Lapor-Samkel.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

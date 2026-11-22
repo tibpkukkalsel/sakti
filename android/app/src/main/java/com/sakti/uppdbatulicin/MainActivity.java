@@ -47,7 +47,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String APP_URL = "https://sakti-uppdbatulicin.appasfrn.site/";
+    private static final String APP_URL = "https://e-laporsamkel.samkelbatulicin.site/";
     private static final int PERMISSION_REQUEST_CODE = 1001;
 
     private WebView webView;
@@ -271,7 +271,7 @@ public class MainActivity extends AppCompatActivity {
             Uri uri = Uri.parse(url);
             String host = uri.getHost();
             // Stay inside WebView for the app domain
-            if (host != null && (host.contains("sakti-uppdbatulicin.appasfrn.site") || host.contains("appasfrn.site"))) {
+            if (host != null && (host.contains("e-laporsamkel.samkelbatulicin.site") || host.contains("samkelbatulicin.site"))) {
                 return false;
             }
             // External web link -> open system browser
