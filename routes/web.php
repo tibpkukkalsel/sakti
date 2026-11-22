@@ -170,8 +170,8 @@ Route::middleware(['auth:karyawan'])->group(function () {
 });
 
 
-//Route Yang Bisa di AKses Oleh Administrator dan Admin Departemen
-Route::group(['prefix' => 'panel-adm14', 'middleware' => ['auth:user', 'role:administrator|admin departemen,user']], function () {
+// Route Yang Bisa di Akses Oleh Administrator
+Route::group(['prefix' => 'panel-adm14', 'middleware' => ['auth:user', 'role:administrator,user']], function () {
     Route::get('/proseslogoutadmin', [AuthController::class, 'proseslogoutadmin']);
     Route::get('/home', [DashboardController::class, 'home']);
     Route::get('/dashboardadmin', [DashboardController::class, 'dashboardadmin']);
@@ -435,13 +435,27 @@ Route::group(['prefix' => 'panel-adm14', 'middleware' => ['auth:user', 'role:adm
     Route::get('/konfigurasi/togglescan', [KonfigurasiController::class, 'togglescan']);
 });
 
+// Route Pintar /profile: otomatis mengarahkan ke halaman profil sesuai guard & role pengguna
+Route::get('/profile', function () {
+    if (Auth::guard('karyawan')->check()) {
+        return redirect('/editprofile');
+    }
+    if (Auth::guard('user')->check()) {
+        $user = Auth::guard('user')->user();
+        if ($user->hasRole('monitoring')) {
+            return redirect('/monitoring/profile');
+        }
+        return redirect('/panel-adm14/profile');
+    }
+    return redirect('/');
+});
+
 // Redirect URL admin lama & alias ke prefix panel-adm14
-Route::group(['middleware' => ['auth:user', 'role:administrator|admin departemen,user']], function () {
+Route::group(['middleware' => ['auth:user', 'role:administrator,user']], function () {
     Route::get('/panel/dashboardadmin', fn() => redirect('/panel-adm14/dashboardadmin'));
     Route::get('/dashboard-penerimaan', fn() => redirect('/panel-adm14/dashboard-penerimaan'));
     Route::get('/panel/dashboard-penerimaan', fn() => redirect('/panel-adm14/dashboard-penerimaan'));
     Route::get('/proseslogoutadmin', fn() => redirect('/panel-adm14/proseslogoutadmin'));
-    Route::get('/profile', fn() => redirect('/panel-adm14/profile'));
     Route::get('/karyawan', fn() => redirect('/panel-adm14/pegawai'));
     Route::get('/pegawai', fn() => redirect('/panel-adm14/pegawai'));
     Route::get('/seksi', fn() => redirect('/panel-adm14/seksi'));

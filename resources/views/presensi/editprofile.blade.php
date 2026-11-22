@@ -15,7 +15,7 @@
 
 @section('content')
 
-<form action="/presensi/{{ $karyawan->nik }}/updateprofile" method="POST" enctype="multipart/form-data" style="padding-top: 75px; padding-bottom: 75px;">
+<form action="/presensi/{{ $karyawan->nik ?? $karyawan->id }}/updateprofile" method="POST" enctype="multipart/form-data" style="padding-top: 75px; padding-bottom: 75px;">
     @csrf
     <div class="col">
         @php
