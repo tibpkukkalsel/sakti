@@ -52,10 +52,13 @@ class RekapPenerimaanPkb extends Model
         if (empty($this->foto_awal_notice)) {
             return null;
         }
-        if (file_exists(public_path('uploads/notice/' . $this->foto_awal_notice))) {
-            return asset('uploads/notice/' . $this->foto_awal_notice);
+        $filename = $this->foto_awal_notice;
+        $path = public_path('uploads/notice/' . $filename);
+        $v = file_exists($path) ? '?v=' . filemtime($path) : '?v=' . time();
+        if (file_exists($path)) {
+            return asset('uploads/notice/' . $filename) . $v;
         }
-        return asset('storage/uploads/notice/' . $this->foto_awal_notice);
+        return asset('storage/uploads/notice/' . $filename) . $v;
     }
 
     public function getFotoAkhirUrlAttribute()
@@ -63,10 +66,13 @@ class RekapPenerimaanPkb extends Model
         if (empty($this->foto_akhir_notice)) {
             return null;
         }
-        if (file_exists(public_path('uploads/notice/' . $this->foto_akhir_notice))) {
-            return asset('uploads/notice/' . $this->foto_akhir_notice);
+        $filename = $this->foto_akhir_notice;
+        $path = public_path('uploads/notice/' . $filename);
+        $v = file_exists($path) ? '?v=' . filemtime($path) : '?v=' . time();
+        if (file_exists($path)) {
+            return asset('uploads/notice/' . $filename) . $v;
         }
-        return asset('storage/uploads/notice/' . $this->foto_akhir_notice);
+        return asset('storage/uploads/notice/' . $filename) . $v;
     }
 
     public function layanan()

@@ -340,12 +340,12 @@
                         </div>
                         <div class="d-flex" style="gap: 5px;">
                             @if (!empty($row->foto_awal_notice))
-                                <a href="javascript:void(0)" onclick="previewFotoNotice('{{ asset('uploads/notice/' . $row->foto_awal_notice) }}', 'Bukti Notice Awal')" class="badge bg-light text-primary border" style="text-decoration: none; padding: 3px 6px; cursor: pointer;">
+                                <a href="javascript:void(0)" onclick="previewFotoNotice('{{ $row->foto_awal_url }}', 'Bukti Notice Awal')" class="badge bg-light text-primary border" style="text-decoration: none; padding: 3px 6px; cursor: pointer;">
                                     Foto Awal
                                 </a>
                             @endif
                             @if (!empty($row->foto_akhir_notice))
-                                <a href="javascript:void(0)" onclick="previewFotoNotice('{{ asset('uploads/notice/' . $row->foto_akhir_notice) }}', 'Bukti Notice Akhir')" class="badge bg-light text-primary border" style="text-decoration: none; padding: 3px 6px; cursor: pointer;">
+                                <a href="javascript:void(0)" onclick="previewFotoNotice('{{ $row->foto_akhir_url }}', 'Bukti Notice Akhir')" class="badge bg-light text-primary border" style="text-decoration: none; padding: 3px 6px; cursor: pointer;">
                                     Foto Akhir
                                 </a>
                             @endif

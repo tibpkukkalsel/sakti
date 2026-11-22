@@ -10,8 +10,8 @@
     <meta name="theme-color" content="#2A8BF2">
     <title>E-Lapor SAMKEL</title>
     <meta name="description" content="Aplikasi Presensi &amp; Rekap Penerimaan PKB UPPD SAMSAT Batulicin">
-    <link rel="icon" type="image/png" href="{{ asset('E-LAPOR_SAMKEL.png') }}?v=3" sizes="32x32">
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('E-LAPOR_SAMKEL.png') }}?v=3">
+    <link rel="icon" type="image/png" href="{{ asset('elapor_samkel.png') }}?v=4" sizes="32x32">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('elapor_samkel.png') }}?v=4">
     <link rel="manifest" href="{{ asset('manifest.json') }}">
 
     <!-- Google Fonts Poppins -->

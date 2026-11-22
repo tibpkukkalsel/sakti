@@ -238,8 +238,9 @@
                     @csrf
                     <input type="hidden" name="jenis_jadwal" value="rutin">
                     <div class="row">
-                        <div class="col-12">
-                            <select name="layanan_id" id="layanan_id" class="form-select mb-3">
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Layanan</label>
+                            <select name="layanan_id" id="layanan_id" class="form-select">
                                 <option value="">Pilih Layanan</option>
                                 @foreach ($listLayanan as $l)
                                 <option value="{{ $l->id }}">{{ $l->nama_layanan }}</option>
@@ -248,8 +249,9 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-12">
-                            <select name="hari" id="hari" class="form-select mb-3">
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Hari</label>
+                            <select name="hari" id="hari" class="form-select">
                                 <option value="">Pilih Hari</option>
                                 @foreach ($listHari as $h)
                                 <option value="{{ $h }}">Hari {{ $h }}</option>
@@ -258,9 +260,10 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-12">
-                            <select name="kode_cabang" id="kode_cabang" class="form-select mb-3">
-                                <option value="">Pilih Lokasi Pelayanan</option>
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Lokasi</label>
+                            <select name="kode_cabang" id="kode_cabang" class="form-select">
+                                <option value="">Pilih Lokasi</option>
                                 @foreach ($listLokasi as $lok)
                                 <option value="{{ $lok->id }}">{{ $lok->nama_cabang }} (Radius {{ $lok->radius_cabang }}m)</option>
                                 @endforeach
@@ -268,8 +271,9 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-12">
-                            <select name="kode_jam_kerja" id="kode_jam_kerja" class="form-select mb-3">
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Jam Kerja</label>
+                            <select name="kode_jam_kerja" id="kode_jam_kerja" class="form-select">
                                 <option value="">Pilih Jam Kerja</option>
                                 @foreach ($listJamKerja as $jk)
                                 <option value="{{ $jk->kode_jam_kerja }}">{{ $jk->nama_jam_kerja }} ({{ substr($jk->jam_masuk, 0, 5) }} - {{ substr($jk->jam_pulang, 0, 5) }})</option>
@@ -278,33 +282,14 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-12">
-                            <div class="input-icon mb-3">
-                                <span class="input-icon-addon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-notes" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                        <path d="M5 3m0 2a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2z"></path>
-                                        <path d="M9 7l6 0"></path>
-                                        <path d="M9 11l6 0"></path>
-                                        <path d="M9 15l4 0"></path>
-                                    </svg>
-                                </span>
-                                <input type="text" id="keterangan" class="form-control" name="keterangan" placeholder="Keterangan">
-                            </div>
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Keterangan</label>
+                            <input type="text" id="keterangan" class="form-control" name="keterangan" placeholder="Keterangan">
                         </div>
                     </div>
                     <div class="row mt-2">
                         <div class="col-12">
-                            <div class="form-group">
-                                <button class="btn btn-primary w-100">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-send" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                        <path d="M10 14l11 -11"></path>
-                                        <path d="M21 3l-6.5 18a.55 .55 0 0 1 -1 0l-3.5 -7l-7 -3.5a.55 .55 0 0 1 0 -1l18 -6.5"></path>
-                                    </svg>
-                                    Simpan
-                                </button>
-                            </div>
+                            <button type="submit" class="btn btn-primary w-100">Simpan</button>
                         </div>
                     </div>
                 </form>
@@ -318,10 +303,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-star text-warning me-1" width="20" height="20" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="currentColor" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z"/></svg>
-                    Set Jadwal Event Khusus
-                </h5>
+                <h5 class="modal-title">Set Jadwal Event Khusus</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -329,8 +311,9 @@
                     @csrf
                     <input type="hidden" name="jenis_jadwal" value="khusus">
                     <div class="row">
-                        <div class="col-12">
-                            <select name="layanan_id" id="layanan_id_event" class="form-select mb-3">
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Layanan</label>
+                            <select name="layanan_id" id="layanan_id_event" class="form-select">
                                 <option value="">Pilih Layanan</option>
                                 @foreach ($listLayanan as $l)
                                 <option value="{{ $l->id }}">{{ $l->nama_layanan }}</option>
@@ -340,15 +323,16 @@
                     </div>
                     <div class="row">
                         <div class="col-12 mb-3">
-                            <label class="form-label small text-muted">Tanggal Event</label>
+                            <label class="form-label">Tanggal Event</label>
                             <input type="date" name="tanggal" id="tanggal_event" class="form-control mb-1">
                             <div id="info_hari_event" class="small text-muted"></div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-12">
-                            <select name="kode_cabang" id="kode_cabang_event" class="form-select mb-3">
-                                <option value="">Pilih Lokasi Pelayanan</option>
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Lokasi</label>
+                            <select name="kode_cabang" id="kode_cabang_event" class="form-select">
+                                <option value="">Pilih Lokasi</option>
                                 @foreach ($listLokasi as $lok)
                                 <option value="{{ $lok->id }}">{{ $lok->nama_cabang }} (Radius {{ $lok->radius_cabang }}m)</option>
                                 @endforeach
@@ -356,8 +340,9 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-12">
-                            <select name="kode_jam_kerja" id="kode_jam_kerja_event" class="form-select mb-3">
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Jam Kerja</label>
+                            <select name="kode_jam_kerja" id="kode_jam_kerja_event" class="form-select">
                                 <option value="">Pilih Jam Kerja</option>
                                 @foreach ($listJamKerja as $jk)
                                 <option value="{{ $jk->kode_jam_kerja }}">{{ $jk->nama_jam_kerja }} ({{ substr($jk->jam_masuk, 0, 5) }} - {{ substr($jk->jam_pulang, 0, 5) }})</option>
@@ -366,33 +351,14 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-12">
-                            <div class="input-icon mb-3">
-                                <span class="input-icon-addon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-notes" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                        <path d="M5 3m0 2a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2z"></path>
-                                        <path d="M9 7l6 0"></path>
-                                        <path d="M9 11l6 0"></path>
-                                        <path d="M9 15l4 0"></path>
-                                    </svg>
-                                </span>
-                                <input type="text" id="keterangan_event" class="form-control" name="keterangan" placeholder="Keterangan Event">
-                            </div>
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Keterangan</label>
+                            <input type="text" id="keterangan_event" class="form-control" name="keterangan" placeholder="Keterangan Event">
                         </div>
                     </div>
                     <div class="row mt-2">
                         <div class="col-12">
-                            <div class="form-group">
-                                <button class="btn btn-warning text-dark w-100">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-send" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                        <path d="M10 14l11 -11"></path>
-                                        <path d="M21 3l-6.5 18a.55 .55 0 0 1 -1 0l-3.5 -7l-7 -3.5a.55 .55 0 0 1 0 -1l18 -6.5"></path>
-                                    </svg>
-                                    Simpan Jadwal Event
-                                </button>
-                            </div>
+                            <button type="submit" class="btn btn-warning text-dark w-100">Simpan Jadwal Event</button>
                         </div>
                     </div>
                 </form>
@@ -465,13 +431,7 @@
 
                     <div class="row mt-3">
                         <div class="col-12">
-                            <button class="btn btn-success w-100">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-check" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                    <path d="M5 12l5 5l10 -10"></path>
-                                </svg>
-                                Simpan Jadwal Mingguan
-                            </button>
+                            <button type="submit" class="btn btn-success w-100">Simpan Jadwal Mingguan</button>
                         </div>
                     </div>
                 </form>

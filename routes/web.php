@@ -571,6 +571,11 @@ Route::get('/storage-link', function () {
 });
 
 
+// Route presentasi / laporan pengembangan dinonaktifkan
+Route::any('/presentasi{any?}', fn() => abort(404))->where('any', '.*');
+Route::any('/laporan-pengembangan{any?}', fn() => abort(404))->where('any', '.*');
+Route::any('/presentasi_sakti{any?}', fn() => abort(404))->where('any', '.*');
+
 // Route uji coba & dev seeder dinonaktifkan demi keamanan produksi
 /*
 Route::get('/createrolepermission', function () {

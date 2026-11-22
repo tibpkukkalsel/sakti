@@ -46,7 +46,6 @@
                         <a href="javascript:void(0)" onclick="previewFotoNotice('{{ $data->foto_awal_url }}', 'Bukti Notice Awal')" title="Klik untuk perbesar">
                             <img src="{{ $data->foto_awal_url }}" alt="Foto Awal" class="img-fluid rounded border shadow-sm" style="max-height: 160px; object-fit: contain; cursor: pointer;">
                         </a>
-                        <small class="text-muted mt-1">Klik gambar untuk perbesar</small>
                     @else
                         <div class="text-muted small py-4">Belum ada foto bukti notice awal</div>
                     @endif
@@ -66,7 +65,6 @@
                         <a href="javascript:void(0)" onclick="previewFotoNotice('{{ $data->foto_akhir_url }}', 'Bukti Notice Akhir')" title="Klik untuk perbesar">
                             <img src="{{ $data->foto_akhir_url }}" alt="Foto Akhir" class="img-fluid rounded border shadow-sm" style="max-height: 160px; object-fit: contain; cursor: pointer;">
                         </a>
-                        <small class="text-muted mt-1">Klik gambar untuk perbesar</small>
                     @else
                         <div class="text-muted small py-4">Belum ada foto bukti notice akhir</div>
                     @endif

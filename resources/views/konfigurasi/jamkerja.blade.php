@@ -146,7 +146,7 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="modal-inputjk" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal modal-blur fade" id="modal-inputjk" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -157,217 +157,68 @@
                     <form action="/panel-adm14/konfigurasi/storejamkerja" method="POST" id="frmJK">
                         @csrf
                         <div class="row">
-                            <div class="col-12">
-                                <div class="input-icon mb-3">
-                                    <span class="input-icon-addon">
-                                        <!-- Download SVG icon from http://tabler-icons.io/i/user -->
-                                        <svg xmlns="http://www.w3.org/2000/svg"
-                                            class="icon icon-tabler icon-tabler-barcode" width="24" height="24"
-                                            viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
-                                            stroke-linecap="round" stroke-linejoin="round">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                            <path d="M4 7v-1a2 2 0 0 1 2 -2h2"></path>
-                                            <path d="M4 17v1a2 2 0 0 0 2 2h2"></path>
-                                            <path d="M16 4h2a2 2 0 0 1 2 2v1"></path>
-                                            <path d="M16 20h2a2 2 0 0 0 2 -2v-1"></path>
-                                            <path d="M5 11h1v2h-1z"></path>
-                                            <path d="M10 11l0 2"></path>
-                                            <path d="M14 11h1v2h-1z"></path>
-                                            <path d="M19 11l0 2"></path>
-                                        </svg>
-                                    </span>
-                                    <input type="text" value="" id="nama_jam_kerja" class="form-control"
-                                        placeholder="Nama Jam Kerja" name="nama_jam_kerja">
-                                </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Nama Jam Kerja</label>
+                                <input type="text" id="nama_jam_kerja" class="form-control" placeholder="Nama Jam Kerja" name="nama_jam_kerja">
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-12">
-                                <div class="input-icon mb-3">
-                                    <span class="input-icon-addon">
-                                        <!-- Download SVG icon from http://tabler-icons.io/i/user -->
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-alarm"
-                                            width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
-                                            stroke="currentColor" fill="none" stroke-linecap="round"
-                                            stroke-linejoin="round">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                            <path d="M12 13m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"></path>
-                                            <path d="M12 10l0 3l2 0"></path>
-                                            <path d="M7 4l-2.75 2"></path>
-                                            <path d="M17 4l2.75 2"></path>
-                                        </svg>
-                                    </span>
-                                    <input type="text" value="" id="awal_jam_masuk" class="form-control"
-                                        placeholder="Awal Jam Masuk" name="awal_jam_masuk">
-                                </div>
+                            <div class="col-6 mb-3">
+                                <label class="form-label">Awal Jam Masuk</label>
+                                <input type="text" id="awal_jam_masuk" class="form-control" placeholder="00:00" name="awal_jam_masuk">
+                            </div>
+                            <div class="col-6 mb-3">
+                                <label class="form-label">Jam Masuk</label>
+                                <input type="text" id="jam_masuk" class="form-control" placeholder="00:00" name="jam_masuk">
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-12">
-                                <div class="input-icon mb-3">
-                                    <span class="input-icon-addon">
-                                        <!-- Download SVG icon from http://tabler-icons.io/i/user -->
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-alarm"
-                                            width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
-                                            stroke="currentColor" fill="none" stroke-linecap="round"
-                                            stroke-linejoin="round">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                            <path d="M12 13m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"></path>
-                                            <path d="M12 10l0 3l2 0"></path>
-                                            <path d="M7 4l-2.75 2"></path>
-                                            <path d="M17 4l2.75 2"></path>
-                                        </svg>
-                                    </span>
-                                    <input type="text" value="" id="jam_masuk" class="form-control"
-                                        placeholder="Jam Masuk" name="jam_masuk">
-                                </div>
+                            <div class="col-6 mb-3">
+                                <label class="form-label">Akhir Jam Masuk</label>
+                                <input type="text" id="akhir_jam_masuk" class="form-control" placeholder="00:00" name="akhir_jam_masuk">
+                            </div>
+                            <div class="col-6 mb-3">
+                                <label class="form-label">Jam Pulang</label>
+                                <input type="text" id="jam_pulang" class="form-control" placeholder="00:00" name="jam_pulang">
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-12">
-                                <div class="input-icon mb-3">
-                                    <span class="input-icon-addon">
-                                        <!-- Download SVG icon from http://tabler-icons.io/i/user -->
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-alarm"
-                                            width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
-                                            stroke="currentColor" fill="none" stroke-linecap="round"
-                                            stroke-linejoin="round">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                            <path d="M12 13m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"></path>
-                                            <path d="M12 10l0 3l2 0"></path>
-                                            <path d="M7 4l-2.75 2"></path>
-                                            <path d="M17 4l2.75 2"></path>
-                                        </svg>
-                                    </span>
-                                    <input type="text" value="" id="akhir_jam_masuk" class="form-control"
-                                        placeholder="Akhir Jam Masuk" name="akhir_jam_masuk">
-                                </div>
+                            <div class="col-6 mb-3">
+                                <label class="form-label">Total Jam</label>
+                                <input type="text" id="total_jam" class="form-control" placeholder="Total Jam" name="total_jam">
                             </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="input-icon mb-3">
-                                    <span class="input-icon-addon">
-                                        <!-- Download SVG icon from http://tabler-icons.io/i/user -->
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-alarm"
-                                            width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
-                                            stroke="currentColor" fill="none" stroke-linecap="round"
-                                            stroke-linejoin="round">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                            <path d="M12 13m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"></path>
-                                            <path d="M12 10l0 3l2 0"></path>
-                                            <path d="M7 4l-2.75 2"></path>
-                                            <path d="M17 4l2.75 2"></path>
-                                        </svg>
-                                    </span>
-                                    <input type="text" value="" id="jam_pulang" class="form-control"
-                                        placeholder="Jam Pulang" name="jam_pulang">
-                                </div>
+                            <div class="col-6 mb-3">
+                                <label class="form-label">Lintas Hari</label>
+                                <select name="lintashari" id="lintashari" class="form-select">
+                                    <option value="">Pilih</option>
+                                    <option value="1">Ya</option>
+                                    <option value="0">Tidak</option>
+                                </select>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-12">
-                                <div class="input-icon mb-3">
-                                    <span class="input-icon-addon">
-                                        <!-- Download SVG icon from http://tabler-icons.io/i/user -->
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-alarm"
-                                            width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
-                                            stroke="currentColor" fill="none" stroke-linecap="round"
-                                            stroke-linejoin="round">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                            <path d="M12 13m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"></path>
-                                            <path d="M12 10l0 3l2 0"></path>
-                                            <path d="M7 4l-2.75 2"></path>
-                                            <path d="M17 4l2.75 2"></path>
-                                        </svg>
-                                    </span>
-                                    <input type="text" value="" id="total_jam" class="form-control"
-                                        placeholder="Total Jam" name="total_jam">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-12">
-                                <div class="form-group">
-                                    <select name="status_istirahat" id="status_istirahat" class="form-select">
-                                        <option value="">Istirahat</option>
-                                        <option value="1">Ada</option>
-                                        <option value="0">Tidak</option>
-                                    </select>
-                                </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Istirahat</label>
+                                <select name="status_istirahat" id="status_istirahat" class="form-select">
+                                    <option value="">Pilih</option>
+                                    <option value="1">Ada</option>
+                                    <option value="0">Tidak</option>
+                                </select>
                             </div>
                         </div>
                         <div class="row setjamistirahat">
-                            <div class="col-12">
-                                <div class="input-icon mb-3">
-                                    <span class="input-icon-addon">
-                                        <!-- Download SVG icon from http://tabler-icons.io/i/user -->
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-alarm"
-                                            width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
-                                            stroke="currentColor" fill="none" stroke-linecap="round"
-                                            stroke-linejoin="round">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                            <path d="M12 13m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"></path>
-                                            <path d="M12 10l0 3l2 0"></path>
-                                            <path d="M7 4l-2.75 2"></path>
-                                            <path d="M17 4l2.75 2"></path>
-                                        </svg>
-                                    </span>
-                                    <input type="text" value="" id="awal_jam_istirahat" class="form-control"
-                                        placeholder="Awal Jam Istirahat" name="awal_jam_istirahat">
-                                </div>
+                            <div class="col-6 mb-3">
+                                <label class="form-label">Awal Jam Istirahat</label>
+                                <input type="text" id="awal_jam_istirahat" class="form-control" placeholder="00:00" name="awal_jam_istirahat">
                             </div>
-                        </div>
-                        <div class="row setjamistirahat">
-                            <div class="col-12">
-                                <div class="input-icon mb-3">
-                                    <span class="input-icon-addon">
-                                        <!-- Download SVG icon from http://tabler-icons.io/i/user -->
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-alarm"
-                                            width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
-                                            stroke="currentColor" fill="none" stroke-linecap="round"
-                                            stroke-linejoin="round">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                            <path d="M12 13m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"></path>
-                                            <path d="M12 10l0 3l2 0"></path>
-                                            <path d="M7 4l-2.75 2"></path>
-                                            <path d="M17 4l2.75 2"></path>
-                                        </svg>
-                                    </span>
-                                    <input type="text" value="" id="akhir_jam_istirahat" class="form-control"
-                                        placeholder="Akhir Jam Istirahat" name="akhir_jam_istirahat">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="form-group">
-                                    <select name="lintashari" id="lintashari" class="form-select">
-                                        <option value="">Lintas Hari</option>
-                                        <option value="1">Ya</option>
-                                        <option value="0">Tidak</option>
-                                    </select>
-                                </div>
+                            <div class="col-6 mb-3">
+                                <label class="form-label">Akhir Jam Istirahat</label>
+                                <input type="text" id="akhir_jam_istirahat" class="form-control" placeholder="00:00" name="akhir_jam_istirahat">
                             </div>
                         </div>
                         <div class="row mt-2">
                             <div class="col-12">
-                                <div class="form-group">
-                                    <button class="btn btn-primary w-100">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-send"
-                                            width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
-                                            stroke="currentColor" fill="none" stroke-linecap="round"
-                                            stroke-linejoin="round">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                            <path d="M10 14l11 -11"></path>
-                                            <path
-                                                d="M21 3l-6.5 18a.55 .55 0 0 1 -1 0l-3.5 -7l-7 -3.5a.55 .55 0 0 1 0 -1l18 -6.5">
-                                            </path>
-                                        </svg>
-                                        Simpan
-                                    </button>
-                                </div>
+                                <button type="submit" class="btn btn-primary w-100">Simpan</button>
                             </div>
                         </div>
                     </form>
@@ -377,7 +228,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="modal-editjk" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal modal-blur fade" id="modal-editjk" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">

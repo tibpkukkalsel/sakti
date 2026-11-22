@@ -28,8 +28,8 @@
     Header set Referrer-Policy "strict-origin-when-cross-origin"
 </IfModule>
 
-# Blokir Akses File Sensitif
-<FilesMatch "(^\.env|^\.git|\.sql$|\.log$|composer\.(json|lock)$)">
+# Blokir Akses File Sensitif & Presentasi/Pengembangan
+<FilesMatch "(^\.env|^\.git|\.sql$|\.log$|composer\.(json|lock)$|presentasi_sakti\.html)">
     <IfModule mod_authz_core.c>
         Require all denied
     </IfModule>

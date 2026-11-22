@@ -1,8 +1,8 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
-    # 1. Blokir akses langsung ke file-file sensitif
-    <FilesMatch "(^\.env|^\.git|\.sql$|\.log$|composer\.(json|lock)$|package(-lock)?\.json$|^artisan$)">
+    # 1. Blokir akses langsung ke file-file sensitif & presentasi/pengembangan
+    <FilesMatch "(^\.env|^\.git|\.sql$|\.log$|composer\.(json|lock)$|package(-lock)?\.json$|^artisan$|presentasi_sakti\.html)">
         <IfModule mod_authz_core.c>
             Require all denied
         </IfModule>

@@ -328,7 +328,7 @@ class JadwalLokasiController extends Controller
                             'kode_cabang' => $data['kode_cabang'],
                             'kode_jam_kerja' => $jkVal,
                             'keterangan' => $data['keterangan'] ?? null,
-                            'status' => isset($data['status']) ? 1 : 0,
+                            'status' => isset($data['status']) ? ($data['status'] ? 1 : 0) : 1,
                             'updated_at' => now(),
                         ]);
                     } else {
@@ -340,7 +340,7 @@ class JadwalLokasiController extends Controller
                             'kode_cabang' => $data['kode_cabang'],
                             'kode_jam_kerja' => $jkVal,
                             'keterangan' => $data['keterangan'] ?? null,
-                            'status' => isset($data['status']) ? 1 : 0,
+                            'status' => isset($data['status']) ? ($data['status'] ? 1 : 0) : 1,
                             'created_at' => now(),
                             'updated_at' => now(),
                         ]);

@@ -23,6 +23,8 @@ yarn-error.log
 !/public/uploads/notice/.gitkeep
 *laporan-prakom*
 *laporan_prakom*
+presentasi_sakti.html
+*presentasi*
 
 # Android Build & Cache
 .gradle/

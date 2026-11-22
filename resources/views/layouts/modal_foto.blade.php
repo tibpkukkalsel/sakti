@@ -116,7 +116,13 @@
         }
         if (img) {
             img.style.display = 'block';
-            img.src = url;
+            var finalUrl = url;
+            if (finalUrl.indexOf('?') === -1) {
+                finalUrl += '?t=' + new Date().getTime();
+            } else if (finalUrl.indexOf('&t=') === -1 && finalUrl.indexOf('?t=') === -1) {
+                finalUrl += '&t=' + new Date().getTime();
+            }
+            img.src = finalUrl;
         }
         if (titleEl && title) {
             titleEl.innerText = title;

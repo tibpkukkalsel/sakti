@@ -5,9 +5,9 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
     <title>E-Lapor SAMKEL</title>
-    <link rel="icon" type="image/png" href="{{ asset('E-LAPOR_SAMKEL.png') }}?v=3" sizes="32x32"
+    <link rel="icon" type="image/png" href="{{ asset('elapor_samkel.png') }}?v=4" sizes="32x32"
         onerror="this.src='{{ asset('assets/img/favicon.png') }}'">
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('E-LAPOR_SAMKEL.png') }}?v=3">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('elapor_samkel.png') }}?v=4">
 
     <!--begin::Fonts-->
     <link rel="preconnect" href="https://fonts.googleapis.com">

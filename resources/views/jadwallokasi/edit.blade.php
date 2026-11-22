@@ -7,7 +7,6 @@
             @if (($jadwal->jenis_jadwal ?? 'rutin') == 'khusus')
                 <div class="d-flex align-items-center">
                     <span class="badge bg-warning text-dark px-2 py-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-star me-1" width="14" height="14" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="currentColor" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z"/></svg>
                         Jadwal Event Khusus
                     </span>
                 </div>
@@ -22,8 +21,9 @@
     </div>
 
     <div class="row">
-        <div class="col-12">
-            <select name="layanan_id" id="layanan_id_edit" class="form-select mb-3">
+        <div class="col-12 mb-3">
+            <label class="form-label">Layanan</label>
+            <select name="layanan_id" id="layanan_id_edit" class="form-select">
                 <option value="">Pilih Layanan</option>
                 @foreach ($listLayanan as $l)
                 <option value="{{ $l->id }}" {{ $jadwal->layanan_id == $l->id ? 'selected' : '' }}>
@@ -37,7 +37,7 @@
     @if (($jadwal->jenis_jadwal ?? 'rutin') == 'khusus')
         <div class="row">
             <div class="col-12 mb-3">
-                <label class="form-label small text-muted">Tanggal Event Khusus</label>
+                <label class="form-label">Tanggal Event</label>
                 <input type="date" name="tanggal" id="tanggal_edit" value="{{ $jadwal->tanggal }}" class="form-control mb-1">
                 <div id="info_hari_tanggal_edit" class="small text-muted">
                     @if (!empty($jadwal->tanggal))
@@ -48,8 +48,9 @@
         </div>
     @else
         <div class="row">
-            <div class="col-12">
-                <select name="hari" id="hari_edit" class="form-select mb-3">
+            <div class="col-12 mb-3">
+                <label class="form-label">Hari</label>
+                <select name="hari" id="hari_edit" class="form-select">
                     <option value="">Pilih Hari</option>
                     @foreach ($listHari as $h)
                     <option value="{{ $h }}" {{ $jadwal->hari == $h ? 'selected' : '' }}>
@@ -62,9 +63,10 @@
     @endif
 
     <div class="row">
-        <div class="col-12">
-            <select name="kode_cabang" id="kode_cabang_edit" class="form-select mb-3">
-                <option value="">Pilih Lokasi Pelayanan</option>
+        <div class="col-12 mb-3">
+            <label class="form-label">Lokasi</label>
+            <select name="kode_cabang" id="kode_cabang_edit" class="form-select">
+                <option value="">Pilih Lokasi</option>
                 @foreach ($listLokasi as $lok)
                 <option value="{{ $lok->id }}" {{ $jadwal->kode_cabang == $lok->id ? 'selected' : '' }}>
                     {{ $lok->nama_cabang }} (Radius {{ $lok->radius_cabang }}m)
@@ -75,8 +77,9 @@
     </div>
 
     <div class="row">
-        <div class="col-12">
-            <select name="kode_jam_kerja" id="kode_jam_kerja_edit" class="form-select mb-3">
+        <div class="col-12 mb-3">
+            <label class="form-label">Jam Kerja</label>
+            <select name="kode_jam_kerja" id="kode_jam_kerja_edit" class="form-select">
                 <option value="">Pilih Jam Kerja</option>
                 @foreach ($listJamKerja as $jk)
                 <option value="{{ $jk->kode_jam_kerja }}" {{ ($jadwal->kode_jam_kerja ?? '') == $jk->kode_jam_kerja ? 'selected' : '' }}>
@@ -88,25 +91,16 @@
     </div>
 
     <div class="row">
-        <div class="col-12">
-            <div class="input-icon mb-3">
-                <span class="input-icon-addon">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-notes" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                        <path d="M5 3m0 2a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2z"></path>
-                        <path d="M9 7l6 0"></path>
-                        <path d="M9 11l6 0"></path>
-                        <path d="M9 15l4 0"></path>
-                    </svg>
-                </span>
-                <input type="text" id="keterangan_edit" value="{{ $jadwal->keterangan }}" class="form-control" name="keterangan" placeholder="Keterangan">
-            </div>
+        <div class="col-12 mb-3">
+            <label class="form-label">Keterangan</label>
+            <input type="text" id="keterangan_edit" value="{{ $jadwal->keterangan }}" class="form-control" name="keterangan" placeholder="Keterangan">
         </div>
     </div>
 
     <div class="row">
-        <div class="col-12">
-            <select name="status" id="status_edit" class="form-select mb-3">
+        <div class="col-12 mb-3">
+            <label class="form-label">Status</label>
+            <select name="status" id="status_edit" class="form-select">
                 <option value="1" {{ $jadwal->status == 1 ? 'selected' : '' }}>Aktif</option>
                 <option value="0" {{ $jadwal->status == 0 ? 'selected' : '' }}>Nonaktif</option>
             </select>
@@ -115,16 +109,7 @@
 
     <div class="row mt-2">
         <div class="col-12">
-            <div class="form-group">
-                <button class="btn btn-primary w-100">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-send" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                        <path d="M10 14l11 -11"></path>
-                        <path d="M21 3l-6.5 18a.55 .55 0 0 1 -1 0l-3.5 -7l-7 -3.5a.55 .55 0 0 1 0 -1l18 -6.5"></path>
-                    </svg>
-                    Simpan
-                </button>
-            </div>
+            <button type="submit" class="btn btn-primary w-100">Simpan Perubahan</button>
         </div>
     </div>
 </form>
