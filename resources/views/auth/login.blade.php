@@ -264,7 +264,7 @@
             <div class="mobile-info-wrap">
                 <h3 class="mobile-info-title">E-Lapor SAMKEL</h3>
                 <p class="mobile-info-desc">
-                    Sistem Digitalisasi Laporan SAMSAT Keliling<br> UPPD SAMSAT Batulicin
+                    Sistem Digitalisasi Laporan SAMSAT Keliling
                 </p>
 
                 <!-- Ilustrasi Layanan Mobil Samsat Keliling Mobile -->
