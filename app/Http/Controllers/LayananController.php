@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class LayananController extends Controller
 {
@@ -34,10 +35,6 @@ class LayananController extends Controller
             $query->where('kode_cabang', $request->kode_cabang);
         }
 
-        if ($user->hasRole('admin departemen') && !empty($kode_cabang)) {
-            $query->where('kode_cabang', $kode_cabang);
-        }
-
         $layanan = $query->paginate(10);
         $cabang = DB::table('cabang')->orderBy('nama_cabang')->get();
 
@@ -48,23 +45,34 @@ class LayananController extends Controller
     {
         $request->validate([
             'nama_layanan' => 'required',
-            'username' => 'required|unique:layanan,username|unique:petugas_layanan,username',
             'foto' => 'nullable|image|mimes:png,jpg,jpeg|max:2048'
         ], [
-            'username.unique' => 'Username tersebut sudah digunakan oleh akun lain.',
+            'nama_layanan.required' => 'Nama Layanan harus diisi.',
             'foto.image' => 'File foto harus berupa gambar.',
             'foto.mimes' => 'Format file foto harus PNG, JPG, atau JPEG.',
             'foto.max' => 'Ukuran file foto maksimal 2MB.'
         ]);
 
         $nama_layanan = trim($request->nama_layanan);
-        $username = strtolower(trim($request->username));
+
+        // Auto-generate username unik di background untuk integritas DB
+        $baseUsername = Str::slug($nama_layanan, '_');
+        if (empty($baseUsername)) {
+            $baseUsername = 'layanan_' . time();
+        }
+        $username = $baseUsername;
+        $counter = 1;
+        while (DB::table('layanan')->where('username', $username)->exists()) {
+            $username = $baseUsername . '_' . $counter;
+            $counter++;
+        }
+
         $nama_pic = $request->filled('nama_pic') ? trim($request->nama_pic) : null;
         $nip_pic = $request->filled('nip_pic') ? trim($request->nip_pic) : null;
         $jabatan_pic = $request->filled('jabatan_pic') ? trim($request->jabatan_pic) : null;
         $no_hp = $request->filled('no_hp') ? trim($request->no_hp) : null;
         $kode_cabang = $request->filled('kode_cabang') ? $request->kode_cabang : null;
-        $password = Hash::make($request->password ?: '12345');
+        $password = Hash::make(Str::random(16));
 
         $foto = null;
         if ($request->hasFile('foto')) {
@@ -106,7 +114,7 @@ class LayananController extends Controller
                 }
 
                 DB::commit();
-                return Redirect::back()->with(['success' => 'Data Akun Layanan Berhasil Disimpan']);
+                return Redirect::back()->with(['success' => 'Data Layanan Berhasil Disimpan']);
             }
 
             DB::rollBack();
@@ -130,9 +138,9 @@ class LayananController extends Controller
     {
         $request->validate([
             'nama_layanan' => 'required',
-            'username' => 'required',
             'foto' => 'nullable|image|mimes:png,jpg,jpeg|max:2048'
         ], [
+            'nama_layanan.required' => 'Nama Layanan harus diisi.',
             'foto.image' => 'File foto harus berupa gambar.',
             'foto.mimes' => 'Format file foto harus PNG, JPG, atau JPEG.',
             'foto.max' => 'Ukuran file foto maksimal 2MB.'
@@ -140,16 +148,11 @@ class LayananController extends Controller
 
         $id = is_numeric($id) ? (int)$id : Crypt::decrypt($id);
         $nama_layanan = trim($request->nama_layanan);
-        $username = strtolower(trim($request->username));
         $old_foto = $request->old_foto;
 
-        $cekUsername = DB::table('layanan')
-            ->where('username', $username)
-            ->where('id', '!=', $id)
-            ->count();
-
-        if ($cekUsername > 0) {
-            return Redirect::back()->with(['warning' => 'Username sudah digunakan oleh akun layanan lain']);
+        $layanan = DB::table('layanan')->where('id', $id)->first();
+        if (!$layanan) {
+            return Redirect::back()->with(['warning' => 'Data Layanan tidak ditemukan']);
         }
 
         if ($request->hasFile('foto')) {
@@ -157,7 +160,7 @@ class LayananController extends Controller
             if (!in_array($ext, ['png', 'jpg', 'jpeg'])) {
                 return Redirect::back()->with(['warning' => 'Format file foto harus PNG, JPG, atau JPEG.']);
             }
-            $safeUsername = preg_replace('/[^A-Za-z0-9_\-]/', '', $username);
+            $safeUsername = preg_replace('/[^A-Za-z0-9_\-]/', '', $layanan->username ?: Str::slug($nama_layanan, '_'));
             $foto = time() . '_' . $safeUsername . '.' . $ext;
         } else {
             $foto = $old_foto;
@@ -168,7 +171,6 @@ class LayananController extends Controller
 
             $data = [
                 'nama_layanan' => $nama_layanan,
-                'username' => $username,
                 'foto' => $foto,
                 'mode_presensi' => $request->mode_presensi ?: 'bebas',
                 'updated_at' => now(),
@@ -191,26 +193,7 @@ class LayananController extends Controller
                 $data['kode_cabang'] = $request->kode_cabang;
             }
 
-            if (!empty($request->password)) {
-                $data['password'] = Hash::make($request->password);
-            }
-
             $update = DB::table('layanan')->where('id', $id)->update($data);
-
-            // Sinkronkan password ke akun petugas utama jika ada password baru
-            if (!empty($request->password)) {
-                $primaryPetugas = DB::table('petugas_layanan')
-                    ->where('layanan_id', $id)
-                    ->orderBy('id', 'asc')
-                    ->first();
-
-                if ($primaryPetugas) {
-                    DB::table('petugas_layanan')->where('id', $primaryPetugas->id)->update([
-                        'password' => Hash::make($request->password),
-                        'updated_at' => now(),
-                    ]);
-                }
-            }
 
             if ($request->hasFile('foto')) {
                 $folderPath = "public/uploads/karyawan/";
