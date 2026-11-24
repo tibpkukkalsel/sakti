@@ -388,7 +388,7 @@ class DashboardController extends Controller
             ->get()
             ->keyBy('layanan_id');
 
-        $jadwalHariIni = $jadwalRutinHariIni->merge($jadwalKhususHariIni);
+        $jadwalHariIni = $jadwalRutinHariIni->replace($jadwalKhususHariIni);
 
         // Ambil data maintenance layanan yang aktif hari ini
         $maintenanceHariIni = DB::table('pengajuan_izin')
@@ -409,7 +409,7 @@ class DashboardController extends Controller
 
         foreach ($listLayanan as $l) {
             $p = $presensiHariIni->get((string) $l->id) ?: $presensiHariIni->get((string) $l->username);
-            $j = $jadwalHariIni->get($l->id);
+            $j = $jadwalHariIni->get($l->id) ?: $jadwalHariIni->get((string) $l->id);
             $m = $maintenanceHariIni->get((string) $l->id) ?: $maintenanceHariIni->get((string) $l->username);
 
             $jamIn = $p ? $p->jam_in : null;
