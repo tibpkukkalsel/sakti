@@ -307,6 +307,10 @@ class PresensiController extends Controller
         $kode_dept = $authUser->kode_dept ?? null;
         $tgl_presensi = $ceklintashari_presensi == 1 && $jamsekarang < "08:00" ? $tgl_sebelumnya : date("Y-m-d");
 
+        $presensi = DB::table('presensi')->where('tgl_presensi', $tgl_presensi)->where('nik', $nik);
+        $cek = $presensi->count();
+        $datapresensi = $presensi->first();
+
         // Cek Mode Presensi Layanan: 'bebas' atau 'jadwal'
         $layananData = DB::table('layanan')->where('id', $layananId)->first();
         $modePresensi = $layananData->mode_presensi ?? 'bebas';
@@ -342,9 +346,8 @@ class PresensiController extends Controller
             ->select('harilibur.keterangan')
             ->first();
 
-        $presensiCek = DB::table('presensi')->where('tgl_presensi', $tgl_presensi)->where('nik', $nik)->first();
-        if (!$datalibur && $presensiCek != null && $presensiCek->status == 'l') {
-            $izin = DB::table('pengajuan_izin')->where('kode_izin', $presensiCek->kode_izin)->first();
+        if (!$datalibur && $datapresensi != null && $datapresensi->status == 'l') {
+            $izin = DB::table('pengajuan_izin')->where('kode_izin', $datapresensi->kode_izin)->first();
             $datalibur = (object)[
                 'keterangan' => ($izin && !empty($izin->keterangan)) ? $izin->keterangan : 'Libur Nasional / Bersama'
             ];
@@ -504,10 +507,6 @@ class PresensiController extends Controller
             echo "error|Jadwal jam kerja tidak ditemukan untuk hari ini|in";
             return;
         }
-
-        $presensi = DB::table('presensi')->where('tgl_presensi', $tgl_presensi)->where('nik', $nik);
-        $cek = $presensi->count();
-        $datapresensi = $presensi->first();
 
         // Validasi Status Absen sesuai pilihan pegawai ('in' atau 'out')
         $status_absen_req = ($request->status_absen == "out") ? "out" : "in";
