@@ -397,11 +397,38 @@
                 </div>
                 @endif
 
+                @if (($status_location ?? '1') == '0' && !$sudah_masuk)
+                <!-- Pilihan Lokasi Terdaftar untuk Mode Buka Kunci Lokasi -->
+                <div class="card mb-2 border shadow-none" style="border-radius: 12px; background: #f0fdf4; border-color: #86efac !important;">
+                    <div class="card-body py-2 px-3">
+                        <label class="form-label font-weight-bold mb-1 d-flex align-items-center gap-1 text-success" style="font-size: 13px;">
+                            <ion-icon name="navigate-circle" style="font-size: 18px;"></ion-icon>
+                            <span>Pilih Lokasi Pelayanan Hari Ini:</span>
+                        </label>
+                        <select name="select_kode_cabang" id="select_kode_cabang" class="form-control form-select" style="font-weight: 600; font-size: 13.5px; border-radius: 8px;">
+                            @foreach($daftarLokasi as $lok)
+                                <option value="{{ $lok->id }}" 
+                                    data-lokasi="{{ $lok->lokasi_cabang }}" 
+                                    data-radius="{{ $lok->radius_cabang }}" 
+                                    data-nama="{{ $lok->nama_cabang }}"
+                                    {{ ($lok_kantor->kode_cabang ?? $lok_kantor->id) == $lok->id ? 'selected' : '' }}>
+                                    {{ $lok->nama_cabang }} (Radius {{ $lok->radius_cabang }}m)
+                                </option>
+                            @endforeach
+                        </select>
+                        <div class="small text-muted mt-1" style="font-size: 11px;">
+                            Mode Buka Kunci: Operator wajib berada dalam radius lokasi terdaftar yang dipilih.
+                        </div>
+                    </div>
+                </div>
+                @endif
+                <input type="hidden" id="input_kode_cabang" value="{{ $lok_kantor->kode_cabang ?? $lok_kantor->id ?? '' }}">
+
                 <!-- Info Lokasi Operasional Presensi Hari Ini -->
                 <div class="mt-2 mb-1 p-2 bg-light rounded text-center border" style="font-size: 11.5px; color: #475569;">
                     <ion-icon name="pin" style="color: #ef4444; vertical-align: -2px; font-size: 14px;"></ion-icon>
-                    <strong>Lokasi Presensi:</strong> {{ $lok_kantor->nama_cabang }}
-                    <span class="badge badge-secondary ms-1" style="font-size: 10px;">Radius {{ $lok_kantor->radius_cabang }}m</span>
+                    <strong>Lokasi Presensi:</strong> <span id="labelNamaLokasi">{{ $lok_kantor->nama_cabang }}</span>
+                    <span class="badge badge-secondary ms-1" id="labelRadiusLokasi" style="font-size: 10px;">Radius {{ $lok_kantor->radius_cabang }}m</span>
                     @if (!empty($lok_kantor->ket_jadwal))
                         <div class="small text-muted mt-1">{{ $lok_kantor->ket_jadwal }}</div>
                     @endif
@@ -595,6 +622,8 @@
         }
 
         var mapInstance = null;
+        var markerUser = null;
+        var circleKantor = null;
         function successCallback(position) {
             var accuracy = position.coords.accuracy || 0;
             window.currentGpsAccuracy = accuracy;
@@ -621,20 +650,45 @@
                 mapInstance = L.map('map').setView([position.coords.latitude, position.coords.longitude], 18);
                 var lokasi_kantor = "{{ $lok_kantor->lokasi_cabang }}";
                 var lok = lokasi_kantor.split(",");
-                var lat_kantor = lok[0];
-                var long_kantor = lok[1];
-                var radius = "{{ $lok_kantor->radius_cabang }}";
+                var lat_kantor = parseFloat(lok[0]);
+                var long_kantor = parseFloat(lok[1]);
+                var radius = parseFloat("{{ $lok_kantor->radius_cabang }}");
                 L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
                     maxZoom: 20,
                     subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
                 }).addTo(mapInstance);
-                var marker = L.marker([position.coords.latitude, position.coords.longitude]).addTo(mapInstance);
-                var circle = L.circle([lat_kantor, long_kantor], {
+                markerUser = L.marker([position.coords.latitude, position.coords.longitude]).addTo(mapInstance);
+                circleKantor = L.circle([lat_kantor, long_kantor], {
                     color: 'red',
                     fillColor: '#f03',
                     fillOpacity: 0.5,
                     radius: radius
                 }).addTo(mapInstance);
+
+                // Event listener saat operator memilih lokasi lain pada mode Buka Kunci Lokasi
+                $('#select_kode_cabang').on('change', function() {
+                    var selectedOpt = $(this).find(':selected');
+                    var newLok = selectedOpt.data('lokasi');
+                    var newRadius = parseFloat(selectedOpt.data('radius')) || 70;
+                    var newNama = selectedOpt.data('nama');
+                    var newKode = $(this).val();
+
+                    $('#input_kode_cabang').val(newKode);
+
+                    if (newLok) {
+                        var p = newLok.split(',');
+                        var nLat = parseFloat(p[0].trim());
+                        var nLng = parseFloat(p[1].trim());
+
+                        if (circleKantor) {
+                            circleKantor.setLatLng([nLat, nLng]);
+                            circleKantor.setRadius(newRadius);
+                            mapInstance.panTo([nLat, nLng]);
+                        }
+                        $('#labelNamaLokasi').text(newNama);
+                        $('#labelRadiusLokasi').text('Radius ' + newRadius + 'm');
+                    }
+                });
             }
         }
 
@@ -1004,7 +1058,8 @@
                     kode_jam_kerja: "{{ $kode_jam_kerja }}",
                     status_absen: statusAbsen,
                     is_mock: (isFakeGpsDetected || window.currentGpsIsMock) ? 1 : 0,
-                    accuracy: window.currentGpsAccuracy || 0
+                    accuracy: window.currentGpsAccuracy || 0,
+                    kode_cabang: $("#input_kode_cabang").val() || $("#select_kode_cabang").val() || "{{ $lok_kantor->kode_cabang ?? $lok_kantor->id ?? '' }}"
                 },
                 cache: false,
                 success: function(respond) {

@@ -55,8 +55,21 @@
                         <div class="form-group boxed">
                             <div class="input-wrapper">
                                 <label class="label">Lokasi Pelayanan</label>
-                                <input type="text" class="form-control" value="{{ $namaLokasi }}" readonly style="background-color: #f8fafc; font-weight: 600;">
-                                <input type="hidden" name="kode_cabang" value="{{ $lokasiId }}">
+                                @if (($status_location ?? '1') == '0' && empty($presensiHariIni->kode_cabang))
+                                    <select name="kode_cabang" id="kode_cabang" class="form-control form-select" style="font-weight: 600;">
+                                        @foreach($daftarLokasi as $lok)
+                                            <option value="{{ $lok->id }}" {{ $lokasiId == $lok->id ? 'selected' : '' }}>
+                                                {{ $lok->nama_cabang }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <div class="small text-muted mt-1" style="font-size: 11px;">
+                                        Mode Buka Kunci: Anda dapat memilih lokasi pelayanan yang sedang beroperasi.
+                                    </div>
+                                @else
+                                    <input type="text" class="form-control" value="{{ $namaLokasi }}" readonly style="background-color: #f8fafc; font-weight: 600;">
+                                    <input type="hidden" name="kode_cabang" value="{{ $lokasiId }}">
+                                @endif
                             </div>
                         </div>
 

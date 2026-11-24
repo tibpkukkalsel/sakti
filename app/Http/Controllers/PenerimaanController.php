@@ -95,6 +95,16 @@ class PenerimaanController extends Controller
         }
 
         if (!$jadwalToday) {
+            // Cek apakah layanan ini mode buka kunci lokasi (status_location == '0')
+            $layananInfo = DB::table('layanan')->where('id', $layananId)->first();
+            if ($layananInfo && $layananInfo->status_location == '0') {
+                return [
+                    'is_libur' => false,
+                    'keterangan' => 'Mode Bebas Lokasi',
+                    'jadwal' => null,
+                ];
+            }
+
             return [
                 'is_libur' => true,
                 'keterangan' => 'Tidak ada jadwal operasional hari ini',
@@ -240,10 +250,14 @@ class PenerimaanController extends Controller
             return redirect('/penerimaan')->with(['warning' => 'Tidak dapat membuka layanan: ' . $statusLibur['keterangan'] . '.']);
         }
 
-        // Jika presensi hari ini sudah dilakukan oleh petugas tertentu, pastikan yang membuka adalah petugas yang sama
         $presensiHariIni = DB::table('presensi')
             ->where('nik', (string) $layananId)
             ->where('tgl_presensi', $tglDefault)
+            ->first();
+
+        $rekapHariIni = DB::table('rekap_penerimaan_pkb')
+            ->where('layanan_id', $layananId)
+            ->where('tgl_penerimaan', $tglDefault)
             ->first();
 
         if ($presensiHariIni && !empty($presensiHariIni->jam_in) && !empty($presensiHariIni->petugas_id) && $presensiHariIni->petugas_id != $petugasId) {
@@ -252,10 +266,29 @@ class PenerimaanController extends Controller
         }
 
         $jadwalToday = $statusLibur['jadwal'];
-        $lokasiId = $jadwalToday ? $jadwalToday->kode_cabang : ($user->kode_cabang ?: 1);
-        $namaLokasi = $jadwalToday ? $jadwalToday->nama_cabang : (DB::table('cabang')->where('id', $lokasiId)->value('nama_cabang') ?? 'UPPD SAMSAT Batulicin');
+        $layananInfo = DB::table('layanan')->where('id', $layananId)->first();
+        $status_location = $layananInfo->status_location ?? '1';
+        $daftarLokasi = DB::table('cabang')->orderBy('nama_cabang')->get();
 
-        return view('penerimaan.buka_layanan', compact('user', 'tglDefault', 'lokasiId', 'namaLokasi'));
+        // Resolusi Lokasi Pelayanan Buka Layanan:
+        // 1. Lokasi yang dipilih saat presensi masuk hari ini
+        // 2. Lokasi yang sudah tersimpan di draft rekap_penerimaan_pkb
+        // 3. Lokasi dari jadwal harian
+        // 4. Default cabang armada / cabang pertama
+        $lokasiId = null;
+        if ($presensiHariIni && !empty($presensiHariIni->kode_cabang)) {
+            $lokasiId = $presensiHariIni->kode_cabang;
+        } elseif ($rekapHariIni && !empty($rekapHariIni->kode_cabang)) {
+            $lokasiId = $rekapHariIni->kode_cabang;
+        } elseif ($jadwalToday && !empty($jadwalToday->kode_cabang)) {
+            $lokasiId = $jadwalToday->kode_cabang;
+        } else {
+            $lokasiId = $user->kode_cabang ?: ($daftarLokasi->first()->id ?? 1);
+        }
+
+        $namaLokasi = DB::table('cabang')->where('id', $lokasiId)->value('nama_cabang') ?? 'UPPD SAMSAT Batulicin';
+
+        return view('penerimaan.buka_layanan', compact('user', 'tglDefault', 'lokasiId', 'namaLokasi', 'status_location', 'daftarLokasi', 'presensiHariIni'));
     }
 
     public function simpanBukaLayanan(Request $request)
@@ -293,8 +326,13 @@ class PenerimaanController extends Controller
             $fotoAwal = $this->uploadNoticePhoto($request->file('foto_awal_notice'), 'awal', $layananId, $tgl);
         }
 
+        $rekapHariIni = DB::table('rekap_penerimaan_pkb')
+            ->where('layanan_id', $layananId)
+            ->where('tgl_penerimaan', $tgl)
+            ->first();
+
         $jadwalToday = $statusLibur['jadwal'];
-        $kodeCabang = $jadwalToday ? $jadwalToday->kode_cabang : ($request->kode_cabang ?: ($user->kode_cabang ?: 1));
+        $kodeCabang = $request->kode_cabang ?: ($presensiTgl->kode_cabang ?? ($rekapHariIni->kode_cabang ?? ($jadwalToday ? $jadwalToday->kode_cabang : ($user->kode_cabang ?: 1))));
 
         try {
             RekapPenerimaanPkb::updateOrCreate(
@@ -659,7 +697,14 @@ class PenerimaanController extends Controller
             ->where('status', 1)
             ->orderBy('jenis_jadwal', 'desc')
             ->first();
-        $lokasiDefault = $jadwalToday ? $jadwalToday->kode_cabang : ($user->kode_cabang ?: 1);
+        $lokasiDefault = null;
+        if ($presensiHariIni && !empty($presensiHariIni->kode_cabang)) {
+            $lokasiDefault = $presensiHariIni->kode_cabang;
+        } elseif ($jadwalToday && !empty($jadwalToday->kode_cabang)) {
+            $lokasiDefault = $jadwalToday->kode_cabang;
+        } else {
+            $lokasiDefault = $user->kode_cabang ?: 1;
+        }
 
         return view('penerimaan.create', compact('user', 'tglDefault', 'daftarLokasi', 'lokasiDefault'));
     }
@@ -711,24 +756,28 @@ class PenerimaanController extends Controller
         // Resolusi kode cabang / id lokasi
         $kodeCabang = $request->kode_cabang;
         if (empty($kodeCabang)) {
-            $jadwalKhusus = DB::table('jadwal_lokasi_layanan')
-                ->where('layanan_id', $layananId)
-                ->where('tanggal', $tgl)
-                ->where('status', 1)
-                ->first();
-            if ($jadwalKhusus && !empty($jadwalKhusus->kode_cabang)) {
-                $kodeCabang = $jadwalKhusus->kode_cabang;
+            if ($presensiTgl && !empty($presensiTgl->kode_cabang)) {
+                $kodeCabang = $presensiTgl->kode_cabang;
             } else {
-                $dayNum = date('w', strtotime($tgl));
-                $hariMap = [0 => 'Minggu', 1 => 'Senin', 2 => 'Selasa', 3 => 'Rabu', 4 => 'Kamis', 5 => 'Jumat', 6 => 'Sabtu'];
-                $hariIndo = $hariMap[$dayNum] ?? 'Senin';
-                $jadwalRutin = DB::table('jadwal_lokasi_layanan')
+                $jadwalKhusus = DB::table('jadwal_lokasi_layanan')
                     ->where('layanan_id', $layananId)
-                    ->where('jenis_jadwal', 'rutin')
-                    ->where('hari', $hariIndo)
+                    ->where('tanggal', $tgl)
                     ->where('status', 1)
                     ->first();
-                $kodeCabang = $jadwalRutin ? $jadwalRutin->kode_cabang : ($user->kode_cabang ?: 1);
+                if ($jadwalKhusus && !empty($jadwalKhusus->kode_cabang)) {
+                    $kodeCabang = $jadwalKhusus->kode_cabang;
+                } else {
+                    $dayNum = date('w', strtotime($tgl));
+                    $hariMap = [0 => 'Minggu', 1 => 'Senin', 2 => 'Selasa', 3 => 'Rabu', 4 => 'Kamis', 5 => 'Jumat', 6 => 'Sabtu'];
+                    $hariIndo = $hariMap[$dayNum] ?? 'Senin';
+                    $jadwalRutin = DB::table('jadwal_lokasi_layanan')
+                        ->where('layanan_id', $layananId)
+                        ->where('jenis_jadwal', 'rutin')
+                        ->where('hari', $hariIndo)
+                        ->where('status', 1)
+                        ->first();
+                    $kodeCabang = $jadwalRutin ? $jadwalRutin->kode_cabang : ($user->kode_cabang ?: 1);
+                }
             }
         }
 

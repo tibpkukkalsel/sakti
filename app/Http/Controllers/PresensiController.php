@@ -138,18 +138,73 @@ class PresensiController extends Controller
                 ->first();
         }
 
-        if ($jadwalLokasi != null) {
-            $kode_cabang = $jadwalLokasi->kode_cabang ?? $jadwalLokasi->id ?? null;
-            $jadwalLokasi->kode_cabang = $kode_cabang;
-            $lok_kantor = $jadwalLokasi;
-        } else {
-            // Jika layanan tidak ada jadwal lokasi hari ini, otomatis diarahkan ke tampilan Libur
-            $datalibur = (object)[
-                'kode_libur' => 'LIBUR',
-                'tanggal_libur' => $hariini,
-                'keterangan' => 'Tidak Ada Jadwal Layanan Hari Ini (Libur)'
-            ];
-            return view('presensi.notiflibur', compact('datalibur'));
+        $status_location = $authUser->status_location ?? '1';
+        $daftarLokasi = DB::table('cabang')->orderBy('nama_cabang')->get();
+
+        // Cek apakah hari ini sudah ada presensi atau rekap penerimaan yang mengunci lokasi
+        $rekapHariIni = DB::table('rekap_penerimaan_pkb')
+            ->where('layanan_id', $layananId)
+            ->where('tgl_penerimaan', $hariini)
+            ->first();
+
+        $lok_kantor = null;
+        if ($datapresensi != null && !empty($datapresensi->kode_cabang)) {
+            $lokasiPresensi = $daftarLokasi->firstWhere('id', $datapresensi->kode_cabang);
+            if ($lokasiPresensi) {
+                $lok_kantor = (object)[
+                    'id' => $lokasiPresensi->id,
+                    'kode_cabang' => $lokasiPresensi->id,
+                    'nama_cabang' => $lokasiPresensi->nama_cabang,
+                    'lokasi_cabang' => $lokasiPresensi->lokasi_cabang,
+                    'radius_cabang' => $lokasiPresensi->radius_cabang,
+                    'ket_jadwal' => 'Lokasi Terpilih saat Masuk',
+                    'jenis_jadwal' => 'terpilih',
+                    'kode_jam_kerja' => $jadwalLokasi->kode_jam_kerja ?? null,
+                ];
+            }
+        } elseif ($rekapHariIni != null && !empty($rekapHariIni->kode_cabang)) {
+            $lokasiRekap = $daftarLokasi->firstWhere('id', $rekapHariIni->kode_cabang);
+            if ($lokasiRekap) {
+                $lok_kantor = (object)[
+                    'id' => $lokasiRekap->id,
+                    'kode_cabang' => $lokasiRekap->id,
+                    'nama_cabang' => $lokasiRekap->nama_cabang,
+                    'lokasi_cabang' => $lokasiRekap->lokasi_cabang,
+                    'radius_cabang' => $lokasiRekap->radius_cabang,
+                    'ket_jadwal' => 'Lokasi Terpilih Buka Layanan',
+                    'jenis_jadwal' => 'terpilih',
+                    'kode_jam_kerja' => $jadwalLokasi->kode_jam_kerja ?? null,
+                ];
+            }
+        }
+
+        if ($lok_kantor == null) {
+            if ($jadwalLokasi != null) {
+                $kode_cabang = $jadwalLokasi->kode_cabang ?? $jadwalLokasi->id ?? null;
+                $jadwalLokasi->kode_cabang = $kode_cabang;
+                $lok_kantor = $jadwalLokasi;
+            } elseif ($status_location == '0' && $daftarLokasi->isNotEmpty()) {
+                // Mode Buka Kunci Lokasi: ambil default lokasi cabang armada atau titik pertama
+                $lokDefault = $daftarLokasi->firstWhere('id', $layananData->kode_cabang) ?? $daftarLokasi->first();
+                $lok_kantor = (object)[
+                    'id' => $lokDefault->id,
+                    'kode_cabang' => $lokDefault->id,
+                    'nama_cabang' => $lokDefault->nama_cabang,
+                    'lokasi_cabang' => $lokDefault->lokasi_cabang,
+                    'radius_cabang' => $lokDefault->radius_cabang,
+                    'ket_jadwal' => 'Mode Bebas Pilih Lokasi',
+                    'jenis_jadwal' => 'bebas',
+                    'kode_jam_kerja' => null,
+                ];
+            } else {
+                // Jika layanan tidak ada jadwal lokasi hari ini dan lokasi terkunci, otomatis diarahkan ke tampilan Libur
+                $datalibur = (object)[
+                    'kode_libur' => 'LIBUR',
+                    'tanggal_libur' => $hariini,
+                    'keterangan' => 'Tidak Ada Jadwal Layanan Hari Ini (Libur)'
+                ];
+                return view('presensi.notiflibur', compact('datalibur'));
+            }
         }
 
         // Cek apakah hari ini adalah Hari Libur
@@ -224,7 +279,7 @@ class PresensiController extends Controller
             $status_scan_user = Auth::guard('karyawan')->user()->status_scan ?? '1';
             $scan_aktif = ($status_scan_global == 1 && $status_scan_user == '1') ? 1 : 0;
 
-            return view('presensi.create', compact('cek', 'datapresensi', 'lok_kantor', 'jamkerja', 'hariini', 'kode_jam_kerja', 'scan_aktif'));
+            return view('presensi.create', compact('cek', 'datapresensi', 'lok_kantor', 'jamkerja', 'hariini', 'kode_jam_kerja', 'scan_aktif', 'status_location', 'daftarLokasi'));
         }
     }
 
@@ -324,11 +379,56 @@ class PresensiController extends Controller
                 ->first();
         }
 
-        if ($jadwalLokasi != null) {
-            $kode_cabang = $jadwalLokasi->kode_cabang ?? $jadwalLokasi->id ?? null;
-            $jadwalLokasi->kode_cabang = $kode_cabang;
-            $lok_kantor = $jadwalLokasi;
-        } else {
+        $status_location = $authUser->status_location ?? '1';
+        $reqKodeCabang = $request->kode_cabang;
+
+        $lok_kantor = null;
+        if ($datapresensi != null && !empty($datapresensi->kode_cabang)) {
+            $cabangPresensi = DB::table('cabang')->where('id', $datapresensi->kode_cabang)->first();
+            if ($cabangPresensi) {
+                $kode_cabang = $cabangPresensi->id;
+                $lok_kantor = (object)[
+                    'id' => $cabangPresensi->id,
+                    'kode_cabang' => $cabangPresensi->id,
+                    'nama_cabang' => $cabangPresensi->nama_cabang,
+                    'lokasi_cabang' => $cabangPresensi->lokasi_cabang,
+                    'radius_cabang' => $cabangPresensi->radius_cabang,
+                    'ket_jadwal' => 'Lokasi Terpilih saat Masuk',
+                    'kode_jam_kerja' => $jadwalLokasi->kode_jam_kerja ?? null,
+                ];
+            }
+        } elseif ($status_location == '0' && !empty($reqKodeCabang)) {
+            // Mode Buka Kunci Lokasi: Gunakan lokasi terdaftar yang dipilih oleh operator
+            $cabangTerpilih = DB::table('cabang')->where('id', $reqKodeCabang)->first();
+            if ($cabangTerpilih) {
+                $kode_cabang = $cabangTerpilih->id;
+                $lok_kantor = (object)[
+                    'id' => $cabangTerpilih->id,
+                    'kode_cabang' => $cabangTerpilih->id,
+                    'nama_cabang' => $cabangTerpilih->nama_cabang,
+                    'lokasi_cabang' => $cabangTerpilih->lokasi_cabang,
+                    'radius_cabang' => $cabangTerpilih->radius_cabang,
+                    'ket_jadwal' => 'Lokasi Terpilih Operator',
+                    'kode_jam_kerja' => $jadwalLokasi->kode_jam_kerja ?? null,
+                ];
+            }
+        }
+
+        if ($lok_kantor == null) {
+            if ($jadwalLokasi != null) {
+                $kode_cabang = $jadwalLokasi->kode_cabang ?? $jadwalLokasi->id ?? null;
+                $jadwalLokasi->kode_cabang = $kode_cabang;
+                $lok_kantor = $jadwalLokasi;
+            } elseif ($status_location == '0') {
+                $cabangDefault = DB::table('cabang')->where('id', $layananData->kode_cabang)->first() ?? DB::table('cabang')->first();
+                if ($cabangDefault) {
+                    $kode_cabang = $cabangDefault->id;
+                    $lok_kantor = $cabangDefault;
+                }
+            }
+        }
+
+        if (!$lok_kantor) {
             echo "error|Tidak ada jadwal layanan hari ini (Libur)|libur";
             return;
         }
@@ -461,178 +561,234 @@ class PresensiController extends Controller
         $no_hp = $datakaryawan ? $datakaryawan->no_hp : '';
         $datalokasi = DB::table('cabang')->where('id', $kode_cabang)->first();
         $nama_lokasi = $datalokasi ? $datalokasi->nama_cabang : '';
-        if ($status_location == 1 && $radius > $lok_kantor->radius_cabang) {
-            echo "error|Maaf Anda Berada Diluar Radius, Jarak Anda " . $radius . " meter dari Kantor|radius";
-        } else {
-            if ($status_absen_req == "out") {
-                // PROSES PRESENSI PULANG
-                $is_pulang_cepat = ($jam_pulang < $jamkerja_pulang);
-                $status_out = 'tepat_waktu';
-                $selisih_out = 0;
-                $pesan_out = "Terimakasih, Hati Hati Di Jalan";
 
-                if ($is_pulang_cepat) {
-                    if (isset($datapresensi->status_out) && $datapresensi->status_out == 'izin_pulang_cepat') {
-                        $status_out = 'izin_pulang_cepat';
-                        $pesan_out = "Terimakasih, Anda Pulang Sesuai Izin Pulang Cepat";
-                    } else {
-                        $status_out = 'pulang_duluan';
-                        $pesan_out = "Terimakasih, Anda Pulang Lebih Awal (Pulang Duluan)";
-                        $pJadwal = explode(':', $jamkerja->jam_pulang);
-                        $pJam = explode(':', $jam);
-                        $tJadwal = mktime((int)$pJadwal[0], (int)$pJadwal[1], (int)($pJadwal[2] ?? 0), 1, 1, 1);
-                        $tJam = mktime((int)$pJam[0], (int)$pJam[1], (int)($pJam[2] ?? 0), 1, 1, 1);
-                        $diffSec = $tJadwal - $tJam;
-                        $selisih_out = $diffSec > 0 ? (int)floor($diffSec / 60) : 0;
-                    }
+        // Validasi radius ketat untuk semua mode (Kunci Lokasi maupun Buka Kunci Lokasi ke lokasi terdaftar yang dipilih)
+        if ($radius > $lok_kantor->radius_cabang) {
+            echo "error|Maaf Anda Berada Diluar Radius, Jarak Anda " . $radius . " meter dari " . $lok_kantor->nama_cabang . "|radius";
+            return;
+        }
+
+        if ($status_absen_req == "out") {
+            // PROSES PRESENSI PULANG
+            $is_pulang_cepat = ($jam_pulang < $jamkerja_pulang);
+            $status_out = 'tepat_waktu';
+            $selisih_out = 0;
+            $pesan_out = "Terimakasih, Hati Hati Di Jalan";
+
+            if ($is_pulang_cepat) {
+                if (isset($datapresensi->status_out) && $datapresensi->status_out == 'izin_pulang_cepat') {
+                    $status_out = 'izin_pulang_cepat';
+                    $pesan_out = "Terimakasih, Anda Pulang Sesuai Izin Pulang Cepat";
+                } else {
+                    $status_out = 'pulang_duluan';
+                    $pesan_out = "Terimakasih, Anda Pulang Lebih Awal (Pulang Duluan)";
+                    $pJadwal = explode(':', $jamkerja->jam_pulang);
+                    $pJam = explode(':', $jam);
+                    $tJadwal = mktime((int)$pJadwal[0], (int)$pJadwal[1], (int)($pJadwal[2] ?? 0), 1, 1, 1);
+                    $tJam = mktime((int)$pJam[0], (int)$pJam[1], (int)($pJam[2] ?? 0), 1, 1, 1);
+                    $diffSec = $tJadwal - $tJam;
+                    $selisih_out = $diffSec > 0 ? (int)floor($diffSec / 60) : 0;
                 }
+            }
 
-                if ($datapresensi != null) {
-                    // Pegawai sudah pernah absen masuk sebelumnya -> Update jam_out
-                    $data_pulang = [
-                        'jam_out' => $jam,
-                        'foto_out' => $fileName,
-                        'lokasi_out' => $lokasi,
-                        'status_out' => $status_out,
-                        'selisih_out' => $selisih_out
-                    ];
-                    $update = DB::table('presensi')->where('tgl_presensi', $tgl_presensi)->where('nik', $nik)->update($data_pulang);
-                    if ($update) {
-                        $this->simpanFotoAbsensi($fileName, $image_base64);
-                        echo "success|" . $pesan_out . "|out";
+            if ($datapresensi != null) {
+                // Pegawai sudah pernah absen masuk sebelumnya -> Update jam_out
+                $data_pulang = [
+                    'jam_out' => $jam,
+                    'foto_out' => $fileName,
+                    'lokasi_out' => $lokasi,
+                    'status_out' => $status_out,
+                    'selisih_out' => $selisih_out
+                ];
+                if (!empty($kode_cabang) && empty($datapresensi->kode_cabang)) {
+                    $data_pulang['kode_cabang'] = $kode_cabang;
+                }
+                $update = DB::table('presensi')->where('tgl_presensi', $tgl_presensi)->where('nik', $nik)->update($data_pulang);
+                if ($update) {
+                    $this->simpanFotoAbsensi($fileName, $image_base64);
 
-                        if (!empty($no_hp)) {
-                            try {
-                                $curl = curl_init();
-                                curl_setopt_array($curl, array(
-                                    CURLOPT_URL => 'https://wagateway.pedasalami.com/send-message',
-                                    CURLOPT_RETURNTRANSFER => true,
-                                    CURLOPT_ENCODING => '',
-                                    CURLOPT_MAXREDIRS => 10,
-                                    CURLOPT_CONNECTTIMEOUT => 2,
-                                    CURLOPT_TIMEOUT => 3,
-                                    CURLOPT_FOLLOWLOCATION => true,
-                                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                                    CURLOPT_CUSTOMREQUEST => 'POST',
-                                    CURLOPT_POSTFIELDS => array('message' => 'Terimakasih Sudah Melakukan Absen Pulang, Anda Melakukan Absen Pada Jam ' . $jam, 'number' => $no_hp, 'file_dikirim' => ''),
-                                ));
-                                $response = curl_exec($curl);
-                                curl_close($curl);
-                            } catch (\Throwable $e) {}
-                        }
-                    } else {
-                        echo "error|Maaf Gagal absen, Hubungi Tim It|out";
+                    // Pastikan kode_cabang tersinkron ke rekap penerimaan hari ini jika belum terisi
+                    if (!empty($kode_cabang)) {
+                        DB::table('rekap_penerimaan_pkb')
+                            ->where('layanan_id', $layananId)
+                            ->where('tgl_penerimaan', $tgl_presensi)
+                            ->whereNull('kode_cabang')
+                            ->update(['kode_cabang' => $kode_cabang, 'updated_at' => now()]);
+                    }
+
+                    echo "success|" . $pesan_out . "|out";
+
+                    if (!empty($no_hp)) {
+                        try {
+                            $curl = curl_init();
+                            curl_setopt_array($curl, array(
+                                CURLOPT_URL => 'https://wagateway.pedasalami.com/send-message',
+                                CURLOPT_RETURNTRANSFER => true,
+                                CURLOPT_ENCODING => '',
+                                CURLOPT_MAXREDIRS => 10,
+                                CURLOPT_CONNECTTIMEOUT => 2,
+                                CURLOPT_TIMEOUT => 3,
+                                CURLOPT_FOLLOWLOCATION => true,
+                                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                                CURLOPT_CUSTOMREQUEST => 'POST',
+                                CURLOPT_POSTFIELDS => array('message' => 'Terimakasih Sudah Melakukan Absen Pulang, Anda Melakukan Absen Pada Jam ' . $jam, 'number' => $no_hp, 'file_dikirim' => ''),
+                            ));
+                            $response = curl_exec($curl);
+                            curl_close($curl);
+                        } catch (\Throwable $e) {}
                     }
                 } else {
-                    // Pegawai tidak absen masuk, lalu langsung absen pulang -> Insert record baru
-                    $data_pulang = [
-                        'nik' => $nik,
-                        'petugas_id' => $petugasId,
-                        'petugas_nama' => $petugasNama,
-                        'tgl_presensi' => $tgl_presensi,
-                        'jam_in' => null,
-                        'foto_in' => null,
-                        'lokasi_in' => null,
-                        'jam_out' => $jam,
-                        'foto_out' => $fileName,
-                        'lokasi_out' => $lokasi,
-                        'kode_jam_kerja' => $jamkerja->kode_jam_kerja,
-                        'status' => 'h',
-                        'status_in' => null,
-                        'status_out' => $status_out,
-                        'selisih_in' => 0,
-                        'selisih_out' => $selisih_out
-                    ];
-                    $simpan = DB::table('presensi')->insert($data_pulang);
-                    if ($simpan) {
-                        $this->simpanFotoAbsensi($fileName, $image_base64);
-                        echo "success|" . $pesan_out . "|out";
-
-                        if (!empty($no_hp)) {
-                            try {
-                                $curl = curl_init();
-                                curl_setopt_array($curl, array(
-                                    CURLOPT_URL => 'https://wagateway.pedasalami.com/send-message',
-                                    CURLOPT_RETURNTRANSFER => true,
-                                    CURLOPT_ENCODING => '',
-                                    CURLOPT_MAXREDIRS => 10,
-                                    CURLOPT_CONNECTTIMEOUT => 2,
-                                    CURLOPT_TIMEOUT => 3,
-                                    CURLOPT_FOLLOWLOCATION => true,
-                                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                                    CURLOPT_CUSTOMREQUEST => 'POST',
-                                    CURLOPT_POSTFIELDS => array('message' => 'Terimakasih Sudah Melakukan Absen Pulang, Anda Melakukan Absen Pada Jam ' . $jam, 'number' => $no_hp, 'file_dikirim' => ''),
-                                ));
-                                $response = curl_exec($curl);
-                                curl_close($curl);
-                            } catch (\Throwable $e) {}
-                        }
-                    } else {
-                        echo "error|Maaf Gagal absen pulang, Hubungi Tim It|out";
-                    }
+                    echo "error|Maaf Gagal absen, Hubungi Tim It|out";
                 }
             } else {
-                // PROSES PRESENSI MASUK
-                if ($jam < $jamkerja->awal_jam_masuk) {
-                    echo "error|Maaf Belum Waktunya Melakukan Presensi Masuk|in";
+                // Pegawai tidak absen masuk, lalu langsung absen pulang -> Insert record baru
+                $data_pulang = [
+                    'nik' => $nik,
+                    'kode_cabang' => $kode_cabang,
+                    'petugas_id' => $petugasId,
+                    'petugas_nama' => $petugasNama,
+                    'tgl_presensi' => $tgl_presensi,
+                    'jam_in' => null,
+                    'foto_in' => null,
+                    'lokasi_in' => null,
+                    'jam_out' => $jam,
+                    'foto_out' => $fileName,
+                    'lokasi_out' => $lokasi,
+                    'kode_jam_kerja' => $jamkerja->kode_jam_kerja,
+                    'status' => 'h',
+                    'status_in' => null,
+                    'status_out' => $status_out,
+                    'selisih_in' => 0,
+                    'selisih_out' => $selisih_out
+                ];
+                $simpan = DB::table('presensi')->insert($data_pulang);
+                if ($simpan) {
+                    $this->simpanFotoAbsensi($fileName, $image_base64);
+
+                    if (!empty($kode_cabang)) {
+                        DB::table('rekap_penerimaan_pkb')
+                            ->where('layanan_id', $layananId)
+                            ->where('tgl_penerimaan', $tgl_presensi)
+                            ->whereNull('kode_cabang')
+                            ->update(['kode_cabang' => $kode_cabang, 'updated_at' => now()]);
+                    }
+
+                    echo "success|" . $pesan_out . "|out";
+
+                    if (!empty($no_hp)) {
+                        try {
+                            $curl = curl_init();
+                            curl_setopt_array($curl, array(
+                                CURLOPT_URL => 'https://wagateway.pedasalami.com/send-message',
+                                CURLOPT_RETURNTRANSFER => true,
+                                CURLOPT_ENCODING => '',
+                                CURLOPT_MAXREDIRS => 10,
+                                CURLOPT_CONNECTTIMEOUT => 2,
+                                CURLOPT_TIMEOUT => 3,
+                                CURLOPT_FOLLOWLOCATION => true,
+                                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                                CURLOPT_CUSTOMREQUEST => 'POST',
+                                CURLOPT_POSTFIELDS => array('message' => 'Terimakasih Sudah Melakukan Absen Pulang, Anda Melakukan Absen Pada Jam ' . $jam, 'number' => $no_hp, 'file_dikirim' => ''),
+                            ));
+                            $response = curl_exec($curl);
+                            curl_close($curl);
+                        } catch (\Throwable $e) {}
+                    }
                 } else {
-                    $status_in = 'tepat_waktu';
-                    $selisih_in = 0;
-                    if ($jam > $jamkerja->jam_masuk) {
-                        $status_in = 'terlambat';
-                        $pJadwal = explode(':', $jamkerja->jam_masuk);
-                        $pJam = explode(':', $jam);
-                        $tJadwal = mktime((int)$pJadwal[0], (int)$pJadwal[1], (int)($pJadwal[2] ?? 0), 1, 1, 1);
-                        $tJam = mktime((int)$pJam[0], (int)$pJam[1], (int)($pJam[2] ?? 0), 1, 1, 1);
-                        $diffSec = $tJam - $tJadwal;
-                        $selisih_in = $diffSec > 0 ? (int)floor($diffSec / 60) : 0;
-                    }
+                    echo "error|Maaf Gagal absen pulang, Hubungi Tim It|out";
+                }
+            }
+        } else {
+            // PROSES PRESENSI MASUK
+            if ($jam < $jamkerja->awal_jam_masuk) {
+                echo "error|Maaf Belum Waktunya Melakukan Presensi Masuk|in";
+            } else {
+                $status_in = 'tepat_waktu';
+                $selisih_in = 0;
+                if ($jam > $jamkerja->jam_masuk) {
+                    $status_in = 'terlambat';
+                    $pJadwal = explode(':', $jamkerja->jam_masuk);
+                    $pJam = explode(':', $jam);
+                    $tJadwal = mktime((int)$pJadwal[0], (int)$pJadwal[1], (int)($pJadwal[2] ?? 0), 1, 1, 1);
+                    $tJam = mktime((int)$pJam[0], (int)$pJam[1], (int)($pJam[2] ?? 0), 1, 1, 1);
+                    $diffSec = $tJam - $tJadwal;
+                    $selisih_in = $diffSec > 0 ? (int)floor($diffSec / 60) : 0;
+                }
 
-                    $data = [
-                        'nik' => $nik,
-                        'petugas_id' => $petugasId,
-                        'petugas_nama' => $petugasNama,
-                        'tgl_presensi' => $tgl_presensi,
-                        'jam_in' => $jam,
-                        'foto_in' => $fileName,
-                        'lokasi_in' => $lokasi,
-                        'kode_jam_kerja' => $jamkerja->kode_jam_kerja,
-                        'status' => 'h',
-                        'status_in' => $status_in,
-                        'status_out' => 'tepat_waktu',
-                        'selisih_in' => $selisih_in,
-                        'selisih_out' => 0
-                    ];
-                    $simpan = DB::table('presensi')->insert($data);
-                    if ($simpan) {
-                        $this->simpanFotoAbsensi($fileName, $image_base64);
-                        $pesan_in = ($status_in == 'terlambat')
-                            ? "Terimakasih, Anda Tercatat Terlambat " . $selisih_in . " Menit"
-                            : "Terimakasih, Selamat Bekerja";
-                        echo "success|" . $pesan_in . "|in";
+                $data = [
+                    'nik' => $nik,
+                    'kode_cabang' => $kode_cabang,
+                    'petugas_id' => $petugasId,
+                    'petugas_nama' => $petugasNama,
+                    'tgl_presensi' => $tgl_presensi,
+                    'jam_in' => $jam,
+                    'foto_in' => $fileName,
+                    'lokasi_in' => $lokasi,
+                    'kode_jam_kerja' => $jamkerja->kode_jam_kerja,
+                    'status' => 'h',
+                    'status_in' => $status_in,
+                    'status_out' => 'tepat_waktu',
+                    'selisih_in' => $selisih_in,
+                    'selisih_out' => 0
+                ];
+                $simpan = DB::table('presensi')->insert($data);
+                if ($simpan) {
+                    $this->simpanFotoAbsensi($fileName, $image_base64);
 
-                        if (!empty($no_hp)) {
-                            try {
-                                $curl = curl_init();
-                                curl_setopt_array($curl, array(
-                                    CURLOPT_URL => 'https://wagateway.pedasalami.com/send-message',
-                                    CURLOPT_RETURNTRANSFER => true,
-                                    CURLOPT_ENCODING => '',
-                                    CURLOPT_MAXREDIRS => 10,
-                                    CURLOPT_CONNECTTIMEOUT => 2,
-                                    CURLOPT_TIMEOUT => 3,
-                                    CURLOPT_FOLLOWLOCATION => true,
-                                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                                    CURLOPT_CUSTOMREQUEST => 'POST',
-                                    CURLOPT_POSTFIELDS => array('message' => 'Terimakasih Sudah Melakukan Absen Masuk, Anda Melakukan Absen Pada Jam ' . $jam, 'number' => $no_hp, 'file_dikirim' => ''),
-                                ));
-                                $response = curl_exec($curl);
-                                curl_close($curl);
-                            } catch (\Throwable $e) {}
+                    // SINKRONISASI OTOMATIS KE REKAP PENERIMAAN:
+                    // Lokasi yang dipilih saat presensi otomatis menjadi lokasi di rekap penerimaan hari ini
+                    if (!empty($kode_cabang)) {
+                        $rekapHariIni = DB::table('rekap_penerimaan_pkb')
+                            ->where('layanan_id', $layananId)
+                            ->where('tgl_penerimaan', $tgl_presensi)
+                            ->first();
+
+                        if ($rekapHariIni) {
+                            DB::table('rekap_penerimaan_pkb')
+                                ->where('id', $rekapHariIni->id)
+                                ->update([
+                                    'kode_cabang' => $kode_cabang,
+                                    'updated_at' => now(),
+                                ]);
+                        } else {
+                            DB::table('rekap_penerimaan_pkb')->insert([
+                                'layanan_id' => $layananId,
+                                'kode_cabang' => $kode_cabang,
+                                'tgl_penerimaan' => $tgl_presensi,
+                                'status_verifikasi' => 'draft',
+                                'input_by_petugas_id' => $petugasId,
+                                'created_at' => now(),
+                                'updated_at' => now(),
+                            ]);
                         }
-                    } else {
-                        echo "error|Maaf Gagal absen, Hubungi Tim It|in";
                     }
+
+                    $pesan_in = ($status_in == 'terlambat')
+                        ? "Terimakasih, Anda Tercatat Terlambat " . $selisih_in . " Menit"
+                        : "Terimakasih, Selamat Bekerja";
+                    echo "success|" . $pesan_in . "|in";
+
+                    if (!empty($no_hp)) {
+                        try {
+                            $curl = curl_init();
+                            curl_setopt_array($curl, array(
+                                CURLOPT_URL => 'https://wagateway.pedasalami.com/send-message',
+                                CURLOPT_RETURNTRANSFER => true,
+                                CURLOPT_ENCODING => '',
+                                CURLOPT_MAXREDIRS => 10,
+                                CURLOPT_CONNECTTIMEOUT => 2,
+                                CURLOPT_TIMEOUT => 3,
+                                CURLOPT_FOLLOWLOCATION => true,
+                                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                                CURLOPT_CUSTOMREQUEST => 'POST',
+                                CURLOPT_POSTFIELDS => array('message' => 'Terimakasih Sudah Melakukan Absen Masuk, Anda Melakukan Absen Pada Jam ' . $jam, 'number' => $no_hp, 'file_dikirim' => ''),
+                            ));
+                            $response = curl_exec($curl);
+                            curl_close($curl);
+                        } catch (\Throwable $e) {}
+                    }
+                } else {
+                    echo "error|Maaf Gagal absen, Hubungi Tim It|in";
                 }
             }
         }

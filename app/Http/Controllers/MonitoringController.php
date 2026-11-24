@@ -62,8 +62,6 @@ class MonitoringController extends Controller
                     ->where('j_rutin.hari', '=', $namahari)
                     ->where('j_rutin.status', '=', 1);
             })
-            ->leftJoin('cabang', DB::raw("COALESCE(j_khusus.kode_cabang, j_rutin.kode_cabang, layanan.kode_cabang)"), '=', 'cabang.id')
-            ->leftJoin('jam_kerja', DB::raw("COALESCE(j_khusus.kode_jam_kerja, j_rutin.kode_jam_kerja)"), '=', 'jam_kerja.kode_jam_kerja')
             ->leftJoin('presensi', function ($join) use ($hariini) {
                 $join->on('layanan.id', '=', 'presensi.nik')
                     ->where('presensi.tgl_presensi', '=', $hariini);
@@ -72,6 +70,8 @@ class MonitoringController extends Controller
                 $join->on('layanan.id', '=', 'rekap_penerimaan_pkb.layanan_id')
                     ->where('rekap_penerimaan_pkb.tgl_penerimaan', '=', $hariini);
             })
+            ->leftJoin('cabang', DB::raw("COALESCE(rekap_penerimaan_pkb.kode_cabang, presensi.kode_cabang, j_khusus.kode_cabang, j_rutin.kode_cabang, layanan.kode_cabang)"), '=', 'cabang.id')
+            ->leftJoin('jam_kerja', DB::raw("COALESCE(j_khusus.kode_jam_kerja, j_rutin.kode_jam_kerja)"), '=', 'jam_kerja.kode_jam_kerja')
             ->select(
                 'layanan.id',
                 'layanan.nama_layanan',
@@ -398,7 +398,15 @@ class MonitoringController extends Controller
                     ->where('j_rutin.hari', '=', $namahari)
                     ->where('j_rutin.status', '=', 1);
             })
-            ->leftJoin('cabang as c_aktif', DB::raw("COALESCE(j_khusus.kode_cabang, j_rutin.kode_cabang)"), '=', 'c_aktif.id')
+            ->leftJoin('presensi', function ($join) use ($hariini) {
+                $join->on('layanan.id', '=', 'presensi.nik')
+                    ->where('presensi.tgl_presensi', '=', $hariini);
+            })
+            ->leftJoin('rekap_penerimaan_pkb', function ($join) use ($hariini) {
+                $join->on('layanan.id', '=', 'rekap_penerimaan_pkb.layanan_id')
+                    ->where('rekap_penerimaan_pkb.tgl_penerimaan', '=', $hariini);
+            })
+            ->leftJoin('cabang as c_aktif', DB::raw("COALESCE(rekap_penerimaan_pkb.kode_cabang, presensi.kode_cabang, j_khusus.kode_cabang, j_rutin.kode_cabang)"), '=', 'c_aktif.id')
             ->leftJoin('jam_kerja', DB::raw("COALESCE(j_khusus.kode_jam_kerja, j_rutin.kode_jam_kerja)"), '=', 'jam_kerja.kode_jam_kerja')
             ->select(
                 'layanan.*',
@@ -598,12 +606,16 @@ class MonitoringController extends Controller
                         ->where('j_rutin.hari', '=', $hariNama)
                         ->where('j_rutin.status', '=', 1);
                 })
-                ->leftJoin('cabang', DB::raw("COALESCE(j_khusus.kode_cabang, j_rutin.kode_cabang)"), '=', 'cabang.id')
-                ->leftJoin('jam_kerja', DB::raw("COALESCE(j_khusus.kode_jam_kerja, j_rutin.kode_jam_kerja)"), '=', 'jam_kerja.kode_jam_kerja')
                 ->leftJoin('presensi', function ($join) use ($singleDate) {
                     $join->on('layanan.id', '=', 'presensi.nik')
                         ->where('presensi.tgl_presensi', '=', $singleDate);
-                });
+                })
+                ->leftJoin('rekap_penerimaan_pkb', function ($join) use ($singleDate) {
+                    $join->on('layanan.id', '=', 'rekap_penerimaan_pkb.layanan_id')
+                        ->where('rekap_penerimaan_pkb.tgl_penerimaan', '=', $singleDate);
+                })
+                ->leftJoin('cabang', DB::raw("COALESCE(rekap_penerimaan_pkb.kode_cabang, presensi.kode_cabang, j_khusus.kode_cabang, j_rutin.kode_cabang, layanan.kode_cabang)"), '=', 'cabang.id')
+                ->leftJoin('jam_kerja', DB::raw("COALESCE(j_khusus.kode_jam_kerja, j_rutin.kode_jam_kerja)"), '=', 'jam_kerja.kode_jam_kerja');
 
             if (!empty($layanan_id) && $layanan_id != 'all') {
                 $query->where('layanan.id', $layanan_id);
@@ -656,7 +668,7 @@ class MonitoringController extends Controller
                         ->where('j_rutin.jenis_jadwal', '=', 'rutin')
                         ->where('j_rutin.status', '=', 1);
                 })
-                ->leftJoin('cabang', DB::raw("COALESCE(j_khusus.kode_cabang, j_rutin.kode_cabang, layanan.kode_cabang)"), '=', 'cabang.id')
+                ->leftJoin('cabang', DB::raw("COALESCE(presensi.kode_cabang, j_khusus.kode_cabang, j_rutin.kode_cabang, layanan.kode_cabang)"), '=', 'cabang.id')
                 ->leftJoin('jam_kerja', DB::raw("COALESCE(j_khusus.kode_jam_kerja, j_rutin.kode_jam_kerja)"), '=', 'jam_kerja.kode_jam_kerja');
 
             if (!empty($layanan_id) && $layanan_id != 'all') {
